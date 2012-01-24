@@ -1,0 +1,57 @@
+1)
+Because typesafety and readability matters
+
+2)
+As opposed to JCommander which is annotation based this argument parsing library is based on the Generic class Argument which gives you
+compile-time errors when switching types. For example:
+
+In JCommander:
+Parameter(names = "-file", converter = FileConverter.class) //Converted type from FileConverter checked at runtime
+File file;
+
+In ArgumentParser:
+Argument<File> fileToCreate = ArgumentFactory.file("-file");
+ArgumentParser.forArguments(fileToCreate).parse("-file", "filename.txt").get(fileToCreate).createNewFile();
+
+No new classes are needed and the resulting program is more typesafe as if fileToCreate
+would change to being Argument<String>, trying to call createNewFile() would generate a compile-time error
+
+3)
+Because "-sPrOt" isn't an easy read (a concept from getopts).
+
+Compare:
+TODO: create getOpt variant here
+To:
+
+String[] args = {"--logging", "-p", "8090", "Hello"};
+
+        Argument<Boolean> enableLogging = option("-l", "--logging").
+                description("Output debug information to standard out");
+
+        Argument<Integer> port = integer("-p", "--port").defaultValue(8080).
+                description("The port to start the server on.");
+
+        Argument<String> greetingPhrase = string().description("A greeting phrase to greet new connections with");
+
+        ParsedArguments arguments = ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
+
+        assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
+        assertEqual(port + " was not found in parsed arguments", 8090, arguments.get(port));
+        assertEquals(greetingPhrase + " was not found in parsed arguments", "Hello", arguments.get(greetingPhrase));
+
+4)
+Because JCommander doesn't support repeated arguments other than List<String>.
+
+String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
+
+Handled by:
+ListArgument<List<Integer>> numbers = integer("--numbers").arity(2).repeated();
+
+5)
+TODO: Compare to http://commons.apache.org/cli/introduction.html
+
+6) Who likes annotations anyway? It's harder to debug, analyze and understand.
+
+7) Because it's fun
+
+TODO: fix dep to TrieTree
