@@ -1,24 +1,27 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.handlers;
 
 import java.util.ListIterator;
 
-public class OptionArgument extends Argument<Boolean>
+import se.j4j.argumentparser.ArgumentHandler;
+
+public class OptionArgument implements ArgumentHandler<Boolean>
 {
-	protected OptionArgument(final String ...names)
+	final Boolean defaultValue;
+	public OptionArgument(final boolean defaultValue)
 	{
-		super(names);
-		defaultValue(Boolean.FALSE);
+		this.defaultValue = defaultValue;
 	}
 
-	@Override
-	Boolean parse(final ListIterator<String> currentArgument) throws ArgumentException
+	public Boolean parse(final ListIterator<String> currentArgument)
 	{
-		return !defaultValue();
+		return !defaultValue;
 	}
 
 	/**
+	 * TODO: these methods needs to be replaced in the builder with something else
 	 * @deprecated an optional flag can't be required
 	 */
+	/*
 	@Deprecated
 	@Override
 	public Argument<Boolean> required()
@@ -29,6 +32,7 @@ public class OptionArgument extends Argument<Boolean>
 	/**
 	 * @deprecated since an optional flag can't be assigned a value so a separator is useless
 	 */
+	/*
 	@Deprecated
 	@Override
 	public Argument<Boolean> separator(final String separator)
@@ -36,4 +40,5 @@ public class OptionArgument extends Argument<Boolean>
 		throw new UnsupportedOperationException("A seperator for an optional flag isn't supported as " +
 				"an optional flag can't be assigned a value");
 	}
+	 */
 }

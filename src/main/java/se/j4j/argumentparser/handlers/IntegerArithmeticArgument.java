@@ -1,15 +1,13 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.handlers;
 
 import java.util.ListIterator;
 
-public class IntegerArithmeticArgument extends Argument<Integer>
+import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentHandler;
+
+public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 {
 	private char operation = '+';
-
-	IntegerArithmeticArgument(final String ... names)
-	{
-		super(names);
-	}
 
 	public IntegerArithmeticArgument operation(final char operation)
 	{
@@ -17,8 +15,7 @@ public class IntegerArithmeticArgument extends Argument<Integer>
 		return this;
 	}
 
-	@Override
-	Integer parse(final ListIterator<String> currentArgument) throws ArgumentException
+	public Integer parse(final ListIterator<String> currentArgument) throws ArgumentException
 	{
 		Integer result = Integer.valueOf(currentArgument.next());
 

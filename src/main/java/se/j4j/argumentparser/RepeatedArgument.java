@@ -5,45 +5,25 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import se.j4j.argumentparser.handlers.IntegerArgument;
+
 /**
  * Produced by {@link Argument#repeated()} and used by {@link ArgumentParser#parse(String)}
  *
  * @author Jonatan Jönsson <jontejj@gmail.com>
  *
- * @param <T> type of the repeated values
+ * @param <T> type of the repeated values (such as {@link Integer} for {@link IntegerArgument}
  */
-public class RepeatedArgument<T> extends Argument<List<T>>
+public class RepeatedArgument<T> implements ArgumentHandler<List<T>>
 {
-	Argument<T> argumentHandler;
+	final ArgumentHandler<T> argumentHandler;
 
-	RepeatedArgument(final Argument<T> argumentHandler)
+	RepeatedArgument(final ArgumentHandler<T> argumentHandler)
 	{
-		super(argumentHandler.names());
-		description(argumentHandler.description());
 		this.argumentHandler = argumentHandler;
 	}
 
-	/**
-	 * This method should be called before repeated()
-	 */
-	@Override
-	@Deprecated
-	public ListArgument<List<T>> arity(final int numberOfParameters)
-	{
-		throw new UnsupportedOperationException("Programmer Error. Call arity(...) before repeated()");
-	}
-
-	/**
-	 * This method should be called before repeated()
-	 */
-	@Override
-	@Deprecated
-	public ListArgument<List<T>> consumeAll()
-	{
-		throw new UnsupportedOperationException("Programmer Error. Call consumeAll(...) before repeated()");
-	}
-
-	List<T> parseRepeated(final ListIterator<String> currentArgument, final Map<Argument<?>, Object> parsedArguments) throws ArgumentException
+	public List<T> parseRepeated(final ListIterator<String> currentArgument, final Map<ArgumentHandler<?>, Object> parsedArguments) throws ArgumentException
 	{
 		//TODO: before parse(...) provide a pre/post validator interface to validate values
 		T parsedValue = argumentHandler.parse(currentArgument);
@@ -57,8 +37,10 @@ public class RepeatedArgument<T> extends Argument<List<T>>
 		return listToPutRepeatedValuesIn;
 	}
 
-	@Override
-	List<T> parse(final ListIterator<String> currentArgument) throws ArgumentException
+	/**
+	 * TODO: find a better way and remove this method
+	 */
+	public List<T> parse(final ListIterator<String> currentArgument)
 	{
 		throw new UnsupportedOperationException("use parseRepeated(...) instead");
 	}
