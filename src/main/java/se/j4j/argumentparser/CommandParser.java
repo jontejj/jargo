@@ -4,33 +4,29 @@ import java.util.ListIterator;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 
-public class CommandParser extends Argument<String>
+public class CommandParser extends Argument<String> implements ArgumentHandler<String>
 {
-	private final String name;
-	private Argument<?>[] arguments;
+	private static final String	UNUSED	= null;
+
+	private final Argument<?>[] arguments;
+	private final CommandExecutor commandExecutor;
+
 	private ParsedArguments parsedArguments;
-	private CommandExecutor commandExecutor;
 
-	CommandParser(final String ... names)
+	CommandParser(final Argument<String> argument, final Argument<?>[] arguments, final CommandExecutor commandExecutor)
 	{
-		super(names);
-		this.name = names[0];
-	}
-
-	public CommandParser setCommandExecutor(final CommandExecutor executor)
-	{
-		commandExecutor = executor;
-		return this;
-	}
-
-	public CommandParser withArguments(final Argument<?>... arguments)
-	{
+		super(argument);
 		this.arguments = arguments;
-		return this;
+		this.commandExecutor = commandExecutor;
 	}
 
 	@Override
-	String parse(final ListIterator<String> currentArgument) throws ArgumentException
+	public ArgumentHandler<?> handler()
+	{
+		return this;
+	}
+
+	public String parse(final ListIterator<String> currentArgument) throws ArgumentException
 	{
 		try
 		{
@@ -47,7 +43,7 @@ public class CommandParser extends Argument<String>
 				commandExecutor.failed(ex);
 			}
 		}
-		return name;
+		return UNUSED;
 	}
 
 	public <T> T get(final Argument<T> argumentToFetch)

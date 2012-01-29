@@ -4,27 +4,27 @@ import java.io.Serializable;
 
 public class InvalidArgument extends ArgumentException
 {
-	private Argument<?> argumentHandler;
+	private String explanation;
 	private String invalidValue;
 
-	protected InvalidArgument(final Argument<?> argumentHandler, final String invalidValue)
+	protected InvalidArgument(final String explanation, final String invalidValue)
 	{
 		super(ArgumentExceptionCodes.INVALID_PARAMTER);
-		this.argumentHandler = argumentHandler;
+		this.explanation = explanation;
 		this.invalidValue = invalidValue;
 	}
 
 
-	public static InvalidArgument create(final Argument<?> argumentHandler, final String invalidValue)
+	public static InvalidArgument create(final String invalidValue, final String explanation)
 	{
-		return new InvalidArgument(argumentHandler, invalidValue);
+		return new InvalidArgument(explanation, invalidValue);
 	}
 
 
 	@Override
 	public String getMessage()
 	{
-		return super.getMessage() + ". Invalid value: " + invalidValue + " for argument: " + argumentHandler;
+		return super.getMessage() + ": '" + invalidValue + "'" + explanation;
 	}
 
 	/**

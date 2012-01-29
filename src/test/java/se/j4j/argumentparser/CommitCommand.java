@@ -9,18 +9,26 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 
 public class CommitCommand implements CommandExecutor
 {
-	private static Argument<Boolean> amend = optionArgument("--amend");
-	private static Argument<String> author = stringArgument("--author").required().separator("=");
-	private static ListArgument<File> files = fileArgument().consumeAll();
+	private static Argument<Boolean> amend = optionArgument("--amend").build();
+	private static Argument<String> author = stringArgument("--author").required().separator("=").build();
+	private static Argument<List<File>> files = fileArgument().consumeAll().build();
 
-	public static CommandParser create()
+	private final Argument<String> myCommand;
+
+	public CommitCommand()
 	{
-		return commandArgument("commit").setCommandExecutor(new CommitCommand()).withArguments(amend, author, files);
+		myCommand = commandArgument("commit").setCommandExecutor(this).withArguments(amend, author, files).build();
+	}
+
+	public Argument<String> getCommand()
+	{
+		return myCommand;
 	}
 
 	private boolean	executued;

@@ -176,7 +176,7 @@ public class ArgumentParser
 		}
 		actualArguments = listCopy.listIterator();
 
-		Map<Argument<?>, Object> parsedArguments = new IdentityHashMap<Argument<?>, Object>();
+		Map<ArgumentHandler<?>, Object> parsedArguments = new IdentityHashMap<ArgumentHandler<?>, Object>();
 		Set<Argument<?>> requiredArgumentsLeft = new HashSet<Argument<?>>(requiredArguments);
 		int indexedPosition = 0;
 		while(actualArguments.hasNext())
@@ -190,20 +190,24 @@ public class ArgumentParser
 				}
 				try
 				{
-					if(argumentHandler instanceof RepeatedArgument)
+					ArgumentHandler<?> actualHandler = argumentHandler.handler();
+					if(actualHandler instanceof RepeatedArgument)
 					{
-						parsedArguments.put(argumentHandler, ((RepeatedArgument<?>) argumentHandler).parseRepeated(actualArguments, parsedArguments));
+						parsedArguments.put(actualHandler, ((RepeatedArgument<?>) actualHandler).parseRepeated(actualArguments, parsedArguments));
 					}
 					else
 					{
 						//TODO: before parse(...) provide a pre/post validator interface to validate values
-						Object oldValue = parsedArguments.put(argumentHandler, argumentHandler.parse(actualArguments));
+						Object oldValue = parsedArguments.put(actualHandler, actualHandler.parse(actualArguments));
 						if(oldValue != null)
 						{
 							throw UnhandledRepeatedArgument.create(argumentHandler);
 						}
 					}
-					requiredArgumentsLeft.remove(argumentHandler);
+					if(argumentHandler.isRequired())
+					{
+						requiredArgumentsLeft.remove(argumentHandler);
+					}
 				}
 				catch(NoSuchElementException argumentMissingException)
 				{
@@ -279,9 +283,9 @@ public class ArgumentParser
 	 */
 	public static final class ParsedArguments
 	{
-		private final Map<Argument<?>, ?> parsedArguments;
+		private final Map<ArgumentHandler<?>, ?> parsedArguments;
 
-		private ParsedArguments(final Map<Argument<?>, ?> parsedArguments)
+		private ParsedArguments(final Map<ArgumentHandler<?>, ?> parsedArguments)
 		{
 			this.parsedArguments = parsedArguments;
 		}
@@ -293,7 +297,7 @@ public class ArgumentParser
 		public <T> T get(final Argument<T> argumentToFetch)
 		{
 			@SuppressWarnings("unchecked") //Safe because ArgumentHolder#parse(...) guarantees that the map is heterogeneous
-			T value = (T) parsedArguments.get(argumentToFetch);
+			T value = (T) parsedArguments.get(argumentToFetch.handler());
 			if(value == null)
 			{
 				return argumentToFetch.defaultValue();

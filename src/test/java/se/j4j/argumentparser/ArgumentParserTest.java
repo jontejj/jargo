@@ -36,12 +36,12 @@ public class ArgumentParserTest
 		String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
 
 		Argument<Boolean> enableLogging = optionArgument("-l", "--enable-logging").
-				description("Output debug information to standard out");
+				description("Output debug information to standard out").build();
 
 		Argument<Integer> port = integerArgument("-p", "--listen-port").defaultValue(8080).
-				description("The port to start the server on.");
+				description("The port to start the server on.").build();
 
-		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with");
+		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
 
 		ParsedArguments arguments = ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
 
@@ -63,11 +63,11 @@ public class ArgumentParserTest
 	{
 		String[] args = {"true", "8090", "Hello"};
 
-		Argument<Boolean> enableLogging = booleanArgument().description("Output debug information to standard out");
+		Argument<Boolean> enableLogging = booleanArgument().description("Output debug information to standard out").build();
 
-		Argument<Integer> port = integerArgument().defaultValue(8080).description("The port to start the server on.");
+		Argument<Integer> port = integerArgument().defaultValue(8080).description("The port to start the server on.").build();
 
-		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with");
+		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
 
 		ParsedArguments arguments = ArgumentParser.forArguments(enableLogging, port, greetingPhrase).parse(args);
 
@@ -82,7 +82,7 @@ public class ArgumentParserTest
 		String[] args = {};
 
 		Argument<Boolean> loggingEnabled = optionArgument("--disable-logging").defaultValue(true).
-				description("Don't output debug information to standard out");
+				description("Don't output debug information to standard out").build();
 
 		ParsedArguments arguments = ArgumentParser.forArguments(loggingEnabled).parse(args);
 
@@ -107,7 +107,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--sum-elements", "5", "6", "-3"};
 
-		IntegerArithmeticArgument sum = integerArithmeticArgument("--sum-elements").operation('+');
+		Argument<Integer> sum = integerArithmeticArgument("--sum-elements").operation('+').build();
 		assertEqual("Elements should have been summed together", 8, ArgumentParser.forArguments(sum).parse(args).get(sum));
 	}
 
@@ -116,7 +116,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--numbers", "5", "6"};
 
-		ListArgument<Integer> numbers = integerArgument("--numbers").consumeAll();
+		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().build();
 
 		assertEqual("", Arrays.asList(5, 6), ArgumentParser.forArguments(numbers).parse(args).get(numbers));
 	}
@@ -126,7 +126,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--number"};
 
-		Argument<Integer> numbers = integerArgument("--number");
+		Argument<Integer> numbers = integerArgument("--number").build();
 
 		try
 		{
@@ -147,7 +147,7 @@ public class ArgumentParserTest
 
 		List<Integer> defaults = Arrays.asList(5, 6);
 
-		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().defaultValue(defaults);
+		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().defaultValue(defaults).build();
 
 		assertEqual("", defaults, ArgumentParser.forArguments(numbers).parse(args).get(numbers));
 	}
@@ -157,8 +157,8 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--numbers", "5", "6", "Rest", "Of", "Arguments"};
 
-		ListArgument<Integer> numbers = integerArgument("--numbers").arity(2);
-		ListArgument<String> restHandler = stringArgument().consumeAll();
+		Argument<List<Integer>> numbers = integerArgument("--numbers").arity(2).build();
+		Argument<List<String>> restHandler = stringArgument().consumeAll().build();
 
 		ParsedArguments parsed = ArgumentParser.forArguments(numbers, restHandler).parse(args);
 
@@ -171,7 +171,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
 
-		RepeatedArgument<List<Integer>> numbers = integerArgument("--numbers").arity(2).repeated();
+		Argument<List<List<Integer>>> numbers = integerArgument("--numbers").arity(2).repeated().build();
 
 		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse(args);
 
@@ -187,7 +187,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--number", "1", "--number", "2"};
 
-		RepeatedArgument<Integer> number = integerArgument("--number").repeated();
+		Argument<List<Integer>> number = integerArgument("--number").repeated().build();
 
 		ParsedArguments parsed = ArgumentParser.forArguments(number).parse(Arrays.asList(args));
 
@@ -199,7 +199,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
 
-		ListArgument<Integer> numbers = integerArgument("--numbers").arity(2);
+		Argument<List<Integer>> numbers = integerArgument("--numbers").arity(2).build();
 
 		ArgumentParser.forArguments(numbers).parse(args);
 	}
@@ -207,8 +207,8 @@ public class ArgumentParserTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testErrorHandlingForTwoParametersWithTheSameName()
 	{
-		Argument<Integer> number = integerArgument("--number");
-		Argument<Integer> numberTwo = integerArgument("--number");
+		Argument<Integer> number = integerArgument("--number").build();
+		Argument<Integer> numberTwo = integerArgument("--number").build();
 
 		ArgumentParser.forArguments(number, numberTwo);
 	}
@@ -216,7 +216,7 @@ public class ArgumentParserTest
 	@Test
 	public void testIgnoringCase() throws ArgumentException
 	{
-		Argument<Boolean> help = optionArgument("-h", "--help", "-help", "?").ignoreCase();
+		Argument<Boolean> help = optionArgument("-h", "--help", "-help", "?").ignoreCase().build();
 
 		ArgumentParser parser = ArgumentParser.forArguments(help);
 
@@ -228,7 +228,7 @@ public class ArgumentParserTest
 	@Test
 	public void testIgnoringCaseCombinedWithSeperator() throws ArgumentException
 	{
-		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("=");
+		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("=").build();
 
 		ArgumentParser parser = ArgumentParser.forArguments(logLevel);
 
@@ -239,7 +239,7 @@ public class ArgumentParserTest
 	@Test
 	public void testIgnoringCaseCombinedWithAlphaSeperator() throws ArgumentException
 	{
-		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("A");
+		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("A").build();
 
 		ArgumentParser parser = ArgumentParser.forArguments(logLevel);
 
@@ -247,31 +247,31 @@ public class ArgumentParserTest
 		assertEqual("wrong log level", "debug", parser.parse("-logAdebug").get(logLevel));
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testCallingRepeatedBeforeArity()
 	{
 		integerArgument("--number").repeated().arity(2);
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testCallingRepeatedBeforeConsumeAll()
 	{
 		integerArgument("--number").repeated().consumeAll();
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testMakingAnOptionalArgumentRequired()
 	{
 		optionArgument("-l").required();
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testSettingADefaultValueForARequiredArgument()
 	{
 		integerArgument("-l").required().defaultValue(42);
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testMakingARequiredArgumentWithDefaultValue()
 	{
 		integerArgument("-l").defaultValue(42).required();
@@ -282,8 +282,8 @@ public class ArgumentParserTest
 	{
 		String[] args = {};
 
-		Argument<Integer> number = integerArgument("--number").required();
-		Argument<Integer> number2 = integerArgument("--number2").required();
+		Argument<Integer> number = integerArgument("--number").required().build();
+		Argument<Integer> number2 = integerArgument("--number2").required().build();
 
 		try
 		{
@@ -335,13 +335,13 @@ public class CommandCommit {
 	{
 		String[] args = {"-v", "commit", "--amend", "--author=cbeust", "A.java", "B.java"};
 
-		Argument<Boolean> amend = optionArgument("--amend");
-		Argument<String> author = stringArgument("author").separator("=");
-		ListArgument<File> files = fileArgument().consumeAll();
+		Argument<Boolean> amend = optionArgument("--amend").build();
+		Argument<String> author = stringArgument("author").separator("=").build();
+		Argument<List<File>> files = fileArgument().consumeAll().build();
 
-		CommandParser commit = commandArgument("commit").withArguments(amend, author, files);
+		CommandParser commit = commandArgument("commit").withArguments(amend, author, files).build();
 
-		ParsedArguments parsed = ArgumentParser.forArguments(commit).parse(args);
+		ArgumentParser.forArguments(commit).parse(args);
 
 		assertTrue(commit.get(amend));
 	}
@@ -354,7 +354,7 @@ public class CommandCommit {
 		for(int i = 0; i < 2; i++)
 		{
 			CommitCommand commit = new CommitCommand();
-			ArgumentParser.forArguments(CommitCommand.create().setCommandExecutor(commit)).parse(args);
+			ArgumentParser.forArguments(commit.getCommand()).parse(args);
 
 			assertTrue(commit.didExecute());
 		}
@@ -369,7 +369,7 @@ public class CommandCommit {
 		{
 			CommitCommand commit = new CommitCommand();
 
-			ArgumentParser.forArguments(CommitCommand.create().setCommandExecutor(commit)).parse(args);
+			ArgumentParser.forArguments(commit.getCommand()).parse(args);
 			assertTrue(commit.didFail());
 			assertFalse(commit.didExecute());
 		}
@@ -382,7 +382,7 @@ public class CommandCommit {
 
 		CommitCommand commit = new CommitCommand();
 
-		ArgumentParser.forArguments(CommitCommand.create().setCommandExecutor(commit)).parse(args);
+		ArgumentParser.forArguments(commit.getCommand()).parse(args);
 
 		assertTrue(commit.getExceptionThatCausedTheFailure() instanceof MissingRequiredArgumentException);
 	}
@@ -392,7 +392,7 @@ public class CommandCommit {
 	{
 		String[] args = {"-target" , "example.com:8080"};
 
-		Argument<HostPort> hostPort = new HostPortArgument().names("-target");
+		Argument<HostPort> hostPort = new ArgumentBuilder<HostPort>(new HostPortArgument()).names("-target").build();
 
 		ParsedArguments parsed = ArgumentParser.forArguments(hostPort).parse(args);
 

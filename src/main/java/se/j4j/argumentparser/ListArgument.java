@@ -4,24 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class ListArgument<T> extends Argument<List<T>>
+
+public class ListArgument<T> implements ArgumentHandler<List<T>>
 {
-	Argument<T> argumentHandler;
+	final ArgumentHandler<T> argumentHandler;
 	int argumentsToConsume = CONSUME_ALL;
 
 	static final int CONSUME_ALL = -1;
 
-	ListArgument(final Argument<T> argumentHandler, final int argumentsToConsume)
+	ListArgument(final ArgumentHandler<T> argumentHandler, final int argumentsToConsume)
 	{
-		super(argumentHandler.names());
-		description(argumentHandler.description());
-
 		this.argumentHandler = argumentHandler;
 		this.argumentsToConsume = argumentsToConsume;
 	}
 
-	@Override
-	List<T> parse(final ListIterator<String> currentArgument) throws ArgumentException
+	public List<T> parse(final ListIterator<String> currentArgument) throws ArgumentException
 	{
 		List<T> parsedArguments = new ArrayList<T>();
 		if(argumentsToConsume == CONSUME_ALL)
