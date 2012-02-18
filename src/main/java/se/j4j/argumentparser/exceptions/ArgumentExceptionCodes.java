@@ -1,4 +1,4 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.exceptions;
 
 public enum ArgumentExceptionCodes
 {

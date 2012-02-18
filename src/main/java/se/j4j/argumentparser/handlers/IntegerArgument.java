@@ -1,17 +1,16 @@
 package se.j4j.argumentparser.handlers;
 
-import java.util.ListIterator;
-
-import se.j4j.argumentparser.InvalidArgument;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.InvalidArgument;
 
 public class IntegerArgument extends RadixiableArgument<Integer>
 {
 	/**
 	 * @Throws {@link NumberFormatException} if <code> currentArgument.next() </code> does not contain a parsable integer.
 	 */
-	public Integer parse(final ListIterator<String> currentArgument) throws InvalidArgument
+	@Override
+	public Integer parse(final String value) throws ArgumentException
 	{
-		String value = currentArgument.next();
 		try
 		{
 			return Integer.parseInt(value, radix());

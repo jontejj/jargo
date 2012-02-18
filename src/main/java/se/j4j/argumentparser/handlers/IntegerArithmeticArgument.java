@@ -2,8 +2,9 @@ package se.j4j.argumentparser.handlers;
 
 import java.util.ListIterator;
 
-import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentHandler;
+import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 {
@@ -15,7 +16,7 @@ public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 		return this;
 	}
 
-	public Integer parse(final ListIterator<String> currentArgument) throws ArgumentException
+	public Integer parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition) throws ArgumentException
 	{
 		Integer result = Integer.valueOf(currentArgument.next());
 

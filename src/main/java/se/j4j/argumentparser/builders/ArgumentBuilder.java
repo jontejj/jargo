@@ -1,10 +1,22 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.builders;
 
-import java.util.List;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
+import se.j4j.argumentparser.ArgumentHandler;
+import se.j4j.argumentparser.ArgumentParser;
+import se.j4j.argumentparser.builders.internal.ListArgumentBuilder;
+import se.j4j.argumentparser.builders.internal.RepeatedArgumentBuilder;
+import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
+import se.j4j.argumentparser.handlers.internal.ListArgument;
 
-public class ArgumentBuilder<T>
+/**
+ *
+ * @author Jonatan Jönsson <jontejj@gmail.com>
+ *
+ * @param <SELF_TYPE> the type of the subclass extending this class
+ * 			<pre>Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
+ * @param <T>
+ */
+public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T> ,T>
 {
 	private String[] names;
 	protected T defaultValue = null;
@@ -12,22 +24,32 @@ public class ArgumentBuilder<T>
 	private boolean required = false;
 	private String separator = null;
 	private boolean	ignoreCase = false;
-	private ArgumentHandler<T> handler;
+	public ArgumentHandler<T> handler; //TODO fix visibility
 
-	ArgumentBuilder(final ArgumentHandler<T> handler)
+	protected ArgumentBuilder(final ArgumentHandler<T> handler)
 	{
 		this.handler = handler;
 	}
 
+	@SuppressWarnings("unchecked") //This is passed in by subclasses as a type-variable, so type-safety is up to them
+	private SELF_TYPE self()
+	{
+		return (SELF_TYPE)this;
+	}
+
+	/**
+	 * Constructs an Immutable {@link Argument} which can be passed to {@link ArgumentParser#forArguments(Argument...)}
+	 * @return
+	 */
 	public Argument<T> build()
 	{
 		return new Argument<T>(handler, defaultValue, description, required, separator, ignoreCase, names);
 	}
 
-	protected ArgumentBuilder<T> handler(final ArgumentHandler<T> handler)
+	protected SELF_TYPE handler(final ArgumentHandler<T> handler)
 	{
 		this.handler = handler;
-		return this;
+		return self();
 	}
 
 	/**
@@ -43,19 +65,19 @@ public class ArgumentBuilder<T>
 	 *
 	 * @return this builder
 	 */
-	public ArgumentBuilder<T> names(final String... names)
+	public SELF_TYPE names(final String... names)
 	{
 		this.names = names;
-		return this;
+		return self();
 	}
 
 	/**
 	 * If used {@link ArgumentParser#parse(String...)} ignores the case of the argument names set by {@link Argument#Argument(String...)}
 	 */
-	public ArgumentBuilder<T> ignoreCase()
+	public SELF_TYPE ignoreCase()
 	{
 		ignoreCase = true;
-		return this;
+		return self();
 	}
 
 	/**
@@ -63,26 +85,26 @@ public class ArgumentBuilder<T>
 	 * @param description
 	 * @return this builder
 	 */
-	public ArgumentBuilder<T> description(final String description)
+	public SELF_TYPE description(final String description)
 	{
 		this.description = description;
-		return this;
+		return self();
 	}
 
 	/**
 	 * Makes {@link ArgumentParser#parse(String...) throw {@link MissingRequiredArgumentException} if this argument isn't given
 	 * @return this builder
-	 * @throws IllegalStateException if {@link #required()} has been called, because these two methods are mutually exclusive
+	 * @throws IllegalStateException if {@link #defaultValue(Object)} has been called, because these two methods are mutually exclusive
 	 * TODO: should this exclusivity be achieved by returning a new object with a different interface?
 	 */
-	public ArgumentBuilder<T> required()
+	public SELF_TYPE required()
 	{
 		if(defaultValue != null)
 		{
 			throw new IllegalStateException("Having a requried argument defaulting to some value: " + defaultValue + ", makes no sense. Remove the call to ArgumentBuilder#defaultValue(...) to use a required argument.");
 		}
 		required = true;
-		return this;
+		return self();
 	}
 
 	/**
@@ -91,14 +113,14 @@ public class ArgumentBuilder<T>
 	 * @throws IllegalStateException if {@link #required()} has been called, because these two methods are mutually exclusive
 	 * TODO: should this exclusivity be achieved by returning a new object with a different interface?
 	 */
-	public ArgumentBuilder<T> defaultValue(final T value)
+	public SELF_TYPE defaultValue(final T value)
 	{
 		if(required)
 		{
 			throw new IllegalStateException("Having a requried argument defaulting to some value: " + value + ", makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
 		}
 		this.defaultValue = value;
-		return this;
+		return self();
 	}
 
 	/**
@@ -107,10 +129,10 @@ public class ArgumentBuilder<T>
 	 * @param separator
 	 * @return this builder
 	 */
-	public ArgumentBuilder<T> separator(final String separator)
+	public SELF_TYPE separator(final String separator)
 	{
 		this.separator  = separator;
-		return this;
+		return self();
 	}
 
 	/**
@@ -179,41 +201,6 @@ public class ArgumentBuilder<T>
 		return new RepeatedArgumentBuilder<T>(this);
 	}
 
-	public static class RepeatedArgumentBuilder<T> extends ArgumentBuilder<List<T>>
-	{
-		RepeatedArgumentBuilder(final ArgumentBuilder<T> builder)
-		{
-			super(new RepeatedArgument<T>(builder.handler));
-			copy(builder);
-		}
-
-		@Override
-		public Argument<List<T>> build()
-		{
-			return super.build();
-		}
-
-		/**
-		 * This method should be called before repeated()
-		 */
-		@Deprecated
-		@Override
-		public ListArgumentBuilder<List<T>> arity(final int numberOfParameters)
-		{
-			throw new IllegalStateException("Programmer Error. Call arity(...) before repeated()");
-		}
-
-		/**
-		 * This method should be called before repeated()
-		 */
-		@Override
-		@Deprecated
-		public ListArgumentBuilder<List<T>> consumeAll()
-		{
-			throw new IllegalStateException("Programmer Error. Call consumeAll(...) before repeated()");
-		}
-	}
-
 	/**
 	 * <pre>
 	 * Copies all values from the given copy into this one, except for:
@@ -221,28 +208,13 @@ public class ArgumentBuilder<T>
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;String&gt; are not compatible)
 	 * @param copy the ArgumentBuilder to copy from
 	 */
-	ArgumentBuilder<T> copy(final ArgumentBuilder<?> copy)
+	protected SELF_TYPE copy(final ArgumentBuilder<?, ?> copy)
 	{
 		this.names = copy.names;
 		this.description = copy.description;
 		this.required = copy.required;
 		this.separator = copy.separator;
 		this.ignoreCase = copy.ignoreCase;
-		return this;
-	}
-
-	public static class ListArgumentBuilder<T> extends ArgumentBuilder<List<T>>
-	{
-		ListArgumentBuilder(final ArgumentBuilder<T> builder, final int argumentsToConsume)
-		{
-			super(new ListArgument<T>(builder.handler, argumentsToConsume));
-			copy(builder);
-		}
-
-		@Override
-		public Argument<List<T>> build()
-		{
-			return super.build();
-		}
+		return self();
 	}
 }

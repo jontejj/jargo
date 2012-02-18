@@ -1,13 +1,14 @@
 package se.j4j.argumentparser;
 
-import java.util.ListIterator;
+import se.j4j.argumentparser.handlers.OneParameterArgument;
 
-public class HostPortArgument implements ArgumentHandler<HostPort>
+public class HostPortArgument extends OneParameterArgument<HostPort>
 {
-	public HostPort parse(final ListIterator<String> currentArgument) throws ArgumentException
+	@Override
+	public HostPort parse(final String value)
 	{
 		HostPort result = new HostPort();
-		String[] s = currentArgument.next().split(":");
+		String[] s = value.split(":");
 		result.host = s[0];
 		result.port = Integer.parseInt(s[1]);
 		return result;

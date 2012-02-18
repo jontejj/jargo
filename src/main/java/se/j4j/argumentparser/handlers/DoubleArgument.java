@@ -1,14 +1,20 @@
 package se.j4j.argumentparser.handlers;
 
-import java.util.ListIterator;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.InvalidArgument;
 
-import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentHandler;
-
-public class DoubleArgument implements ArgumentHandler<Double>
+public class DoubleArgument extends OneParameterArgument<Double>
 {
-	public Double parse(final ListIterator<String> currentArgument) throws ArgumentException
+	@Override
+	public Double parse(final String value) throws ArgumentException
 	{
-		return Double.valueOf(currentArgument.next());
+		try
+		{
+			return Double.valueOf(value);
+		}
+		catch(NumberFormatException ex)
+		{
+			throw InvalidArgument.create(value, " is not a valid double");
+		}
 	}
 }

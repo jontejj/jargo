@@ -1,17 +1,16 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.builders;
 
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.ArgumentHandler;
+import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 
 /**
- * <p><b>Note:</b> Although this class is not final, it cannot be subclassed
- * outside of this package as it has no public or protected constructors. Thus,
- * instances of this type are guaranteed to be immutable.
- *
  * @author Jonatan Jönsson <jontejj@gmail.com>
  *
  * @param <T>
  */
-public class Argument<T>
+public final class Argument<T>
 {
 	private final String[] names;
 	private final T defaultValue;
@@ -55,7 +54,7 @@ public class Argument<T>
 		return handler;
 	}
 
-	boolean isRequired()
+	public boolean isRequired()
 	{
 		return required;
 	}
@@ -70,12 +69,12 @@ public class Argument<T>
 		return description;
 	}
 
-	boolean isNamed()
+	public boolean isNamed()
 	{
 		return names.length > 0;
 	}
 
-	String[] names()
+	public String[] names()
 	{
 		return names;
 	}
@@ -92,7 +91,7 @@ public class Argument<T>
 	 * @ret
 
 	 */
-	boolean isIgnoringCase()
+	public boolean isIgnoringCase()
 	{
 		return ignoreCase;
 	}

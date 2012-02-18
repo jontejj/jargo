@@ -1,15 +1,13 @@
 package se.j4j.argumentparser.handlers;
 
-import java.util.ListIterator;
-
-import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.InvalidArgument;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.InvalidArgument;
 
 public class ShortArgument extends RadixiableArgument<Short>
 {
-	public Short parse(final ListIterator<String> currentArgument) throws ArgumentException
+	@Override
+	public Short parse(final String value) throws ArgumentException
 	{
-		String value = currentArgument.next();
 		try
 		{
 			return Short.valueOf(value, radix());

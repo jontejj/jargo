@@ -2,18 +2,16 @@ package se.j4j.argumentparser;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
-import static org.junit.Assert.assertFalse;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.commandArgument;
-import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArithmeticArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,6 +21,13 @@ import java.util.Set;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
+import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.builders.DefaultArgumentBuilder;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.ArgumentExceptionCodes;
+import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
+import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
+import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
 
 public class ArgumentParserTest
 {
@@ -107,7 +112,7 @@ public class ArgumentParserTest
 	{
 		String[] args = {"--sum-elements", "5", "6", "-3"};
 
-		Argument<Integer> sum = integerArithmeticArgument("--sum-elements").operation('+').build();
+		Argument<Integer> sum = integerArithmeticArgument("--sum-elements").defaultValue(2).operation('+').build();
 		assertEqual("Elements should have been summed together", 8, ArgumentParser.forArguments(sum).parse(args).get(sum));
 	}
 
@@ -331,32 +336,14 @@ public class CommandCommit {
 	 */
 
 	@Test
-	public void testComparisonToJCommander() throws ArgumentException
-	{
-		String[] args = {"-v", "commit", "--amend", "--author=cbeust", "A.java", "B.java"};
-
-		Argument<Boolean> amend = optionArgument("--amend").build();
-		Argument<String> author = stringArgument("author").separator("=").build();
-		Argument<List<File>> files = fileArgument().consumeAll().build();
-
-		CommandParser commit = commandArgument("commit").withArguments(amend, author, files).build();
-
-		ArgumentParser.forArguments(commit).parse(args);
-
-		assertTrue(commit.get(amend));
-	}
-
-	@Test
 	public void testInterfaceBasedCommandExecuting() throws ArgumentException
 	{
 		String[] args = {"-v", "commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
 
 		for(int i = 0; i < 2; i++)
 		{
-			CommitCommand commit = new CommitCommand();
-			ArgumentParser.forArguments(commit.getCommand()).parse(args);
-
-			assertTrue(commit.didExecute());
+			Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
+			ArgumentParser.forArguments(commitCommand).parse(args);
 		}
 	}
 
@@ -367,24 +354,57 @@ public class CommandCommit {
 
 		for(int i = 0; i < 2; i++)
 		{
-			CommitCommand commit = new CommitCommand();
-
-			ArgumentParser.forArguments(commit.getCommand()).parse(args);
-			assertTrue(commit.didFail());
-			assertFalse(commit.didExecute());
+			Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
+			try
+			{
+				ArgumentParser.forArguments(commitCommand).parse(args);
+				fail("--author=??? wasn't given in the input and it should have been required");
+			}
+			catch (MissingRequiredArgumentException expected)
+			{
+			}
 		}
 	}
 
-	@Test
+	@Test(expected = MissingRequiredArgumentException.class)
 	public void testInterfaceBasedCommandExecutingMissingRequiredArgument() throws ArgumentException
 	{
 		String[] args = {"-v", "commit", "--amend", "A.java", "B.java"}; //No author
 
-		CommitCommand commit = new CommitCommand();
+		Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
 
-		ArgumentParser.forArguments(commit.getCommand()).parse(args);
+		ArgumentParser.forArguments(commitCommand).parse(args);
+	}
 
-		assertTrue(commit.getExceptionThatCausedTheFailure() instanceof MissingRequiredArgumentException);
+	@Test(expected = UnexpectedArgumentException.class)
+	public void testMultipleInterfaceBasedCommandParsersWrongInput() throws ArgumentException
+	{
+		String[] args = {"-v", "init", "commit", "--amend", "A.java", "B.java"};
+
+		Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
+		Argument<String> initCommand = commandArgument(new InitCommand()).names("init").build();
+
+		ArgumentParser.forArguments(commitCommand, initCommand).parse(args);
+	}
+
+	@Test
+	public void testMultipleInterfaceBasedCommandParsers() throws ArgumentException
+	{
+		String[] initArgs = {"init"};
+		String[] commitArgs = {"-v", "commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
+
+		Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
+		Argument<String> initCommand = commandArgument(new InitCommand()).names("init").build();
+
+		ArgumentParser parser = ArgumentParser.forArguments(commitCommand, initCommand);
+
+		ParsedArguments parsed = parser.parse(initArgs);
+		assertNotNull(parsed.get(initCommand));
+		assertNull(parsed.get(commitCommand));
+
+		parsed = parser.parse(commitArgs);
+		assertNotNull(parsed.get(commitCommand));
+		assertNull(parsed.get(initCommand));
 	}
 
 	@Test
@@ -392,7 +412,7 @@ public class CommandCommit {
 	{
 		String[] args = {"-target" , "example.com:8080"};
 
-		Argument<HostPort> hostPort = new ArgumentBuilder<HostPort>(new HostPortArgument()).names("-target").build();
+		Argument<HostPort> hostPort = new DefaultArgumentBuilder<HostPort>(new HostPortArgument()).names("-target").build();
 
 		ParsedArguments parsed = ArgumentParser.forArguments(hostPort).parse(args);
 
@@ -400,7 +420,10 @@ public class CommandCommit {
 		assertEquals(8080, parsed.get(hostPort).port);
 	}
 
-	//TODO: add support for @/path/to/arguments
+	/**
+	 * TODO: add support for @/path/to/arguments
+	 * TODO:
+	 */
 
 	private static <T> Set<T> setOf(final T first, final T second)
 	{

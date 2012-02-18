@@ -8,10 +8,15 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import jjonsson.weather_notifier.TrieTree;
+import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
+import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
+import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
+import se.j4j.argumentparser.handlers.internal.RepeatedArgument;
 
 
 public class ArgumentParser
@@ -55,7 +60,12 @@ public class ArgumentParser
 		}
 	}
 
-	//TODO: add usage() method (for CommandParser as well)
+	//TODO: add make this "usage" like
+	@Override
+	public String toString()
+	{
+		return namedArguments.toString();
+	}
 
 	/**
 	 * A list where arguments created without names is put
@@ -159,16 +169,10 @@ public class ArgumentParser
 		return parse(actualArguments.listIterator());
 	}
 
-	/**
-	 *
-	 * @param actualArguments
-	 * @return
-	 * @throws ArgumentException
-	 * @throws MissingRequiredArgumentException
-	 */
 	public ParsedArguments parse(ListIterator<String> actualArguments) throws ArgumentException
 	{
 		//TODO: how should this copy be made? It's made because specialSeparatorArguments modifies the list
+		//Maybe use CopyOnWriteArrayList?
 		List<String> listCopy = new ArrayList<String>();
 		while(actualArguments.hasNext())
 		{
@@ -181,38 +185,30 @@ public class ArgumentParser
 		int indexedPosition = 0;
 		while(actualArguments.hasNext())
 		{
-			Argument<?> argumentHandler = getHandlerForArgument(actualArguments, indexedPosition);
-			if(argumentHandler != null)
+			Argument<?> argumentDefinition = getHandlerForArgument(actualArguments, indexedPosition);
+			if(argumentDefinition != null)
 			{
-				if(!argumentHandler.isNamed())
+				if(!argumentDefinition.isNamed())
 				{
 					indexedPosition++;
 				}
-				try
+				ArgumentHandler<?> actualHandler = argumentDefinition.handler();
+				if(actualHandler instanceof RepeatedArgument)
 				{
-					ArgumentHandler<?> actualHandler = argumentHandler.handler();
-					if(actualHandler instanceof RepeatedArgument)
+					parsedArguments.put(actualHandler, ((RepeatedArgument<?>) actualHandler).parseRepeated(actualArguments, parsedArguments, argumentDefinition));
+				}
+				else
+				{
+					//TODO: before parse(...) provide a pre/post validator interface to validate values
+					Object oldValue = parsedArguments.put(actualHandler, actualHandler.parse(actualArguments, argumentDefinition));
+					if(oldValue != null)
 					{
-						parsedArguments.put(actualHandler, ((RepeatedArgument<?>) actualHandler).parseRepeated(actualArguments, parsedArguments));
-					}
-					else
-					{
-						//TODO: before parse(...) provide a pre/post validator interface to validate values
-						Object oldValue = parsedArguments.put(actualHandler, actualHandler.parse(actualArguments));
-						if(oldValue != null)
-						{
-							throw UnhandledRepeatedArgument.create(argumentHandler);
-						}
-					}
-					if(argumentHandler.isRequired())
-					{
-						requiredArgumentsLeft.remove(argumentHandler);
+						throw UnhandledRepeatedArgument.create(argumentDefinition);
 					}
 				}
-				catch(NoSuchElementException argumentMissingException)
+				if(argumentDefinition.isRequired())
 				{
-					throw ArgumentException.create(ArgumentExceptionCodes.MISSING_PARAMETER).
-					errorneousArgument(argumentHandler).initCause(argumentMissingException);
+					requiredArgumentsLeft.remove(argumentDefinition);
 				}
 			}
 		}
@@ -261,7 +257,7 @@ public class ArgumentParser
 				 */
 				if(throwOnUnexpectedArgument)
 				{
-					throw ArgumentException.create(ArgumentExceptionCodes.UNHANDLED_PARAMETER);
+					throw UnexpectedArgumentException.unexpectedArgument(currentArgument);
 				}
 				//TODO: suggest alternative options/parameters based on the faulty characters' distance (keyboard wise (consider dvorak))
 				//Ask Did you mean and provide y/n

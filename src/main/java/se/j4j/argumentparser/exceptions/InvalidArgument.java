@@ -1,6 +1,7 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
+
 
 public class InvalidArgument extends ArgumentException
 {

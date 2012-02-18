@@ -1,7 +1,9 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
 import java.util.Collection;
+
+import se.j4j.argumentparser.builders.Argument;
 
 public class MissingRequiredArgumentException extends ArgumentException
 {
@@ -24,7 +26,7 @@ public class MissingRequiredArgumentException extends ArgumentException
 		return super.getMessage() + ". Missing arguments: " + missingArguments;
 	}
 
-	Collection<Argument<?>> missingArguments()
+	public Collection<Argument<?>> missingArguments()
 	{
 		return missingArguments;
 	}
