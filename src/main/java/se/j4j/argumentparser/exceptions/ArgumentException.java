@@ -1,6 +1,8 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
+
+import se.j4j.argumentparser.builders.Argument;
 
 
 public class ArgumentException extends Exception
@@ -28,13 +30,6 @@ public class ArgumentException extends Exception
 	public String getMessage()
 	{
 		return super.getMessage() + ": Error code: " + errorCode;
-	}
-
-	@Override
-	public ArgumentException initCause(final Throwable cause)
-	{
-		super.initCause(cause);
-		return this;
 	}
 
 	public Argument<?> errorneousArgument()

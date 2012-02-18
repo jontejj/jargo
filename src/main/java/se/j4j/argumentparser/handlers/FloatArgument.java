@@ -1,18 +1,16 @@
 package se.j4j.argumentparser.handlers;
 
-import java.util.ListIterator;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.InvalidArgument;
 
-import se.j4j.argumentparser.ArgumentHandler;
-import se.j4j.argumentparser.InvalidArgument;
-
-public class FloatArgument implements ArgumentHandler<Float>
+public class FloatArgument extends OneParameterArgument<Float>
 {
-	public Float parse(final ListIterator<String> currentArgument) throws InvalidArgument
+	@Override
+	public Float parse(final String value) throws ArgumentException
 	{
-		String value = currentArgument.next();
 		try
 		{
-			return Float.valueOf(currentArgument.next());
+			return Float.valueOf(value);
 		}
 		catch(NumberFormatException ex)
 		{

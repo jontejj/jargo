@@ -1,6 +1,8 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
+
+import se.j4j.argumentparser.builders.Argument;
 
 public class UnhandledRepeatedArgument extends ArgumentException
 {

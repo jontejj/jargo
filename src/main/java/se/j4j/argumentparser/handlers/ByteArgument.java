@@ -1,13 +1,20 @@
 package se.j4j.argumentparser.handlers;
 
-import java.util.ListIterator;
-
-import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.exceptions.InvalidArgument;
 
 public class ByteArgument extends RadixiableArgument<Byte>
 {
-	public Byte parse(final ListIterator<String> currentArgument) throws ArgumentException
+	@Override
+	public Byte parse(final String value) throws ArgumentException
 	{
-		return Byte.valueOf(currentArgument.next(), radix());
+		try
+		{
+			return Byte.valueOf(value, radix());
+		}
+		catch(NumberFormatException ex)
+		{
+			throw InvalidArgument.create(value, " is not a valid byte of radix " + radix());
+		}
 	}
 }
