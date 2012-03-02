@@ -16,9 +16,9 @@ public class InvalidArgument extends ArgumentException
 	}
 
 
-	public static InvalidArgument create(final String invalidValue, final String explanation)
+	public static InvalidArgument create(final Object invalidValue, final String explanation)
 	{
-		return new InvalidArgument(explanation, invalidValue);
+		return new InvalidArgument(explanation, String.valueOf(invalidValue));
 	}
 
 

@@ -1,5 +1,7 @@
 package se.j4j.argumentparser.exceptions;
 
+import se.j4j.argumentparser.ArgumentParser;
+
 public enum ArgumentExceptionCodes
 {
 	//TODO: these should take in an argument describing the exact cause
@@ -35,5 +37,4 @@ public enum ArgumentExceptionCodes
 	 * which considers it's received argument to be invalid
 	 */
 	INVALID_PARAMTER
-
 }

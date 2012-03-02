@@ -1,4 +1,4 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.CustomHandlers;
 
 import se.j4j.argumentparser.handlers.OneParameterArgument;
 

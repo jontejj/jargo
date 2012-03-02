@@ -10,16 +10,19 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.Immutable;
+
 import jjonsson.weather_notifier.TrieTree;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.handlers.internal.RepeatedArgument;
+import se.j4j.argumentparser.handlers.internal.RepeatableArgument;
+import se.j4j.argumentparser.internal.Usage;
 
-
-public class ArgumentParser
+@Immutable
+public final class ArgumentParser
 {
 	/**
 	 * Starting point for the call chain:
@@ -29,13 +32,26 @@ public class ArgumentParser
 	 * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
 	 *
 	 * Argument&lt;Boolean&gt; enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out");
-	 * Argument&lt;Integer&gt; port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port to start the server on.");
+	 * Argument&lt;Integer&gt; port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.");
 	 * Argument&lt;String&gt; greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with");
 	 *
-	 * ParsedArguments arguments = ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
+	 * try
+	 * {
+	 * 	ParsedArguments arguments = ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
+	 * }
+	 * catch(ArgumentException exception)
+	 * {
+	 * 	System.out.println(exception.getMessageAndUsage());
+	 * 	System.exit(1);
+	 * }
 	 *
 	 * assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
 	 * </code></pre>
+	 *
+	 * If something goes wrong during the parsing (Missing required arguments, Unexpected arguments, Invalid values),
+	 * it will be described by the ArgumentException.
+	 *
+	 * The error message of ArgumentException ends with the usage text.
 	 *
 	 * @param argumentDefinitions argument handlers to handle all the given command line arguments, presumably produced with {@link ArgumentFactory} or with your own disciples of {@link Argument}
 	 * @return an ArgumentParser which you can call {@link ArgumentParser#parse(String...)} on and get {@link ParsedArguments} out of.
@@ -54,17 +70,12 @@ public class ArgumentParser
 		ignoreCaseArguments = new HashMap<String, Argument<?>>();
 		ignoreCaseSpecialSeparatorArguments = TrieTree.newTree();
 		requiredArguments = new HashSet<Argument<?>>(argumentDefinitions.length);
+		propertyMapArguments = TrieTree.newTree();
+		allArguments = new HashSet<Argument<?>>(argumentDefinitions.length);
 		for(Argument<?> arg : argumentDefinitions)
 		{
 			addArgument(arg);
 		}
-	}
-
-	//TODO: add make this "usage" like
-	@Override
-	public String toString()
-	{
-		return namedArguments.toString();
 	}
 
 	/**
@@ -92,12 +103,16 @@ public class ArgumentParser
 	 */
 	private final TrieTree<Argument<?>> ignoreCaseSpecialSeparatorArguments;
 
+	private final TrieTree<Argument<?>> propertyMapArguments;
+
 	/**
 	 * If arguments are required, set by calling {@link Argument#required()}, and they aren't given on the command line,
 	 * {@link MissingRequiredArgumentException} is thrown when {@link #parse(String...)} is called.
 	 * TODO: should parse handle this printout itself instead of throwing?
 	 */
 	private final Set<Argument<?>> requiredArguments;
+
+	private final Set<Argument<?>> allArguments;
 
 	private void addArgument(final Argument<?> argument)
 	{
@@ -116,13 +131,19 @@ public class ArgumentParser
 		{
 			requiredArguments.add(argument);
 		}
+		allArguments.add(argument);
 	}
 
 	private void putArgument(final String key, final Argument<?> argument)
 	{
 		Argument<?> oldHandler = null;
 		String separator = argument.separator();
-		if(separator != null)
+		if(argument.isPropertyMap())
+		{
+			//TODO: support for other separators and ignore case
+			oldHandler = propertyMapArguments.set(key, argument);
+		}
+		else if(separator != null)
 		{
 			oldHandler = specialSeparatorArguments.set(key + separator, argument);
 			if(argument.isIgnoringCase())
@@ -146,18 +167,6 @@ public class ArgumentParser
 		}
 	}
 
-	/**
-	 * Set by {@link #throwOnUnexpectedArgument()} and can be used to be strict about what's given as arguments, defaults to false.
-	 */
-	private boolean throwOnUnexpectedArgument = false;
-
-
-	public ArgumentParser throwOnUnexpectedArgument()
-	{
-		throwOnUnexpectedArgument = true;
-		return this;
-	}
-
 	public ParsedArguments parse(final String... actualArguments) throws ArgumentException
 	{
 		ListIterator<String> arguments = Arrays.asList(actualArguments).listIterator();
@@ -172,7 +181,7 @@ public class ArgumentParser
 	public ParsedArguments parse(ListIterator<String> actualArguments) throws ArgumentException
 	{
 		//TODO: how should this copy be made? It's made because specialSeparatorArguments modifies the list
-		//Maybe use CopyOnWriteArrayList?
+		//Maybe use CopyOnWriteArrayList? That may be expensive when many property maps are used
 		List<String> listCopy = new ArrayList<String>();
 		while(actualArguments.hasNext())
 		{
@@ -182,39 +191,51 @@ public class ArgumentParser
 
 		Map<ArgumentHandler<?>, Object> parsedArguments = new IdentityHashMap<ArgumentHandler<?>, Object>();
 		Set<Argument<?>> requiredArgumentsLeft = new HashSet<Argument<?>>(requiredArguments);
-		int indexedPosition = 0;
-		while(actualArguments.hasNext())
+
+		try
 		{
-			Argument<?> argumentDefinition = getHandlerForArgument(actualArguments, indexedPosition);
-			if(argumentDefinition != null)
+			int indexedPosition = 0;
+			while(actualArguments.hasNext())
 			{
-				if(!argumentDefinition.isNamed())
+				Argument<?> argumentDefinition = getHandlerForArgument(actualArguments, indexedPosition);
+				if(argumentDefinition != null)
 				{
-					indexedPosition++;
-				}
-				ArgumentHandler<?> actualHandler = argumentDefinition.handler();
-				if(actualHandler instanceof RepeatedArgument)
-				{
-					parsedArguments.put(actualHandler, ((RepeatedArgument<?>) actualHandler).parseRepeated(actualArguments, parsedArguments, argumentDefinition));
-				}
-				else
-				{
-					//TODO: before parse(...) provide a pre/post validator interface to validate values
-					Object oldValue = parsedArguments.put(actualHandler, actualHandler.parse(actualArguments, argumentDefinition));
-					if(oldValue != null)
+					if(!argumentDefinition.isNamed())
 					{
-						throw UnhandledRepeatedArgument.create(argumentDefinition);
+						indexedPosition++;
+					}
+					ArgumentHandler<?> actualHandler = argumentDefinition.handler();
+					if(actualHandler instanceof RepeatableArgument)
+					{
+						RepeatableArgument<Object> handler = (RepeatableArgument<Object>) actualHandler;
+						Object oldValue = parsedArguments.get(actualHandler);
+						parsedArguments.put(actualHandler, handler.parseRepeated(actualArguments, oldValue, argumentDefinition));
+					}
+					else
+					{
+						Object parsedValue = actualHandler.parse(actualArguments, argumentDefinition);
+						argumentDefinition.validate(parsedValue);
+						Object oldValue = parsedArguments.put(actualHandler, parsedValue);
+						if(oldValue != null)
+						{
+							throw UnhandledRepeatedArgument.create(argumentDefinition);
+						}
+					}
+					if(argumentDefinition.isRequired())
+					{
+						requiredArgumentsLeft.remove(argumentDefinition);
 					}
 				}
-				if(argumentDefinition.isRequired())
-				{
-					requiredArgumentsLeft.remove(argumentDefinition);
-				}
+			}
+			if(!requiredArgumentsLeft.isEmpty())
+			{
+				throw MissingRequiredArgumentException.create(requiredArgumentsLeft);
 			}
 		}
-		if(!requiredArgumentsLeft.isEmpty())
+		catch(ArgumentException parserError)
 		{
-			throw MissingRequiredArgumentException.create(requiredArgumentsLeft);
+			parserError.setOriginParser(this);
+			throw parserError;
 		}
 		return new ParsedArguments(parsedArguments);
 	}
@@ -234,7 +255,12 @@ public class ArgumentParser
 		{
 			return argumentHandler;
 		}
-
+		argumentHandler = propertyMapArguments.getLastMatch(currentArgument);
+		if(argumentHandler != null)
+		{
+			actualArguments.previous();
+			return argumentHandler;
+		}
 		argumentHandler = ignoreCaseSpecialSeparatorArguments.getLastMatch(currentArgument.toLowerCase());
 		if(argumentHandler == null)
 		{
@@ -255,14 +281,11 @@ public class ArgumentParser
 				 * TODO: handle "-fs" as well as "-f -s"
 				 * TODO: maybe handle properties like arguments: -Dproperty.name=value
 				 */
-				if(throwOnUnexpectedArgument)
-				{
-					throw UnexpectedArgumentException.unexpectedArgument(currentArgument);
-				}
+				throw UnexpectedArgumentException.unexpectedArgument(currentArgument);
 				//TODO: suggest alternative options/parameters based on the faulty characters' distance (keyboard wise (consider dvorak))
 				//Ask Did you mean and provide y/n
 				//Simply ignore dropped argument
-				return null;
+				//return null;
 			}
 			argumentHandler = indexedArgumentDefinitions.get(indexedPosition);
 			actualArguments.previous();
@@ -270,13 +293,25 @@ public class ArgumentParser
 		return argumentHandler;
 	}
 
+	@Override
+	public String toString()
+	{
+		return Usage.forArguments("<main class>", allArguments).toString();
+	}
+
+	/**
+	 * Print usage on System.out
+	 */
+	public void usage(final String programName)
+	{
+		System.out.println(Usage.forArguments(programName, allArguments));
+	}
+
 	/**
 	 * A container for parsed arguments output by {@link ArgumentParser#parse(String...)}.
 	 * Use {@link #get(Argument)} to fetch the actual command line values.
-	 *
-	 * @author jonatanjoensson
-	 *
 	 */
+	@Immutable
 	public static final class ParsedArguments
 	{
 		private final Map<ArgumentHandler<?>, ?> parsedArguments;

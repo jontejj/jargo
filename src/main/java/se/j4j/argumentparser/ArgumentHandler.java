@@ -19,4 +19,7 @@ public interface ArgumentHandler<T>
 	 * @throws NoSuchElementException when an argument expects a parameter and it's not found
 	 */
 	T parse(ListIterator<String> currentArgument, Argument<?> argumentDefinition) throws ArgumentException;
+
+	//TODO: add T defaultValue()
+	//TODO: add String descriptionOfValidValues()
 }

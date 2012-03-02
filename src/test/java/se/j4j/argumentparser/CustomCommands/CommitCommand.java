@@ -1,4 +1,4 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.CustomCommands;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.handlers.CommandArgument;
@@ -20,7 +21,7 @@ public class CommitCommand extends CommandArgument
 	private static Argument<String> author = stringArgument("--author").required().separator("=").build();
 	private static Argument<List<File>> files = fileArgument().consumeAll().build();
 
-	static ArgumentParser PARSER_INSTANCE = ArgumentParser.forArguments(amend, author, files);
+	static final ArgumentParser PARSER_INSTANCE = ArgumentParser.forArguments(amend, author, files);
 
 	@Override
 	public ArgumentParser getParserInstance()

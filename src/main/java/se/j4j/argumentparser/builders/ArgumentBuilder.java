@@ -1,12 +1,20 @@
 package se.j4j.argumentparser.builders;
 
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import se.j4j.argumentparser.ArgumentHandler;
 import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.builders.internal.ListArgumentBuilder;
-import se.j4j.argumentparser.builders.internal.RepeatedArgumentBuilder;
+import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
+import se.j4j.argumentparser.handlers.OptionArgument;
 import se.j4j.argumentparser.handlers.internal.ListArgument;
+import se.j4j.argumentparser.handlers.internal.MapArgument;
+import se.j4j.argumentparser.handlers.internal.RepeatedArgument;
+import se.j4j.argumentparser.validators.ValueValidator;
 
 /**
  *
@@ -18,13 +26,15 @@ import se.j4j.argumentparser.handlers.internal.ListArgument;
  */
 public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T> ,T>
 {
-	private String[] names;
-	protected T defaultValue = null;
-	private String description = "";
-	private boolean required = false;
-	private String separator = null;
-	private boolean	ignoreCase = false;
-	public ArgumentHandler<T> handler; //TODO fix visibility
+	List<String> names = Collections.emptyList();
+	T defaultValue = null;
+	String description = "";
+	boolean required = false;
+	String separator = null;
+	boolean	ignoreCase = false;
+	ValueValidator<T> validator;
+	ArgumentHandler<T> handler;
+	boolean	isPropertyMap;
 
 	protected ArgumentBuilder(final ArgumentHandler<T> handler)
 	{
@@ -43,7 +53,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public Argument<T> build()
 	{
-		return new Argument<T>(handler, defaultValue, description, required, separator, ignoreCase, names);
+		//TODO: how to validate defaultValues
+		return new Argument<T>(this);
 	}
 
 	protected SELF_TYPE handler(final ArgumentHandler<T> handler)
@@ -67,7 +78,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE names(final String... names)
 	{
-		this.names = names;
+		this.names = Arrays.asList(names);
 		return self();
 	}
 
@@ -123,6 +134,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		return self();
 	}
 
+	public SELF_TYPE validator(final ValueValidator<T> validator)
+	{
+		this.validator = validator;
+		return self();
+	}
+
 	/**
 	 * TODO: add support for splitter:
 	 * -ports 1,2,3 => [1,2,3]
@@ -133,6 +150,42 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	{
 		this.separator  = separator;
 		return self();
+	}
+
+	/**
+	 * Makes this argument handle properties like arguments: -Dproperty.name=value
+	 *
+	 * where value is decoded by the previously set {@link ArgumentHandler}
+	 * @return
+	 */
+	public MapArgumentBuilder<T> asPropertyMap()
+	{
+		return new MapArgumentBuilder<T>(this);
+	}
+
+	public static class MapArgumentBuilder<T> extends ArgumentBuilder<MapArgumentBuilder<T>, Map<String, T>>
+	{
+		protected MapArgumentBuilder(final ArgumentBuilder<?,T> builder)
+		{
+			super(new MapArgument<T>(builder.handler, builder.validator));
+			copy(builder);
+			if(this.separator == null)
+			{
+				//Maybe use assignment instead?
+				this.separator = "=";
+			}
+			this.isPropertyMap = true;
+		}
+
+		/**
+		 * @deprecated because repeated should be called before {@link #asPropertyMap()}
+		 */
+		@Deprecated
+		@Override
+		public RepeatedArgumentBuilder<Map<String, T>> repeated()
+		{
+			throw new UnsupportedOperationException("You'll need to call repeated before asPropertyMap");
+		}
 	}
 
 	/**
@@ -194,6 +247,16 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * List&lt;List&lt;Integer&gt;&gt; actual = parsed.get(numbers);
 	 * assertEqual("", numberLists, actual);
 	 * </code></pre>
+	 *
+	 * For repeated values in a property map such as this:
+	 * <pre><code>
+	 * Argument&lt;Map&lt;String, List&lt;Integer&gt;&gt;&gt; numberMap = integerArgument("-N").repeated().asPropertyMap().build();
+	 * ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-Nnumber=1", "-Nnumber=2");
+	 * assertThat(parsed.get(numberMap).get("number")).isEqualTo(Arrays.asList(1, 2));
+	 * </code></pre>
+	 *
+	 * {@link #repeated()} should be called before {@link #asPropertyMap()}
+	 *
 	 * @return a newly created RepeatedArgument that you need to save into a variable to access the list later on
 	 */
 	public RepeatedArgumentBuilder<T> repeated()
@@ -215,6 +278,112 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		this.required = copy.required;
 		this.separator = copy.separator;
 		this.ignoreCase = copy.ignoreCase;
+		this.isPropertyMap = copy.isPropertyMap;
 		return self();
+	}
+
+	//Non-Interesting builders
+	public static class ListArgumentBuilder<T> extends ArgumentBuilder<ListArgumentBuilder<T>, List<T>>
+	{
+		public ListArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?,T>, T> builder, final int argumentsToConsume)
+		{
+			super(new ListArgument<T>(builder.handler, argumentsToConsume, builder.validator, "")); //TODO: fix ""
+			copy(builder);
+		}
+
+		/**
+		 * This method should be called before {@link ArgumentBuilder#arity(int)}/{@link ArgumentBuilder#consumeAll()}
+		 */
+		@Deprecated
+		@Override
+		public ListArgumentBuilder<T> validator(final ValueValidator<List<T>> validator)
+		{
+			throw new IllegalStateException("Programmer Error. Call validator(...) before arity/consumeAll()");
+		}
+	}
+
+	public static class RepeatedArgumentBuilder<T> extends ArgumentBuilder<RepeatedArgumentBuilder<T>, List<T>>
+	{
+		public RepeatedArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?,T>, T> builder)
+		{
+			super(new RepeatedArgument<T>(builder.handler, builder.validator));
+			copy(builder);
+		}
+
+		/**
+		 * This method should be called before repeated()
+		 */
+		@Deprecated
+		@Override
+		public ListArgumentBuilder<List<T>> arity(final int numberOfParameters)
+		{
+			throw new IllegalStateException("Programmer Error. Call arity(...) before repeated()");
+		}
+
+		/**
+		 * This method should be called before repeated()
+		 */
+		@Override
+		@Deprecated
+		public ListArgumentBuilder<List<T>> consumeAll()
+		{
+			throw new IllegalStateException("Programmer Error. Call consumeAll(...) before repeated()");
+		}
+
+		/**
+		 * This method should be called before repeated()
+		 */
+		@Deprecated
+		@Override
+		public RepeatedArgumentBuilder<T> validator(final ValueValidator<List<T>> validator)
+		{
+			throw new IllegalStateException("Programmer Error. Call validator(...) before repeated()");
+		}
+	}
+
+	public static class OptionArgumentBuilder extends ArgumentBuilder<OptionArgumentBuilder, Boolean>
+	{
+		public OptionArgumentBuilder()
+		{
+			super(null);
+			defaultValue(Boolean.FALSE);
+		}
+
+		@Override
+		public Argument<Boolean> build()
+		{
+			handler(new OptionArgument(defaultValue));
+			return super.build();
+		}
+		/**
+		 * @deprecated an optional flag can't be required
+		 */
+		@Deprecated
+		@Override
+		public OptionArgumentBuilder required()
+		{
+			throw new IllegalStateException("An optional flag can't be requried");
+		}
+
+		/**
+		 * @deprecated a separator is useless since an optional flag can't be assigned a value
+		 */
+		@Deprecated
+		@Override
+		public OptionArgumentBuilder separator(final String separator)
+		{
+			throw new IllegalStateException("A seperator for an optional flag isn't supported as " +
+					"an optional flag can't be assigned a value");
+		}
+
+		/**
+		 * @deprecated an optional flag can only have an arity of zero
+		 */
+		@Deprecated
+		@Override
+		public ListArgumentBuilder<Boolean> arity(final int arity)
+		{
+			throw new IllegalStateException("An optional flag can't have any other arity than zero");
+		}
 	}
 }

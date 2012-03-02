@@ -2,13 +2,17 @@ package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
 
+import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.utils.Lines;
 
 
 public class ArgumentException extends Exception
 {
 	private final ArgumentExceptionCodes errorCode;
 	private Argument<?> errorneousArgument;
+	private ArgumentParser originParser;
+
 	protected ArgumentException(final ArgumentExceptionCodes errorCode)
 	{
 		this.errorCode = errorCode;
@@ -20,6 +24,11 @@ public class ArgumentException extends Exception
 		return this;
 	}
 
+	public void setOriginParser(final ArgumentParser theParserThatTriggeredMe)
+	{
+		originParser = theParserThatTriggeredMe;
+	}
+
 
 	public static ArgumentException create(final ArgumentExceptionCodes errorCode)
 	{
@@ -29,7 +38,13 @@ public class ArgumentException extends Exception
 	@Override
 	public String getMessage()
 	{
-		return super.getMessage() + ": Error code: " + errorCode;
+		return "Error code: " + errorCode;
+	}
+
+	public String getMessageAndUsage()
+	{
+		String usage = originParser != null ? originParser.toString() : "";
+		return getMessage() + Lines.NEWLINE + usage;
 	}
 
 	public Argument<?> errorneousArgument()

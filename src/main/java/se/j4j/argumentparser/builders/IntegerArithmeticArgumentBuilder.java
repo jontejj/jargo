@@ -21,7 +21,7 @@ public class IntegerArithmeticArgumentBuilder extends ArgumentBuilder<IntegerAri
 	@Override
 	public Argument<Integer> build()
 	{
-		handler(new IntegerArithmeticArgument().operation(operation));
+		handler(new IntegerArithmeticArgument(operation));
 		return super.build();
 	}
 }

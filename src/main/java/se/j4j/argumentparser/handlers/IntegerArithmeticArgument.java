@@ -8,12 +8,12 @@ import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 {
-	private char operation = '+';
+	//TODO: implement calculator support for MyProgram 2+(5*4)
+	private final char operation;
 
-	public IntegerArithmeticArgument operation(final char operation)
+	public IntegerArithmeticArgument(final char operation)
 	{
 		this.operation = operation;
-		return this;
 	}
 
 	public Integer parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition) throws ArgumentException
