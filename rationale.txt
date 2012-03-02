@@ -52,6 +52,8 @@ TODO: Compare to http://commons.apache.org/cli/introduction.html
 
 6) Who likes annotations anyway? It's harder to debug, analyze and understand.
 
+7) Reflection often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted.
+
 7) Because it's fun
 
 TODO: fix dep to TrieTree

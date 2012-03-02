@@ -3,13 +3,13 @@ package se.j4j.argumentparser.handlers.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import se.j4j.argumentparser.ArgumentHandler;
 import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.handlers.IntegerArgument;
+import se.j4j.argumentparser.validators.ValueValidator;
 
 /**
  * Produced by {@link Argument#repeated()} and used by {@link ArgumentParser#parse(String)}
@@ -18,27 +18,27 @@ import se.j4j.argumentparser.handlers.IntegerArgument;
  *
  * @param <T> type of the repeated values (such as {@link Integer} for {@link IntegerArgument}
  */
-public class RepeatedArgument<T> implements ArgumentHandler<List<T>>
+public class RepeatedArgument<T> implements ArgumentHandler<List<T>>, RepeatableArgument<List<T>>
 {
 	final ArgumentHandler<T> argumentHandler;
+	final ValueValidator<T> validator;
 
-	public RepeatedArgument(final ArgumentHandler<T> argumentHandler)
+	public RepeatedArgument(final ArgumentHandler<T> argumentHandler, final ValueValidator<T> validator)
 	{
 		this.argumentHandler = argumentHandler;
+		this.validator = validator;
 	}
 
-	public List<T> parseRepeated(final ListIterator<String> currentArgument, final Map<ArgumentHandler<?>, Object> parsedArguments, final Argument<?> argumentDefinition) throws ArgumentException
+	public List<T> parseRepeated(final ListIterator<String> currentArgument, List<T> list, final Argument<?> argumentDefinition) throws ArgumentException
 	{
-		//TODO: before parse(...) provide a pre/post validator interface to validate values
 		T parsedValue = argumentHandler.parse(currentArgument, argumentDefinition);
-		@SuppressWarnings("unchecked") //Safety provided by ArgumentParser
-		List<T> listToPutRepeatedValuesIn = (List<T>) parsedArguments.get(this);
-		if(listToPutRepeatedValuesIn == null)
+		if(validator != null)
 		{
-			listToPutRepeatedValuesIn = new ArrayList<T>();
+			validator.validate(parsedValue);
 		}
-		listToPutRepeatedValuesIn.add(parsedValue);
-		return listToPutRepeatedValuesIn;
+		list = (list != null) ? list : new ArrayList<T>();
+		list.add(parsedValue);
+		return list;
 	}
 
 	/**

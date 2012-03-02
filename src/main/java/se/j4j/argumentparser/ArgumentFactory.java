@@ -3,14 +3,15 @@ package se.j4j.argumentparser;
 import java.io.File;
 
 import se.j4j.argumentparser.builders.ArgumentBuilder;
+import se.j4j.argumentparser.builders.ArgumentBuilder.OptionArgumentBuilder;
 import se.j4j.argumentparser.builders.DefaultArgumentBuilder;
 import se.j4j.argumentparser.builders.IntegerArithmeticArgumentBuilder;
-import se.j4j.argumentparser.builders.internal.OptionArgumentBuilder;
 import se.j4j.argumentparser.handlers.BooleanArgument;
 import se.j4j.argumentparser.handlers.ByteArgument;
 import se.j4j.argumentparser.handlers.CharArgument;
 import se.j4j.argumentparser.handlers.CommandArgument;
 import se.j4j.argumentparser.handlers.DoubleArgument;
+import se.j4j.argumentparser.handlers.EnumArgument;
 import se.j4j.argumentparser.handlers.FileArgument;
 import se.j4j.argumentparser.handlers.FloatArgument;
 import se.j4j.argumentparser.handlers.IntegerArgument;
@@ -70,9 +71,14 @@ public final class ArgumentFactory
 		return new DefaultArgumentBuilder<File>(new FileArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Boolean> optionArgument(final String ... names)
+	public static OptionArgumentBuilder optionArgument(final String ... names)
 	{
 		return new OptionArgumentBuilder().names(names);
+	}
+
+	public static <T extends Enum<T>> ArgumentBuilder<?, T> enumArgument(final Class<T> enumToHandle)
+	{
+		return new DefaultArgumentBuilder<T>(new EnumArgument<T>(enumToHandle));
 	}
 
 	public static IntegerArithmeticArgumentBuilder integerArithmeticArgument(final String ... names)
