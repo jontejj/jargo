@@ -9,4 +9,9 @@ public class FileArgument extends OneParameterArgument<File>
 	{
 		return new File(value);
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return "a file path";
+	}
 }

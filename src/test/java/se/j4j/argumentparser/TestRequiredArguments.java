@@ -14,10 +14,12 @@ import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class TestRequiredArguments
 {
 
+	@SuppressWarnings("deprecation") //This is what's tested
 	@Test(expected = IllegalStateException.class)
 	public void testMakingAnOptionalArgumentRequired()
 	{
@@ -25,12 +27,14 @@ public class TestRequiredArguments
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
 	public void testSettingADefaultValueForARequiredArgument()
 	{
 		integerArgument("-l").required().defaultValue(42);
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
 	public void testMakingARequiredArgumentWithDefaultValue()
 	{
 		integerArgument("-l").defaultValue(42).required();

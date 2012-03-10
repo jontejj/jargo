@@ -54,6 +54,6 @@ TODO: Compare to http://commons.apache.org/cli/introduction.html
 
 7) Reflection often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted.
 
-7) Because it's fun
+8) You can have final fields
 
-TODO: fix dep to TrieTree
+9) Because it's fun

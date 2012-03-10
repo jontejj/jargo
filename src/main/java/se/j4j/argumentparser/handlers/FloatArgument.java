@@ -17,4 +17,9 @@ public class FloatArgument extends OneParameterArgument<Float>
 			throw InvalidArgument.create(value, " is not a valid float value");
 		}
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return -Float.MAX_VALUE + " - " + Float.MAX_VALUE;
+	}
 }

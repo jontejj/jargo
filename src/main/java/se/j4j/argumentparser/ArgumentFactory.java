@@ -2,6 +2,8 @@ package se.j4j.argumentparser;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 import se.j4j.argumentparser.builders.ArgumentBuilder;
 import se.j4j.argumentparser.builders.ArgumentBuilder.OptionArgumentBuilder;
 import se.j4j.argumentparser.builders.DefaultArgumentBuilder;
@@ -17,6 +19,8 @@ import se.j4j.argumentparser.handlers.FloatArgument;
 import se.j4j.argumentparser.handlers.IntegerArgument;
 import se.j4j.argumentparser.handlers.ShortArgument;
 import se.j4j.argumentparser.handlers.StringArgument;
+import se.j4j.argumentparser.handlers.internal.StringConverterWrapper;
+import se.j4j.argumentparser.interfaces.StringConverter;
 
 public final class ArgumentFactory
 {
@@ -26,68 +30,86 @@ public final class ArgumentFactory
 	//TODO: rename to make it more clear and document behavior
 	//TODO: verify parsing of invalid values for each argument type (and their string output)
 
-	public static ArgumentBuilder<?, Boolean> booleanArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Boolean> booleanArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Boolean>(new BooleanArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Integer> integerArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Integer> integerArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Integer>(new IntegerArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Short> shortArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Short> shortArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Short>(new ShortArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Byte> byteArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Byte> byteArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Byte>(new ByteArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Character> charArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Character> charArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Character>(new CharArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Double> doubleArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Double> doubleArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Double>(new DoubleArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, Float> floatArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, Float> floatArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<Float>(new FloatArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, String> stringArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, String> stringArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<String>(new StringArgument()).names(names);
 	}
 
-	public static ArgumentBuilder<?, File> fileArgument(final String ... names)
+	@Nonnull
+	public static ArgumentBuilder<?, File> fileArgument(final @Nonnull String ... names)
 	{
 		return new DefaultArgumentBuilder<File>(new FileArgument()).names(names);
 	}
 
-	public static OptionArgumentBuilder optionArgument(final String ... names)
+	@Nonnull
+	public static OptionArgumentBuilder optionArgument(final @Nonnull String ... names)
 	{
-		return new OptionArgumentBuilder().names(names);
+		return new OptionArgumentBuilder().names(names).defaultValue(false);
 	}
 
-	public static <T extends Enum<T>> ArgumentBuilder<?, T> enumArgument(final Class<T> enumToHandle)
+	@Nonnull
+	public static <T extends Enum<T>> ArgumentBuilder<?, T> enumArgument(final @Nonnull Class<T> enumToHandle)
 	{
 		return new DefaultArgumentBuilder<T>(new EnumArgument<T>(enumToHandle));
 	}
 
-	public static IntegerArithmeticArgumentBuilder integerArithmeticArgument(final String ... names)
+	@Nonnull
+	public static IntegerArithmeticArgumentBuilder integerArithmeticArgument(final @Nonnull String ... names)
 	{
-		return new IntegerArithmeticArgumentBuilder(names);
+		return new IntegerArithmeticArgumentBuilder().names(names);
 	}
 
-	public static ArgumentBuilder<?, String> commandArgument(final CommandArgument commandParser)
+	@Nonnull
+	public static ArgumentBuilder<?, String> commandArgument(final @Nonnull CommandArgument commandParser)
 	{
-		return new DefaultArgumentBuilder<String>(commandParser);
+		return new DefaultArgumentBuilder<String>(commandParser).names(commandParser.commandName());
+	}
+
+	public static <T> ArgumentBuilder<?, T> customArgument(final @Nonnull StringConverter<T> converter)
+	{
+		return new DefaultArgumentBuilder<>(new StringConverterWrapper<>(converter));
 	}
 }

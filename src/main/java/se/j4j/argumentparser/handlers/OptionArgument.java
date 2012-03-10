@@ -2,8 +2,9 @@ package se.j4j.argumentparser.handlers;
 
 import java.util.ListIterator;
 
-import se.j4j.argumentparser.ArgumentHandler;
 import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
 
 public class OptionArgument implements ArgumentHandler<Boolean>
 {
@@ -13,8 +14,14 @@ public class OptionArgument implements ArgumentHandler<Boolean>
 		this.defaultValue = defaultValue;
 	}
 
-	public Boolean parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition)
+	public Boolean parse(final ListIterator<String> currentArgument, final Boolean oldValue, final Argument<?> argumentDefinition) throws ArgumentException
 	{
 		return !defaultValue;
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return "not needed";
+	}
+
 }

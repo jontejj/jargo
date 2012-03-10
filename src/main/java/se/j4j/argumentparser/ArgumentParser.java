@@ -10,16 +10,20 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import jjonsson.weather_notifier.TrieTree;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.handlers.internal.RepeatableArgument;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
+import se.j4j.argumentparser.internal.TrieTree;
 import se.j4j.argumentparser.internal.Usage;
+import se.j4j.argumentparser.utils.Lists;
 
 @Immutable
 public final class ArgumentParser
@@ -57,12 +61,14 @@ public final class ArgumentParser
 	 * @return an ArgumentParser which you can call {@link ArgumentParser#parse(String...)} on and get {@link ParsedArguments} out of.
 	 * @throws IllegalArgumentException if two or more of the given arguments uses the same name (either short or long name)
 	 */
-	public static ArgumentParser forArguments(final Argument<?> ...argumentDefinitions)
+	@CheckReturnValue
+	@Nonnull
+	public static ArgumentParser forArguments(final @Nonnull Argument<?> ...argumentDefinitions)
 	{
 		return new ArgumentParser(argumentDefinitions);
 	}
 
-	private ArgumentParser(final Argument<?> ...argumentDefinitions)
+	private ArgumentParser(final @Nonnull Argument<?> ...argumentDefinitions)
 	{
 		namedArguments = new HashMap<String, Argument<?>>(argumentDefinitions.length);
 		indexedArgumentDefinitions = new ArrayList<Argument<?>>(argumentDefinitions.length);
@@ -71,6 +77,7 @@ public final class ArgumentParser
 		ignoreCaseSpecialSeparatorArguments = TrieTree.newTree();
 		requiredArguments = new HashSet<Argument<?>>(argumentDefinitions.length);
 		propertyMapArguments = TrieTree.newTree();
+		ignoreCasePropertyMapArguments = TrieTree.newTree();
 		allArguments = new HashSet<Argument<?>>(argumentDefinitions.length);
 		for(Argument<?> arg : argumentDefinitions)
 		{
@@ -81,40 +88,42 @@ public final class ArgumentParser
 	/**
 	 * A list where arguments created without names is put
 	 */
-	private final List<Argument<?>> indexedArgumentDefinitions;
+	private final @Nonnull List<Argument<?>> indexedArgumentDefinitions;
 
 	/**
 	 * A map containing both short-named and long-named arguments
 	 */
-	private final Map<String, Argument<?>> namedArguments;
+	private final @Nonnull Map<String, Argument<?>> namedArguments;
 
 	/**
 	 * A map with arguments that has special {@link Argument#separator()}s
 	 */
-	private final TrieTree<Argument<?>> specialSeparatorArguments;
+	private final @Nonnull TrieTree<Argument<?>> specialSeparatorArguments;
 
 	/**
 	 * Map for arguments that's {@link Argument#isIgnoringCase()}. Stores it's keys with lower case.
 	 */
-	private final Map<String, Argument<?>> ignoreCaseArguments;
+	private final @Nonnull Map<String, Argument<?>> ignoreCaseArguments;
 
 	/**
 	 * A map with arguments that has special {@link Argument#separator()}s and {@link Argument#isIgnoringCase()}
 	 */
-	private final TrieTree<Argument<?>> ignoreCaseSpecialSeparatorArguments;
+	private final @Nonnull TrieTree<Argument<?>> ignoreCaseSpecialSeparatorArguments;
 
-	private final TrieTree<Argument<?>> propertyMapArguments;
+	private final @Nonnull TrieTree<Argument<?>> propertyMapArguments;
+
+	private final @Nonnull TrieTree<Argument<?>> ignoreCasePropertyMapArguments;
 
 	/**
 	 * If arguments are required, set by calling {@link Argument#required()}, and they aren't given on the command line,
 	 * {@link MissingRequiredArgumentException} is thrown when {@link #parse(String...)} is called.
 	 * TODO: should parse handle this printout itself instead of throwing?
 	 */
-	private final Set<Argument<?>> requiredArguments;
+	private final @Nonnull Set<Argument<?>> requiredArguments;
 
-	private final Set<Argument<?>> allArguments;
+	private final @Nonnull Set<Argument<?>> allArguments;
 
-	private void addArgument(final Argument<?> argument)
+	private void addArgument(final @Nonnull Argument<?> argument)
 	{
 		if(argument.isNamed())
 		{
@@ -134,14 +143,17 @@ public final class ArgumentParser
 		allArguments.add(argument);
 	}
 
-	private void putArgument(final String key, final Argument<?> argument)
+	private void putArgument(final @Nonnull String key, final @Nonnull Argument<?> argument)
 	{
 		Argument<?> oldHandler = null;
 		String separator = argument.separator();
 		if(argument.isPropertyMap())
 		{
-			//TODO: support for other separators and ignore case
 			oldHandler = propertyMapArguments.set(key, argument);
+			if(argument.isIgnoringCase())
+			{
+				ignoreCasePropertyMapArguments.set(key.toLowerCase(), argument);
+			}
 		}
 		else if(separator != null)
 		{
@@ -167,27 +179,20 @@ public final class ArgumentParser
 		}
 	}
 
-	public ParsedArguments parse(final String... actualArguments) throws ArgumentException
+	public ParsedArguments parse(final @Nonnull String... actualArguments) throws ArgumentException
 	{
 		ListIterator<String> arguments = Arrays.asList(actualArguments).listIterator();
 		return parse(arguments);
 	}
 
-	public ParsedArguments parse(final List<String> actualArguments) throws ArgumentException
+	public ParsedArguments parse(final @Nonnull List<String> actualArguments) throws ArgumentException
 	{
 		return parse(actualArguments.listIterator());
 	}
 
-	public ParsedArguments parse(ListIterator<String> actualArguments) throws ArgumentException
+	public ParsedArguments parse(@Nonnull ListIterator<String> actualArguments) throws ArgumentException
 	{
-		//TODO: how should this copy be made? It's made because specialSeparatorArguments modifies the list
-		//Maybe use CopyOnWriteArrayList? That may be expensive when many property maps are used
-		List<String> listCopy = new ArrayList<String>();
-		while(actualArguments.hasNext())
-		{
-			listCopy.add(actualArguments.next());
-		}
-		actualArguments = listCopy.listIterator();
+		actualArguments = Lists.copy(actualArguments); //specialSeparatorArguments, MapArgument etc may modify the list
 
 		Map<ArgumentHandler<?>, Object> parsedArguments = new IdentityHashMap<ArgumentHandler<?>, Object>();
 		Set<Argument<?>> requiredArgumentsLeft = new HashSet<Argument<?>>(requiredArguments);
@@ -204,22 +209,22 @@ public final class ArgumentParser
 					{
 						indexedPosition++;
 					}
-					ArgumentHandler<?> actualHandler = argumentDefinition.handler();
-					if(actualHandler instanceof RepeatableArgument)
+					ArgumentHandler<Object> handler = (ArgumentHandler<Object>) argumentDefinition.handler();
+					Object oldValue = parsedArguments.get(handler);
+					try
 					{
-						RepeatableArgument<Object> handler = (RepeatableArgument<Object>) actualHandler;
-						Object oldValue = parsedArguments.get(actualHandler);
-						parsedArguments.put(actualHandler, handler.parseRepeated(actualArguments, oldValue, argumentDefinition));
-					}
-					else
-					{
-						Object parsedValue = actualHandler.parse(actualArguments, argumentDefinition);
+						Object parsedValue = handler.parse(actualArguments, oldValue, argumentDefinition);
 						argumentDefinition.validate(parsedValue);
-						Object oldValue = parsedArguments.put(actualHandler, parsedValue);
-						if(oldValue != null)
+						parsedArguments.put(handler, parsedValue);
+						if(oldValue != null && !argumentDefinition.isAllowedToRepeat() && !argumentDefinition.isPropertyMap())
 						{
 							throw UnhandledRepeatedArgument.create(argumentDefinition);
 						}
+					}
+					catch(ArgumentException e)
+					{
+						//Rethrow with more information
+						throw e.errorneousArgument(argumentDefinition);
 					}
 					if(argumentDefinition.isRequired())
 					{
@@ -240,7 +245,7 @@ public final class ArgumentParser
 		return new ParsedArguments(parsedArguments);
 	}
 
-	private Argument<?> getHandlerForArgument(final ListIterator<String> actualArguments, final int indexedPosition) throws ArgumentException
+	private Argument<?> getHandlerForArgument(final @Nonnull ListIterator<String> actualArguments, final int indexedPosition) throws ArgumentException
 	{
 		String currentArgument = actualArguments.next();
 		Argument<?> argumentHandler = namedArguments.get(currentArgument);
@@ -249,19 +254,24 @@ public final class ArgumentParser
 		{
 			return argumentHandler;
 		}
+		String lowerCase = currentArgument.toLowerCase();
 
-		argumentHandler = ignoreCaseArguments.get(currentArgument.toLowerCase());
+		argumentHandler = ignoreCaseArguments.get(lowerCase);
 		if(argumentHandler != null)
 		{
 			return argumentHandler;
 		}
 		argumentHandler = propertyMapArguments.getLastMatch(currentArgument);
+		if(argumentHandler == null)
+		{
+			argumentHandler = ignoreCasePropertyMapArguments.getLastMatch(lowerCase);
+		}
 		if(argumentHandler != null)
 		{
 			actualArguments.previous();
 			return argumentHandler;
 		}
-		argumentHandler = ignoreCaseSpecialSeparatorArguments.getLastMatch(currentArgument.toLowerCase());
+		argumentHandler = ignoreCaseSpecialSeparatorArguments.getLastMatch(lowerCase);
 		if(argumentHandler == null)
 		{
 			argumentHandler = specialSeparatorArguments.getLastMatch(currentArgument);
@@ -300,11 +310,13 @@ public final class ArgumentParser
 	}
 
 	/**
-	 * Print usage on System.out
+	 * Returns a Usage instance describing this ArgumentParser
 	 */
-	public void usage(final String programName)
+	@CheckReturnValue
+	@Nonnull
+	public Usage usage(final @Nonnull String programName)
 	{
-		System.out.println(Usage.forArguments(programName, allArguments));
+		return Usage.forArguments(programName, allArguments);
 	}
 
 	/**
@@ -314,9 +326,9 @@ public final class ArgumentParser
 	@Immutable
 	public static final class ParsedArguments
 	{
-		private final Map<ArgumentHandler<?>, ?> parsedArguments;
+		private final @Nonnull Map<ArgumentHandler<?>, ?> parsedArguments;
 
-		private ParsedArguments(final Map<ArgumentHandler<?>, ?> parsedArguments)
+		private ParsedArguments(final @Nonnull Map<ArgumentHandler<?>, ?> parsedArguments)
 		{
 			this.parsedArguments = parsedArguments;
 		}
@@ -325,7 +337,8 @@ public final class ArgumentParser
 		 * @param argumentToFetch
 		 * @return the parsed value for the given <code>argumentToFetch</code>, if no value was given on the command line and the argument isn't {@link Argument#required()} the {@link Argument#defaultValue()} is returned.
 		 */
-		public <T> T get(final Argument<T> argumentToFetch)
+		@Nullable
+		public <T> T get(final @Nonnull Argument<T> argumentToFetch)
 		{
 			@SuppressWarnings("unchecked") //Safe because ArgumentHolder#parse(...) guarantees that the map is heterogeneous
 			T value = (T) parsedArguments.get(argumentToFetch.handler());
@@ -342,5 +355,4 @@ public final class ArgumentParser
 			return parsedArguments.toString();
 		}
 	}
-
 }

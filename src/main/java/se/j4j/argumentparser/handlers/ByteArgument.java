@@ -17,4 +17,9 @@ public class ByteArgument extends RadixiableArgument<Byte>
 			throw InvalidArgument.create(value, " is not a valid byte of radix " + radix());
 		}
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return Byte.MIN_VALUE + " - " + Byte.MAX_VALUE; //TODO: handle radix()
+	}
 }

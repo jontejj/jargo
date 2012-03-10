@@ -2,11 +2,14 @@ package se.j4j.argumentparser.utils;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class StringComparison
 {
 	private StringComparison(){}
 
-	public static int levenshteinDistance(final String one, final String two)
+	public static int levenshteinDistance(final @Nonnull String one, final @Nonnull String two)
 	{
 		int m = one.codePointCount(0, one.length());
 		int n = two.codePointCount(0, two.length());
@@ -43,7 +46,8 @@ public final class StringComparison
 		return distances[m-1][n-1];
 	}
 
-	public static String closestMatch(final String input, final Collection<String> validOptions)
+	@Nullable
+	public static String closestMatch(final @Nonnull String input, final @Nonnull Collection<String> validOptions)
 	{
 		int minDistance = Integer.MAX_VALUE;
 		String bestGuess = null;

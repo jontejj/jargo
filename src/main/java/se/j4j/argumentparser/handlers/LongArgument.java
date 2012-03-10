@@ -18,4 +18,9 @@ public class LongArgument extends RadixiableArgument<Long>
 		}
 	}
 
+	public String descriptionOfValidValues()
+	{
+		return Long.MIN_VALUE + " - " + Long.MAX_VALUE;
+	}
+
 }

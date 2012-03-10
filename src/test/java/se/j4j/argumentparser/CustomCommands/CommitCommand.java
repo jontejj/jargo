@@ -21,12 +21,10 @@ public class CommitCommand extends CommandArgument
 	private static Argument<String> author = stringArgument("--author").required().separator("=").build();
 	private static Argument<List<File>> files = fileArgument().consumeAll().build();
 
-	static final ArgumentParser PARSER_INSTANCE = ArgumentParser.forArguments(amend, author, files);
-
 	@Override
-	public ArgumentParser getParserInstance()
+	public ArgumentParser createParserInstance()
 	{
-		return PARSER_INSTANCE;
+		return ArgumentParser.forArguments(amend, author, files);
 	}
 
 	@Override
@@ -39,5 +37,11 @@ public class CommitCommand extends CommandArgument
 		//TODO: extract these values and make it possible to test Immutable'ness
 
 		assertEquals(Arrays.asList(new File("A.java"), new File("B.java")), parsedArguments.get(files));
+	}
+
+	@Override
+	public String commandName()
+	{
+		return "commit";
 	}
 }

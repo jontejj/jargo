@@ -18,9 +18,9 @@ public class ArgumentException extends Exception
 		this.errorCode = errorCode;
 	}
 
-	public ArgumentException errorneousArgument(final Argument<?> errorneousArgument)
+	public ArgumentException errorneousArgument(final Argument<?> anErrorneousArgument)
 	{
-		this.errorneousArgument = errorneousArgument;
+		errorneousArgument = anErrorneousArgument;
 		return this;
 	}
 

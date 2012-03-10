@@ -2,6 +2,8 @@ package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
 
+import javax.annotation.CheckReturnValue;
+
 import se.j4j.argumentparser.builders.Argument;
 
 public class UnhandledRepeatedArgument extends ArgumentException
@@ -14,6 +16,7 @@ public class UnhandledRepeatedArgument extends ArgumentException
 		this.unhandledArgument = unhandledArgument;
 	}
 
+	@CheckReturnValue
 	public static UnhandledRepeatedArgument create(final Argument<?> unhandledArgument)
 	{
 		return new UnhandledRepeatedArgument(unhandledArgument);

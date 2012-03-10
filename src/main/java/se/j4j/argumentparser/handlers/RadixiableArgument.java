@@ -6,12 +6,12 @@ public abstract class RadixiableArgument<T extends Number> extends OneParameterA
 
 	/**
 	 * TODO: make this available easily
-	 * @param radix
+	 * @param theRadix
 	 * @return
 	 */
-	public RadixiableArgument<T> radix(final int radix)
+	public RadixiableArgument<T> radix(final int theRadix)
 	{
-		this.radix = radix;
+		radix = theRadix;
 		return this;
 	}
 

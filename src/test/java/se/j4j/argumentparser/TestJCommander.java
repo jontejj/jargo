@@ -13,9 +13,6 @@ public class TestJCommander
 	{
 		@Parameter(names = "-test", description = "Test something", required = true)
 		private int test;
-
-		@Parameter(names = "-number", required = true)
-		private int number;
 	}
 
 	@Test
@@ -23,7 +20,7 @@ public class TestJCommander
 	{
 		TestRequiredParameter test = new TestRequiredParameter();
 		JCommander commander = new JCommander(test);
-		commander.parse("-test", "1", "-number", "2");
+		commander.parse("-test", "1");
 		commander.usage();
 		assertThat(test.test).isEqualTo(1);
 	}

@@ -1,8 +1,8 @@
 package se.j4j.argumentparser;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArithmeticArgument;
@@ -19,6 +19,7 @@ import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class TestArgumentParser
 {
@@ -41,9 +42,9 @@ public class TestArgumentParser
 
 		ParsedArguments arguments = ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
 
-		assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
-		assertEqual(port + " was not found in parsed arguments", 8090, arguments.get(port));
-		assertEquals(greetingPhrase + " was not found in parsed arguments", "Hello", arguments.get(greetingPhrase));
+		assertThat(arguments.get(enableLogging)).isTrue();
+		assertThat(arguments.get(port)).isEqualTo(8090);
+		assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
 	}
 
 	/**
@@ -67,9 +68,9 @@ public class TestArgumentParser
 
 		ParsedArguments arguments = ArgumentParser.forArguments(enableLogging, port, greetingPhrase).parse(args);
 
-		assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
-		assertEqual(port + " was not found in parsed arguments", 8090, arguments.get(port));
-		assertEquals(greetingPhrase + " was not found in parsed arguments", "Hello", arguments.get(greetingPhrase));
+		assertThat(arguments.get(enableLogging)).isTrue();
+		assertThat(arguments.get(port)).isEqualTo(8090);
+		assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
 	}
 
 	@Test
@@ -82,7 +83,7 @@ public class TestArgumentParser
 
 		ParsedArguments arguments = ArgumentParser.forArguments(loggingEnabled).parse(args);
 
-		assertTrue(loggingEnabled + " did not default to true", arguments.get(loggingEnabled));
+		assertThat(arguments.get(loggingEnabled)).as("defaults to true").isTrue();
 	}
 	@Test(expected = UnexpectedArgumentException.class)
 	public void testUnhandledParameter() throws ArgumentException
@@ -97,7 +98,10 @@ public class TestArgumentParser
 		String[] args = {"--sum-elements", "5", "6", "-3"};
 
 		Argument<Integer> sum = integerArithmeticArgument("--sum-elements").defaultValue(2).operation('+').build();
-		assertEqual("Elements should have been summed together", 8, ArgumentParser.forArguments(sum).parse(args).get(sum));
+
+		int total = ArgumentParser.forArguments(sum).parse(args).get(sum);
+
+		assertThat(total).as("Elements summed together").isEqualTo(8);
 	}
 
 	@Test
@@ -106,8 +110,9 @@ public class TestArgumentParser
 		String[] args = {"--numbers", "5", "6"};
 
 		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().build();
+		List<Integer> actual = ArgumentParser.forArguments(numbers).parse(args).get(numbers);
 
-		assertEqual("", Arrays.asList(5, 6), ArgumentParser.forArguments(numbers).parse(args).get(numbers));
+		assertThat(actual).isEqualTo(Arrays.asList(5, 6));
 	}
 
 	@Test
@@ -132,13 +137,12 @@ public class TestArgumentParser
 	@Test
 	public void testDefaultValuesForMultipleParametersForNamedArgument() throws ArgumentException
 	{
-		String[] args = {};
-
 		List<Integer> defaults = Arrays.asList(5, 6);
 
 		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().defaultValue(defaults).build();
+		List<Integer> actual = ArgumentParser.forArguments(numbers).parse().get(numbers);
 
-		assertEqual("", defaults, ArgumentParser.forArguments(numbers).parse(args).get(numbers));
+		assertThat(actual).isEqualTo(defaults);
 	}
 
 	@Test
@@ -151,37 +155,19 @@ public class TestArgumentParser
 
 		ParsedArguments parsed = ArgumentParser.forArguments(numbers, restHandler).parse(args);
 
-		assertEqual("", Arrays.asList(5, 6), parsed.get(numbers));
-		assertEqual("", Arrays.asList("Rest", "Of", "Arguments"), parsed.get(restHandler));
+		assertThat(parsed.get(numbers)).isEqualTo(Arrays.asList(5, 6));
+		assertThat(parsed.get(restHandler)).isEqualTo(Arrays.asList("Rest", "Of", "Arguments"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	@SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
 	public void testErrorHandlingForTwoParametersWithTheSameName()
 	{
 		Argument<Integer> number = integerArgument("--number").build();
-		Argument<Integer> numberTwo = integerArgument("--number").build();
-
-		ArgumentParser.forArguments(number, numberTwo);
-	}
-
-	@Test
-	public void testIgnoringCase() throws ArgumentException
-	{
-		Argument<Boolean> help = optionArgument("-h", "--help", "-help", "?").ignoreCase().build();
-
-		ArgumentParser parser = ArgumentParser.forArguments(help);
-
-		assertTrue("unhandled capital letter for ignore case argument", parser.parse("-H").get(help));
-		assertTrue(parser.parse("-HELP").get(help));
-		assertTrue(parser.parse("--help").get(help));
+		ArgumentParser.forArguments(number, number);
 	}
 
 	/**
 	 * TODO: add support for @/path/to/arguments
-	 * TODO:
 	 */
-	private static <T> void assertEqual(final String message, final T expected, final T actual)
-	{
-		assertEquals(message, expected, actual);
-	}
 }

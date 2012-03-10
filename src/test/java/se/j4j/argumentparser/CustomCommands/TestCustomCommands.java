@@ -16,15 +16,15 @@ import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
 
 public class TestCustomCommands
 {
+	static final Argument<String> COMMIT = commandArgument(new CommitCommand()).build();
+	static final Argument<String> INIT = commandArgument(new InitCommand()).build();
 
 	@Test(expected = MissingRequiredArgumentException.class)
 	public void testInterfaceBasedCommandExecutingMissingRequiredArgument() throws ArgumentException
 	{
 		String[] args = {"commit", "--amend", "A.java", "B.java"}; //No author
 
-		Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
-
-		ArgumentParser.forArguments(commitCommand).parse(args);
+		ArgumentParser.forArguments(COMMIT).parse(args);
 	}
 
 	@Test(expected = UnexpectedArgumentException.class)
@@ -32,10 +32,7 @@ public class TestCustomCommands
 	{
 		String[] args = {"-v", "init", "commit", "--amend", "A.java", "B.java"};
 
-		Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
-		Argument<String> initCommand = commandArgument(new InitCommand()).names("init").build();
-
-		ArgumentParser.forArguments(commitCommand, initCommand).parse(args);
+		ArgumentParser.forArguments(COMMIT, INIT).parse(args);
 	}
 
 	@Test
@@ -44,18 +41,15 @@ public class TestCustomCommands
 		String[] initArgs = {"init"};
 		String[] commitArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
 
-		Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
-		Argument<String> initCommand = commandArgument(new InitCommand()).names("init").build();
-
-		ArgumentParser parser = ArgumentParser.forArguments(commitCommand, initCommand);
+		ArgumentParser parser = ArgumentParser.forArguments(COMMIT, INIT);
 
 		ParsedArguments parsed = parser.parse(initArgs);
-		assertNotNull(parsed.get(initCommand));
-		assertNull(parsed.get(commitCommand));
+		assertNotNull(parsed.get(INIT));
+		assertNull(parsed.get(COMMIT));
 
 		parsed = parser.parse(commitArgs);
-		assertNotNull(parsed.get(commitCommand));
-		assertNull(parsed.get(initCommand));
+		assertNotNull(parsed.get(COMMIT));
+		assertNull(parsed.get(INIT));
 	}
 
 	@Test
@@ -65,10 +59,9 @@ public class TestCustomCommands
 
 		for(int i = 0; i < 2; i++)
 		{
-			Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
 			try
 			{
-				ArgumentParser.forArguments(commitCommand).parse(args);
+				ArgumentParser.forArguments(COMMIT).parse(args);
 				fail("--author=??? wasn't given in the input and it should have been required");
 			}
 			catch (MissingRequiredArgumentException expected)
@@ -84,8 +77,7 @@ public class TestCustomCommands
 
 		for(int i = 0; i < 2; i++)
 		{
-			Argument<String> commitCommand = commandArgument(new CommitCommand()).names("commit").build();
-			ArgumentParser.forArguments(commitCommand).parse(args);
+			ArgumentParser.forArguments(COMMIT).parse(args);
 		}
 	}
 }

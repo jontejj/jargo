@@ -7,15 +7,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.utils.Lines;
 import se.j4j.argumentparser.utils.Strings;
 
 public class Usage
 {
-	public static String forArguments(final String programName, final Collection<Argument<?>> arguments)
+	@CheckReturnValue
+	@Nonnull
+	public static Usage forArguments(final @Nonnull String programName, final @Nonnull Collection<Argument<?>> arguments)
 	{
-		Usage usage = new Usage(programName, arguments);
+		Usage usage = new Usage(arguments);
 		usage.mainUsage(programName);
 		List<Argument<?>> sortedArgumentsByName = new ArrayList<Argument<?>>(arguments);
 		Collections.sort(sortedArgumentsByName, new ArgumentByName());
@@ -23,13 +28,32 @@ public class Usage
 		{
 			usage.usageForArgument(arg);
 		}
-		return usage.builder.toString();
+		return usage;
 	}
+
+	/**
+	 *	Print usage on System.out
+	 */
+	public void print()
+	{
+		System.out.println(builder.toString());
+	}
+
+	public void appendTo(final @Nonnull StringBuilder sb)
+	{
+		sb.append(builder);
+	}
+
+	@Override
+	public String toString()
+	{
+		return builder.toString();
+	};
 
 	/**
 	 * The builder to append usage texts to
 	 */
-	StringBuilder builder;
+	@Nonnull StringBuilder builder;
 
 	/**
 	 * For:
@@ -43,7 +67,7 @@ public class Usage
 	/**
 	 * The arguments to describe
 	 */
-	private final Collection<Argument<?>> arguments;
+	private final @Nonnull Collection<Argument<?>> arguments;
 
 	private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 30;
 
@@ -53,14 +77,14 @@ public class Usage
 		return 2 * arguments.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
 	}
 
-	private Usage(final String programName, final Collection<Argument<?>> arguments)
+	private Usage(final @Nonnull Collection<Argument<?>> arguments)
 	{
 		this.arguments = arguments;
 		indexOfDescriptionColumn = determineLongestNameColumn() + 4;
 		builder = new StringBuilder(expectedUsageTextSize());
 	}
 
-	private void mainUsage(final String programName)
+	private void mainUsage(final @Nonnull String programName)
 	{
 		builder.append("Usage: " + programName + (!arguments.isEmpty() ? " [Options]" : ""));
 		builder.append(Lines.NEWLINE);
@@ -80,7 +104,7 @@ public class Usage
 		return longestNames;
 	}
 
-	private int lengthOfFirstColumn(final Argument<?> argument)
+	private int lengthOfFirstColumn(final @Nonnull Argument<?> argument)
 	{
 		int length = 0;
 		if(argument.isRequired())
@@ -95,9 +119,11 @@ public class Usage
 		return length;
 	}
 
-	public static String forSingleArgument(final Argument<?> arg)
+	@CheckReturnValue
+	@Nonnull
+	public static String forSingleArgument(final @Nonnull Argument<?> arg)
 	{
-		return new Usage("", Arrays.<Argument<?>>asList(arg)).usageForArgument(arg);
+		return new Usage(Arrays.<Argument<?>>asList(arg)).usageForArgument(arg);
 	}
 
 	/**
@@ -107,7 +133,8 @@ public class Usage
 	 * 		-test	Test something
 	 *         		Default: 0
 	 */
-	private String usageForArgument(final Argument<?> arg)
+	@Nonnull
+	private String usageForArgument(final @Nonnull Argument<?> arg)
 	{
 		if(arg.isRequired())
 		{
@@ -119,6 +146,8 @@ public class Usage
 		}
 		Strings.appendSpaces(indexOfDescriptionColumn - lengthOfFirstColumn(arg), builder);
 		//TODO: handle long descriptions
+		//TODO: handle arities
+		//TODO: handle property maps
 		builder.append(arg.description());
 		builder.append(Lines.NEWLINE);
 		Strings.appendSpaces(indexOfDescriptionColumn, builder);
