@@ -6,7 +6,6 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 
@@ -40,11 +39,11 @@ public class TestArgumentParserUsage
 
 		try
 		{
-			ParsedArguments arguments = ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
+			ArgumentParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
 		}
 		catch (ArgumentException e)
 		{
-			//TODO: this looks funny
+			//TODO: this looks funny, assert something
 			System.out.println(e.getMessageAndUsage());
 		}
 	}

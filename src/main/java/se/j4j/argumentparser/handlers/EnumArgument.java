@@ -1,11 +1,12 @@
 package se.j4j.argumentparser.handlers;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
-import se.j4j.argumentparser.ArgumentHandler;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
 
 public class EnumArgument<T extends Enum<T>> extends OneParameterArgument<T> implements ArgumentHandler<T>
 {
@@ -26,6 +27,10 @@ public class EnumArgument<T extends Enum<T>> extends OneParameterArgument<T> imp
 			List<T> validValues = Arrays.asList(enumType.getEnumConstants());
 			throw InvalidArgument.create(value, " is not a valid Option, Expecting one of " + validValues);
 		}
+	}
+	public String descriptionOfValidValues()
+	{
+		return EnumSet.allOf(enumType).toString();
 	}
 
 }

@@ -6,15 +6,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import se.j4j.argumentparser.ArgumentHandler;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.concurrent.NotThreadSafe;
+
 import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.handlers.OptionArgument;
+import se.j4j.argumentparser.handlers.internal.ArgumentSplitter;
 import se.j4j.argumentparser.handlers.internal.ListArgument;
 import se.j4j.argumentparser.handlers.internal.MapArgument;
 import se.j4j.argumentparser.handlers.internal.RepeatedArgument;
-import se.j4j.argumentparser.validators.ValueValidator;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
+import se.j4j.argumentparser.interfaces.StringSplitter;
+import se.j4j.argumentparser.interfaces.ValueValidator;
 
 /**
  *
@@ -24,19 +32,25 @@ import se.j4j.argumentparser.validators.ValueValidator;
  * 			<pre>Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
  * @param <T>
  */
+@NotThreadSafe
 public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T> ,T>
 {
-	List<String> names = Collections.emptyList();
-	T defaultValue = null;
-	String description = "";
+	@Nonnull List<String> names = Collections.emptyList();
+	@Nullable T defaultValue = null;
+	@Nonnull String description = "";
 	boolean required = false;
-	String separator = null;
+	@Nullable String separator = null;
 	boolean	ignoreCase = false;
-	ValueValidator<T> validator;
-	ArgumentHandler<T> handler;
-	boolean	isPropertyMap;
+	@Nullable ValueValidator<T> validator;
+	@Nullable ArgumentHandler<T> handler;
+	boolean	isPropertyMap = false;
+	boolean isAllowedToRepeat = false;
 
-	protected ArgumentBuilder(final ArgumentHandler<T> handler)
+	/**
+	 * @param handler if null, you'll need to override {@link #build()} and
+	 * 			call {@link #handler(ArgumentHandler)}, like {@link OptionArgumentBuilder} does.
+	 */
+	protected ArgumentBuilder(final @Nullable ArgumentHandler<T> handler)
 	{
 		this.handler = handler;
 	}
@@ -51,20 +65,27 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * Constructs an Immutable {@link Argument} which can be passed to {@link ArgumentParser#forArguments(Argument...)}
 	 * @return
 	 */
+	@CheckReturnValue
+	@Nonnull
+	@OverridingMethodsMustInvokeSuper
 	public Argument<T> build()
 	{
+		if(handler == null)
+		{
+			throw new IllegalStateException("No handler set for the builder: " + this);
+		}
 		//TODO: how to validate defaultValues
 		return new Argument<T>(this);
 	}
 
-	protected SELF_TYPE handler(final ArgumentHandler<T> handler)
+	protected SELF_TYPE handler(final @Nonnull ArgumentHandler<T> aHandler)
 	{
-		this.handler = handler;
+		handler = aHandler;
 		return self();
 	}
 
 	/**
-	 * @param names <ul>
+	 * @param argumentNames <ul>
 	 * 			<li>"-o" for a short named option/argument</li>
 	 * 			<li>"--option-name" for a long named option/argument</li>
 	 * 			<li>"-o", "--option-name" to give the user both choices</li>
@@ -76,15 +97,17 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *
 	 * @return this builder
 	 */
-	public SELF_TYPE names(final String... names)
+	@CheckReturnValue
+	public SELF_TYPE names(final @Nonnull String... argumentNames)
 	{
-		this.names = Arrays.asList(names);
+		names = Arrays.asList(argumentNames);
 		return self();
 	}
 
 	/**
 	 * If used {@link ArgumentParser#parse(String...)} ignores the case of the argument names set by {@link Argument#Argument(String...)}
 	 */
+	@CheckReturnValue
 	public SELF_TYPE ignoreCase()
 	{
 		ignoreCase = true;
@@ -93,12 +116,13 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * TODO: support resource bundles with i18n texts
-	 * @param description
+	 * @param aDescription
 	 * @return this builder
 	 */
-	public SELF_TYPE description(final String description)
+	@CheckReturnValue
+	public SELF_TYPE description(final @Nonnull String aDescription)
 	{
-		this.description = description;
+		description = aDescription;
 		return self();
 	}
 
@@ -106,10 +130,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * Makes {@link ArgumentParser#parse(String...) throw {@link MissingRequiredArgumentException} if this argument isn't given
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #defaultValue(Object)} has been called, because these two methods are mutually exclusive
-	 * TODO: should this exclusivity be achieved by returning a new object with a different interface?
 	 */
+	@CheckReturnValue
 	public SELF_TYPE required()
 	{
+		//TODO: how to provide default values for primitive types without triggering this
 		if(defaultValue != null)
 		{
 			throw new IllegalStateException("Having a requried argument defaulting to some value: " + defaultValue + ", makes no sense. Remove the call to ArgumentBuilder#defaultValue(...) to use a required argument.");
@@ -122,33 +147,34 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * Sets a default value to use for this argument. Returned by {@link ParsedArguments#get(Argument)} when no argument was given
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called, because these two methods are mutually exclusive
-	 * TODO: should this exclusivity be achieved by returning a new object with a different interface?
 	 */
-	public SELF_TYPE defaultValue(final T value)
+	@CheckReturnValue
+	public SELF_TYPE defaultValue(final @Nonnull T value)
 	{
 		if(required)
 		{
 			throw new IllegalStateException("Having a requried argument defaulting to some value: " + value + ", makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
 		}
-		this.defaultValue = value;
+		defaultValue = value;
 		return self();
 	}
 
-	public SELF_TYPE validator(final ValueValidator<T> validator)
+	@CheckReturnValue
+	public SELF_TYPE validator(final @Nonnull ValueValidator<T> aValidator)
 	{
-		this.validator = validator;
+		validator = aValidator;
 		return self();
 	}
 
 	/**
-	 * TODO: add support for splitter:
-	 * -ports 1,2,3 => [1,2,3]
-	 * @param separator
+	 * @param aSeparator the character that separates the argument name and argument value,
+	 * 			defaults to space
 	 * @return this builder
 	 */
-	public SELF_TYPE separator(final String separator)
+	@CheckReturnValue
+	public SELF_TYPE separator(final @Nonnull String aSeparator)
 	{
-		this.separator  = separator;
+		separator  = aSeparator;
 		return self();
 	}
 
@@ -158,34 +184,16 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * where value is decoded by the previously set {@link ArgumentHandler}
 	 * @return
 	 */
+	@CheckReturnValue
 	public MapArgumentBuilder<T> asPropertyMap()
 	{
 		return new MapArgumentBuilder<T>(this);
 	}
 
-	public static class MapArgumentBuilder<T> extends ArgumentBuilder<MapArgumentBuilder<T>, Map<String, T>>
+	@CheckReturnValue
+	public SplitterArgumentBuilder<T> splitWith(final @Nonnull StringSplitter splitter)
 	{
-		protected MapArgumentBuilder(final ArgumentBuilder<?,T> builder)
-		{
-			super(new MapArgument<T>(builder.handler, builder.validator));
-			copy(builder);
-			if(this.separator == null)
-			{
-				//Maybe use assignment instead?
-				this.separator = "=";
-			}
-			this.isPropertyMap = true;
-		}
-
-		/**
-		 * @deprecated because repeated should be called before {@link #asPropertyMap()}
-		 */
-		@Deprecated
-		@Override
-		public RepeatedArgumentBuilder<Map<String, T>> repeated()
-		{
-			throw new UnsupportedOperationException("You'll need to call repeated before asPropertyMap");
-		}
+		return new SplitterArgumentBuilder<T>(this, splitter);
 	}
 
 	/**
@@ -205,6 +213,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *
 	 * @return a newly created ListArgument that you need to save into a variable to access the list later on
 	 */
+	@CheckReturnValue
 	public ListArgumentBuilder<T> consumeAll()
 	{
 		return new ListArgumentBuilder<T>(this, ListArgument.CONSUME_ALL);
@@ -213,13 +222,18 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * Uses this argument to parse values but assumes that <code>numberOfParameters</code> of the following
 	 * parameters are of the same type,integer in the following example:
-	 * <pre><code>
-	 * String[] args = {"--numbers", "4", "5", "Hello"};
-	 * ListArgument&lt;Integer&gt; numbers = ArgumentFactory.integerArgument("--numbers").arity(2);
-	 * assertEqual(Arrays.asList(4, 5), ArgumentParser.forArguments(numbers).parse(args).get(numbers));
-	 * </code></pre>
+	 * <pre>
+	 * {@code
+	 * String[] args = }{{@code "--numbers", "4", "5", "Hello"}};
+	 * {@code
+	 * Argument<List<Integer>> numbers = ArgumentFactory.integerArgument("--numbers").arity(2).build();
+	 * List<Integer> actualNumbers = ArgumentParser.forArguments(numbers).parse(args).get(numbers);
+	 * assertThat(actualNumbers).isEqualTo(Arrays.asList(4, 5));
+	 * }
+	 * </pre>
 	 * @return a newly created ListArgument that you need to save into a variable to access the list later on
 	 */
+	@CheckReturnValue
 	public ListArgumentBuilder<T> arity(final int numberOfParameters)
 	{
 		return new ListArgumentBuilder<T>(this, numberOfParameters);
@@ -259,9 +273,16 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *
 	 * @return a newly created RepeatedArgument that you need to save into a variable to access the list later on
 	 */
+	@CheckReturnValue
 	public RepeatedArgumentBuilder<T> repeated()
 	{
 		return new RepeatedArgumentBuilder<T>(this);
+	}
+
+	@Override
+	public String toString()
+	{
+		return new Argument<T>(this).toString();
 	}
 
 	/**
@@ -271,7 +292,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;String&gt; are not compatible)
 	 * @param copy the ArgumentBuilder to copy from
 	 */
-	protected SELF_TYPE copy(final ArgumentBuilder<?, ?> copy)
+	protected void copy(final @Nonnull ArgumentBuilder<?, ?> copy)
 	{
 		this.names = copy.names;
 		this.description = copy.description;
@@ -279,15 +300,17 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		this.separator = copy.separator;
 		this.ignoreCase = copy.ignoreCase;
 		this.isPropertyMap = copy.isPropertyMap;
-		return self();
+		this.isAllowedToRepeat = copy.isAllowedToRepeat;
 	}
 
-	//Non-Interesting builders
+	//Non-Interesting builders, most declarations here under handles (by deprecating)
+	//invalid invariants between different argument properties
+
 	public static class ListArgumentBuilder<T> extends ArgumentBuilder<ListArgumentBuilder<T>, List<T>>
 	{
-		public ListArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?,T>, T> builder, final int argumentsToConsume)
+		public ListArgumentBuilder(final @Nonnull ArgumentBuilder<? extends ArgumentBuilder<?,T>, T> builder, final int argumentsToConsume)
 		{
-			super(new ListArgument<T>(builder.handler, argumentsToConsume, builder.validator, "")); //TODO: fix ""
+			super(new ListArgument<T>(builder.handler, argumentsToConsume, builder.validator));
 			copy(builder);
 		}
 
@@ -296,18 +319,37 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		 */
 		@Deprecated
 		@Override
-		public ListArgumentBuilder<T> validator(final ValueValidator<List<T>> validator)
+		public ListArgumentBuilder<T> validator(final ValueValidator<List<T>> aValidator)
 		{
 			throw new IllegalStateException("Programmer Error. Call validator(...) before arity/consumeAll()");
+		}
+
+		/**
+		 * This doesn't work with  {@link ArgumentBuilder#arity(int)} or {@link ArgumentBuilder#consumeAll()},
+		 * either separate your arguments with a splitter or a space
+		 */
+		@Deprecated
+		@Override
+		public SplitterArgumentBuilder<List<T>> splitWith(final StringSplitter splitter)
+		{
+			throw new IllegalStateException("splitWith(...) doesn't work with arity/consumeAll()");
+		}
+
+		@CheckReturnValue
+		@Override
+		public ListArgumentBuilder<T> defaultValue(final @Nonnull List<T> value)
+		{
+			return super.defaultValue(Collections.unmodifiableList(value));
 		}
 	}
 
 	public static class RepeatedArgumentBuilder<T> extends ArgumentBuilder<RepeatedArgumentBuilder<T>, List<T>>
 	{
-		public RepeatedArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?,T>, T> builder)
+		public RepeatedArgumentBuilder(final @Nonnull ArgumentBuilder<? extends ArgumentBuilder<?,T>, T> builder)
 		{
 			super(new RepeatedArgument<T>(builder.handler, builder.validator));
 			copy(builder);
+			isAllowedToRepeat = true;
 		}
 
 		/**
@@ -331,13 +373,30 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 
 		/**
+		 * Call {@link #splitWith(StringSplitter)} before {@link #repeated()}
+		 */
+		@Deprecated
+		@Override
+		public SplitterArgumentBuilder<List<T>> splitWith(final StringSplitter splitter)
+		{
+			throw new IllegalStateException("call splitWith(Splitter) before repeated()");
+		}
+
+		/**
 		 * This method should be called before repeated()
 		 */
 		@Deprecated
 		@Override
-		public RepeatedArgumentBuilder<T> validator(final ValueValidator<List<T>> validator)
+		public RepeatedArgumentBuilder<T> validator(final ValueValidator<List<T>> aValidator)
 		{
 			throw new IllegalStateException("Programmer Error. Call validator(...) before repeated()");
+		}
+
+		@CheckReturnValue
+		@Override
+		public RepeatedArgumentBuilder<T> defaultValue(final @Nonnull List<T> value)
+		{
+			return super.defaultValue(Collections.unmodifiableList(value));
 		}
 	}
 
@@ -346,15 +405,17 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		public OptionArgumentBuilder()
 		{
 			super(null);
-			defaultValue(Boolean.FALSE);
 		}
 
+		@CheckReturnValue
 		@Override
 		public Argument<Boolean> build()
 		{
 			handler(new OptionArgument(defaultValue));
 			return super.build();
 		}
+
+		//TODO: as these are starting to get out of hand, maybe introduce a basic builder without any advanced stuff
 		/**
 		 * @deprecated an optional flag can't be required
 		 */
@@ -370,7 +431,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		 */
 		@Deprecated
 		@Override
-		public OptionArgumentBuilder separator(final String separator)
+		public OptionArgumentBuilder separator(final String aSeparator)
 		{
 			throw new IllegalStateException("A seperator for an optional flag isn't supported as " +
 					"an optional flag can't be assigned a value");
@@ -384,6 +445,105 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		public ListArgumentBuilder<Boolean> arity(final int arity)
 		{
 			throw new IllegalStateException("An optional flag can't have any other arity than zero");
+		}
+
+		/**
+		 * @deprecated an optional flag can only have an arity of zero
+		 */
+		@Deprecated
+		@Override
+		public ListArgumentBuilder<Boolean> consumeAll()
+		{
+			throw new IllegalStateException("An optional flag can't have any other arity than zero");
+		}
+
+		/**
+		 * @deprecated an optional flag can't be split by anything
+		 */
+		@Deprecated
+		@Override
+		public SplitterArgumentBuilder<Boolean> splitWith(final StringSplitter splitter)
+		{
+			throw new IllegalStateException("An optional flag can't be split as it has no value");
+		}
+	}
+
+	public static class MapArgumentBuilder<T> extends ArgumentBuilder<MapArgumentBuilder<T>, Map<String, T>>
+	{
+		protected MapArgumentBuilder(final @Nonnull ArgumentBuilder<?,T> builder)
+		{
+			super(new MapArgument<T>(builder.handler, builder.validator));
+			copy(builder);
+			if(this.separator == null)
+			{
+				//Maybe use assignment instead?
+				this.separator = "=";
+			}
+			this.isPropertyMap = true;
+		}
+
+		/**
+		 * @deprecated because {@link #repeated()} should be called before {@link #asPropertyMap()}
+		 */
+		@Deprecated
+		@Override
+		public RepeatedArgumentBuilder<Map<String, T>> repeated()
+		{
+			throw new UnsupportedOperationException("You'll need to call repeated before asPropertyMap");
+		}
+
+		/**
+		 * @deprecated because {@link #splitWith(StringSplitter)} should be called before {@link #asPropertyMap()}.
+		 * 	This is to make generic work it's magic and produce the correct type, for example {@code Map<String, List<Integer>>}.
+		 */
+		@Deprecated
+		@Override
+		public SplitterArgumentBuilder<Map<String, T>> splitWith(final StringSplitter splitter)
+		{
+			throw new UnsupportedOperationException("You'll need to call splitWith before asPropertyMap");
+		}
+
+		@CheckReturnValue
+		@Override
+		public MapArgumentBuilder<T> defaultValue(final @Nonnull Map<String, T> value)
+		{
+			return super.defaultValue(Collections.unmodifiableMap(value));
+		}
+	}
+
+	public static class SplitterArgumentBuilder<T> extends ArgumentBuilder<SplitterArgumentBuilder<T>, List<T>>
+	{
+		protected SplitterArgumentBuilder(final @Nonnull ArgumentBuilder<?, T> builder, final @Nonnull StringSplitter splitter)
+		{
+			super(new ArgumentSplitter<T>(splitter, builder.handler, builder.validator));
+			copy(builder);
+		}
+
+		/**
+		 * @deprecated you can't use both {@link #splitWith(StringSplitter)} and {@link #arity(int)}
+		 */
+		@Deprecated
+		@Override
+		public ListArgumentBuilder<List<T>> arity(final int arity)
+		{
+			throw new IllegalStateException("You can't use both splitWith and arity");
+		}
+
+		/**
+		 * @deprecated you can't use both {@link #splitWith(StringSplitter)} and {@link #consumeAll(int)}
+		 */
+		@Deprecated
+		@Override
+		public ListArgumentBuilder<List<T>> consumeAll()
+		{
+			throw new IllegalStateException("You can't use both splitWith and consumeAll");
+		}
+
+		@CheckReturnValue
+		@Override
+		public SplitterArgumentBuilder<T> defaultValue(final @Nonnull List<T> value)
+		{
+			return super.defaultValue(Collections.unmodifiableList(value));
 		}
 	}
 }

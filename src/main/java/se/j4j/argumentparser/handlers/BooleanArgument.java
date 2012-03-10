@@ -12,4 +12,9 @@ public class BooleanArgument extends OneParameterArgument<Boolean>
 	{
 		return Boolean.valueOf(value);
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return "true or false";
+	}
 }

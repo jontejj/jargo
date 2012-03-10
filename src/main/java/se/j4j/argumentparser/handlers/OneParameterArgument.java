@@ -2,21 +2,23 @@ package se.j4j.argumentparser.handlers;
 
 import java.util.ListIterator;
 
-import se.j4j.argumentparser.ArgumentHandler;
+import javax.annotation.Nonnull;
+
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.ArgumentExceptionCodes;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
 
 public abstract class OneParameterArgument<T> implements ArgumentHandler<T>
 {
 
-	public abstract T parse(final String value) throws ArgumentException;
+	public abstract T parse(final @Nonnull String value) throws ArgumentException;
 
-	public final T parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition) throws ArgumentException
+	public final T parse(final @Nonnull ListIterator<String> currentArgument, final T oldValue, final @Nonnull Argument<?> argumentDefinition) throws ArgumentException
 	{
 		if(!currentArgument.hasNext())
 		{
-			throw ArgumentException.create(ArgumentExceptionCodes.MISSING_PARAMETER).errorneousArgument(argumentDefinition);
+			throw ArgumentException.create(ArgumentExceptionCodes.MISSING_PARAMETER);
 		}
 		return parse(currentArgument.next());
 	}

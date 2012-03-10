@@ -13,8 +13,8 @@ import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
+import se.j4j.argumentparser.interfaces.ValueValidator;
 import se.j4j.argumentparser.validators.PositiveInteger;
-import se.j4j.argumentparser.validators.ValueValidator;
 
 public class TestValidators
 {
@@ -58,6 +58,7 @@ public class TestValidators
 	public void testInvalidValidatorType() throws ArgumentException
 	{
 		Object validator = new ShortString();
+		@SuppressWarnings("unchecked") //This is what's tested
 		Argument<Integer> number = integerArgument("-n").validator((ValueValidator<Integer>) validator).build();
 		ArgumentParser.forArguments(number).parse("-n", "1");
 

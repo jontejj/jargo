@@ -1,16 +1,18 @@
 package se.j4j.argumentparser.handlers.internal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import se.j4j.argumentparser.ArgumentHandler;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
-import se.j4j.argumentparser.validators.ValueValidator;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
+import se.j4j.argumentparser.interfaces.ValueValidator;
+import se.j4j.argumentparser.utils.Strings;
 
-public class MapArgument<T> implements ArgumentHandler<Map<String, T>>, RepeatableArgument<Map<String, T>>
+public class MapArgument<T> implements ArgumentHandler<Map<String, T>>
 {
 	private final ArgumentHandler<T> handler;
 	private final ValueValidator<T> validator;
@@ -21,20 +23,25 @@ public class MapArgument<T> implements ArgumentHandler<Map<String, T>>, Repeatab
 		this.validator = validator;
 	}
 
-	public Map<String, T> parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition) throws ArgumentException
-	{
-		throw new UnsupportedOperationException("use parseRepeated(...) instead");
-	}
-
-	public Map<String, T> parseRepeated(final ListIterator<String> currentArgument, Map<String, T> map, final Argument<?> argumentDefinition) throws ArgumentException
+	@Override
+	public Map<String, T> parse(final ListIterator<String> currentArgument, Map<String, T> map, final Argument<?> argumentDefinition) throws ArgumentException
 	{
 		map = (map != null) ? map : new HashMap<String, T>();
 
 		String keyValue = currentArgument.next();
 		String separator = argumentDefinition.separator();
-		for(String name : argumentDefinition.names())
+
+		List<String> namesToMatch = argumentDefinition.names();
+		String argument = keyValue;
+		if(argumentDefinition.isIgnoringCase())
 		{
-			if(keyValue.startsWith(name))
+			namesToMatch = Strings.toLowerCase(namesToMatch);
+			argument = argument.toLowerCase();
+		}
+
+		for(String name : namesToMatch)
+		{
+			if(argument.startsWith(name))
 			{
 				//Fetch key and value from "-Dkey=value"
 				int keyStartIndex = name.length();
@@ -49,29 +56,28 @@ public class MapArgument<T> implements ArgumentHandler<Map<String, T>>, Repeatab
 				//Hide what we just did to the handler that handles the "value"
 				currentArgument.set(value);
 				currentArgument.previous();
-				if(handler instanceof RepeatableArgument)
+				T oldValue = map.get(key);
+				T parsedValue = handler.parse(currentArgument, oldValue, argumentDefinition);
+				if(validator != null)
 				{
-					T oldValue = map.get(key);
-					T parsedValue = ((RepeatableArgument<T>) handler).parseRepeated(currentArgument, oldValue, argumentDefinition);
-					map.put(key, parsedValue);
+					//TODO: test this
+					validator.validate(parsedValue);
 				}
-				else
+				//TODO: provide overwrite protection
+				Object alreadyExisting = map.put(key, parsedValue);
+				if(alreadyExisting != null && !argumentDefinition.isAllowedToRepeat())
 				{
-					T parsedValue = handler.parse(currentArgument, argumentDefinition);
-					if(validator != null)
-					{
-						validator.validate(parsedValue);
-					}
-					if(map.put(key, parsedValue) != null)
-					{
-						//TODO: better error output, maybe provide an overwrite option (as default?)?
-						throw InvalidArgument.create(parsedValue, " duplicate values for the key: " + key);
-						//throw UnhandledRepeatedArgument.create(argumentDefinition);
-					}
+					throw InvalidArgument.create(name + key, " was found as a key several times in the input.");
 				}
 				break;
 			}
 		}
 		return map;
+	}
+
+	@Override
+	public String descriptionOfValidValues()
+	{
+		return "key=value where key is an identifier and value is " + handler.descriptionOfValidValues();
 	}
 }

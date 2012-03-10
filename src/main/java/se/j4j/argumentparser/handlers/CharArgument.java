@@ -15,4 +15,9 @@ public class CharArgument extends OneParameterArgument<Character>
 		return value.charAt(0);
 	}
 
+	public String descriptionOfValidValues()
+	{
+		return "Any unicode character";
+	}
+
 }

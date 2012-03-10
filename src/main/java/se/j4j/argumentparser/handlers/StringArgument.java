@@ -7,4 +7,9 @@ public class StringArgument extends OneParameterArgument<String>
 	{
 		return value;
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return "Any string";
+	}
 }

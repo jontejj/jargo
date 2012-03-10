@@ -9,7 +9,7 @@ public class InitCommand extends CommandArgument
 {
 
 	@Override
-	public ArgumentParser getParserInstance()
+	public ArgumentParser createParserInstance()
 	{
 		return ArgumentParser.forArguments();
 	}
@@ -19,6 +19,12 @@ public class InitCommand extends CommandArgument
 	{
 		//Here would the init code be
 		assertTrue(true);
+	}
+
+	@Override
+	public String commandName()
+	{
+		return "init";
 	}
 
 }

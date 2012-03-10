@@ -1,7 +1,7 @@
 package se.j4j.argumentparser.Validators;
 
 import se.j4j.argumentparser.exceptions.InvalidArgument;
-import se.j4j.argumentparser.validators.ValueValidator;
+import se.j4j.argumentparser.interfaces.ValueValidator;
 
 public class ShortString implements ValueValidator<String>
 {

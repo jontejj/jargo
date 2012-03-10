@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import se.j4j.argumentparser.ArgumentHandler;
+import javax.annotation.Nonnull;
+
 import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.handlers.IntegerArgument;
-import se.j4j.argumentparser.validators.ValueValidator;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
+import se.j4j.argumentparser.interfaces.ValueValidator;
 
 /**
  * Produced by {@link Argument#repeated()} and used by {@link ArgumentParser#parse(String)}
@@ -18,20 +20,21 @@ import se.j4j.argumentparser.validators.ValueValidator;
  *
  * @param <T> type of the repeated values (such as {@link Integer} for {@link IntegerArgument}
  */
-public class RepeatedArgument<T> implements ArgumentHandler<List<T>>, RepeatableArgument<List<T>>
+public class RepeatedArgument<T> implements ArgumentHandler<List<T>>
 {
 	final ArgumentHandler<T> argumentHandler;
 	final ValueValidator<T> validator;
 
-	public RepeatedArgument(final ArgumentHandler<T> argumentHandler, final ValueValidator<T> validator)
+	public RepeatedArgument(final @Nonnull ArgumentHandler<T> argumentHandler, final ValueValidator<T> validator)
 	{
 		this.argumentHandler = argumentHandler;
 		this.validator = validator;
 	}
 
-	public List<T> parseRepeated(final ListIterator<String> currentArgument, List<T> list, final Argument<?> argumentDefinition) throws ArgumentException
+	@Override
+	public List<T> parse(final ListIterator<String> currentArgument, List<T> list, final Argument<?> argumentDefinition) throws ArgumentException
 	{
-		T parsedValue = argumentHandler.parse(currentArgument, argumentDefinition);
+		T parsedValue = argumentHandler.parse(currentArgument, null, argumentDefinition);
 		if(validator != null)
 		{
 			validator.validate(parsedValue);
@@ -41,11 +44,9 @@ public class RepeatedArgument<T> implements ArgumentHandler<List<T>>, Repeatable
 		return list;
 	}
 
-	/**
-	 * TODO: find a better way and remove this method
-	 */
-	public List<T> parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition)
+	@Override
+	public String descriptionOfValidValues()
 	{
-		throw new UnsupportedOperationException("use parseRepeated(...) instead");
+		return "* " + argumentHandler.descriptionOfValidValues();
 	}
 }

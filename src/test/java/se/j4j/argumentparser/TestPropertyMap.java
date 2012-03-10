@@ -26,7 +26,6 @@ public class TestPropertyMap
 		assertThat(parsed.get(numberMap).get("two")).isEqualTo(2);
 	}
 
-	//TODO: make sure properties work with ignore case, separator
 	//TODO: what should happen when names = -N, -NS for a propertyMap? and -NShej=svejs is given?
 
 	@Test
@@ -48,6 +47,15 @@ public class TestPropertyMap
 		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
 
 		ArgumentParser.forArguments(numberMap).parse("-N3");
+	}
+
+	@Test
+	public void testCustomSeparator() throws ArgumentException
+	{
+		Argument<Map<String, Integer>> numberMap = integerArgument("-N").separator("/").asPropertyMap().build();
+
+		ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-Nkey/3");
+		assertThat(parsed.get(numberMap).get("key")).isEqualTo(3);
 	}
 
 	@Test(expected = InvalidArgument.class)

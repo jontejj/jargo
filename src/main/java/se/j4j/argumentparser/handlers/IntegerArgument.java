@@ -6,7 +6,7 @@ import se.j4j.argumentparser.exceptions.InvalidArgument;
 public class IntegerArgument extends RadixiableArgument<Integer>
 {
 	/**
-	 * @Throws {@link NumberFormatException} if <code> currentArgument.next() </code> does not contain a parsable integer.
+	 * @Throws {@link NumberFormatException} if <code>value</code> does not contain a parsable integer.
 	 */
 	@Override
 	public Integer parse(final String value) throws ArgumentException
@@ -19,5 +19,10 @@ public class IntegerArgument extends RadixiableArgument<Integer>
 		{
 			throw InvalidArgument.create(value, " is not a valid integer of radix " + radix());
 		}
+	}
+
+	public String descriptionOfValidValues()
+	{
+		return Integer.MIN_VALUE + " - " + Integer.MAX_VALUE;
 	}
 }

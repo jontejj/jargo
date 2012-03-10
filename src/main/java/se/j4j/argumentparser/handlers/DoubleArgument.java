@@ -17,4 +17,9 @@ public class DoubleArgument extends OneParameterArgument<Double>
 			throw InvalidArgument.create(value, " is not a valid double");
 		}
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return -Double.MAX_VALUE + " - " + Double.MAX_VALUE;
+	}
 }

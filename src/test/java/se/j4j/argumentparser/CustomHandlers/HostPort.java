@@ -3,6 +3,12 @@ package se.j4j.argumentparser.CustomHandlers;
 
 public class HostPort
 {
-	public int port;
-	public String host;
+	public final int port;
+	public final String host;
+
+	public HostPort(final String host, final int port)
+	{
+		this.port = port;
+		this.host = host;
+	}
 }

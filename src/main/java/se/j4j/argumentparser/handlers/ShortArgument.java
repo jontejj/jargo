@@ -17,4 +17,9 @@ public class ShortArgument extends RadixiableArgument<Short>
 			throw InvalidArgument.create(value, " is not a valid short value");
 		}
 	}
+
+	public String descriptionOfValidValues()
+	{
+		return Short.MIN_VALUE + " - " + Short.MAX_VALUE;
+	}
 }

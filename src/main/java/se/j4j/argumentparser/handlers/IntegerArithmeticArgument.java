@@ -2,9 +2,11 @@ package se.j4j.argumentparser.handlers;
 
 import java.util.ListIterator;
 
-import se.j4j.argumentparser.ArgumentHandler;
+import javax.annotation.Nonnull;
+
 import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
 
 public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 {
@@ -16,8 +18,9 @@ public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 		this.operation = operation;
 	}
 
-	public Integer parse(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition) throws ArgumentException
+	public final Integer parse(final @Nonnull ListIterator<String> currentArgument, final Integer oldValue, final @Nonnull Argument<?> argumentDefinition) throws ArgumentException
 	{
+		//TODO: how to validate
 		Integer result = Integer.valueOf(currentArgument.next());
 
 		while(currentArgument.hasNext())
@@ -40,5 +43,10 @@ public class IntegerArithmeticArgument implements ArgumentHandler<Integer>
 		}
 
 		return result;
+	}
+
+	public String descriptionOfValidValues()
+	{
+		return "A series of integers to use " + operation + " on.";
 	}
 }

@@ -16,16 +16,19 @@ import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
+import se.j4j.argumentparser.internal.Comma;
 
 public class TestRepeatedArguments
 {
 
+	@SuppressWarnings("deprecation") //This is what's tested
 	@Test(expected = IllegalStateException.class)
 	public void testCallingRepeatedBeforeArity()
 	{
 		integerArgument("--number").repeated().arity(2);
 	}
 
+	@SuppressWarnings("deprecation") //This is what's tested
 	@Test(expected = IllegalStateException.class)
 	public void testCallingRepeatedBeforeConsumeAll()
 	{
@@ -61,6 +64,16 @@ public class TestRepeatedArguments
 	}
 
 	@Test(expected = UnhandledRepeatedArgument.class)
+	public void testNamedArgumentRepeatedNotAllowed() throws ArgumentException
+	{
+		String[] args = {"-number", "5", "-number", "3"};
+
+		Argument<Integer> numbers = integerArgument("-number").build();
+
+		ArgumentParser.forArguments(numbers).parse(args);
+	}
+
+	@Test(expected = UnhandledRepeatedArgument.class)
 	public void testTwoParametersForNamedArgumentRepeatedNotAllowed() throws ArgumentException
 	{
 		String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
@@ -78,6 +91,22 @@ public class TestRepeatedArguments
 		ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-Nnumber=1", "-Nnumber=2");
 
 		assertThat(parsed.get(numberMap).get("number")).isEqualTo(Arrays.asList(1, 2));
+	}
+
+	@Test
+	public void testRepeatedAndSplitPropertyValues() throws ArgumentException
+	{
+		Argument<Map<String, List<List<Integer>>>> numberMap = integerArgument("-N").splitWith(new Comma()).repeated().asPropertyMap().build();
+
+		ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-Nnumber=1,2", "-Nnumber=3,4");
+
+		List<List<Integer>> expected =	new ArrayList<List<Integer>>();
+		expected.add(Arrays.asList(1, 2));
+		expected.add(Arrays.asList(3, 4));
+
+		List<List<Integer>> actual = parsed.get(numberMap).get("number");
+
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test(expected = InvalidArgument.class)

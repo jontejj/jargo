@@ -1,10 +1,14 @@
 package se.j4j.argumentparser.builders;
 
-import se.j4j.argumentparser.ArgumentHandler;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
 
+import se.j4j.argumentparser.interfaces.ArgumentHandler;
+
+@NotThreadSafe
 public class DefaultArgumentBuilder<T> extends ArgumentBuilder<DefaultArgumentBuilder<T>, T>
 {
-	public DefaultArgumentBuilder(final ArgumentHandler<T> handler)
+	public DefaultArgumentBuilder(final @Nonnull ArgumentHandler<T> handler)
 	{
 		super(handler);
 	}
