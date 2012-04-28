@@ -18,8 +18,15 @@ public class DoubleArgument extends OneParameterArgument<Double>
 		}
 	}
 
+	@Override
 	public String descriptionOfValidValues()
 	{
-		return -Double.MAX_VALUE + " - " + Double.MAX_VALUE;
+		return -Double.MAX_VALUE + " to " + Double.MAX_VALUE;
+	}
+
+	@Override
+	public Double defaultValue()
+	{
+		return 0.0;
 	}
 }

@@ -17,4 +17,10 @@ public class HostPortArgument extends OneParameterArgument<HostPort>
 		return "port:host";
 	}
 
+	@Override
+	public HostPort defaultValue()
+	{
+		return new HostPort("localhost", 8080);
+	}
+
 }

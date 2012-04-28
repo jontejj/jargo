@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class TestSeparators
@@ -43,7 +42,6 @@ public class TestSeparators
 
 		ArgumentParser parser = ArgumentParser.forArguments(numbers);
 
-		assertThat(parser.parse("-numbers=1", "2", "3").get(numbers)).
-		as("Should be three numbers").isEqualTo(Arrays.asList(1,2,3));
+		assertThat(parser.parse("-numbers=1", "2", "3").get(numbers)).as("Should be three numbers").isEqualTo(Arrays.asList(1, 2, 3));
 	}
 }

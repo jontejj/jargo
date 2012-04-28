@@ -1,27 +1,31 @@
 package se.j4j.argumentparser.handlers;
 
-import java.util.ListIterator;
-
-import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.interfaces.ArgumentHandler;
 
-public class OptionArgument implements ArgumentHandler<Boolean>
+public class OptionArgument extends NoParameterArgument<Boolean>
 {
 	final Boolean defaultValue;
+
 	public OptionArgument(final boolean defaultValue)
 	{
 		this.defaultValue = defaultValue;
 	}
 
-	public Boolean parse(final ListIterator<String> currentArgument, final Boolean oldValue, final Argument<?> argumentDefinition) throws ArgumentException
+	@Override
+	public Boolean defaultValue()
+	{
+		return defaultValue;
+	}
+
+	@Override
+	public String describeValue(Boolean value)
+	{
+		return null;
+	}
+
+	@Override
+	public Boolean get() throws ArgumentException
 	{
 		return !defaultValue;
 	}
-
-	public String descriptionOfValidValues()
-	{
-		return "not needed";
-	}
-
 }

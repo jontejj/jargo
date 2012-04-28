@@ -3,11 +3,11 @@ package se.j4j.argumentparser.exceptions;
 import java.io.Serializable;
 import java.util.Collection;
 
-import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.Argument;
 
 public class MissingRequiredArgumentException extends ArgumentException
 {
-	private Collection<Argument<?>> missingArguments;
+	private final Collection<Argument<?>> missingArguments;
 
 	private MissingRequiredArgumentException(final Collection<Argument<?>> missingArguments)
 	{
@@ -34,5 +34,5 @@ public class MissingRequiredArgumentException extends ArgumentException
 	/**
 	 * For {@link Serializable}
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 }

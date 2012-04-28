@@ -9,6 +9,7 @@ import se.j4j.argumentparser.interfaces.StringSplitter;
 
 public class Comma implements StringSplitter
 {
+	@Override
 	@Nonnull
 	public List<String> split(final @Nonnull String input)
 	{

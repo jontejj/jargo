@@ -1,25 +1,45 @@
 package se.j4j.argumentparser.handlers;
 
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.InvalidArgument;
-
 public class ShortArgument extends RadixiableArgument<Short>
 {
-	@Override
-	public Short parse(final String value) throws ArgumentException
+	public ShortArgument(final Radix radix)
 	{
-		try
-		{
-			return Short.valueOf(value, radix());
-		}
-		catch(NumberFormatException ex)
-		{
-			throw InvalidArgument.create(value, " is not a valid short value");
-		}
+		super(radix);
 	}
 
-	public String descriptionOfValidValues()
+	@Override
+	public Short minValue()
 	{
-		return Short.MIN_VALUE + " - " + Short.MAX_VALUE;
+		return Short.MIN_VALUE;
+	}
+
+	@Override
+	public Short maxValue()
+	{
+		return Short.MAX_VALUE;
+	}
+
+	@Override
+	protected String toBinaryString(final Short value)
+	{
+		return Integer.toBinaryString(value);
+	}
+
+	@Override
+	public Short defaultValue()
+	{
+		return 0;
+	}
+
+	@Override
+	protected long signBitMask()
+	{
+		return 1 << (Short.SIZE - 1);
+	}
+
+	@Override
+	protected Short cast(Long value)
+	{
+		return value.shortValue();
 	}
 }

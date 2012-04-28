@@ -18,8 +18,15 @@ public class FloatArgument extends OneParameterArgument<Float>
 		}
 	}
 
+	@Override
 	public String descriptionOfValidValues()
 	{
 		return -Float.MAX_VALUE + " - " + Float.MAX_VALUE;
+	}
+
+	@Override
+	public Float defaultValue()
+	{
+		return 0f;
 	}
 }

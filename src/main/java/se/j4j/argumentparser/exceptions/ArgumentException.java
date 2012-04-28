@@ -2,10 +2,9 @@ package se.j4j.argumentparser.exceptions;
 
 import java.io.Serializable;
 
+import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.utils.Lines;
-
 
 public class ArgumentException extends Exception
 {
@@ -29,7 +28,6 @@ public class ArgumentException extends Exception
 		originParser = theParserThatTriggeredMe;
 	}
 
-
 	public static ArgumentException create(final ArgumentExceptionCodes errorCode)
 	{
 		return new ArgumentException(errorCode);
@@ -41,10 +39,15 @@ public class ArgumentException extends Exception
 		return "Error code: " + errorCode;
 	}
 
-	public String getMessageAndUsage()
+	public String getUsage(String programName)
 	{
-		String usage = originParser != null ? originParser.toString() : "";
-		return getMessage() + Lines.NEWLINE + usage;
+		String usage = originParser != null ? originParser.usage(programName).toString() : "";
+		return usage;
+	}
+
+	public String getMessageAndUsage(String programName)
+	{
+		return getMessage() + Lines.NEWLINE + getUsage(programName);
 	}
 
 	public Argument<?> errorneousArgument()
@@ -60,6 +63,6 @@ public class ArgumentException extends Exception
 	/**
 	 * For {@link Serializable}
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 
 }

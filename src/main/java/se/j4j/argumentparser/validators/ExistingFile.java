@@ -9,11 +9,12 @@ import se.j4j.argumentparser.interfaces.ValueValidator;
 
 public class ExistingFile implements ValueValidator<File>
 {
+	// TODO: add support for a compound ValueValidator
+
+	@Override
 	public void validate(final @Nonnull File file) throws InvalidArgument
 	{
 		if(!file.exists())
-		{
 			throw InvalidArgument.create(file, " doesn't exist");
-		}
 	}
 }

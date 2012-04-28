@@ -8,8 +8,15 @@ public class StringArgument extends OneParameterArgument<String>
 		return value;
 	}
 
+	@Override
 	public String descriptionOfValidValues()
 	{
 		return "Any string";
+	}
+
+	@Override
+	public String defaultValue()
+	{
+		return "";
 	}
 }

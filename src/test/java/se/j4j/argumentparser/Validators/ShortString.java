@@ -6,12 +6,11 @@ import se.j4j.argumentparser.interfaces.ValueValidator;
 public class ShortString implements ValueValidator<String>
 {
 
+	@Override
 	public void validate(final String value) throws InvalidArgument
 	{
 		if(value.length() > 10)
-		{
 			throw InvalidArgument.create(value, " is longer than 10 characters");
-		}
 	}
 
 }
