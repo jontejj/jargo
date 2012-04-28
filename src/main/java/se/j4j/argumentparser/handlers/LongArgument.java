@@ -1,26 +1,46 @@
 package se.j4j.argumentparser.handlers;
 
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.InvalidArgument;
-
 public class LongArgument extends RadixiableArgument<Long>
 {
-	@Override
-	public Long parse(final String value) throws ArgumentException
+	public LongArgument(final Radix radix)
 	{
-		try
-		{
-			return Long.valueOf(value, radix());
-		}
-		catch(NumberFormatException ex)
-		{
-			throw InvalidArgument.create(value, " is not a valid long value");
-		}
+		super(radix);
 	}
 
-	public String descriptionOfValidValues()
+	@Override
+	public Long minValue()
 	{
-		return Long.MIN_VALUE + " - " + Long.MAX_VALUE;
+		return Long.MIN_VALUE;
+	}
+
+	@Override
+	public Long maxValue()
+	{
+		return Long.MAX_VALUE;
+	}
+
+	@Override
+	protected String toBinaryString(final Long value)
+	{
+		return Long.toBinaryString(value);
+	}
+
+	@Override
+	public Long defaultValue()
+	{
+		return 0L;
+	}
+
+	@Override
+	protected long signBitMask()
+	{
+		return 1 << (Long.SIZE - 1);
+	}
+
+	@Override
+	protected Long cast(Long value)
+	{
+		return value;
 	}
 
 }

@@ -1,38 +1,40 @@
 package se.j4j.argumentparser.handlers.internal;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import se.j4j.argumentparser.builders.Argument;
+import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
 import se.j4j.argumentparser.interfaces.ArgumentHandler;
-import se.j4j.argumentparser.interfaces.ValueValidator;
+import se.j4j.argumentparser.utils.ListUtil;
 
 public class ListArgument<T> implements ArgumentHandler<List<T>>
 {
 	final ArgumentHandler<T> argumentHandler;
-	final ValueValidator<T> validator;
 	final int argumentsToConsume;
 
 	public static final int CONSUME_ALL = -1;
 
-	public ListArgument(final ArgumentHandler<T> argumentHandler, final int argumentsToConsume, final ValueValidator<T> validator)
+	public ListArgument(final ArgumentHandler<T> argumentHandler, final int argumentsToConsume)
 	{
 		this.argumentHandler = argumentHandler;
 		this.argumentsToConsume = argumentsToConsume;
-		this.validator = validator;
 	}
 
 	@Override
-	public List<T> parse(final ListIterator<String> currentArgument, final List<T> list, final Argument<?> argumentDefinition) throws ArgumentException
+	public List<T> parse(final ListIterator<String> currentArgument, final List<T> list, final Argument<?> argumentDefinition)
+			throws ArgumentException
 	{
 		if(list != null)
-		{
 			throw UnhandledRepeatedArgument.create(argumentDefinition);
-		}
-		List<T> parsedArguments = new ArrayList<T>();
+
+		// TODO: fetch the actual value from currentArgument instead of 10
+		int expectedSize = argumentsToConsume == CONSUME_ALL ? 10 : argumentsToConsume;
+		List<T> parsedArguments = new ArrayList<T>(expectedSize);
 		if(argumentsToConsume == CONSUME_ALL)
 		{
 			while(currentArgument.hasNext())
@@ -42,7 +44,7 @@ public class ListArgument<T> implements ArgumentHandler<List<T>>
 		}
 		else
 		{
-			for(int i = 0;i<argumentsToConsume; i++)
+			for(int i = 0; i < argumentsToConsume; i++)
 			{
 				parsedArguments.add(parseValue(currentArgument, argumentDefinition));
 			}
@@ -53,16 +55,25 @@ public class ListArgument<T> implements ArgumentHandler<List<T>>
 	private T parseValue(final ListIterator<String> currentArgument, final Argument<?> argumentDefinition) throws ArgumentException
 	{
 		T parsedValue = argumentHandler.parse(currentArgument, null, argumentDefinition);
-		if(validator != null)
-		{
-			validator.validate(parsedValue);
-		}
 		return parsedValue;
 	}
 
 	@Override
 	public String descriptionOfValidValues()
 	{
+		// TODO: print meta descriptions
 		return argumentsToConsume + " of " + argumentHandler.descriptionOfValidValues();
+	}
+
+	@Override
+	public List<T> defaultValue()
+	{
+		return emptyList();
+	}
+
+	@Override
+	public String describeValue(List<T> value)
+	{
+		return ListUtil.describeList(value);
 	}
 }

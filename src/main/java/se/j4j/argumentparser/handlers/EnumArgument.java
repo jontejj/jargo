@@ -11,10 +11,12 @@ import se.j4j.argumentparser.interfaces.ArgumentHandler;
 public class EnumArgument<T extends Enum<T>> extends OneParameterArgument<T> implements ArgumentHandler<T>
 {
 	private final Class<T> enumType;
+
 	public EnumArgument(final Class<T> enumToHandle)
 	{
 		enumType = enumToHandle;
 	}
+
 	@Override
 	public T parse(final String value) throws ArgumentException
 	{
@@ -28,9 +30,17 @@ public class EnumArgument<T extends Enum<T>> extends OneParameterArgument<T> imp
 			throw InvalidArgument.create(value, " is not a valid Option, Expecting one of " + validValues);
 		}
 	}
+
+	@Override
 	public String descriptionOfValidValues()
 	{
 		return EnumSet.allOf(enumType).toString();
+	}
+
+	@Override
+	public T defaultValue()
+	{
+		return null;
 	}
 
 }

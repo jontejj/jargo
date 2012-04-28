@@ -1,5 +1,6 @@
 package se.j4j.argumentparser.CustomHandlers;
 
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 
 import java.util.HashSet;
@@ -18,6 +19,18 @@ public class UniqueLetters implements StringConverter<Set<Character>>
 			unique.add(c);
 		}
 		return unmodifiableSet(unique);
+	}
+
+	@Override
+	public String descriptionOfValidValues()
+	{
+		return "Any number of letters";
+	}
+
+	@Override
+	public Set<Character> defaultValue()
+	{
+		return emptySet();
 	}
 
 }

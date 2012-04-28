@@ -3,6 +3,7 @@ package se.j4j.argumentparser.builders;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
+import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.interfaces.ArgumentHandler;
 
 @NotThreadSafe

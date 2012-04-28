@@ -11,7 +11,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.builders.Argument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class TestIgnoringCase
@@ -29,14 +28,10 @@ public class TestIgnoringCase
 		assertTrue(parser.parse("--help").get(help));
 	}
 
-
 	@Test
 	public void testWithPropertyMap() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numbers = integerArgument("-n")
-				.asPropertyMap()
-				.ignoreCase()
-				.build();
+		Argument<Map<String, Integer>> numbers = integerArgument("-n").asPropertyMap().ignoreCase().build();
 
 		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse("-nsmall=1", "-Nbig=5");
 

@@ -1,6 +1,5 @@
 package se.j4j.argumentparser.CustomHandlers;
 
-
 public class HostPort
 {
 	public final int port;
@@ -10,5 +9,11 @@ public class HostPort
 	{
 		this.port = port;
 		this.host = host;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "localhost:8080";
 	}
 }

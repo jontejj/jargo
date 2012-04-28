@@ -10,8 +10,21 @@ public class FileArgument extends OneParameterArgument<File>
 		return new File(value);
 	}
 
+	@Override
 	public String descriptionOfValidValues()
 	{
 		return "a file path";
+	}
+
+	@Override
+	public File defaultValue()
+	{
+		return new File("");
+	}
+
+	@Override
+	public String describeValue(File value)
+	{
+		return value.getAbsolutePath();
 	}
 }

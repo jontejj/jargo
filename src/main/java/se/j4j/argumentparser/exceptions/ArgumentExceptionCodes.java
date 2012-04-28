@@ -1,15 +1,17 @@
 package se.j4j.argumentparser.exceptions;
 
+import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
 
 public enum ArgumentExceptionCodes
 {
-	//TODO: these should take in an argument describing the exact cause
+	// TODO: these should take in an argument describing the exact cause
 
-	/** Used when
+	/**
+	 * Used when
 	 * "-p 8080" is expected but
 	 * "-p" is given
-	 * */
+	 */
 	MISSING_PARAMETER,
 
 	/**
@@ -21,7 +23,8 @@ public enum ArgumentExceptionCodes
 	UNHANDLED_PARAMETER,
 
 	/**
-	 * Thrown when {@link Argument#required()} has been specified but the argument wasn't found in the input arguments
+	 * Thrown when {@link Argument#required()} has been specified but the
+	 * argument wasn't found in the input arguments
 	 */
 	MISSING_REQUIRED_PARAMETER,
 
@@ -33,8 +36,8 @@ public enum ArgumentExceptionCodes
 	UNHANDLED_REPEATED_PARAMETER,
 
 	/**
-	 * May be thrown by {@link Argument#parse(java.util.ListIterator)}
-	 * which considers it's received argument to be invalid
+	 * May be thrown by {@link Argument#parse(java.util.ListIterator)} which
+	 * considers it's received argument to be invalid
 	 */
 	INVALID_PARAMTER
 }

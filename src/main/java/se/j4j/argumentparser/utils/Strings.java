@@ -8,7 +8,9 @@ import javax.annotation.Nonnull;
 
 public final class Strings
 {
-	private Strings(){}
+	private Strings()
+	{
+	}
 
 	@Nonnull
 	public static StringBuilder appendSpaces(final int spacesToAppend, final @Nonnull StringBuilder toBuilder)
@@ -22,7 +24,7 @@ public final class Strings
 
 	public static List<String> toLowerCase(final Collection<String> strings)
 	{
-		List<String> lowerCaseStrings = new ArrayList<>(strings.size());
+		List<String> lowerCaseStrings = new ArrayList<String>(strings.size());
 		for(String s : strings)
 		{
 			lowerCaseStrings.add(s.toLowerCase());

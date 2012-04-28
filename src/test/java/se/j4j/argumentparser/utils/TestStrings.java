@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
 public class TestStrings
 {
 	@Test
@@ -19,12 +17,11 @@ public class TestStrings
 		assertThat(builder.toString()).isEqualTo("     ");
 	}
 
-
 	@Test
 	public void testFuzzyMatching()
 	{
 		String input = "stats";
-		List<String> strings = Lists.newArrayList("logging", "help", "status");
+		List<String> strings = com.google.common.collect.Lists.newArrayList("logging", "help", "status");
 
 		assertThat(StringComparison.closestMatch(input, strings)).isEqualTo("status");
 	}
