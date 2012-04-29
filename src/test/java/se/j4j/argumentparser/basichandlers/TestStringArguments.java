@@ -5,9 +5,6 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.Argument;
-import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class TestStringArguments
@@ -15,9 +12,8 @@ public class TestStringArguments
 	@Test
 	public void testThatTheSameStringIsReturned() throws ArgumentException
 	{
-		Argument<String> stringArgument = stringArgument("-s").build();
 		String argumentValue = "Test";
-		ParsedArguments arguments = ArgumentParser.forArguments(stringArgument).parse("-s", argumentValue);
-		assertThat(arguments.get(stringArgument)).isSameAs(argumentValue);
+		String actual = stringArgument("-s").parse("-s", argumentValue);
+		assertThat(actual).isSameAs(argumentValue);
 	}
 }

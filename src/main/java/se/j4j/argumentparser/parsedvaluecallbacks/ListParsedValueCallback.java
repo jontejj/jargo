@@ -15,8 +15,8 @@ public final class ListParsedValueCallback<T> implements ParsedValueCallback<Lis
 
 	public static <T> ParsedValueCallback<List<T>> create(ParsedValueCallback<T> elementCallback)
 	{
-		if(elementCallback == NullCallback.instance())
-			return NullCallback.instance();
+		if(elementCallback == NoCallback.instance())
+			return NoCallback.instance();
 		return new ListParsedValueCallback<T>(elementCallback);
 
 	}

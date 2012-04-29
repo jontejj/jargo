@@ -11,7 +11,6 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import java.util.Arrays;
 import java.util.List;
 
-import org.fest.assertions.Fail;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
@@ -48,10 +47,12 @@ public class TestArgumentParser
 	}
 
 	/**
-	 * An example of how to create a pretty unreadable command line invocation:
-	 * java testprog true 8090 Hello
-	 * Note that the order of the arguments matter.
-	 * Please don't overuse this:)
+	 * <pre>
+	 * An example of how to create an unreadable command line invocation:
+	 * java program true 8090 Hello
+	 * Note that the order of the arguments matter and who knows what true
+	 * means? Please don't overuse this feature:)
+	 * </pre>
 	 */
 	@Test
 	public void testIndexedArguments() throws ArgumentException
@@ -74,63 +75,40 @@ public class TestArgumentParser
 	@Test
 	public void testFlagArgumentDefaultValue() throws ArgumentException
 	{
-		String[] args = {};
+		Boolean loggingEnabled = optionArgument("--disable-logging").defaultValue(true).parse();
 
-		Argument<Boolean> loggingEnabled = optionArgument("--disable-logging").defaultValue(true)
-				.description("Don't output debug information to standard out").build();
-
-		ParsedArguments arguments = ArgumentParser.forArguments(loggingEnabled).parse(args);
-
-		assertThat(arguments.get(loggingEnabled)).as("defaults to true").isTrue();
+		assertThat(loggingEnabled).as("defaults to true").isTrue();
 	}
 
 	@Test(expected = UnexpectedArgumentException.class)
 	public void testUnhandledParameter() throws ArgumentException
 	{
-		String[] args = {"Unhandled"};
-		ArgumentParser.forArguments().parse(args);
+		ArgumentParser.forArguments().parse("Unhandled");
 	}
 
 	@Test
 	public void testMultipleParametersForNamedArgument() throws ArgumentException
 	{
-		String[] args = {"--numbers", "5", "6"};
-
-		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().build();
-		List<Integer> actual = ArgumentParser.forArguments(numbers).parse(args).get(numbers);
-
-		assertThat(actual).isEqualTo(Arrays.asList(5, 6));
+		List<Integer> numbers = integerArgument("--numbers").consumeAll().parse("--numbers", "5", "6");
+		assertThat(numbers).isEqualTo(Arrays.asList(5, 6));
 	}
 
-	@Test
+	/**
+	 * a list of values should be unmodifiable
+	 */
+	@Test(expected = UnsupportedOperationException.class)
 	public void testMultipleParametersForNamedArgumentUnmodifiableResult() throws ArgumentException
 	{
-		String[] args = {"--numbers", "5", "6"};
-
-		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().build();
-		List<Integer> actual = ArgumentParser.forArguments(numbers).parse(args).get(numbers);
-
-		try
-		{
-			actual.add(3);
-			Fail.fail("a list of values should be unmodifiable");
-		}
-		catch(UnsupportedOperationException expected)
-		{
-
-		}
+		integerArgument("--numbers").consumeAll().parse("--numbers", "2", "3").add(1);
 	}
 
 	@Test
 	public void testMissingParameterForArgument()
 	{
-		String[] args = {"--number"};
-
 		Argument<Integer> numbers = integerArgument("--number").build();
-
 		try
 		{
-			ArgumentParser.forArguments(numbers).parse(args);
+			numbers.parse("--number");
 			fail("--number parameter should be missing a parameter");
 		}
 		catch(ArgumentException exception)
@@ -144,11 +122,9 @@ public class TestArgumentParser
 	public void testDefaultValuesForMultipleParametersForNamedArgument() throws ArgumentException
 	{
 		List<Integer> defaults = Arrays.asList(5, 6);
+		List<Integer> numbers = integerArgument("--numbers").consumeAll().defaultValue(defaults).parse();
 
-		Argument<List<Integer>> numbers = integerArgument("--numbers").consumeAll().defaultValue(defaults).build();
-		List<Integer> actual = ArgumentParser.forArguments(numbers).parse().get(numbers);
-
-		assertThat(actual).isEqualTo(defaults);
+		assertThat(numbers).isEqualTo(defaults);
 	}
 
 	@Test
@@ -184,10 +160,9 @@ public class TestArgumentParser
 	@Test
 	public void testNullAsDefaultValue() throws ArgumentException
 	{
-		Argument<Integer> number = integerArgument("-n").defaultValue(null).build();
+		Integer number = integerArgument("-n").defaultValue(null).parse();
 
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
-		assertThat(parsed.get(number)).isNull();
+		assertThat(number).isNull();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -211,13 +186,26 @@ public class TestArgumentParser
 	@Test
 	public void testShorthandInvocation() throws ArgumentException
 	{
-		assertThat(integerArgument().build().parse("42")).isEqualTo(42);
+		assertThat(integerArgument().parse("42")).isEqualTo(42);
 	}
 
 	@Test(expected = InvalidArgument.class)
 	public void testWrongArgumentForShorthandInvocation() throws ArgumentException
 	{
-		integerArgument().build().parse("a42");
+		integerArgument().parse("a42");
+	}
+
+	@Test
+	public void testListInterfaceOfArgumentParser() throws ArgumentException
+	{
+		String[] args = {"--number", "1"};
+
+		Argument<Integer> number = integerArgument("--number").build();
+
+		ParsedArguments listResult = ArgumentParser.forArguments(number).parse(Arrays.asList(args));
+		ParsedArguments arrayResult = ArgumentParser.forArguments(number).parse(args);
+
+		assertThat(listResult).isEqualTo(arrayResult);
 	}
 
 	/**

@@ -6,8 +6,6 @@ import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import org.fest.assertions.Fail;
 import org.junit.Test;
@@ -18,7 +16,7 @@ import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
 import se.j4j.argumentparser.interfaces.ValueValidator;
-import se.j4j.argumentparser.internal.Comma;
+import se.j4j.argumentparser.stringsplitters.Comma;
 import se.j4j.argumentparser.validators.ExistingFile;
 import se.j4j.argumentparser.validators.PositiveInteger;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -72,35 +70,28 @@ public class TestValidators
 	@Test(expected = InvalidArgument.class)
 	public void testRepeatedPositiveIntegers() throws ArgumentException
 	{
-		Argument<List<Integer>> positiveArgument = integerArgument("-i", "--index").validator(new PositiveInteger()).repeated().build();
-
-		ArgumentParser.forArguments(positiveArgument).parse("-i", "10", "-i", "-5");
+		integerArgument("-i", "--index").validator(new PositiveInteger()).repeated().parse("-i", "10", "-i", "-5");
 	}
 
 	@Test(expected = InvalidArgument.class)
 	public void testArityOfPositiveIntegers() throws ArgumentException
 	{
-		Argument<List<Integer>> positiveArgument = integerArgument("-i", "--indices").validator(new PositiveInteger()).arity(2).build();
-
-		ArgumentParser.forArguments(positiveArgument).parse("-i", "10", "-5");
+		integerArgument("-i", "--indices").validator(new PositiveInteger()).arity(2).parse("-i", "10", "-5");
 	}
 
 	@Test(expected = InvalidArgument.class)
 	public void testSplittingAndValidating() throws ArgumentException
 	{
-		Argument<List<Integer>> numbers = integerArgument("-n").separator("=").validator(new PositiveInteger()).splitWith(new Comma()).build();
-
-		ArgumentParser.forArguments(Arrays.<Argument<?>>asList(numbers)).parse("-n=1,-2");
+		integerArgument("-n").separator("=").validator(new PositiveInteger()).splitWith(new Comma()).parse("-n=1,-2");
 	}
 
+	// This is what's tested
+	@SuppressWarnings("unchecked")
 	@Test(expected = ClassCastException.class)
 	public void testInvalidValidatorType() throws ArgumentException
 	{
 		Object validator = new ShortString();
-		// This is what's tested
-		@SuppressWarnings("unchecked")
-		Argument<Integer> number = integerArgument("-n").validator((ValueValidator<Integer>) validator).build();
-		ArgumentParser.forArguments(number).parse("-n", "1");
+		integerArgument("-n").validator((ValueValidator<Integer>) validator).parse("-n", "1");
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -117,6 +108,16 @@ public class TestValidators
 		integerArgument("-n").validator(new PositiveInteger()).defaultValue(-1).build();
 	}
 
+	@Test
+	public void testThatValidatorIsntCalledTooOften() throws ArgumentException
+	{
+		ProfilingValidator<Integer> profiler = new ProfilingValidator<Integer>();
+
+		integerArgument("-n").validator(profiler).repeated().parse("-n", "1", "-n", "-2");
+
+		assertThat(profiler.validationsMade).isEqualTo(2);
+	}
+
 	private static final class ProfilingValidator<T> implements ValueValidator<T>
 	{
 		int validationsMade;
@@ -126,16 +127,5 @@ public class TestValidators
 		{
 			validationsMade++;
 		}
-	}
-
-	@Test
-	public void testThatValidatorIsntCalledTooOften() throws ArgumentException
-	{
-		ProfilingValidator<Integer> profiler = new ProfilingValidator<Integer>();
-		Argument<List<Integer>> numbers = integerArgument("-n").validator(profiler).repeated().build();
-
-		ArgumentParser.forArguments(Arrays.<Argument<?>>asList(numbers)).parse("-n", "1", "-n", "-2");
-
-		assertThat(profiler.validationsMade).isEqualTo(2);
 	}
 }

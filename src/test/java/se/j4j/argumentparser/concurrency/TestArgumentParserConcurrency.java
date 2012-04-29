@@ -36,7 +36,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.internal.Comma;
+import se.j4j.argumentparser.stringsplitters.Comma;
 
 public class TestArgumentParserConcurrency
 {

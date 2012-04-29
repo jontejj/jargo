@@ -13,7 +13,6 @@ public class SecurityManagerDependencyTest
 	public static void main(String[] args)
 	{
 		// TODO: test this better
-		TestArgumentParserConcurrency test = new TestArgumentParserConcurrency();
 		System.setSecurityManager(new SecurityManager(){
 			@Override
 			public void checkPermission(Permission perm)
@@ -21,6 +20,7 @@ public class SecurityManagerDependencyTest
 				throw new SecurityException("No permissions given at all");
 			}
 		});
+		TestArgumentParserConcurrency test = new TestArgumentParserConcurrency();
 		test.test();
 	}
 }

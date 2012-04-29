@@ -8,7 +8,7 @@ import se.j4j.argumentparser.interfaces.ParsedValueCallback;
  * 
  * @param <T> the type of the parsed value
  */
-public final class NullCallback<T> implements ParsedValueCallback<T>
+public final class NoCallback<T> implements ParsedValueCallback<T>
 {
 	@SuppressWarnings("unchecked")
 	// Doesn't modify anything, i.e T is unused here
@@ -17,9 +17,9 @@ public final class NullCallback<T> implements ParsedValueCallback<T>
 		return (ParsedValueCallback<T>) INSTANCE;
 	}
 
-	private static final ParsedValueCallback<?> INSTANCE = new NullCallback<Object>();
+	private static final ParsedValueCallback<?> INSTANCE = new NoCallback<Object>();
 
-	private NullCallback()
+	private NoCallback()
 	{
 	}
 

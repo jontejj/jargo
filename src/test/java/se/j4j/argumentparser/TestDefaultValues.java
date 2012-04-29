@@ -11,12 +11,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.builders.RadixiableArgumentBuilder;
 import se.j4j.argumentparser.defaultproviders.NegativeValueProvider;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.interfaces.StringConverter;
-import se.j4j.argumentparser.internal.Comma;
+import se.j4j.argumentparser.stringsplitters.Comma;
 import se.j4j.argumentparser.validators.PositiveInteger;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -25,19 +24,14 @@ public class TestDefaultValues
 	@Test
 	public void testThatNonRequiredAndNonDefaultedIntegerArgumentDefaultsToZero() throws ArgumentException
 	{
-		Argument<Integer> number = integerArgument("-n").build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
-		assertThat(parsed.get(number)).isZero();
+		assertThat(integerArgument("-n").parse()).isZero();
 	}
 
 	@Test
 	public void testThatNonRequiredAndNonDefaultedRepeatedIntegerArgumentDefaultsToEmptyList() throws ArgumentException
 	{
-		Argument<List<Integer>> numbers = integerArgument("-n").repeated().build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse();
-		assertThat(parsed.get(numbers)).isEmpty();
+		List<Integer> numbers = integerArgument("-n").repeated().parse();
+		assertThat(numbers).isEmpty();
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -51,7 +45,7 @@ public class TestDefaultValues
 	@Test(expected = RuntimeException.class)
 	public void testThatInvalidDefaultValuesFromHandlersAreInvalidated() throws ArgumentException
 	{
-		Argument<Integer> number = customArgument(new StringConverter<Integer>(){
+		customArgument(new StringConverter<Integer>(){
 
 			@Override
 			public Integer convert(String argument) throws ArgumentException
@@ -70,50 +64,36 @@ public class TestDefaultValues
 			{
 				return -1;
 			}
-		}).validator(new PositiveInteger()).build();
-
-		ArgumentParser.forArguments(number).parse().get(number);
+		}).validator(new PositiveInteger()).parse();
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void testThatInvalidDefaultValueProviderValuesAreInvalidated() throws ArgumentException
 	{
-		Argument<Integer> number = integerArgument("-n").defaultValueProvider(new NegativeValueProvider()).validator(new PositiveInteger()).build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
 		// Throws because -1 (which is given by NegativeValueProvider) isn't
 		// positive
-		assertThat(parsed.get(number)).isZero();
+		integerArgument("-n").defaultValueProvider(new NegativeValueProvider()).validator(new PositiveInteger()).parse();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testThatDefaultValuesProvidedToRepeatedArgumentsAreImmutable() throws ArgumentException
 	{
-		Argument<List<Integer>> number = integerArgument("-n").repeated().defaultValue(asList(1, 2)).build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
 		// Should throw because defaultValue makes its argument Immutable
-		parsed.get(number).add(3);
+		integerArgument("-n").repeated().defaultValue(asList(1, 2)).parse().add(3);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testThatDefaultValuesProvidedToListArgumentsAreImmutable() throws ArgumentException
 	{
-		Argument<List<Integer>> number = integerArgument("-n").arity(2).defaultValue(asList(1, 2)).build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
 		// Should throw because defaultValue makes its argument Immutable
-		parsed.get(number).add(3);
+		integerArgument("-n").arity(2).defaultValue(asList(1, 2)).parse().add(3);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testThatDefaultValuesProvidedToSplitArgumentsAreImmutable() throws ArgumentException
 	{
-		Argument<List<Integer>> number = integerArgument("-n").splitWith(new Comma()).defaultValue(asList(1, 2)).build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
 		// Should throw because defaultValue makes its argument Immutable
-		parsed.get(number).add(3);
+		integerArgument("-n").splitWith(new Comma()).defaultValue(asList(1, 2)).parse().add(3);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -140,9 +120,7 @@ public class TestDefaultValues
 
 	private void testUnmodifiableDefaultList(Argument<List<Integer>> number) throws ArgumentException
 	{
-		ParsedArguments parsed = ArgumentParser.forArguments(number).parse();
-
-		List<Integer> defaultValue = parsed.get(number);
+		List<Integer> defaultValue = number.parse();
 		assertThat(defaultValue).isEqualTo(Arrays.asList(-1));
 		try
 		{

@@ -151,6 +151,9 @@ public final class ArgumentFactory
 	@Nonnull
 	public static OptionArgumentBuilder optionArgument(final @Nonnull String ... names)
 	{
+		// TODO: check names length, either enforce it by having the first
+		// argument a String and not part of the varargs or
+		// checkArgument(names.length > 0)
 		return new OptionArgumentBuilder().names(names).defaultValue(false);
 	}
 

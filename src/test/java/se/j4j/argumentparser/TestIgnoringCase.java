@@ -1,6 +1,5 @@
 package se.j4j.argumentparser;
 
-import static junit.framework.Assert.assertTrue;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
@@ -10,7 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class TestIgnoringCase
@@ -23,21 +21,19 @@ public class TestIgnoringCase
 
 		ArgumentParser parser = ArgumentParser.forArguments(help);
 
-		assertTrue("unhandled capital letter for ignore case argument", parser.parse("-H").get(help));
-		assertTrue(parser.parse("-HELP").get(help));
-		assertTrue(parser.parse("--help").get(help));
+		assertThat(parser.parse("-H").get(help)).as("unhandled capital letter for ignore case argument").isTrue();
+		assertThat(parser.parse("-HELP").get(help)).isTrue();
+		assertThat(parser.parse("--help").get(help)).isTrue();
 	}
 
 	@Test
 	public void testWithPropertyMap() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numbers = integerArgument("-n").asPropertyMap().ignoreCase().build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse("-nsmall=1", "-Nbig=5");
+		Map<String, Integer> numbers = integerArgument("-n").asPropertyMap().ignoreCase().parse("-nsmall=1", "-Nbig=5");
 
 		Map<String, Integer> expected = new HashMap<String, Integer>();
 		expected.put("small", 1);
 		expected.put("big", 5);
-		assertThat(parsed.get(numbers)).isEqualTo(expected);
+		assertThat(numbers).isEqualTo(expected);
 	}
 }

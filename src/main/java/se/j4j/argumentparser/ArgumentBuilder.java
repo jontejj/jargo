@@ -15,6 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.defaultproviders.ListProvider;
 import se.j4j.argumentparser.defaultproviders.NonLazyValueProvider;
+import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.handlers.OptionArgument;
 import se.j4j.argumentparser.handlers.internal.ArgumentSplitter;
@@ -27,11 +28,11 @@ import se.j4j.argumentparser.interfaces.ParsedValueCallback;
 import se.j4j.argumentparser.interfaces.ParsedValueFinalizer;
 import se.j4j.argumentparser.interfaces.StringSplitter;
 import se.j4j.argumentparser.interfaces.ValueValidator;
-import se.j4j.argumentparser.internal.Comma;
 import se.j4j.argumentparser.parsedvaluecallbacks.ListParsedValueCallback;
-import se.j4j.argumentparser.parsedvaluecallbacks.NullCallback;
+import se.j4j.argumentparser.parsedvaluecallbacks.NoCallback;
 import se.j4j.argumentparser.parsedvaluefinalizers.UnmodifiableListMaker;
 import se.j4j.argumentparser.parsedvaluefinalizers.UnmodifiableMapMaker;
+import se.j4j.argumentparser.stringsplitters.Comma;
 import se.j4j.argumentparser.validators.ListValidator;
 import se.j4j.argumentparser.validators.NullValidator;
 import se.j4j.argumentparser.validators.PositiveInteger;
@@ -66,7 +67,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nullable DefaultValueProvider<T> defaultValueProvider = null;
 	@Nonnull ValueValidator<T> validator = NullValidator.instance();
 	@Nullable ParsedValueFinalizer<T> parsedValueFinalizer = null;
-	@Nonnull ParsedValueCallback<T> parsedValueCallback = NullCallback.instance();
+	@Nonnull ParsedValueCallback<T> parsedValueCallback = NoCallback.instance();
 
 	/**
 	 * @param handler if null, you'll need to override {@link #handler()}, like
@@ -95,6 +96,27 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	public Argument<T> build()
 	{
 		return new Argument<T>(this);
+	}
+
+	/**
+	 * Parses command line arguments and returns the value of the argument built
+	 * by {@link #build()}.<br>
+	 * This is a shorthand method that should be used if only one
+	 * {@link Argument} is expected as it will result in an unnecessary
+	 * amount of {@link ArgumentParser} instance creations.
+	 * If several arguments are expected use
+	 * {@link ArgumentParser#forArguments(Argument...)} instead.
+	 * Especially if you're concerned about performance.
+	 * 
+	 * @param actualArguments the arguments from the command line
+	 * @return the parsed value from the <code>actualArguments</code>
+	 * @throws ArgumentException if actualArguments isn't compatible with this
+	 *             argument
+	 */
+	@Nullable
+	public T parse(@Nonnull String ... actualArguments) throws ArgumentException
+	{
+		return build().parse(actualArguments);
 	}
 
 	/**
@@ -309,6 +331,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * arguments such as:
 	 * -numbers 1,2,3 
 	 * where the resulting{@link List&lt;Integer&gt;} would contain 1, 2 & 3.
+	 * 
+	 * Doesn't allow empty lists.
 	 * </pre>
 	 * 
 	 * @param splitter a splitter

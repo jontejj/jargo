@@ -1,4 +1,4 @@
-package se.j4j.argumentparser.internal;
+package se.j4j.argumentparser.stringsplitters;
 
 import java.util.Arrays;
 import java.util.List;

@@ -12,20 +12,17 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.internal.Comma;
+import se.j4j.argumentparser.stringsplitters.Comma;
 
 public class TestStringSplitter
 {
 	@Test
 	public void testSplittingWithComma() throws ArgumentException
 	{
-		Argument<List<Integer>> numbers = integerArgument("-n").splitWith(new Comma()).build();
+		List<Integer> numbers = integerArgument("-n").splitWith(new Comma()).parse("-n", "1,2");
 
-		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse("-n", "1,2");
-
-		assertThat(parsed.get(numbers)).isEqualTo(asList(1, 2));
+		assertThat(numbers).isEqualTo(asList(1, 2));
 	}
 
 	/**
@@ -45,47 +42,37 @@ public class TestStringSplitter
 	@Test
 	public void testArityCombinedWithPropertyMap() throws ArgumentException
 	{
-		Argument<Map<String, List<Integer>>> numbers = integerArgument("-n").splitWith(new Comma()).asPropertyMap().build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse("-nsmall=1,2", "-nbig=3,4");
+		Map<String, List<Integer>> numbers = integerArgument("-n").splitWith(new Comma()).asPropertyMap().parse("-nsmall=1,2", "-nbig=3,4");
 
 		Map<String, List<Integer>> expected = new HashMap<String, List<Integer>>();
 		expected.put("small", asList(1, 2));
 		expected.put("big", asList(3, 4));
-		assertThat(parsed.get(numbers)).isEqualTo(expected);
+		assertThat(numbers).isEqualTo(expected);
 	}
 
 	@Test
 	public void testSplittingCombinedWithRepeating() throws ArgumentException
 	{
-		Argument<List<List<Integer>>> numbers = integerArgument("-n").separator("=").splitWith(new Comma()).repeated().build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse("-n=1,2", "-n=3,4");
+		List<List<Integer>> numbers = integerArgument("-n").separator("=").splitWith(new Comma()).repeated().parse("-n=1,2", "-n=3,4");
 
 		List<List<Integer>> expected = new ArrayList<List<Integer>>();
 		expected.add(asList(1, 2));
 		expected.add(asList(3, 4));
-		assertThat(parsed.get(numbers)).isEqualTo(expected);
+		assertThat(numbers).isEqualTo(expected);
 	}
 
 	@Test(expected = ArgumentException.class)
 	public void testSplittingWithNoArg() throws ArgumentException
 	{
-		Argument<List<Integer>> numbers = integerArgument("-n").splitWith(new Comma()).build();
-
-		ArgumentParser.forArguments(numbers).parse("-n");
+		integerArgument("-n").splitWith(new Comma()).parse("-n");
 	}
 
 	@Test
 	public void testThatListsWithSplitValuesAreUnmodifiable() throws ArgumentException
 	{
-		Argument<List<Integer>> numberList = integerArgument("-N").splitWith(new Comma()).build();
-		ArgumentParser parser = ArgumentParser.forArguments(numberList);
-
-		List<Integer> numbers = parser.parse("-N", "1,2").get(numberList);
+		List<Integer> numbers = integerArgument("-N").splitWith(new Comma()).parse("-N", "1,2");
 		try
 		{
-
 			numbers.add(3);
 			fail("a list of split values should be unmodifiable");
 		}

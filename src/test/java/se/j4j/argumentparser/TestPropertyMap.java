@@ -21,37 +21,29 @@ public class TestPropertyMap
 	@Test
 	public void testSeveralValues() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
+		Map<String, Integer> numberMap = integerArgument("-N").asPropertyMap().parse("-None=1", "-Ntwo=2");
 
-		ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-None=1", "-Ntwo=2");
-
-		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
-		assertThat(parsed.get(numberMap).get("two")).isEqualTo(2);
+		assertThat(numberMap.get("one")).isEqualTo(1);
+		assertThat(numberMap.get("two")).isEqualTo(2);
 	}
 
 	@Test
 	public void testStartsWithCollisionsForTwoSimiliarIdentifiers() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-NS", "-N").asPropertyMap().build();
+		Map<String, Integer> numberMap = integerArgument("-NS", "-N").asPropertyMap().parse("-None=1", "-NStwo=2");
 
-		ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-None=1", "-NStwo=2");
+		assertThat(numberMap.get("one")).isEqualTo(1);
+		assertThat(numberMap.get("two")).isEqualTo(2);
 
-		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
-		assertThat(parsed.get(numberMap).get("two")).isEqualTo(2);
+		numberMap = integerArgument("-N", "-NS").asPropertyMap().parse("-None=1", "-NStwo=2");
 
-		numberMap = integerArgument("-N", "-NS").asPropertyMap().build();
+		assertThat(numberMap.get("one")).isEqualTo(1);
+		assertThat(numberMap.get("Stwo")).isEqualTo(2);
 
-		parsed = ArgumentParser.forArguments(numberMap).parse("-None=1", "-NStwo=2");
+		numberMap = integerArgument("-N", "-D").asPropertyMap().parse("-Done=1", "-Ntwo=2");
 
-		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
-		assertThat(parsed.get(numberMap).get("Stwo")).isEqualTo(2);
-
-		numberMap = integerArgument("-N", "-D").asPropertyMap().build();
-
-		parsed = ArgumentParser.forArguments(numberMap).parse("-Done=1", "-Ntwo=2");
-
-		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
-		assertThat(parsed.get(numberMap).get("two")).isEqualTo(2);
+		assertThat(numberMap.get("one")).isEqualTo(1);
+		assertThat(numberMap.get("two")).isEqualTo(2);
 	}
 
 	@Test
@@ -77,18 +69,15 @@ public class TestPropertyMap
 	@Test(expected = InvalidArgument.class)
 	public void testInvalidationOfWrongSeparator() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
-
-		ArgumentParser.forArguments(numberMap).parse("-N3");
+		integerArgument("-N").asPropertyMap().parse("-N3");
 	}
 
 	@Test
 	public void testCustomSeparator() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-N").separator("/").asPropertyMap().build();
+		Map<String, Integer> numberMap = integerArgument("-N").separator("/").asPropertyMap().parse("-Nkey/3");
 
-		ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-Nkey/3");
-		assertThat(parsed.get(numberMap).get("key")).isEqualTo(3);
+		assertThat(numberMap.get("key")).isEqualTo(3);
 	}
 
 	@Test(expected = InvalidArgument.class)
@@ -107,20 +96,15 @@ public class TestPropertyMap
 	@Test(expected = InvalidArgument.class)
 	public void testValidationOfPropertyMapKeys() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> positiveArguments = integerArgument("-I").asPropertyMap().validator(new KeyValidator<Integer>("foo", "bar"))
-				.build();
-
-		ArgumentParser.forArguments(positiveArguments).parse("-Ifoo=10", "-Ibar=5", "-Izoo=9");
+		integerArgument("-I").asPropertyMap().validator(new KeyValidator<Integer>("foo", "bar")).parse("-Ifoo=10", "-Ibar=5", "-Izoo=9");
 	}
 
 	@Test
 	public void testThatRepeatedPropertyKeysAreInvalidatedBeforeParsed() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> positiveArguments = integerArgument("-I").asPropertyMap().build();
-
 		try
 		{
-			ArgumentParser.forArguments(positiveArguments).parse("-Ifoo=10", "-Ifoo=NotANumber");
+			integerArgument("-I").asPropertyMap().parse("-Ifoo=10", "-Ifoo=NotANumber");
 			fail("Repeated key (and invalid value) wasn't invalidated");
 		}
 		catch(UnhandledRepeatedArgument expected)
@@ -160,40 +144,30 @@ public class TestPropertyMap
 	@Test
 	public void testThatPropertyValuesDefaultToAnUnmodifiableEmptyMap() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
-		ArgumentParser parser = ArgumentParser.forArguments(numberMap);
+		Map<String, Integer> defaultMap = integerArgument("-N").asPropertyMap().parse();
 
-		Map<String, Integer> defaultMap = parser.parse().get(numberMap);
 		assertThat(defaultMap).isEmpty();
-
 		try
 		{
-
 			defaultMap.put("a", 42);
 			fail("the defaultMap should be unmodifiable");
 		}
 		catch(UnsupportedOperationException expected)
 		{
-
 		}
 	}
 
 	@Test
 	public void testThatPropertyMapsAreUnmodifiable() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
-		ArgumentParser parser = ArgumentParser.forArguments(numberMap);
-
-		Map<String, Integer> map = parser.parse("-None=1").get(numberMap);
+		Map<String, Integer> numberMap = integerArgument("-N").asPropertyMap().parse("-None=1");
 		try
 		{
-
-			map.put("two", 2);
+			numberMap.put("two", 2);
 			fail("a propertyMap should be unmodifiable");
 		}
 		catch(UnsupportedOperationException expected)
 		{
-
 		}
 	}
 }
