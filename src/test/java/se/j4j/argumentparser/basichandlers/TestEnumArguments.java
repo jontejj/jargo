@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentFactory;
-import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
 import se.j4j.argumentparser.internal.Usage;
@@ -24,10 +22,8 @@ public class TestEnumArguments
 	@Test
 	public void testEnumArgument() throws ArgumentException
 	{
-		Argument<Action> enumArgument = ArgumentFactory.enumArgument(Action.class).build();
-		ParsedArguments parsed = ArgumentParser.forArguments(enumArgument).parse("stop");
-
-		assertThat(parsed.get(enumArgument)).isEqualTo(Action.stop);
+		Action enumArgument = ArgumentFactory.enumArgument(Action.class).parse("stop");
+		assertThat(enumArgument).isEqualTo(Action.stop);
 	}
 
 	@Test
@@ -42,7 +38,6 @@ public class TestEnumArguments
 	@Test(expected = InvalidArgument.class)
 	public void testInvalidEnumArgument() throws ArgumentException
 	{
-		Argument<Action> enumArgument = ArgumentFactory.enumArgument(Action.class).build();
-		ArgumentParser.forArguments(enumArgument).parse("break");
+		ArgumentFactory.enumArgument(Action.class).parse("break");
 	}
 }

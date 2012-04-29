@@ -408,6 +408,25 @@ public final class ArgumentParser
 		{
 			return parsedArguments.toString();
 		}
+
+		@Override
+		public int hashCode()
+		{
+			return 31 + parsedArguments.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(this == obj)
+				return true;
+			if(obj == null)
+				return false;
+			if(getClass() != obj.getClass())
+				return false;
+			ParsedArguments other = (ParsedArguments) obj;
+			return parsedArguments.equals(other.parsedArguments);
+		}
 	}
 
 	/**
@@ -416,15 +435,15 @@ public final class ArgumentParser
 	@NotThreadSafe
 	public final class ParsedArgumentHolder
 	{
-		final Map<Argument<?>, Object> parsedArguments = new IdentityHashMap<Argument<?>, Object>();
-		final Set<Argument<?>> requiredArgumentsLeft = new HashSet<Argument<?>>(requiredArguments);
+		final @Nonnull Map<Argument<?>, Object> parsedArguments = new IdentityHashMap<Argument<?>, Object>();
+		final @Nonnull Set<Argument<?>> requiredArgumentsLeft = new HashSet<Argument<?>>(requiredArguments);
 		int unnamedArgumentsParsed = 0;
 
 		ParsedArgumentHolder()
 		{
 		}
 
-		public <T> void put(final Argument<T> definition, final T value)
+		public <T> void put(final @Nonnull Argument<T> definition, final @Nullable T value)
 		{
 			if(definition.isRequired())
 			{
@@ -439,7 +458,7 @@ public final class ArgumentParser
 
 		// Safe because put guarantees that the map is heterogeneous
 		@SuppressWarnings("unchecked")
-		<T> T getValue(final Argument<T> definition)
+		<T> T getValue(final @Nonnull Argument<T> definition)
 		{
 			Object value = parsedArguments.get(definition);
 			return (T) value;
@@ -449,6 +468,25 @@ public final class ArgumentParser
 		public String toString()
 		{
 			return parsedArguments.toString();
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return 31 + parsedArguments.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(this == obj)
+				return true;
+			if(obj == null)
+				return false;
+			if(getClass() != obj.getClass())
+				return false;
+			ParsedArgumentHolder other = (ParsedArgumentHolder) obj;
+			return parsedArguments.equals(other.parsedArguments);
 		}
 	}
 

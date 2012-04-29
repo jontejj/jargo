@@ -98,9 +98,13 @@ public final class Argument<T>
 	}
 
 	/**
-	 * A shorthand method that should be used if only one {@link Argument} is
-	 * expected. If several is expected use
+	 * Parses command line arguments and returns the value of this argument.<br>
+	 * This is a shorthand method that should be used if only one
+	 * {@link Argument} is expected as it will result in an unnecessary
+	 * amount of {@link ArgumentParser} instance creations.
+	 * If several arguments are expected use
 	 * {@link ArgumentParser#forArguments(Argument...)} instead.
+	 * Especially if you're concerned about performance.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the <code>actualArguments</code>
@@ -110,6 +114,7 @@ public final class Argument<T>
 	@Nullable
 	public T parse(@Nonnull String ... actualArguments) throws ArgumentException
 	{
+		// TODO: consider saving the ArgumentParser instance
 		return ArgumentParser.forArguments(this).parse(actualArguments).get(this);
 	}
 

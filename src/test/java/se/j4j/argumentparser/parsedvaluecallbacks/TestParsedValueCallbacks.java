@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class TestParsedValueCallbacks
@@ -35,21 +34,16 @@ public class TestParsedValueCallbacks
 		PrintStringsWhenParsed printer = new PrintStringsWhenParsed();
 
 		// TODO: test Splitter
-		Argument<List<String>> strings = stringArgument().parsedValueCallback(printer).consumeAll().build();
-
-		ParsedArguments parsed = ArgumentParser.forArguments(strings).parse("hello", "world");
+		List<String> strings = stringArgument().parsedValueCallback(printer).consumeAll().parse("hello", "world");
 
 		assertThat(printer.printQueue).isEqualTo(Arrays.asList("hello", "world"));
-
-		List<String> actual = parsed.get(strings);
 		try
 		{
-			actual.add("foo");
+			strings.add("foo");
 			fail("a list of repeated values should be unmodifiable");
 		}
 		catch(UnsupportedOperationException expected)
 		{
-
 		}
 	}
 }

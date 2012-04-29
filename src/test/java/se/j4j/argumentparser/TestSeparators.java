@@ -38,10 +38,8 @@ public class TestSeparators
 	@Test
 	public void testArityCombinedWithSeperator() throws ArgumentException
 	{
-		Argument<List<Integer>> numbers = integerArgument("-numbers").arity(3).separator("=").build();
+		List<Integer> numbers = integerArgument("-numbers").arity(3).separator("=").parse("-numbers=1", "2", "3");
 
-		ArgumentParser parser = ArgumentParser.forArguments(numbers);
-
-		assertThat(parser.parse("-numbers=1", "2", "3").get(numbers)).as("Should be three numbers").isEqualTo(Arrays.asList(1, 2, 3));
+		assertThat(numbers).isEqualTo(Arrays.asList(1, 2, 3));
 	}
 }
