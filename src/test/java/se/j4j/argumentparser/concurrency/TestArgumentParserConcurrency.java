@@ -15,6 +15,7 @@ import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.shortArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CustomHandlers.DateTimeHandler.dateArgument;
+import static se.j4j.argumentparser.StringSplitters.comma;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -36,7 +37,6 @@ import org.junit.Test;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.stringsplitters.Comma;
 
 public class TestArgumentParserConcurrency
 {
@@ -72,7 +72,7 @@ public class TestArgumentParserConcurrency
 
 	final Argument<List<Integer>> repeatedArgument = integerArgument("--repeated").repeated().build();
 
-	final Argument<List<Float>> splittedArgument = floatArgument("--split").separator("=").splitWith(new Comma()).build();
+	final Argument<List<Float>> splittedArgument = floatArgument("--split").separator("=").splitWith(comma()).build();
 
 	// The shared instance that the different threads will use
 	final ArgumentParser parser = ArgumentParser.forArguments(	greetingPhrase, enableLogging, port, longArgument, bigInteger, date, doubleArgument,

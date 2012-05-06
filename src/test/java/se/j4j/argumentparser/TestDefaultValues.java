@@ -5,18 +5,17 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.customArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.Limiters.positiveInteger;
+import static se.j4j.argumentparser.StringSplitters.comma;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.builders.RadixiableArgumentBuilder;
-import se.j4j.argumentparser.defaultproviders.NegativeValueProvider;
+import se.j4j.argumentparser.ArgumentFactory.RadixiableArgumentBuilder;
 import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.interfaces.StringConverter;
-import se.j4j.argumentparser.stringsplitters.Comma;
-import se.j4j.argumentparser.validators.PositiveInteger;
+import se.j4j.argumentparser.valueproviders.NegativeValueProvider;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestDefaultValues
@@ -39,7 +38,7 @@ public class TestDefaultValues
 			justification = "As -1 isn't lazily constructed it can be verified already in the build phase")
 	public void testThatInvalidDefaultValuesAreInvalidated()
 	{
-		integerArgument("-n").defaultValue(-1).validator(new PositiveInteger()).build();
+		integerArgument("-n").defaultValue(-1).limitTo(positiveInteger()).build();
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -64,7 +63,7 @@ public class TestDefaultValues
 			{
 				return -1;
 			}
-		}).validator(new PositiveInteger()).parse();
+		}).limitTo(positiveInteger()).parse();
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -72,7 +71,7 @@ public class TestDefaultValues
 	{
 		// Throws because -1 (which is given by NegativeValueProvider) isn't
 		// positive
-		integerArgument("-n").defaultValueProvider(new NegativeValueProvider()).validator(new PositiveInteger()).parse();
+		integerArgument("-n").defaultValueProvider(new NegativeValueProvider()).limitTo(positiveInteger()).parse();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -93,7 +92,7 @@ public class TestDefaultValues
 	public void testThatDefaultValuesProvidedToSplitArgumentsAreImmutable() throws ArgumentException
 	{
 		// Should throw because defaultValue makes its argument Immutable
-		integerArgument("-n").splitWith(new Comma()).defaultValue(asList(1, 2)).parse().add(3);
+		integerArgument("-n").splitWith(comma()).defaultValue(asList(1, 2)).parse().add(3);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -113,7 +112,7 @@ public class TestDefaultValues
 
 		testUnmodifiableDefaultList(number);
 
-		number = builder.splitWith(new Comma()).build();
+		number = builder.splitWith(comma()).build();
 
 		testUnmodifiableDefaultList(number);
 	}

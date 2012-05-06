@@ -6,7 +6,7 @@ import static java.util.Collections.unmodifiableSet;
 import java.util.HashSet;
 import java.util.Set;
 
-import se.j4j.argumentparser.interfaces.StringConverter;
+import se.j4j.argumentparser.StringConverter;
 
 public class UniqueLetters implements StringConverter<Set<Character>>
 {

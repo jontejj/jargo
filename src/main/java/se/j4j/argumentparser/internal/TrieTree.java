@@ -13,35 +13,35 @@ import java.util.Set;
  * 
  * @param <E> the type of values stored in the tree
  */
-public class TrieTree<E>
+public final class TrieTree<E>
 {
-	int size;
-	Entry<E> root;
+	private int size;
+	private final Entry<E> root;
 
 	/**
 	 * A entry represents a node in the tree.
 	 */
-	private static class Entry<E>
+	private static final class Entry<E>
 	{
 		/**
 		 * the value of this node
 		 */
-		Character index;
+		private final Character index;
 		/**
 		 * If true this node represents a value
 		 */
-		boolean isValue;
+		private boolean isValue;
 
-		E value;
+		private E value;
 		/**
 		 * The nodes that belongs to this Node
 		 */
-		Map<Character, Entry<E>> children;
+		private Map<Character, Entry<E>> children;
 
 		/**
 		 * Used to build strings from an index in the tree
 		 */
-		Entry<E> parent;
+		private final Entry<E> parent;
 
 		private Entry(final Character index, final Entry<E> parent)
 		{
@@ -264,8 +264,6 @@ public class TrieTree<E>
 		public E getLastMatch(final CharSequence key)
 		{
 			Entry<E> child = findLastChild(key);
-			if(child == null)
-				return null;
 			if(child.isValue)
 				return child.value;
 			return null;
@@ -286,7 +284,7 @@ public class TrieTree<E>
 	 * @param key
 	 * @return true if the given key can work as a key in a TrieTree
 	 */
-	public static final boolean validKey(final CharSequence key)
+	public static boolean validKey(final CharSequence key)
 	{
 		return key != null && key.length() > 0;
 	}
@@ -402,7 +400,7 @@ public class TrieTree<E>
 	 * 
 	 * @return
 	 */
-	private final Entry<E> createRoot()
+	private Entry<E> createRoot()
 	{
 		return new Entry<E>('r', null);
 	}

@@ -39,5 +39,7 @@ public enum ArgumentExceptionCodes
 	 * May be thrown by {@link Argument#parse(java.util.ListIterator)} which
 	 * considers it's received argument to be invalid
 	 */
-	INVALID_PARAMTER
+	INVALID_PARAMETER,
+
+	PARAMETER_VALUE_NOT_WITHIN_LIMITS
 }

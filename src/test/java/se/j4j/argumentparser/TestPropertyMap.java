@@ -3,17 +3,20 @@ package se.j4j.argumentparser;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.Limiters.positiveInteger;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.Validators.KeyValidator;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
+import se.j4j.argumentparser.exceptions.LimitException;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.validators.PositiveInteger;
+import se.j4j.argumentparser.limiters.KeyLimiter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestPropertyMap
@@ -80,10 +83,10 @@ public class TestPropertyMap
 		assertThat(numberMap.get("key")).isEqualTo(3);
 	}
 
-	@Test(expected = InvalidArgument.class)
-	public void testValidationOfPropertyValues() throws ArgumentException
+	@Test(expected = LimitException.class)
+	public void testLimitationOfPropertyValues() throws ArgumentException
 	{
-		Argument<Map<String, Integer>> numberMap = integerArgument("-N").validator(new PositiveInteger()).asPropertyMap().build();
+		Argument<Map<String, Integer>> numberMap = integerArgument("-N").limitTo(positiveInteger()).asPropertyMap().build();
 
 		ArgumentParser parser = ArgumentParser.forArguments(numberMap);
 		ParsedArguments parsed = parser.parse("-None=1");
@@ -93,10 +96,10 @@ public class TestPropertyMap
 		parsed = parser.parse("-Nminus=-1");
 	}
 
-	@Test(expected = InvalidArgument.class)
-	public void testValidationOfPropertyMapKeys() throws ArgumentException
+	@Test(expected = LimitException.class)
+	public void testLimitationOfPropertyMapKeys() throws ArgumentException
 	{
-		integerArgument("-I").asPropertyMap().validator(new KeyValidator<Integer>("foo", "bar")).parse("-Ifoo=10", "-Ibar=5", "-Izoo=9");
+		integerArgument("-I").asPropertyMap().limitTo(new KeyLimiter<Integer>("foo", "bar")).parse("-Ifoo=10", "-Ibar=5", "-Izoo=9");
 	}
 
 	@Test
@@ -105,7 +108,7 @@ public class TestPropertyMap
 		try
 		{
 			integerArgument("-I").asPropertyMap().parse("-Ifoo=10", "-Ifoo=NotANumber");
-			fail("Repeated key (and invalid value) wasn't invalidated");
+			fail("Repeated key (and limited value) wasn't invalidated");
 		}
 		catch(UnhandledRepeatedArgument expected)
 		{
@@ -114,10 +117,10 @@ public class TestPropertyMap
 	}
 
 	@Test
-	public void testValidationOfPropertyMapKeysAndValues()
+	public void testLimitationOfPropertyMapKeysAndValues()
 	{
-		Argument<Map<String, Integer>> positiveArguments = integerArgument("-I").validator(new PositiveInteger()).asPropertyMap()
-				.validator(new KeyValidator<Integer>("foo", "bar")).build();
+		Argument<Map<String, Integer>> positiveArguments = integerArgument("-I").limitTo(positiveInteger()).asPropertyMap()
+				.limitTo(new KeyLimiter<Integer>("foo", "bar")).build();
 
 		ArgumentParser parser = ArgumentParser.forArguments(positiveArguments);
 
@@ -165,6 +168,28 @@ public class TestPropertyMap
 		{
 			numberMap.put("two", 2);
 			fail("a propertyMap should be unmodifiable");
+		}
+		catch(UnsupportedOperationException expected)
+		{
+		}
+	}
+
+	@Test
+	public void testThatPropertyMapsWithRepeatedValuesAreUnmodifiable() throws ArgumentException
+	{
+		Map<String, List<Integer>> numberMap = integerArgument("-N").repeated().asPropertyMap().parse("-Nfoo=1", "-Nfoo=2");
+		try
+		{
+			numberMap.put("bar", Arrays.asList(1, 2));
+			fail("a propertyMap should be unmodifiable");
+		}
+		catch(UnsupportedOperationException expected)
+		{
+		}
+		try
+		{
+			numberMap.get("foo").add(3);
+			fail("a list inside a propertyMap should be unmodifiable");
 		}
 		catch(UnsupportedOperationException expected)
 		{

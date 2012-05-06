@@ -4,10 +4,10 @@ import static se.j4j.argumentparser.ArgumentFactory.customArgument;
 
 import org.joda.time.DateTime;
 
-import se.j4j.argumentparser.builders.DefaultArgumentBuilder;
+import se.j4j.argumentparser.StringConverter;
+import se.j4j.argumentparser.ArgumentFactory.DefaultArgumentBuilder;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
-import se.j4j.argumentparser.interfaces.StringConverter;
 
 public class DateTimeHandler implements StringConverter<DateTime>
 {

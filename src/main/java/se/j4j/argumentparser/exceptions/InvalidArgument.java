@@ -9,7 +9,7 @@ public class InvalidArgument extends ArgumentException
 
 	protected InvalidArgument(final String explanation, final String invalidValue)
 	{
-		super(ArgumentExceptionCodes.INVALID_PARAMTER);
+		super(ArgumentExceptionCodes.INVALID_PARAMETER);
 		this.explanation = explanation;
 		this.invalidValue = invalidValue;
 	}

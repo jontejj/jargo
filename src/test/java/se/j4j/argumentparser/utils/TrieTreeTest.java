@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,7 +56,7 @@ public class TrieTreeTest
 		// Make sure the children was left intact
 		assertTrue("\"himmi\" did not exist in tree" + tree, tree.contains("himmi"));
 
-		// Clean up parents because they haven't children
+		// Clean up parents because they have no children
 		assertTrue("Failed to delete \"himmi\" from " + tree, tree.delete("himmi"));
 
 		assertFalse("Deleted non-existing object \"Bye\" from " + tree, tree.delete("Bye"));
@@ -69,6 +70,7 @@ public class TrieTreeTest
 		assertNull(tree.get("Bye"));
 		assertNull(tree.get("hell"));
 		assertEquals(new HashSet<String>(asList("hello", "world")), tree.keys());
+		assertThat(tree.values()).isEqualTo(asList(world, hello));
 
 		// TODO: what happens if an item is removed during a tree.keys()
 		// operation?
@@ -83,6 +85,7 @@ public class TrieTreeTest
 		tree.set("name=", value);
 
 		assertEquals(value, tree.getLastMatch("name=value"));
+		assertThat(tree.getLastMatch("")).isNull();
 	}
 
 	@Test(expected = IllegalArgumentException.class)

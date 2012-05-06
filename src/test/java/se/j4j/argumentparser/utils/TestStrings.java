@@ -7,13 +7,16 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.internal.StringComparison;
+import se.j4j.argumentparser.internal.StringsUtil;
+
 public class TestStrings
 {
 	@Test
 	public void testAppendSpaces()
 	{
 		StringBuilder builder = new StringBuilder();
-		Strings.appendSpaces(5, builder);
+		StringsUtil.appendSpaces(5, builder);
 		assertThat(builder.toString()).isEqualTo("     ");
 	}
 
@@ -30,6 +33,6 @@ public class TestStrings
 	public void testToLowerCase()
 	{
 		List<String> strings = Arrays.asList("ABC", "Def");
-		assertThat(Strings.toLowerCase(strings)).isEqualTo(Arrays.asList("abc", "def"));
+		assertThat(StringsUtil.toLowerCase(strings)).isEqualTo(Arrays.asList("abc", "def"));
 	}
 }
