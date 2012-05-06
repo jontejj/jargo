@@ -5,6 +5,7 @@ import static se.j4j.argumentparser.ArgumentFactory.bigIntegerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
 import static se.j4j.argumentparser.ArgumentFactory.charArgument;
+import static se.j4j.argumentparser.ArgumentFactory.customArgument;
 import static se.j4j.argumentparser.ArgumentFactory.doubleArgument;
 import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
@@ -13,6 +14,7 @@ import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.shortArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CustomHandlers.DateTimeHandler.dateArgument;
+import static se.j4j.argumentparser.StringSplitters.comma;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -23,9 +25,11 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import se.j4j.argumentparser.CustomHandlers.HostPort;
+import se.j4j.argumentparser.CustomHandlers.HostPortArgument;
 import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.internal.Usage;
-import se.j4j.argumentparser.utils.Lines;
+import se.j4j.argumentparser.internal.Lines;
+import se.j4j.argumentparser.utils.UsageTexts;
 
 /**
  * @formatter:off
@@ -79,7 +83,7 @@ public class TestUsageTexts
 
 		Argument<Map<String, Integer>> defaultingMap = integerArgument("-N").asPropertyMap().defaultValue(defaults).build();
 
-		String usage = Usage.forSingleArgument(defaultingMap);
+		String usage = defaultingMap.toString();
 		assertThat(usage).contains("Default: Hello -> 1, World -> 42");
 
 	}
@@ -91,7 +95,7 @@ public class TestUsageTexts
 
 		Argument<String> greetingPhrase = stringArgument("-s").required().description("A greeting phrase to greet new connections with").build();
 
-		String usage = ArgumentParser.forArguments(greetingPhrase, enableLogging).usage("RequiredArgumentDescription").toString();
+		String usage = ArgumentParser.forArguments(greetingPhrase, enableLogging).usage("RequiredArgumentDescription");
 
 		assertThat(usage).contains("-l, --enable-logging    Output debug information to standard out");
 		assertThat(usage).contains("-s <string>             A greeting phrase to greet new connections with [Required]");
@@ -106,7 +110,7 @@ public class TestUsageTexts
 		Argument<List<String>> greetingPhrases = stringArgument("-s").required().repeated()
 				.description("A greeting phrase to greet new connections with").build();
 
-		String usage = ArgumentParser.forArguments(greetingPhrases, enableLogging).usage("RepeatedArgumentDescription").toString();
+		String usage = ArgumentParser.forArguments(greetingPhrases, enableLogging).usage("RepeatedArgumentDescription");
 
 		assertThat(usage).contains("-l, --enable-logging    Output debug information to standard out");
 		assertThat(usage).contains("-s <string>             A greeting phrase to greet new connections with [Required] [Supports Multiple occurences]");
@@ -116,14 +120,14 @@ public class TestUsageTexts
 	public void testUsageForNoArguments()
 	{
 		// TODO: add possibility to add a description of the program as a whole
-		String usage = ArgumentParser.forArguments().usage("NoArguments").toString();
+		String usage = ArgumentParser.forArguments().usage("NoArguments");
 		assertThat(usage).isEqualTo("Usage: NoArguments");
 	}
 
 	@Test
 	public void testUsageWithArguments()
 	{
-		String usage = ArgumentParser.forArguments(stringArgument().build()).usage("SomeArguments").toString();
+		String usage = ArgumentParser.forArguments(stringArgument().build()).usage("SomeArguments");
 		assertThat(usage).startsWith("Usage: SomeArguments [Options]");
 	}
 
@@ -142,7 +146,7 @@ public class TestUsageTexts
 	@Test
 	public void testUsageTextForDefaultEmptyList()
 	{
-		String usage = ArgumentParser.forArguments(stringArgument().arity(2).build()).usage("DefaultEmptyList").toString();
+		String usage = ArgumentParser.forArguments(stringArgument().arity(2).build()).usage("DefaultEmptyList");
 		assertThat(usage).contains("Default: Empty list");
 	}
 	
@@ -150,7 +154,38 @@ public class TestUsageTexts
 	public void testUsageTextForDefaultList()
 	{
 		Argument<List<Integer>> arg = integerArgument().defaultValue(1).repeated().build();
-		String usage = ArgumentParser.forArguments(arg).usage("DefaultList").toString();
+		String usage = ArgumentParser.forArguments(arg).usage("DefaultList");
 		assertThat(usage).contains("Default: [1]");
+	}
+	
+	@Test
+	public void testUsageTextForSplitArguments()
+	{
+		Argument<List<Integer>> arg = integerArgument().splitWith(comma()).build();
+		String usage = ArgumentParser.forArguments(arg).usage("SplitArgs");
+		assertThat(usage).contains("<integer>: -2147483648 to 2147483647 (decimal), separated by a comma");
+	}
+	
+	@Test
+	public void testEmptyMetaDescription()
+	{
+		Argument<HostPort> arg = customArgument(new HostPortArgument()).description("port:host").build();
+		String usage = ArgumentParser.forArguments(arg).usage("EmptyMeta");
+		//Valid input is the place holder for <meta>
+		assertThat(usage).contains("Valid input: port:host");
+	}
+	
+	
+	@Test
+	public void testSortingOrderForIndexedArguments()
+	{
+		Argument<String> indexOne = stringArgument().description("IndexOne").build();
+		Argument<String> indexTwo = stringArgument().description("IndexTwo").build();
+		Argument<String> indexThree = stringArgument().description("IndexThree").build();
+		Argument<String> namedOne = stringArgument("-S").build();
+		Argument<String> namedTwo = stringArgument("-T").build();
+		String usage = ArgumentParser.forArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage("SortingOfIndexedArguments");
+
+		assertThat(usage).isEqualTo(UsageTexts.get("indexedArgumentsSortingOrder.txt"));
 	}
 }

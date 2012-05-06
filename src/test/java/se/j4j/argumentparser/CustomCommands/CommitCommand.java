@@ -10,7 +10,7 @@ import java.util.List;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.handlers.CommandArgument;
+import se.j4j.argumentparser.CommandArgument;
 
 import com.google.common.collect.Lists;
 
@@ -34,13 +34,13 @@ public class CommitCommand extends CommandArgument
 	}
 
 	@Override
-	public void handle(final ParsedArguments parsedArguments)
+	protected void handle(final ParsedArguments parsedArguments)
 	{
 		repository.commits.add(new Commit(parsedArguments));
 	}
 
 	@Override
-	public String commandName()
+	protected String commandName()
 	{
 		return "commit";
 	}

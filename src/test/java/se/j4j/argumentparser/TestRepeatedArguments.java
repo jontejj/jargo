@@ -3,6 +3,8 @@ package se.j4j.argumentparser;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.Limiters.positiveInteger;
+import static se.j4j.argumentparser.StringSplitters.comma;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +15,6 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.stringsplitters.Comma;
-import se.j4j.argumentparser.validators.PositiveInteger;
 
 public class TestRepeatedArguments
 {
@@ -80,7 +80,7 @@ public class TestRepeatedArguments
 	@Test
 	public void testRepeatedAndSplitPropertyValues() throws ArgumentException
 	{
-		Map<String, List<List<Integer>>> numberMap = integerArgument("-N").splitWith(new Comma()).repeated().asPropertyMap()
+		Map<String, List<List<Integer>>> numberMap = integerArgument("-N").splitWith(comma()).repeated().asPropertyMap()
 				.parse("-Nnumber=1,2", "-Nnumber=3,4");
 
 		List<List<Integer>> expected = new ArrayList<List<Integer>>();
@@ -99,7 +99,7 @@ public class TestRepeatedArguments
 	@Test(expected = UnhandledRepeatedArgument.class)
 	public void testInvalidValuesShouldNotBeParsedIfRepeatedArgumentsAreNotAllowed() throws ArgumentException
 	{
-		integerArgument("-n").validator(new PositiveInteger()).parse("-n", "1", "-n", "-2");
+		integerArgument("-n").limitTo(positiveInteger()).parse("-n", "1", "-n", "-2");
 	}
 
 	@Test

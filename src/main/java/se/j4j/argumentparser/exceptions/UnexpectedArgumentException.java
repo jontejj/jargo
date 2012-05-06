@@ -6,12 +6,12 @@ import java.util.ListIterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class UnexpectedArgumentException extends ArgumentException
+public final class UnexpectedArgumentException extends ArgumentException
 {
-	final String unexpectedArgument;
-	final String previousArgument;
+	private final String unexpectedArgument;
+	private final String previousArgument;
 
-	private UnexpectedArgumentException(final @Nonnull String unexpectedArgument, final @Nullable String previousArgument)
+	private UnexpectedArgumentException(@Nonnull final String unexpectedArgument, @Nullable final String previousArgument)
 	{
 		super(ArgumentExceptionCodes.UNHANDLED_PARAMETER);
 		this.unexpectedArgument = unexpectedArgument;
@@ -19,7 +19,7 @@ public class UnexpectedArgumentException extends ArgumentException
 	}
 
 	@Nonnull
-	public static UnexpectedArgumentException unexpectedArgument(final @Nonnull ListIterator<String> arguments)
+	public static UnexpectedArgumentException unexpectedArgument(@Nonnull final ListIterator<String> arguments)
 	{
 		String unexpectedArgument = arguments.previous();
 		String previousArgument = null;

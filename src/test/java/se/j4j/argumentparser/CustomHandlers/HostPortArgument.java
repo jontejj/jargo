@@ -1,16 +1,10 @@
 package se.j4j.argumentparser.CustomHandlers;
 
-import se.j4j.argumentparser.handlers.OneParameterArgument;
+import se.j4j.argumentparser.StringConverter;
+import se.j4j.argumentparser.exceptions.ArgumentException;
 
-public class HostPortArgument extends OneParameterArgument<HostPort>
+public class HostPortArgument implements StringConverter<HostPort>
 {
-	@Override
-	public HostPort parse(final String value)
-	{
-		String[] s = value.split(":");
-		return new HostPort(s[0], Integer.parseInt(s[1]));
-	}
-
 	@Override
 	public String descriptionOfValidValues()
 	{
@@ -21,6 +15,13 @@ public class HostPortArgument extends OneParameterArgument<HostPort>
 	public HostPort defaultValue()
 	{
 		return new HostPort("localhost", 8080);
+	}
+
+	@Override
+	public HostPort convert(String argument) throws ArgumentException
+	{
+		String[] s = argument.split(":");
+		return new HostPort(s[0], Integer.parseInt(s[1]));
 	}
 
 }

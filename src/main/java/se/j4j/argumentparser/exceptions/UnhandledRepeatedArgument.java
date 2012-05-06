@@ -6,7 +6,7 @@ import javax.annotation.CheckReturnValue;
 
 import se.j4j.argumentparser.Argument;
 
-public class UnhandledRepeatedArgument extends ArgumentException
+public final class UnhandledRepeatedArgument extends ArgumentException
 {
 	private final Object reason;
 

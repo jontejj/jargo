@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.builders.DefaultArgumentBuilder;
 import se.j4j.argumentparser.exceptions.ArgumentException;
 import se.j4j.argumentparser.exceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.exceptions.InvalidArgument;
@@ -165,13 +165,6 @@ public class TestArgumentParser
 		assertThat(number).isNull();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = {"NP_NONNULL_PARAM_VIOLATION", "RV_RETURN_VALUE_IGNORED"}, justification = "Expecting fail-fast during construction")
-	public void testNullHandler()
-	{
-		new DefaultArgumentBuilder<Integer>(null).build();
-	}
-
 	@Test
 	public void testToString() throws ArgumentException
 	{
@@ -202,10 +195,30 @@ public class TestArgumentParser
 
 		Argument<Integer> number = integerArgument("--number").build();
 
-		ParsedArguments listResult = ArgumentParser.forArguments(number).parse(Arrays.asList(args));
+		ParsedArguments listResult = ArgumentParser.forArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args));
 		ParsedArguments arrayResult = ArgumentParser.forArguments(number).parse(args);
 
 		assertThat(listResult).isEqualTo(arrayResult);
+	}
+
+	@Test
+	public void testEqualsAndHashcodeForArgumentParser() throws ArgumentException
+	{
+		Argument<Integer> number = integerArgument("--number").build();
+
+		ArgumentParser parser = ArgumentParser.forArguments(number);
+		ParsedArguments parsedArguments = parser.parse();
+
+		assertThat(parsedArguments).isNotEqualTo(null);
+		assertThat(parsedArguments).isEqualTo(parsedArguments);
+
+		ParsedArgumentHolder holder = parser.new ParsedArgumentHolder();
+		assertThat(holder).isNotEqualTo(null);
+		assertThat(holder).isEqualTo(holder);
+
+		ParsedArguments parsedArgumentsTwo = parser.parse();
+
+		assertThat(parsedArguments.hashCode()).isEqualTo(parsedArgumentsTwo.hashCode());
 	}
 
 	/**

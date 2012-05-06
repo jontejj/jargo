@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.utils.Lines;
+import se.j4j.argumentparser.internal.Lines;
 
 public class ArgumentException extends Exception
 {
@@ -41,13 +41,12 @@ public class ArgumentException extends Exception
 
 	public String getUsage(String programName)
 	{
-		String usage = originParser != null ? originParser.usage(programName).toString() : "";
-		return usage;
+		return originParser != null ? originParser.usage(programName) : "";
 	}
 
 	public String getMessageAndUsage(String programName)
 	{
-		return getMessage() + Lines.NEWLINE + getUsage(programName);
+		return getMessage() + Lines.NEWLINE + Lines.NEWLINE + getUsage(programName);
 	}
 
 	public Argument<?> errorneousArgument()

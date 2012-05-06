@@ -1,14 +1,19 @@
 package se.j4j.argumentparser;
 
-import static se.j4j.argumentparser.utils.ListUtil.copy;
+import static com.google.common.base.Predicates.in;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Math.max;
+import static se.j4j.argumentparser.internal.ListUtil.copy;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,13 +24,19 @@ import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.InvalidArgument;
+import se.j4j.argumentparser.exceptions.LimitException;
 import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.exceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.interfaces.ArgumentHandler;
+import se.j4j.argumentparser.internal.Lines;
+import se.j4j.argumentparser.internal.StringsUtil;
 import se.j4j.argumentparser.internal.TrieTree;
-import se.j4j.argumentparser.internal.Usage;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 @Immutable
 public final class ArgumentParser
@@ -74,7 +85,7 @@ public final class ArgumentParser
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static ArgumentParser forArguments(final @Nonnull List<Argument<?>> argumentDefinitions)
+	public static ArgumentParser forArguments(@Nonnull final List<Argument<?>> argumentDefinitions)
 	{
 		return new ArgumentParser(argumentDefinitions);
 	}
@@ -87,22 +98,22 @@ public final class ArgumentParser
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static ArgumentParser forArguments(final @Nonnull Argument<?> ... argumentDefinitions)
+	public static ArgumentParser forArguments(@Nonnull final Argument<?> ... argumentDefinitions)
 	{
 		return new ArgumentParser(Arrays.asList(argumentDefinitions));
 	}
 
-	private ArgumentParser(final @Nonnull List<Argument<?>> argumentDefinitions)
+	private ArgumentParser(@Nonnull final List<Argument<?>> argumentDefinitions)
 	{
-		namedArguments = new HashMap<String, Argument<?>>(argumentDefinitions.size());
-		indexedArguments = new ArrayList<Argument<?>>(argumentDefinitions.size());
+		namedArguments = Maps.newHashMapWithExpectedSize(argumentDefinitions.size());
+		indexedArguments = Lists.newArrayListWithExpectedSize(argumentDefinitions.size());
 		specialSeparatorArguments = TrieTree.newTree();
-		ignoreCaseArguments = new HashMap<String, Argument<?>>();
+		ignoreCaseArguments = Maps.newHashMap();
 		ignoreCaseSpecialSeparatorArguments = TrieTree.newTree();
-		requiredArguments = new HashSet<Argument<?>>(argumentDefinitions.size());
+		requiredArguments = Sets.newHashSetWithExpectedSize(argumentDefinitions.size());
 		propertyMapArguments = TrieTree.newTree();
 		ignoreCasePropertyMapArguments = TrieTree.newTree();
-		allArguments = new HashSet<Argument<?>>(argumentDefinitions.size());
+		allArguments = Sets.newHashSetWithExpectedSize(argumentDefinitions.size());
 		for(Argument<?> definition : argumentDefinitions)
 		{
 			addArgumentDefinition(definition);
@@ -112,33 +123,33 @@ public final class ArgumentParser
 	/**
 	 * A list where arguments created without names is put
 	 */
-	private final @Nonnull List<Argument<?>> indexedArguments;
+	@Nonnull private final List<Argument<?>> indexedArguments;
 
 	/**
 	 * A map containing both short-named and long-named arguments
 	 */
-	private final @Nonnull Map<String, Argument<?>> namedArguments;
+	@Nonnull private final Map<String, Argument<?>> namedArguments;
 
 	/**
 	 * A map with arguments that has special {@link Argument#separator()}s
 	 */
-	private final @Nonnull TrieTree<Argument<?>> specialSeparatorArguments;
+	@Nonnull private final TrieTree<Argument<?>> specialSeparatorArguments;
 
 	/**
 	 * Map for arguments that's {@link Argument#isIgnoringCase()}.
 	 * Stores it's keys with lower case.
 	 */
-	private final @Nonnull Map<String, Argument<?>> ignoreCaseArguments;
+	@Nonnull private final Map<String, Argument<?>> ignoreCaseArguments;
 
 	/**
 	 * A map with arguments that has special {@link Argument#separator()}s and
 	 * {@link Argument#isIgnoringCase()}
 	 */
-	private final @Nonnull TrieTree<Argument<?>> ignoreCaseSpecialSeparatorArguments;
+	@Nonnull private final TrieTree<Argument<?>> ignoreCaseSpecialSeparatorArguments;
 
-	private final @Nonnull TrieTree<Argument<?>> propertyMapArguments;
+	@Nonnull private final TrieTree<Argument<?>> propertyMapArguments;
 
-	private final @Nonnull TrieTree<Argument<?>> ignoreCasePropertyMapArguments;
+	@Nonnull private final TrieTree<Argument<?>> ignoreCasePropertyMapArguments;
 
 	/**
 	 * If arguments are required, set by calling {@link Argument#required()},
@@ -147,11 +158,11 @@ public final class ArgumentParser
 	 * {@link #parse(String...)} is called.
 	 * TODO: should parse handle this printout itself instead of throwing?
 	 */
-	private final @Nonnull Set<Argument<?>> requiredArguments;
+	@Nonnull private final Set<Argument<?>> requiredArguments;
 
-	private final @Nonnull Set<Argument<?>> allArguments;
+	@Nonnull private final Set<Argument<?>> allArguments;
 
-	private void addArgumentDefinition(final @Nonnull Argument<?> definition)
+	private void addArgumentDefinition(@Nonnull final Argument<?> definition)
 	{
 		if(definition.isNamed())
 		{
@@ -173,7 +184,7 @@ public final class ArgumentParser
 			throw new IllegalArgumentException(definition + " handles the same argument twice");
 	}
 
-	private void addNamedArgumentDefinition(final @Nonnull String key, final @Nonnull Argument<?> definition)
+	private void addNamedArgumentDefinition(@Nonnull final String key, @Nonnull final Argument<?> definition)
 	{
 		Argument<?> oldDefinition = null;
 		String separator = definition.separator();
@@ -182,7 +193,7 @@ public final class ArgumentParser
 			oldDefinition = propertyMapArguments.set(key, definition);
 			if(definition.isIgnoringCase())
 			{
-				ignoreCasePropertyMapArguments.set(key.toLowerCase(), definition);
+				ignoreCasePropertyMapArguments.set(key.toLowerCase(Locale.getDefault()), definition);
 			}
 		}
 		else if(separator != null)
@@ -190,7 +201,7 @@ public final class ArgumentParser
 			oldDefinition = specialSeparatorArguments.set(key + separator, definition);
 			if(definition.isIgnoringCase())
 			{
-				ignoreCaseSpecialSeparatorArguments.set((key + separator).toLowerCase(), definition);
+				ignoreCaseSpecialSeparatorArguments.set((key + separator).toLowerCase(Locale.getDefault()), definition);
 			}
 		}
 		else
@@ -202,40 +213,42 @@ public final class ArgumentParser
 				// namedArguments
 				// that it shouldn't, we need to loop over every argument and
 				// check for duplicates
-				ignoreCaseArguments.put(key.toLowerCase(), definition);
+				ignoreCaseArguments.put(key.toLowerCase(Locale.getDefault()), definition);
 			}
 		}
 		if(oldDefinition != null)
 			throw new IllegalArgumentException(definition + " handles the same argument as: " + oldDefinition);
 	}
 
-	public ParsedArguments parse(final @Nonnull String ... actualArguments) throws ArgumentException
+	@Nonnull
+	public ParsedArguments parse(@Nonnull final String ... actualArguments) throws ArgumentException
 	{
 		ListIterator<String> arguments = Arrays.asList(actualArguments).listIterator();
 		return parse(arguments);
 	}
 
-	public ParsedArguments parse(final @Nonnull List<String> actualArguments) throws ArgumentException
+	@Nonnull
+	public ParsedArguments parse(@Nonnull final List<String> actualArguments) throws ArgumentException
 	{
 		return parse(actualArguments.listIterator());
 	}
 
+	@Nonnull
 	public ParsedArguments parse(@Nonnull ListIterator<String> actualArguments) throws ArgumentException
 	{
-		actualArguments = copy(actualArguments); // specialSeparatorArguments,
-													// MapArgument etc may
-													// modify the list
+		// specialSeparatorArguments, MapArgument etc may modify the list
+		ListIterator<String> arguments = copy(actualArguments);
 
 		ParsedArgumentHolder holder = new ParsedArgumentHolder();
-		while(actualArguments.hasNext())
+		while(arguments.hasNext())
 		{
-			parseArgument(actualArguments, holder);
+			parseArgument(arguments, holder);
 		}
 
 		for(Argument<?> arg : holder.parsedArguments.keySet())
 		{
 			finalizeArgument(arg, holder);
-			validateArgument(arg, holder);
+			limitArgument(arg, holder);
 		}
 
 		try
@@ -250,7 +263,8 @@ public final class ArgumentParser
 		}
 	}
 
-	private void parseArgument(final ListIterator<String> actualArguments, final ParsedArgumentHolder holder) throws ArgumentException
+	private void parseArgument(@Nonnull final ListIterator<String> actualArguments, @Nonnull final ParsedArgumentHolder holder)
+			throws ArgumentException
 
 	{
 		Argument<?> definition = null;
@@ -262,13 +276,13 @@ public final class ArgumentParser
 		catch(ArgumentException e)
 		{
 			e.setOriginParser(this);
-			// Re throw with more information
-			throw e.errorneousArgument(definition);
+			e.errorneousArgument(definition);
+			throw e;
 		}
 	}
 
-	private <T> void parseArgument(final ListIterator<String> actualArguments, final ParsedArgumentHolder parsedArguments,
-			final Argument<T> definition) throws ArgumentException
+	private <T> void parseArgument(@Nonnull final ListIterator<String> actualArguments, @Nonnull final ParsedArgumentHolder parsedArguments,
+			@Nonnull final Argument<T> definition) throws ArgumentException
 	{
 		T oldValue = parsedArguments.getValue(definition);
 
@@ -290,15 +304,15 @@ public final class ArgumentParser
 	 *             the current argument
 	 */
 	@Nonnull
-	private Argument<?> getDefinitionForCurrentArgument(final @Nonnull ListIterator<String> actualArguments, final ParsedArgumentHolder holder)
-			throws UnexpectedArgumentException
+	private Argument<?> getDefinitionForCurrentArgument(@Nonnull final ListIterator<String> actualArguments,
+			@Nonnull final ParsedArgumentHolder holder) throws UnexpectedArgumentException
 	{
 		String currentArgument = actualArguments.next();
 		Argument<?> definition = namedArguments.get(currentArgument);
 
 		if(definition != null)
 			return definition;
-		String lowerCase = currentArgument.toLowerCase();
+		String lowerCase = currentArgument.toLowerCase(Locale.getDefault());
 
 		definition = ignoreCaseArguments.get(lowerCase);
 		if(definition != null)
@@ -345,17 +359,18 @@ public final class ArgumentParser
 	@Override
 	public String toString()
 	{
-		return Usage.forArguments("<main class>", allArguments).toString();
+		return new Usage().withProgramName("<main class>");
 	}
 
 	/**
-	 * Returns a Usage instance describing this ArgumentParser
+	 * Returns a String describing this ArgumentParser.
+	 * Suitable to print on {@link System#out}.
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public Usage usage(final @Nonnull String programName)
+	public String usage(@Nonnull final String programName)
 	{
-		return Usage.forArguments(programName, allArguments);
+		return new Usage().withProgramName(programName);
 	}
 
 	/**
@@ -366,9 +381,9 @@ public final class ArgumentParser
 	@Immutable
 	public static final class ParsedArguments
 	{
-		private final @Nonnull ParsedArgumentHolder parsedArguments;
+		@Nonnull private final ParsedArgumentHolder parsedArguments;
 
-		private ParsedArguments(final @Nonnull ParsedArgumentHolder parsedArguments) throws ArgumentException
+		private ParsedArguments(@Nonnull final ParsedArgumentHolder parsedArguments) throws ArgumentException
 		{
 			if(!parsedArguments.requiredArgumentsLeft.isEmpty())
 				throw MissingRequiredArgumentException.create(parsedArguments.requiredArgumentsLeft);
@@ -394,7 +409,7 @@ public final class ArgumentParser
 		 */
 		@Nullable
 		@CheckReturnValue
-		public <T> T get(final @Nonnull Argument<T> argumentToFetch)
+		public <T> T get(@Nonnull final Argument<T> argumentToFetch)
 		{
 			T value = parsedArguments.getValue(argumentToFetch);
 			if(value == null)
@@ -412,7 +427,7 @@ public final class ArgumentParser
 		@Override
 		public int hashCode()
 		{
-			return 31 + parsedArguments.hashCode();
+			return parsedArguments.hashCode();
 		}
 
 		@Override
@@ -420,10 +435,9 @@ public final class ArgumentParser
 		{
 			if(this == obj)
 				return true;
-			if(obj == null)
-				return false;
-			if(getClass() != obj.getClass())
-				return false;
+			if(!(obj instanceof ParsedArguments))
+				return false; // Final class so instance of is safe
+
 			ParsedArguments other = (ParsedArguments) obj;
 			return parsedArguments.equals(other.parsedArguments);
 		}
@@ -433,17 +447,17 @@ public final class ArgumentParser
 	 * Holds the currently parsed values
 	 */
 	@NotThreadSafe
-	public final class ParsedArgumentHolder
+	final class ParsedArgumentHolder
 	{
-		final @Nonnull Map<Argument<?>, Object> parsedArguments = new IdentityHashMap<Argument<?>, Object>();
-		final @Nonnull Set<Argument<?>> requiredArgumentsLeft = new HashSet<Argument<?>>(requiredArguments);
+		@Nonnull final Map<Argument<?>, Object> parsedArguments = Maps.newIdentityHashMap();
+		@Nonnull final Set<Argument<?>> requiredArgumentsLeft = Sets.newHashSet(requiredArguments);
 		int unnamedArgumentsParsed = 0;
 
 		ParsedArgumentHolder()
 		{
 		}
 
-		public <T> void put(final @Nonnull Argument<T> definition, final @Nullable T value)
+		public <T> void put(@Nonnull final Argument<T> definition, @Nullable final T value)
 		{
 			if(definition.isRequired())
 			{
@@ -456,12 +470,12 @@ public final class ArgumentParser
 			parsedArguments.put(definition, value);
 		}
 
-		// Safe because put guarantees that the map is heterogeneous
-		@SuppressWarnings("unchecked")
-		<T> T getValue(final @Nonnull Argument<T> definition)
+		<T> T getValue(@Nonnull final Argument<T> definition)
 		{
-			Object value = parsedArguments.get(definition);
-			return (T) value;
+			// Safe because put guarantees that the map is heterogeneous
+			@SuppressWarnings("unchecked")
+			T value = (T) parsedArguments.get(definition);
+			return value;
 		}
 
 		@Override
@@ -473,7 +487,7 @@ public final class ArgumentParser
 		@Override
 		public int hashCode()
 		{
-			return 31 + parsedArguments.hashCode();
+			return parsedArguments.hashCode();
 		}
 
 		@Override
@@ -481,22 +495,229 @@ public final class ArgumentParser
 		{
 			if(this == obj)
 				return true;
-			if(obj == null)
-				return false;
-			if(getClass() != obj.getClass())
-				return false;
+			if(!(obj instanceof ParsedArgumentHolder))
+				return false; // Final class so instance of is safe
+
 			ParsedArgumentHolder other = (ParsedArgumentHolder) obj;
 			return parsedArguments.equals(other.parsedArguments);
 		}
 	}
 
-	private <T> void finalizeArgument(Argument<T> arg, ParsedArgumentHolder holder)
+	private <T> void finalizeArgument(@Nonnull Argument<T> arg, @Nonnull ParsedArgumentHolder holder)
 	{
 		arg.finalizeValue(holder.getValue(arg), holder);
 	}
 
-	private <T> void validateArgument(Argument<T> arg, ParsedArgumentHolder holder) throws InvalidArgument
+	private <T> void limitArgument(@Nonnull Argument<T> arg, @Nonnull ParsedArgumentHolder holder) throws LimitException
 	{
-		arg.validate(holder.getValue(arg));
+		arg.checkLimit(holder.getValue(arg));
+	}
+
+	private final class Usage
+	{
+		@CheckReturnValue
+		@Nonnull
+		String withProgramName(@Nonnull final String programName)
+		{
+			mainUsage(programName);
+
+			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, not(in(indexedArguments))));
+			Collections.sort(sortedArgumentsByName, new NamedArgumentsByFirstName());
+
+			for(Argument<?> arg : Iterables.concat(indexedArguments, sortedArgumentsByName))
+			{
+				usageForArgument(arg);
+			}
+
+			return toString();
+		}
+
+		@Override
+		public String toString()
+		{
+			return builder.toString();
+		};
+
+		/**
+		 * The builder to append usage texts to
+		 */
+		@Nonnull private final StringBuilder builder;
+
+		/**
+		 * <pre>
+		 * For:
+		 * -l, --enable-logging Output debug information to standard out
+		 * -p, --listen-port    The port clients should connect to.
+		 * 
+		 * This would be 20.
+		 */
+		private final int indexOfDescriptionColumn;
+
+		private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 30;
+		private static final int SPACES_BETWEEN_COLUMNS = 4;
+
+		private int expectedUsageTextSize()
+		{
+			// Two lines for each argument
+			return 2 * allArguments.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
+		}
+
+		Usage()
+		{
+			indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
+			builder = new StringBuilder(expectedUsageTextSize());
+		}
+
+		private void mainUsage(@Nonnull final String programName)
+		{
+			builder.append("Usage: " + programName);
+			if(!allArguments.isEmpty())
+			{
+				builder.append(" [Options]");
+				builder.append(Lines.NEWLINE);
+			}
+
+		}
+
+		private int determineLongestNameColumn()
+		{
+			int longestNames = 0;
+			for(Argument<?> arg : allArguments)
+			{
+				int length = lengthOfFirstColumn(arg);
+				if(length > longestNames)
+				{
+					longestNames = length;
+				}
+			}
+			return longestNames;
+		}
+
+		private int lengthOfFirstColumn(@Nonnull final Argument<?> argument)
+		{
+			if(argument.shouldBeHiddenInUsage())
+				return 0;
+
+			int namesLength = 0;
+
+			for(String name : argument.names())
+			{
+				namesLength += name.length();
+			}
+			int separatorLength = max(0, NAME_SEPARATOR.length() * (argument.names().size() - 1));
+
+			int metaLength = argument.metaDescription().length();
+
+			return namesLength + separatorLength + metaLength;
+		}
+
+		/**
+		 * <pre>
+		 * 	-test   Test something [Required]
+		 *         	Valid values: 1 to 5
+		 *        -test   Test something
+		 *         	Default: 0
+		 * </pre>
+		 */
+		@Nonnull
+		private String usageForArgument(@Nonnull final Argument<?> arg)
+		{
+			if(arg.shouldBeHiddenInUsage())
+				return "";
+
+			int lengthOfFirstColumn = lengthOfFirstColumn(arg);
+
+			Joiner.on(NAME_SEPARATOR).appendTo(builder, arg.names());
+
+			builder.append(arg.metaDescription());
+
+			StringsUtil.appendSpaces(indexOfDescriptionColumn - lengthOfFirstColumn, builder);
+			// TODO: handle long descriptions
+			// TODO: handle arity
+			if(!arg.description().isEmpty())
+			{
+				builder.append(arg.description());
+				addIndicators(arg);
+				builder.append(Lines.NEWLINE);
+				StringsUtil.appendSpaces(indexOfDescriptionColumn, builder);
+			}
+			else
+			{
+				addIndicators(arg);
+			}
+			builder.append(valueExplanation(arg));
+			builder.append(Lines.NEWLINE);
+			return builder.toString();
+		}
+
+		private <T> void addIndicators(@Nonnull final Argument<T> arg)
+		{
+			if(arg.isRequired())
+			{
+				builder.append(" [Required]");
+			}
+			if(arg.isAllowedToRepeat())
+			{
+				builder.append(" [Supports Multiple occurences]");
+			}
+		}
+
+		private <T> StringBuilder valueExplanation(@Nonnull final Argument<T> arg)
+		{
+			// TODO: handle long value explanations
+			StringBuilder valueExplanation = new StringBuilder();
+			String description = arg.handler().descriptionOfValidValues();
+			if(!description.isEmpty())
+			{
+				if(arg.metaDescription().isEmpty())
+				{
+					valueExplanation.append("Valid input: ");
+				}
+				else
+				{
+					valueExplanation.append(arg.metaDescription().trim() + ": ");
+				}
+
+				valueExplanation.append(description);
+				valueExplanation.append(Lines.NEWLINE);
+				StringsUtil.appendSpaces(indexOfDescriptionColumn, valueExplanation);
+			}
+			if(arg.isRequired())
+				return valueExplanation;
+
+			String descriptionOfDefaultValue = arg.defaultValueDescription();
+			if(descriptionOfDefaultValue == null)
+			{
+				descriptionOfDefaultValue = arg.handler().describeValue(arg.defaultValue());
+			}
+			if(descriptionOfDefaultValue != null)
+			{
+				valueExplanation.append("Default: ");
+				valueExplanation.append(descriptionOfDefaultValue);
+				// TODO: maybe only add whitespace if more arguments should be
+				// printed
+				valueExplanation.append(Lines.NEWLINE);
+				StringsUtil.appendSpaces(indexOfDescriptionColumn, valueExplanation);
+			}
+
+			return valueExplanation;
+		}
+
+		private static final String NAME_SEPARATOR = ", ";
+	}
+
+	private static final class NamedArgumentsByFirstName implements Comparator<Argument<?>>, Serializable
+	{
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public int compare(@Nonnull final Argument<?> one, @Nonnull final Argument<?> two)
+		{
+			String name = one.names().get(0);
+			return name.compareToIgnoreCase(two.names().get(0));
+		}
 	}
 }

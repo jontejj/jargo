@@ -1,6 +1,7 @@
 package se.j4j.argumentparser;
 
 import static java.util.Collections.unmodifiableList;
+import static se.j4j.argumentparser.exceptions.LimitException.limitException;
 
 import java.util.List;
 
@@ -10,34 +11,32 @@ import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.defaultproviders.NonLazyValueProvider;
+import se.j4j.argumentparser.DefaultValueProviders.NonLazyValueProvider;
 import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.InvalidArgument;
-import se.j4j.argumentparser.interfaces.ArgumentHandler;
-import se.j4j.argumentparser.interfaces.DefaultValueProvider;
-import se.j4j.argumentparser.interfaces.ParsedValueCallback;
-import se.j4j.argumentparser.interfaces.ParsedValueFinalizer;
-import se.j4j.argumentparser.interfaces.ValueValidator;
-import se.j4j.argumentparser.internal.Usage;
+import se.j4j.argumentparser.exceptions.LimitException;
 
 /**
- * TODO: decide what names to use
- * Argument
- * ArgumentHandler
- * Converter? names....
- * ArgumentDefinition
+ * <pre>
+ * An {@link Argument} instance is the fundamental building block that glues all functionality in this package together.
  * 
- * @param <T>
+ * Usual {@link Argument}s are created with the static methods in {@link ArgumentFactory} and then
+ * used by the {@link ArgumentParser} to parse strings (typically from the command line).
+ * 
+ * TODO: document each property of an argument here
+ * 
+ * @param <T> the type of values this {@link Argument} is configured to handle
+ * 
+ * </pre>
  */
 @Immutable
 public final class Argument<T>
 {
-	private final @Nonnull List<String> names;
+	@Nonnull private final List<String> names;
 
-	private final @Nullable String defaultValueDescription;
-	private final @Nonnull String description;
-	private final @Nonnull String metaDescription;
-	private final @Nullable String separator;
+	@Nullable private final String defaultValueDescription;
+	@Nonnull private final String description;
+	@Nonnull private final String metaDescription;
+	@Nullable private final String separator;
 
 	private final boolean required;
 	private final boolean ignoreCase;
@@ -45,11 +44,12 @@ public final class Argument<T>
 	private final boolean isAllowedToRepeat;
 	private final boolean hideFromUsage;
 
-	private final @Nonnull ArgumentHandler<T> handler;
-	private final @Nonnull ValueValidator<T> validator;
-	private final @Nullable DefaultValueProvider<T> defaultValueProvider;
-	private final @Nullable ParsedValueFinalizer<T> parsedValueFinalizer;
-	private final @Nonnull ParsedValueCallback<T> parseValueCallback;
+	@Nonnull private final ArgumentHandler<T> handler;
+	@Nullable private final DefaultValueProvider<T> defaultValueProvider;
+
+	@Nullable private final Finalizer<T> finalizer;
+	@Nonnull private final Limiter<T> limiter;
+	@Nonnull private final Callback<T> valueCallback;
 
 	/**
 	 * <pre>
@@ -62,7 +62,7 @@ public final class Argument<T>
 	 *         {@link ArgumentParser#forArguments(Argument...)} and
 	 *         {@link ParsedArguments#get(Argument)}
 	 */
-	Argument(final @Nonnull ArgumentBuilder<?, T> builder)
+	Argument(@Nonnull final ArgumentBuilder<?, T> builder)
 	{
 		this.handler = builder.handler();
 		this.defaultValueProvider = builder.defaultValueProvider;
@@ -72,28 +72,21 @@ public final class Argument<T>
 		this.separator = builder.separator;
 		this.ignoreCase = builder.ignoreCase;
 		this.names = unmodifiableList(builder.names);
-		this.validator = builder.validator;
 		this.isPropertyMap = builder.isPropertyMap;
 		this.isAllowedToRepeat = builder.isAllowedToRepeat;
 		this.hideFromUsage = builder.hideFromUsage;
 		this.metaDescription = builder.metaDescription;
-		this.parsedValueFinalizer = builder.parsedValueFinalizer;
-		this.parseValueCallback = builder.parsedValueCallback;
-		if(handler == null)
-			throw new IllegalArgumentException("No handler set for argument with names: " + names());
+
+		this.finalizer = builder.finalizer;
+		this.limiter = builder.limiter;
+		this.valueCallback = builder.callback;
+
 		if(defaultValueProvider instanceof NonLazyValueProvider<?>)
 		{
 			T defaultValue = defaultValueProvider.defaultValue();
-			try
-			{
-				validate(defaultValue);
-			}
-			catch(InvalidArgument e)
-			{
-				// This means that a value passed to
-				// ArgumentBuilder#defaultValue(Object) wasn't acceptable
-				throw new RuntimeException("Invalid default value (" + defaultValue + ") given", e);
-			}
+			// Check if the value passed to
+			// ArgumentBuilder#defaultValue(Object) is acceptable
+			checkLimitForDefaultValue(defaultValue);
 		}
 	}
 
@@ -180,16 +173,10 @@ public final class Argument<T>
 		{
 			value = handler.defaultValue();
 		}
-		try
-		{
-			validate(value);
-		}
-		catch(InvalidArgument e)
-		{
-			// This indicates a programmer error in a DefaultValueProvider
-			// implementation
-			throw new RuntimeException("Invalid default value (" + value + ") given", e);
-		}
+		// If this throws it indicates a programmer error in a
+		// DefaultValueProvider implementation or that the wrong limiter is used
+		checkLimitForDefaultValue(value);
+
 		return value;
 	}
 
@@ -201,7 +188,7 @@ public final class Argument<T>
 	@Override
 	public String toString()
 	{
-		return Usage.forSingleArgument(this);
+		return ArgumentParser.forArguments(this).usage("");
 	}
 
 	@Nullable
@@ -221,21 +208,39 @@ public final class Argument<T>
 		return hideFromUsage;
 	}
 
-	public void validate(final @Nullable T value) throws InvalidArgument
+	void checkLimit(@Nullable final T value) throws LimitException
 	{
-		validator.validate(value);
+		Limit limit = limiter.withinLimits(value);
+		if(limit != Limit.OK)
+		{
+			LimitException e = limitException(limit);
+			e.errorneousArgument(this);
+			throw e;
+		}
+	}
+
+	private void checkLimitForDefaultValue(@Nullable final T value)
+	{
+		try
+		{
+			checkLimit(value);
+		}
+		catch(LimitException e)
+		{
+			throw new IllegalArgumentException("Invalid default value given: " + e.getMessage(), e);
+		}
 	}
 
 	void finalizeValue(@Nullable T value, @Nonnull ParsedArgumentHolder holder)
 	{
-		if(parsedValueFinalizer != null)
+		if(finalizer != null)
 		{
-			holder.put(this, parsedValueFinalizer.finalizeValue(value));
+			holder.put(this, finalizer.finalizeValue(value));
 		}
 	}
 
 	void parsedValue(@Nullable T value)
 	{
-		parseValueCallback.parsedValue(value);
+		valueCallback.parsedValue(value);
 	}
 }

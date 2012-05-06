@@ -2,19 +2,29 @@ package se.j4j.argumentparser.coverage;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.exceptions.ArgumentExceptionCodes.INVALID_PARAMTER;
+import static se.j4j.argumentparser.ArgumentFactory.Radix.BINARY;
+import static se.j4j.argumentparser.exceptions.ArgumentExceptionCodes.INVALID_PARAMETER;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.ArgumentFactory.Radix;
+import se.j4j.argumentparser.Callbacks;
+import se.j4j.argumentparser.DefaultValueProviders;
+import se.j4j.argumentparser.Descriptions;
+import se.j4j.argumentparser.Finalizers;
+import se.j4j.argumentparser.Limiters;
+import se.j4j.argumentparser.StringSplitters;
 import se.j4j.argumentparser.exceptions.ArgumentExceptionCodes;
-import se.j4j.argumentparser.utils.Lines;
-import se.j4j.argumentparser.utils.ListUtil;
-import se.j4j.argumentparser.utils.StringComparison;
-import se.j4j.argumentparser.utils.Strings;
+import se.j4j.argumentparser.internal.Lines;
+import se.j4j.argumentparser.internal.ListUtil;
+import se.j4j.argumentparser.internal.StringComparison;
+import se.j4j.argumentparser.internal.StringsUtil;
 
 /**
  * The reasoning behind testing code that doesn't do anything is to achieve 100%
@@ -28,36 +38,38 @@ import se.j4j.argumentparser.utils.Strings;
 public class TestForCodeCoverage
 {
 	/**
-	 * IMO it's best to use reflection here since otherwise you would have to
-	 * either get a better code coverage tool that
-	 * ignores these constructors or somehow tell the code coverage tool to
-	 * ignore the method (perhaps an Annotation or a configuration file)
-	 * because then you would be stuck with a specific code coverage tool.
-	 * In a perfect world all code coverage tools would ignore private
-	 * constructors that belong to a final class
-	 * because the constructor is there as a "security" measure nothing else:)
+	 * Detects if a utility class isn't final or if its no-args constructor
+	 * isn't private. Also calls the constructor to get code coverage for it.
+	 * 
+	 * @throws IOException
 	 */
 	@Test
 	public void callPrivateConstructorsForCodeCoverage() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			InvocationTargetException
+			InvocationTargetException, IOException
 	{
-		Class<?>[] classesToConstruct = {ArgumentFactory.class, Lines.class, ListUtil.class, Strings.class, StringComparison.class};
+		Class<?>[] classesToConstruct = {ArgumentFactory.class, Lines.class, ListUtil.class, StringsUtil.class, StringComparison.class,
+				Descriptions.class, Limiters.class, Callbacks.class, Finalizers.class, StringSplitters.class, DefaultValueProviders.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{
+			assertThat(clazz.getModifiers() & Modifier.FINAL).as("Utility class " + clazz + " not final").isEqualTo(Modifier.FINAL);
+
 			Constructor<?> constructor = clazz.getDeclaredConstructor();
+			assertThat(constructor.getModifiers() & Modifier.PRIVATE).as("Constructor for " + clazz + " should be private.")
+					.isEqualTo(Modifier.PRIVATE);
 			constructor.setAccessible(true);
 			assertNotNull(constructor.newInstance());
 		}
 	}
 
 	/**
-	 * Apparently the compiler injects methods into the byte code for enums that
+	 * The compiler injects methods into the byte code for enums that
 	 * the code coverage tool detects
 	 */
 	@Test
 	public void testEnumsForCodeCoverage()
 	{
-		assertThat(ArgumentExceptionCodes.valueOf(INVALID_PARAMTER.toString())).isEqualTo(INVALID_PARAMTER);
+		assertThat(ArgumentExceptionCodes.valueOf(INVALID_PARAMETER.toString())).isEqualTo(INVALID_PARAMETER);
+		assertThat(Radix.valueOf(BINARY.toString())).isEqualTo(BINARY);
 	}
 }

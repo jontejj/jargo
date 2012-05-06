@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import se.j4j.argumentparser.Argument;
 
-public class MissingRequiredArgumentException extends ArgumentException
+public final class MissingRequiredArgumentException extends ArgumentException
 {
 	private final Collection<Argument<?>> missingArguments;
 
