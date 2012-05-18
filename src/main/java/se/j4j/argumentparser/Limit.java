@@ -3,7 +3,6 @@ package se.j4j.argumentparser;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
-
 /**
  * Response object for {@link Limiter#withinLimits(Object)}
  */
@@ -18,7 +17,7 @@ public final class Limit
 	@Nonnull public static final Limit OK = new Limit(Descriptions.EMPTY_STRING);
 
 	/**
-	 * Produces a limit response that tells why a value wasn't within the limits
+	 * Produces a limit response that tells why a value isn't within the limits
 	 * 
 	 * @param reason the reason why a {@link Limiter} didn't accept a value
 	 * @return a newly created {@link Limit} instance

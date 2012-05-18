@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.exceptions.ArgumentException;
 
 public class TestIgnoringCase
 {
@@ -19,7 +18,7 @@ public class TestIgnoringCase
 	{
 		Argument<Boolean> help = optionArgument("-h", "--help", "-help", "?").ignoreCase().build();
 
-		ArgumentParser parser = ArgumentParser.forArguments(help);
+		CommandLineParser parser = CommandLineParsers.forArguments(help);
 
 		assertThat(parser.parse("-H").get(help)).as("unhandled capital letter for ignore case argument").isTrue();
 		assertThat(parser.parse("-HELP").get(help)).isTrue();

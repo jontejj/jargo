@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 public interface Description
 {
 	/**
-	 * @return the description
+	 * @return a description
 	 */
 	@Nonnull
 	String description();

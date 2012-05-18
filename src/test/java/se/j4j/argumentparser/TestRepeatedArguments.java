@@ -13,8 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
+import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
 
 public class TestRepeatedArguments
 {
@@ -33,6 +32,14 @@ public class TestRepeatedArguments
 	public void testCallingRepeatedBeforeConsumeAll()
 	{
 		integerArgument("--number").repeated().consumeAll();
+	}
+
+	@SuppressWarnings("deprecation")
+	// This is what's tested
+	@Test(expected = IllegalStateException.class)
+	public void testCallingSplitWithAfterRepeated()
+	{
+		integerArgument().repeated().splitWith(comma());
 	}
 
 	@Test

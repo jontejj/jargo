@@ -4,6 +4,9 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Splitter;
 
+/**
+ * Gives you static access to implementations of the {@link StringSplitter} interface.
+ */
 public final class StringSplitters
 {
 	private StringSplitters()

@@ -1,9 +1,13 @@
 package se.j4j.argumentparser;
 
+import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.Limiters.positiveInteger;
+import static se.j4j.argumentparser.StringParsers.integerParser;
+import static se.j4j.argumentparser.StringParsers.stringParser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +15,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.InvalidArgument;
-import se.j4j.argumentparser.exceptions.LimitException;
-import se.j4j.argumentparser.exceptions.UnhandledRepeatedArgument;
+import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
+import se.j4j.argumentparser.ArgumentExceptions.LimitException;
+import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
+import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.StringParsers.KeyValueParser;
+import se.j4j.argumentparser.commands.InitCommand;
 import se.j4j.argumentparser.limiters.KeyLimiter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -55,7 +60,7 @@ public class TestPropertyMap
 		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
 		Argument<Integer> number = integerArgument("-N").ignoreCase().build();
 
-		ParsedArguments parsed = ArgumentParser.forArguments(numberMap, number).parse("-None=1", "-Ntwo=2", "-N", "3");
+		ParsedArguments parsed = CommandLineParsers.forArguments(numberMap, number).parse("-None=1", "-Ntwo=2", "-N", "3");
 
 		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
 		assertThat(parsed.get(numberMap).get("two")).isEqualTo(2);
@@ -88,7 +93,7 @@ public class TestPropertyMap
 	{
 		Argument<Map<String, Integer>> numberMap = integerArgument("-N").limitTo(positiveInteger()).asPropertyMap().build();
 
-		ArgumentParser parser = ArgumentParser.forArguments(numberMap);
+		CommandLineParser parser = CommandLineParsers.forArguments(numberMap);
 		ParsedArguments parsed = parser.parse("-None=1");
 
 		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
@@ -122,7 +127,7 @@ public class TestPropertyMap
 		Argument<Map<String, Integer>> positiveArguments = integerArgument("-I").limitTo(positiveInteger()).asPropertyMap()
 				.limitTo(new KeyLimiter<Integer>("foo", "bar")).build();
 
-		ArgumentParser parser = ArgumentParser.forArguments(positiveArguments);
+		CommandLineParser parser = CommandLineParsers.forArguments(positiveArguments);
 
 		try
 		{
@@ -161,6 +166,12 @@ public class TestPropertyMap
 	}
 
 	@Test
+	public void testCustomKeyParser() throws ArgumentException
+	{
+		assertThat(integerArgument("-N").asKeyValuesWithKeyParser(integerParser()).parse("-N1=42").get(1)).isEqualTo(42);
+	}
+
+	@Test
 	public void testThatPropertyMapsAreUnmodifiable() throws ArgumentException
 	{
 		Map<String, Integer> numberMap = integerArgument("-N").asPropertyMap().parse("-None=1");
@@ -194,5 +205,24 @@ public class TestPropertyMap
 		catch(UnsupportedOperationException expected)
 		{
 		}
+	}
+
+	@Test
+	public void testThatKeyValueParserBehaveCivilizedWhenNoNamesMatchTheArgument() throws ArgumentException
+	{
+		// In all honesty, this is for code coverage:)
+		Argument<String> badArgument = stringArgument().build();
+		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(new InitCommand(), stringParser());
+
+		Map<String, String> parsedResult = parser.parse(asList("-Nfoo=bar").listIterator(), null, badArgument);
+
+		assertThat(parsedResult).isEmpty();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Test(expected = IllegalStateException.class)
+	public void testThatRepeatedMustBeCalledBeforeAsPropertyMap()
+	{
+		integerArgument("-N").asPropertyMap().repeated();
 	}
 }

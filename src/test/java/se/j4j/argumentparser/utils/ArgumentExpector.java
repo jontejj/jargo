@@ -7,9 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import se.j4j.argumentparser.Argument;
-import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.exceptions.ArgumentException;
+import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.CommandLineParser;
+import se.j4j.argumentparser.CommandLineParsers;
+import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
 
 import com.google.common.collect.Lists;
 
@@ -40,7 +41,7 @@ public final class ArgumentExpector
 	 *            has received
 	 * @throws ArgumentException
 	 */
-	public void assertForArguments(String arguments, ArgumentParser parser) throws ArgumentException
+	public void assertForArguments(String arguments, CommandLineParser parser) throws ArgumentException
 	{
 		ParsedArguments parsedArguments = parser.parse(Arrays.asList(arguments.split(" ")));
 		for(Expectation<?> expectation : expectations)
@@ -85,7 +86,7 @@ public final class ArgumentExpector
 		public void given(String arguments) throws ArgumentException
 		{
 			actualArguments.addAll(Arrays.asList(arguments.split(" ")));
-			ArgumentParser parser = ArgumentParser.forArguments(arguments());
+			CommandLineParser parser = CommandLineParsers.forArguments(arguments());
 			ParsedArguments parsedArguments = parser.parse(actualArguments);
 			for(Expectation<?> expectation : expectations)
 			{

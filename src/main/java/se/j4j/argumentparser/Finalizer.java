@@ -1,27 +1,28 @@
 package se.j4j.argumentparser;
 
 import javax.annotation.CheckReturnValue;
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.Nullable;
 
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
 
 /**
- * A mechanism for finalizing parsed values before they
- * enter a {@link ParsedArguments} instance (which is {@link Immutable}.
- * Pass the constructed {@link Finalizer} to
- * {@link ArgumentBuilder#finalizeWith(Finalizer)}
+ * <pre>
+ * A mechanism for finalizing parsed values before they enter a {@link ParsedArguments} instance.
  * 
- * @param <T> the type of value that has been parsed and should be finalized
+ * Pass the constructed {@link Finalizer} to {@link ArgumentBuilder#finalizeWith(Finalizer)}
+ * 
+ * @param <T> the type of value to finalize
+ * </pre>
  */
 public interface Finalizer<T>
 {
 	/**
-	 * <b>Note:</b> this method is not called for default values as they are
-	 * considered finalized as they are
+	 * <b>Note:</b> this should not modify <code>value</code> in any way.
 	 * 
-	 * @param value the parsed value (not limited yet)
+	 * @param value the parsed value (not limited by any {@link Limiter} yet)
 	 * @return the finalized value
 	 */
 	@CheckReturnValue
-	T finalizeValue(T value);
+	@Nullable
+	T finalizeValue(@Nullable T value);
 }

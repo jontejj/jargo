@@ -22,8 +22,6 @@ public final class Descriptions
 
 	/**
 	 * Returns an empty string as a description.
-	 * Should be avoided but if no information is
-	 * needed to describe something then it could be used.
 	 */
 	public static final Description EMPTY_STRING = new Description(){
 		@Override
