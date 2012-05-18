@@ -9,6 +9,9 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Gives you static access to implementations of the {@link Limiter} interface.
+ */
 public final class Limiters
 {
 	private Limiters()
@@ -49,18 +52,20 @@ public final class Limiters
 		return ExistingFile.INSTANCE;
 	}
 
-	public static <T> Limiter<List<T>> forListValues(Limiter<T> elementLimiter)
+	// TODO: add regex limiter (maybe to ArgumentBuilder#limitWith instead, as a pre-limiter?)
+
+	public static <E> Limiter<List<E>> forListValues(Limiter<E> elementLimiter)
 	{
 		if(elementLimiter == noLimits())
 			return noLimits();
-		return new ListValueLimiter<T>(elementLimiter);
+		return new ListValueLimiter<E>(elementLimiter);
 	}
 
-	public static <T> Limiter<Map<String, T>> forMapValues(Limiter<T> valueLimiter)
+	public static <K, V> Limiter<Map<K, V>> forMapValues(Limiter<V> valueLimiter)
 	{
 		if(valueLimiter == noLimits())
 			return noLimits();
-		return new MapValueLimiter<T>(valueLimiter);
+		return new MapValueLimiter<K, V>(valueLimiter);
 	}
 
 	public static <T> Limiter<T> noLimits()
@@ -133,7 +138,7 @@ public final class Limiters
 
 		private static final class DescribeAsNonExistingFile implements Description
 		{
-			final File file;
+			private final File file;
 
 			private DescribeAsNonExistingFile(File file)
 			{
@@ -148,19 +153,19 @@ public final class Limiters
 		}
 	}
 
-	private static final class ListValueLimiter<T> implements Limiter<List<T>>
+	private static final class ListValueLimiter<E> implements Limiter<List<E>>
 	{
-		private final Limiter<T> elementLimiter;
+		private final Limiter<E> elementLimiter;
 
-		private ListValueLimiter(Limiter<T> elementLimiter)
+		private ListValueLimiter(Limiter<E> elementLimiter)
 		{
 			this.elementLimiter = elementLimiter;
 		}
 
 		@Override
-		public Limit withinLimits(List<T> values)
+		public Limit withinLimits(List<E> values)
 		{
-			for(T value : values)
+			for(E value : values)
 			{
 				Limit limit = elementLimiter.withinLimits(value);
 				if(limit != Limit.OK)
@@ -170,19 +175,19 @@ public final class Limiters
 		}
 	}
 
-	private static final class MapValueLimiter<T> implements Limiter<Map<String, T>>
+	private static final class MapValueLimiter<K, V> implements Limiter<Map<K, V>>
 	{
-		private final Limiter<T> limiter;
+		private final Limiter<V> limiter;
 
-		private MapValueLimiter(Limiter<T> valueLimiter)
+		private MapValueLimiter(Limiter<V> valueLimiter)
 		{
 			this.limiter = valueLimiter;
 		}
 
 		@Override
-		public Limit withinLimits(Map<String, T> map)
+		public Limit withinLimits(Map<K, V> map)
 		{
-			for(T value : map.values())
+			for(V value : map.values())
 			{
 				Limit limit = limiter.withinLimits(value);
 				if(limit != Limit.OK)

@@ -1,0 +1,6 @@
+Non-allowed repetition of: [-s], previous value: foo
+
+Usage: NonAllowedRepition [Options]
+-s <string>    <string>: Any string
+               Default: 
+

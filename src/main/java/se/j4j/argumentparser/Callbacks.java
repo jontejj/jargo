@@ -8,6 +8,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Gives you static access to implementations of the {@link Callback} interface.
+ */
 public final class Callbacks
 {
 	private Callbacks()
@@ -40,18 +43,18 @@ public final class Callbacks
 		return new CompoundCallback<T>(ImmutableList.copyOf(callbacks));
 	}
 
-	public static <T> Callback<List<T>> forListValues(Callback<T> elementCallback)
+	public static <E> Callback<List<E>> forListValues(Callback<E> elementCallback)
 	{
 		if(elementCallback == noCallback())
 			return noCallback();
-		return new ListValueCallback<T>(elementCallback);
+		return new ListValueCallback<E>(elementCallback);
 	}
 
-	public static <T> Callback<Map<String, T>> forMapValues(Callback<T> elementCallback)
+	public static <K, V> Callback<Map<K, V>> forMapValues(Callback<V> elementCallback)
 	{
 		if(elementCallback == noCallback())
 			return noCallback();
-		return new MapValueCallback<T>(elementCallback);
+		return new MapValueCallback<K, V>(elementCallback);
 
 	}
 
@@ -87,38 +90,38 @@ public final class Callbacks
 		}
 	}
 
-	private static final class ListValueCallback<T> implements Callback<List<T>>
+	private static final class ListValueCallback<E> implements Callback<List<E>>
 	{
-		private final Callback<T> elementCallback;
+		private final Callback<E> elementCallback;
 
-		private ListValueCallback(Callback<T> elementCallback)
+		private ListValueCallback(Callback<E> elementCallback)
 		{
 			this.elementCallback = elementCallback;
 		}
 
 		@Override
-		public void parsedValue(List<T> parsedValues)
+		public void parsedValue(List<E> parsedValues)
 		{
-			for(T value : parsedValues)
+			for(E value : parsedValues)
 			{
 				elementCallback.parsedValue(value);
 			}
 		}
 	}
 
-	private static final class MapValueCallback<T> implements Callback<Map<String, T>>
+	private static final class MapValueCallback<K, V> implements Callback<Map<K, V>>
 	{
-		private final Callback<T> elementCallback;
+		private final Callback<V> elementCallback;
 
-		private MapValueCallback(Callback<T> elementCallback)
+		private MapValueCallback(Callback<V> elementCallback)
 		{
 			this.elementCallback = elementCallback;
 		}
 
 		@Override
-		public void parsedValue(Map<String, T> parsedValues)
+		public void parsedValue(Map<K, V> parsedValues)
 		{
-			for(T value : parsedValues.values())
+			for(V value : parsedValues.values())
 			{
 				elementCallback.parsedValue(value);
 			}

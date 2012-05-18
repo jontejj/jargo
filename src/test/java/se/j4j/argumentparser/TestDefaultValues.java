@@ -3,9 +3,11 @@ package se.j4j.argumentparser;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.j4j.argumentparser.ArgumentFactory.customArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.Limiters.positiveInteger;
+import static se.j4j.argumentparser.StringParsers.integerParser;
+import static se.j4j.argumentparser.StringParsers.Radix.DECIMAL;
 import static se.j4j.argumentparser.StringSplitters.comma;
 
 import java.util.Arrays;
@@ -14,8 +16,8 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentFactory.RadixiableArgumentBuilder;
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.valueproviders.NegativeValueProvider;
+import se.j4j.argumentparser.providers.ChangingProvider;
+import se.j4j.argumentparser.providers.NegativeValueProvider;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestDefaultValues
@@ -34,30 +36,9 @@ public class TestDefaultValues
 	}
 
 	@Test(expected = RuntimeException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED",
-			justification = "As -1 isn't lazily constructed it can be verified already in the build phase")
-	public void testThatInvalidDefaultValuesAreInvalidated()
+	public void testThatInvalidDefaultValueFromStringParserIsInvalidated() throws ArgumentException
 	{
-		integerArgument("-n").defaultValue(-1).limitTo(positiveInteger()).build();
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void testThatInvalidDefaultValuesFromHandlersAreInvalidated() throws ArgumentException
-	{
-		customArgument(new StringConverter<Integer>(){
-
-			@Override
-			public Integer convert(String argument) throws ArgumentException
-			{
-				return null;
-			}
-
-			@Override
-			public String descriptionOfValidValues()
-			{
-				return "";
-			}
-
+		withParser(new ForwardingStringParser<Integer>(integerParser(DECIMAL)){
 			@Override
 			public Integer defaultValue()
 			{
@@ -130,5 +111,15 @@ public class TestDefaultValues
 		{
 
 		}
+	}
+
+	@Test
+	public void testThatDefaultValueProviderIsAskedForEachArgumentParsing() throws ArgumentException
+	{
+		Provider<Integer> provider = new ChangingProvider();
+
+		Argument<Integer> n = integerArgument("-n").defaultValueProvider(provider).build();
+
+		assertThat(n.parse()).isNotEqualTo(n.parse());
 	}
 }

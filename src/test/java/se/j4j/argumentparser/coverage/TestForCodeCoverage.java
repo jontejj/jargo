@@ -2,8 +2,8 @@ package se.j4j.argumentparser.coverage;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.ArgumentFactory.Radix.BINARY;
-import static se.j4j.argumentparser.exceptions.ArgumentExceptionCodes.INVALID_PARAMETER;
+import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.INVALID_PARAMETER;
+import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -12,15 +12,19 @@ import java.lang.reflect.Modifier;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentExceptions;
+import se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.ArgumentFactory;
-import se.j4j.argumentparser.ArgumentFactory.Radix;
 import se.j4j.argumentparser.Callbacks;
-import se.j4j.argumentparser.DefaultValueProviders;
+import se.j4j.argumentparser.CommandLineParsers;
+import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
 import se.j4j.argumentparser.Finalizers;
 import se.j4j.argumentparser.Limiters;
+import se.j4j.argumentparser.Providers;
+import se.j4j.argumentparser.StringParsers;
+import se.j4j.argumentparser.StringParsers.Radix;
 import se.j4j.argumentparser.StringSplitters;
-import se.j4j.argumentparser.exceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.internal.Lines;
 import se.j4j.argumentparser.internal.ListUtil;
 import se.j4j.argumentparser.internal.StringComparison;
@@ -48,7 +52,8 @@ public class TestForCodeCoverage
 			InvocationTargetException, IOException
 	{
 		Class<?>[] classesToConstruct = {ArgumentFactory.class, Lines.class, ListUtil.class, StringsUtil.class, StringComparison.class,
-				Descriptions.class, Limiters.class, Callbacks.class, Finalizers.class, StringSplitters.class, DefaultValueProviders.class};
+				Descriptions.class, Limiters.class, Callbacks.class, Finalizers.class, StringSplitters.class, Providers.class,
+				CommandLineParsers.class, StringParsers.class, ArgumentExceptions.class, Describers.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{

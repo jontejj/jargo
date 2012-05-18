@@ -8,6 +8,7 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.Limiters.existingFile;
 import static se.j4j.argumentparser.Limiters.positiveInteger;
 import static se.j4j.argumentparser.StringSplitters.comma;
+import static se.j4j.argumentparser.utils.Constants.ONE_SECOND_IN_MILLIS;
 
 import java.io.File;
 
@@ -15,18 +16,17 @@ import org.fest.assertions.Fail;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
-import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
+import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentExceptions.LimitException;
+import se.j4j.argumentparser.CommandLineParser;
+import se.j4j.argumentparser.CommandLineParsers;
+import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
 import se.j4j.argumentparser.Description;
 import se.j4j.argumentparser.Limit;
 import se.j4j.argumentparser.Limiter;
 import se.j4j.argumentparser.Limiters;
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.LimitException;
 
 import com.google.common.collect.ImmutableList;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestLimiters
 {
@@ -35,7 +35,7 @@ public class TestLimiters
 	{
 		Argument<Integer> positiveArgument = integerArgument("-i", "--index").limitTo(positiveInteger()).build();
 
-		ArgumentParser parser = ArgumentParser.forArguments(positiveArgument);
+		CommandLineParser parser = CommandLineParsers.forArguments(positiveArgument);
 		try
 		{
 			parser.parse("-i", "-5");
@@ -54,7 +54,7 @@ public class TestLimiters
 	{
 		Argument<File> file = fileArgument("--file").limitTo(existingFile()).build();
 
-		ArgumentParser parser = ArgumentParser.forArguments(file);
+		CommandLineParser parser = CommandLineParsers.forArguments(file);
 		try
 		{
 			parser.parse("--file", ".");
@@ -101,21 +101,11 @@ public class TestLimiters
 		integerArgument("-n").limitTo((Limiter<Integer>) limiter).parse("-n", "1");
 	}
 
-	@Test(expected = RuntimeException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "fail-fast during build phase")
-	public void testThatDefaultValuesAreLimitedDuringBuild()
+	@Test(expected = IllegalArgumentException.class)
+	public void testThatDefaultValuesAreLimited() throws ArgumentException
 	{
-		integerArgument("-n").defaultValue(-1).limitTo(positiveInteger()).build();
+		integerArgument("-n").limitTo(positiveInteger()).defaultValue(-1).parse();
 	}
-
-	@Test(expected = RuntimeException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "fail-fast during build phase")
-	public void testThatDefaultValuesAreLimited()
-	{
-		integerArgument("-n").limitTo(positiveInteger()).defaultValue(-1).build();
-	}
-
-	private static final long ONE_SECOND_IN_MILLIS = 1000;
 
 	@Test(expected = LimitException.class, timeout = ONE_SECOND_IN_MILLIS)
 	public void testThatLimitersAreDescribable() throws ArgumentException

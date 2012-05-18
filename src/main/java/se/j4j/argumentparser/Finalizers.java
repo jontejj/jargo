@@ -15,6 +15,9 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Gives you static access to implementations of the {@link Finalizer} interface.
+ */
 public final class Finalizers
 {
 	private Finalizers()
@@ -49,28 +52,28 @@ public final class Finalizers
 		return new CompoundFinalizer<T>(ImmutableList.copyOf(finalizers));
 	}
 
-	public static <T> Finalizer<List<T>> forListValues(Finalizer<T> elementFinalizer)
+	public static <E> Finalizer<List<E>> forListValues(Finalizer<E> elementFinalizer)
 	{
 		if(elementFinalizer == null)
 			return null;
-		return new ListValueFinalizer<T>(elementFinalizer);
+		return new ListValueFinalizer<E>(elementFinalizer);
 	}
 
-	public static <T> Finalizer<Map<String, T>> forMapValues(Finalizer<T> valueFinalizer)
+	public static <K, V> Finalizer<Map<K, V>> forMapValues(Finalizer<V> valueFinalizer)
 	{
 		if(valueFinalizer == null)
 			return null;
-		return new MapValueFinalizer<T>(valueFinalizer);
+		return new MapValueFinalizer<K, V>(valueFinalizer);
 	}
 
-	public static <T> Finalizer<List<T>> unmodifiableListFinalizer()
+	public static <E> Finalizer<List<E>> unmodifiableListFinalizer()
 	{
-		return new UnmodifiableListMaker<T>();
+		return new UnmodifiableListMaker<E>();
 	}
 
-	public static <T> Finalizer<Map<String, T>> unmodifiableMapFinalizer()
+	public static <K, V> Finalizer<Map<K, V>> unmodifiableMapFinalizer()
 	{
-		return new UnmodifiableMapMaker<T>();
+		return new UnmodifiableMapMaker<K, V>();
 	}
 
 	/**
@@ -102,62 +105,62 @@ public final class Finalizers
 		}
 	}
 
-	private static final class ListValueFinalizer<T> implements Finalizer<List<T>>
+	private static final class ListValueFinalizer<E> implements Finalizer<List<E>>
 	{
-		private final Finalizer<T> elementFinalizer;
+		private final Finalizer<E> elementFinalizer;
 
-		private ListValueFinalizer(Finalizer<T> elementFinalizer)
+		private ListValueFinalizer(Finalizer<E> elementFinalizer)
 		{
 			this.elementFinalizer = elementFinalizer;
 		}
 
 		@Override
-		public List<T> finalizeValue(List<T> values)
+		public List<E> finalizeValue(List<E> values)
 		{
-			ListIterator<T> valueIterator = values.listIterator();
+			ListIterator<E> valueIterator = values.listIterator();
 			while(valueIterator.hasNext())
 			{
-				T finalizedValue = elementFinalizer.finalizeValue(valueIterator.next());
+				E finalizedValue = elementFinalizer.finalizeValue(valueIterator.next());
 				valueIterator.set(finalizedValue);
 			}
 			return values;
 		}
 	}
 
-	private static final class MapValueFinalizer<T> implements Finalizer<Map<String, T>>
+	private static final class MapValueFinalizer<K, V> implements Finalizer<Map<K, V>>
 	{
-		private final Finalizer<T> finalizer;
+		private final Finalizer<V> finalizer;
 
-		private MapValueFinalizer(Finalizer<T> valueFinalizer)
+		private MapValueFinalizer(Finalizer<V> valueFinalizer)
 		{
 			this.finalizer = valueFinalizer;
 		}
 
 		@Override
-		public Map<String, T> finalizeValue(Map<String, T> map)
+		public Map<K, V> finalizeValue(Map<K, V> map)
 		{
-			for(Entry<String, T> entry : map.entrySet())
+			for(Entry<K, V> entry : map.entrySet())
 			{
-				T finalizedValue = finalizer.finalizeValue(entry.getValue());
+				V finalizedValue = finalizer.finalizeValue(entry.getValue());
 				entry.setValue(finalizedValue);
 			}
 			return map;
 		}
 	}
 
-	private static final class UnmodifiableListMaker<T> implements Finalizer<List<T>>
+	private static final class UnmodifiableListMaker<E> implements Finalizer<List<E>>
 	{
 		@Override
-		public List<T> finalizeValue(List<T> value)
+		public List<E> finalizeValue(List<E> value)
 		{
 			return unmodifiableList(value);
 		}
 	}
 
-	private static final class UnmodifiableMapMaker<T> implements Finalizer<Map<String, T>>
+	private static final class UnmodifiableMapMaker<K, V> implements Finalizer<Map<K, V>>
 	{
 		@Override
-		public Map<String, T> finalizeValue(Map<String, T> value)
+		public Map<K, V> finalizeValue(Map<K, V> value)
 		{
 			return unmodifiableMap(value);
 		}

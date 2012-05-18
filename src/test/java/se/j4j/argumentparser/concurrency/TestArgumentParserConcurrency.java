@@ -14,8 +14,8 @@ import static se.j4j.argumentparser.ArgumentFactory.longArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.shortArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.CustomHandlers.DateTimeHandler.dateArgument;
 import static se.j4j.argumentparser.StringSplitters.comma;
+import static se.j4j.argumentparser.stringparsers.custom.DateTimeParser.dateArgument;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -35,8 +35,9 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
-import se.j4j.argumentparser.ArgumentParser;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser;
+import se.j4j.argumentparser.CommandLineParsers;
+import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
 
 public class TestArgumentParserConcurrency
 {
@@ -75,13 +76,13 @@ public class TestArgumentParserConcurrency
 	final Argument<List<Float>> splittedArgument = floatArgument("--split").separator("=").splitWith(comma()).build();
 
 	// The shared instance that the different threads will use
-	final ArgumentParser parser = ArgumentParser.forArguments(	greetingPhrase, enableLogging, port, longArgument, bigInteger, date, doubleArgument,
-																shortArgument, byteArgument, file, string, charArgument, bool, propertyArgument,
-																arityArgument, repeatedArgument, splittedArgument);
+	final CommandLineParser parser = CommandLineParsers.forArguments(	greetingPhrase, enableLogging, port, longArgument, bigInteger, date,
+																		doubleArgument, shortArgument, byteArgument, file, string, charArgument,
+																		bool, propertyArgument, arityArgument, repeatedArgument, splittedArgument);
 
-	private static final int ITERATION_COUNT = 1000;
+	private static final int ITERATION_COUNT = 300;
 
-	private static final int RUNNERS_PER_PROCESSOR = 2; // We want the threads
+	private static final int RUNNERS_PER_PROCESSOR = 3; // We want the threads
 														// to fight for CPU time
 
 	private static final int nrOfConcurrentRunners = Runtime.getRuntime().availableProcessors() * RUNNERS_PER_PROCESSOR;

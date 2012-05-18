@@ -3,4 +3,4 @@
 Usage: NaNTest [Options]
 -b <byte>    <byte>: -128 to 127 (decimal)
              Default: 0
-             
+

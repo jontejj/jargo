@@ -13,8 +13,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.exceptions.ArgumentException;
-
 public class TestStringSplitter
 {
 	@Test
@@ -23,20 +21,6 @@ public class TestStringSplitter
 		List<Integer> numbers = integerArgument("-n").splitWith(comma()).parse("-n", "1,2");
 
 		assertThat(numbers).isEqualTo(asList(1, 2));
-	}
-
-	/**
-	 * <pre>
-	 * "-n", "1,2", "3,4"
-	 * isn't allowed
-	 * </pre>
-	 */
-	@SuppressWarnings("deprecation")
-	// This is what's tested
-	@Test(expected = IllegalStateException.class)
-	public void testArityCombinedWithSplitting()
-	{
-		integerArgument("-n").splitWith(comma()).arity(2);
 	}
 
 	@Test
@@ -82,6 +66,7 @@ public class TestStringSplitter
 		}
 	}
 
+	// This is what's tested
 	@SuppressWarnings("deprecation")
 	@Test(expected = IllegalStateException.class)
 	public void testArityCombinedWithPropertyMapWrongCallOrder()
@@ -89,5 +74,27 @@ public class TestStringSplitter
 		// The intent is to guide the user of the API to how he should have used
 		// it
 		integerArgument("-n").asPropertyMap().splitWith(comma());
+	}
+
+	/**
+	 * <pre>
+	 * "-n", "1,2", "3,4"
+	 * isn't allowed
+	 * </pre>
+	 */
+	// This is what's tested
+	@SuppressWarnings("deprecation")
+	@Test(expected = IllegalStateException.class)
+	public void testArityCombinedWithSplitting()
+	{
+		integerArgument("-n").splitWith(comma()).arity(2);
+	}
+
+	@SuppressWarnings("deprecation")
+	// This is what's tested
+	@Test(expected = IllegalStateException.class)
+	public void testConsumeAllCombinedWithSplitting()
+	{
+		integerArgument("-n").splitWith(comma()).consumeAll();
 	}
 }

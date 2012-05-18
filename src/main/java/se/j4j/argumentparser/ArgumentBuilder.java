@@ -2,8 +2,10 @@ package se.j4j.argumentparser;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static se.j4j.argumentparser.DefaultValueProviders.listWithOneValue;
-import static se.j4j.argumentparser.DefaultValueProviders.nonLazyProvider;
+import static se.j4j.argumentparser.Describers.withStaticString;
+import static se.j4j.argumentparser.Providers.listWithOneValue;
+import static se.j4j.argumentparser.Providers.nonLazyProvider;
+import static se.j4j.argumentparser.StringParsers.optionParser;
 
 import java.util.List;
 import java.util.Map;
@@ -15,26 +17,25 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import se.j4j.argumentparser.ArgumentFactory.ArgumentSplitter;
-import se.j4j.argumentparser.ArgumentFactory.ListArgument;
-import se.j4j.argumentparser.ArgumentFactory.MapArgument;
-import se.j4j.argumentparser.ArgumentFactory.OptionArgument;
-import se.j4j.argumentparser.ArgumentFactory.RepeatedArgument;
-import se.j4j.argumentparser.ArgumentParser.ParsedArguments;
-import se.j4j.argumentparser.exceptions.ArgumentException;
-import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
+import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
+import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.StringParsers.InternalStringParser;
+import se.j4j.argumentparser.StringParsers.KeyValueParser;
+import se.j4j.argumentparser.StringParsers.ListParser;
+import se.j4j.argumentparser.StringParsers.RepeatedArgumentParser;
+import se.j4j.argumentparser.StringParsers.StringSplitterParser;
 
 /**
  * <pre>
  * Responsible for building {@link Argument} instances.
  * Example builders can be seen in {@link ArgumentFactory}.
  * 
- * <b>Note:</b>Some methods needs to be called in a specific order 
- * (to make the generic type system produce the correct type) and to guide the 
- * caller, such orders are documented with {@link Deprecated}. If those warnings 
+ * <b>Note:</b>Some methods needs to be called in a specific order
+ * (to make the generic type system produce the correct type) and to guide the
+ * caller, such orders are documented with {@link Deprecated}. If those warnings
  * are ignored {@link IllegalStateException} will be thrown at the offending call.
  * 
- * @param <SELF_TYPE> the type of the subclass extending this class. 
+ * @param <SELF_TYPE> the type of the subclass extending this class.
  * 		Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
  * 		The pattern can also be called <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
  * @param <T> the type of arguments the built {@link Argument} instance should handle, such as {@link Integer}
@@ -43,35 +44,44 @@ import se.j4j.argumentparser.exceptions.MissingRequiredArgumentException;
 @NotThreadSafe
 public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T>, T>
 {
-	@Nonnull protected List<String> names = emptyList();
+	@Nonnull private List<String> names = emptyList();
 
-	@Nullable protected String defaultValueDescription = null;
-	@Nonnull protected String description = "";
-	protected boolean required = false;
-	@Nullable protected String separator = null;
-	protected boolean ignoreCase = false;
+	@Nullable private Describer<T> defaulValueDescriber = null;
+	@Nonnull private String description = "";
+	private boolean required = false;
+	@Nullable private String separator = null;
+	private boolean ignoreCase = false;
 
-	protected boolean isPropertyMap = false;
-	protected boolean isAllowedToRepeat = false;
-	@Nonnull protected String metaDescription = "";
-	protected boolean hideFromUsage = false;
+	private boolean isPropertyMap = false;
+	private boolean isAllowedToRepeat = false;
+	@Nonnull private String metaDescription = "";
+	private boolean hideFromUsage = false;
 
-	@Nullable protected final ArgumentHandler<T> handler;
+	@Nullable private final InternalStringParser<T> internalStringParser;
 
-	@Nullable protected DefaultValueProvider<T> defaultValueProvider = null;
+	@Nullable private Provider<T> defaultValueProvider = null;
 	// No Null Object instance because it would require an unnecessary put
 	// operation
-	@Nullable protected Finalizer<T> finalizer = null;
-	@Nonnull protected Limiter<T> limiter = Limiters.noLimits();
-	@Nonnull protected Callback<T> callback = Callbacks.noCallback();
+	@Nullable private Finalizer<T> finalizer = null;
+	@Nonnull private Limiter<T> limiter = Limiters.noLimits();
+	@Nonnull private Callback<T> callback = Callbacks.noCallback();
 
 	/**
-	 * @param handler if null, you'll need to override {@link #handler()}, like
-	 *            {@link OptionArgumentBuilder} does.
+	 * @param stringParser the parser to parse the {@link Argument} with.
 	 */
-	protected ArgumentBuilder(@Nullable final ArgumentHandler<T> handler)
+	protected ArgumentBuilder(@Nonnull final StringParser<T> stringParser)
 	{
-		this.handler = handler;
+		this.internalStringParser = wrapParser(stringParser);
+	}
+
+	protected ArgumentBuilder()
+	{
+		this.internalStringParser = null;
+	}
+
+	ArgumentBuilder(@Nullable final InternalStringParser<T> stringParser)
+	{
+		this.internalStringParser = stringParser;
 	}
 
 	// SELF_TYPE is passed in by subclasses as a type-variable, so type-safety
@@ -84,25 +94,26 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * @return an Immutable {@link Argument} which can be passed to
-	 *         {@link ArgumentParser#forArguments(Argument...)}
+	 *         {@link CommandLineParsers#forArguments(Argument...)}
 	 */
 	@CheckReturnValue
 	@Nonnull
 	@OverridingMethodsMustInvokeSuper
 	public Argument<T> build()
 	{
+		// TODO: this could potentially cache the created object, how to make subclasses set
+		// themselves as dirty?
 		return new Argument<T>(this);
 	}
 
 	/**
 	 * Parses command line arguments and returns the value of the argument built
 	 * by {@link #build()}.<br>
-	 * This is a shorthand method that should be used if only one
-	 * {@link Argument} is expected as it will result in an unnecessary
-	 * amount of {@link ArgumentParser} instance creations.
-	 * If several arguments are expected use
-	 * {@link ArgumentParser#forArguments(Argument...)} instead.
-	 * Especially if you're concerned about performance.
+	 * <br>
+	 * This is a shorthand method that should be used if only one {@link Argument} is expected as it
+	 * will throw if unexpected arguments are
+	 * encountered. If several arguments are expected use
+	 * {@link CommandLineParsers#forArguments(List)} instead.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the <code>actualArguments</code>
@@ -117,20 +128,36 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	public String usage(@Nonnull String programName)
 	{
-		return ArgumentParser.forArguments(build()).usage(programName);
+		return CommandLineParsers.forArguments(build()).usage(programName);
 	}
 
 	/**
 	 * Can be overridden by builders that support custom parameters that affects
-	 * the handler
+	 * the {@link StringParser}
 	 * 
-	 * @return the {@link ArgumentHandler} that performs the actual parsing of
-	 *         an argument value
+	 * @return the {@link StringParser} that performs the actual parsing of an argument value
 	 */
-	@Nonnull
-	protected ArgumentHandler<T> handler()
+	@Nullable
+	protected StringParser<T> parser()
 	{
-		return handler;
+		return null;
+	}
+
+	@Nonnull
+	InternalStringParser<T> internalParser()
+	{
+		StringParser<T> parser = parser();
+		if(parser != null)
+			return wrapParser(parser);
+		return internalStringParser;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> InternalStringParser<T> wrapParser(@Nonnull final StringParser<T> parser)
+	{
+		if(parser instanceof InternalStringParser)
+			return (InternalStringParser<T>) parser;
+		return new ForwardingStringParser<T>(parser);
 	}
 
 	/**
@@ -142,14 +169,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *            <li>"-o" for a short named option/argument</li>
 	 *            <li>"--option-name" for a long named option/argument</li>
 	 *            <li>"-o", "--option-name" to give the user both choices</li>
-	 *            <li>zero elements: the argument must be given at the same
-	 *            position on the command line as it is given to
-	 *            {@link ArgumentParser#forArguments(Argument...)} (not counting
-	 *            named arguments) which is discouraged because it makes your
-	 *            program arguments harder to read and makes your program less
-	 *            maintainable and harder to keep backwards compatible with old
-	 *            scripts as you can't change the order of the arguments without
-	 *            changing those scripts.</li>
+	 *            <li>zero elements: the argument must be given at the same position on the command
+	 *            line as it is given to {@link CommandLineParsers#forArguments(Argument...)} (not
+	 *            counting named arguments) which is discouraged because it makes your program
+	 *            arguments harder to read and makes your program less maintainable and harder to
+	 *            keep backwards compatible with old scripts as you can't change the order of the
+	 *            arguments without changing those scripts.</li>
 	 *            </ul>
 	 * @return this builder
 	 */
@@ -160,8 +185,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * If used {@link ArgumentParser#parse(String...)} ignores the case of the
-	 * argument names set by {@link Argument#Argument(String...)}
+	 * If used {@link CommandLineParser#parse(String...)} ignores the case of
+	 * the argument names set by {@link Argument#Argument(String...)}
 	 * 
 	 * @return this builder
 	 */
@@ -185,7 +210,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * Makes {@link ArgumentParser#parse(String...)} throw
+	 * Makes {@link CommandLineParser#parse(String...)} throw
 	 * {@link MissingRequiredArgumentException} if this argument isn't given
 	 * 
 	 * @return this builder
@@ -206,15 +231,15 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * Sets a default value to use for this argument.
 	 * Returned by {@link ParsedArguments#get(Argument)} when no argument was given.
-	 * To create default values lazily see {@link ArgumentBuilder#defaultValueProvider(DefaultValueProvider)}.
+	 * To create default values lazily see {@link ArgumentBuilder#provider(Provider)}.
 	 * 
 	 * <b>Mutability</b>:Remember that as {@link Argument} is {@link Immutable}
 	 * this value should be so too if multiple argument parsings is going to take place.
-	 * If mutability is wanted {@link ArgumentBuilder#defaultValueProvider(DefaultValueProvider)} should be used instead.
+	 * If mutability is wanted {@link ArgumentBuilder#provider(Provider)} should be used instead.
 	 * 
 	 * @return this builder
-	 * @throws IllegalStateException if
-	 * {@link #required()} has been called, because these two methods are mutually exclusive
+	 * @throws IllegalStateException if {@link #required()} has been called,
+	 * because these two methods are mutually exclusive
 	 */
 	public SELF_TYPE defaultValue(@Nullable final T value)
 	{
@@ -228,12 +253,15 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * <pre>
-	 * Sets a provider that can provide default values when this argument isn't given.
+	 * Sets a provider that can provide default values in the absence of this argument
+	 * 
+	 * @see Providers#cachingProvider(Provider)
+	 * 
 	 * @return this builder
-	 * @throws IllegalStateException if
-	 * {@link #required()} has been called, because these two methods are mutually exclusive
+	 * @throws IllegalStateException if {@link #required()} has been called,
+	 * because these two methods are mutually exclusive
 	 */
-	public SELF_TYPE defaultValueProvider(@Nonnull final DefaultValueProvider<T> provider)
+	public SELF_TYPE defaultValueProvider(@Nonnull final Provider<T> provider)
 	{
 		if(required)
 			throw new IllegalStateException("Having a requried argument and a default value provider makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
@@ -251,7 +279,20 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE defaultValueDescription(@Nonnull final String aDescription)
 	{
-		this.defaultValueDescription = aDescription;
+		this.defaulValueDescriber = withStaticString(aDescription);
+		return self();
+	}
+
+	/**
+	 * Provides a way to give the usage texts a better explanation of a default
+	 * value than {@link Object#toString()} provides
+	 * 
+	 * @param aDescription the description
+	 * @return this builder
+	 */
+	public SELF_TYPE defaultValueDescription(@Nonnull final Describer<T> describer)
+	{
+		this.defaulValueDescriber = describer;
 		return self();
 	}
 
@@ -272,9 +313,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * Hidden arguments should not appear in usage.<br>
-	 * Can be used for arguments that programmers use
-	 * but users of the program doesn't.
+	 * Hides this argument so that it's not displayed in usage.<br>
+	 * Can be used for arguments that programmers use but users of the program doesn't.
 	 * 
 	 * @return this builder
 	 */
@@ -292,6 +332,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE separator(@Nonnull final String aSeparator)
 	{
+		// TODO: test empty separator
 		separator = aSeparator;
 		return self();
 	}
@@ -300,25 +341,44 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * Makes this argument handle properties like arguments:
 	 * -Dproperty.name=value
-	 * where value is decoded by the previously set {@link ArgumentHandler}.
-	 * property.name is the key in the resulting {@link Map},
-	 * value is ... the value
-	 * 
+	 * where "value" is decoded by the previously set {@link StringParser}.
+	 * "property.name" is the key in the resulting {@link Map}
 	 * </pre>
 	 * 
 	 * @return this builder wrapped in a more specific builder
 	 */
 	@CheckReturnValue
-	public MapArgumentBuilder<T> asPropertyMap()
+	public MapArgumentBuilder<String, T> asPropertyMap()
 	{
-		return new MapArgumentBuilder<T>(this);
+		return new MapArgumentBuilder<String, T>(this, StringParsers.stringParser());
+	}
+
+	/**
+	 * <pre>
+	 * Makes this argument handle properties like arguments:
+	 * -Dproperty.name=value
+	 * where key is decoded by <code>keyParser</code> and value is decoded the {@link StringParser} passed to the constructor.
+	 * 
+	 * For example:
+	 * <code>
+	 * Map&lt;Integer, Integer&gt; numberMap = ArgumentFactory.integerArgument("-N").asKeyValuesWithKeyParser(StringParsers.integerParser(Radix.DECIMAL)).parse("-N1=5", "-N2=10");
+	 * assertThat(numberMap.get(1)).isEqualTo(5);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @return this builder wrapped in a more specific builder
+	 */
+	@CheckReturnValue
+	public <Key extends Comparable<Key>> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(StringParser<Key> keyParser)
+	{
+		return new MapArgumentBuilder<Key, T>(this, keyParser);
 	}
 
 	/**
 	 * <pre>
 	 * When given a {@link StringSplitter} such as {@link StringSplitters#comma()} this allows for
 	 * arguments such as:
-	 * -numbers 1,2,3 
+	 * -numbers 1,2,3
 	 * where the resulting{@link List&lt;Integer&gt;} would contain 1, 2 & 3.
 	 * 
 	 * Doesn't allow empty lists.
@@ -341,13 +401,13 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * <pre>
 	 * <code>
-	 * ListArgument&lt;Integer&gt; numbers = ArgumentFactory.integerArgument("--numbers").consumeAll();
+	 * ListParser&lt;Integer&gt; numbers = ArgumentFactory.integerArgument("--numbers").consumeAll();
 	 * 
 	 * String[] threeArgs = {"--numbers", "1", "2", "3"};
-	 * assertEqual(Arrays.asList(1, 2, 3), ArgumentParser.forArguments(numbers).parse(threeArgs).get(numbers));
+	 * assertEqual(Arrays.asList(1, 2, 3), CommandLineParsers.forArguments(numbers).parse(threeArgs).get(numbers));
 	 * 
 	 * String[] twoArgs = {"--numbers", "4", "5"};
-	 * assertEqual(Arrays.asList(4, 5), ArgumentParser.forArguments(numbers).parse(twoArgs).get(numbers));
+	 * assertEqual(Arrays.asList(4, 5), CommandLineParsers.forArguments(numbers).parse(twoArgs).get(numbers));
 	 * </code>
 	 * </pre>
 	 * 
@@ -356,20 +416,19 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public ListArgumentBuilder<T> consumeAll()
 	{
-		return new ListArgumentBuilder<T>(this, ListArgument.CONSUME_ALL);
+		return new ListArgumentBuilder<T>(this, ListParser.CONSUME_ALL);
 	}
 
 	/**
-	 * Uses this argument to parse values but assumes that
-	 * <code>numberOfParameters</code> of the following
-	 * parameters are of the same type,integer in the following example:
+	 * Uses this argument to parse values but assumes that <code>numberOfParameters</code> of the
+	 * following parameters are of the same type,integer in the following example:
 	 * 
 	 * <pre>
 	 * {@code
 	 * String[] args = }{{@code "--numbers", "4", "5", "Hello"}};
 	 * {@code
 	 * Argument<List<Integer>> numbers = ArgumentFactory.integerArgument("--numbers").arity(2).build();
-	 * List<Integer> actualNumbers = ArgumentParser.forArguments(numbers).parse(args).get(numbers);
+	 * List<Integer> actualNumbers = CommandLineParsers.forArguments(numbers).parse(args).get(numbers);
 	 * assertThat(actualNumbers).isEqualTo(Arrays.asList(4, 5));
 	 * }
 	 * </pre>
@@ -379,6 +438,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public ListArgumentBuilder<T> arity(final int numberOfParameters)
 	{
+		// TODO: verify numberOfParameters > 1 || numberOfParameters == ConsumeAll
 		return new ListArgumentBuilder<T>(this, numberOfParameters);
 	}
 
@@ -389,20 +449,20 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * <code>
 	 * String[] args = {"--number", "1", "--number", "2"};
-	 * RepeatedArgument&lt;Integer&gt; number = ArgumentFactory.integerArgument("--number").repeated();
-	 * ParsedArguments parsed = ArgumentParser.forArguments(number).parse(args);
+	 * RepeatedArgumentParser&lt;Integer&gt; number = ArgumentFactory.integerArgument("--number").repeated();
+	 * ParsedArguments parsed = CommandLineParsers.forArguments(number).parse(args);
 	 * assertEquals(Arrays.asList(1, 2), parsed.get(number));
 	 * </code>
 	 * </pre>
 	 * 
-	 * If you want to combine a specific {@link #arity(int)} or
-	 * {@link #consumeAll()} then call those before calling this.
+	 * If you want to combine a specific {@link #arity(int)} or {@link #consumeAll()} then call
+	 * those before calling this.
 	 * 
 	 * <pre>
 	 * <code>
 	 * String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
-	 * RepeatedArgument&lt;List&lt;Integer&gt;&gt; numbers = ArgumentFactory.integerArgument("--numbers").arity(2).repeated();
-	 * ParsedArguments parsed = ArgumentParser.forArguments(numbers).parse(args);
+	 * RepeatedArgumentParser&lt;List&lt;Integer&gt;&gt; numbers = ArgumentFactory.integerArgument("--numbers").arity(2).repeated();
+	 * ParsedArguments parsed = CommandLineParsers.forArguments(numbers).parse(args);
 	 * 
 	 * List&lt;List&lt;Integer&gt;&gt; numberLists = new ArrayList<List<Integer>>();
 	 * numberLists.add(Arrays.asList(5, 6));
@@ -417,7 +477,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * <code>
 	 * Argument&lt;Map&lt;String, List&lt;Integer&gt;&gt;&gt; numberMap = integerArgument("-N").repeated().asPropertyMap().build();
-	 * ParsedArguments parsed = ArgumentParser.forArguments(numberMap).parse("-Nnumber=1", "-Nnumber=2");
+	 * ParsedArguments parsed = CommandLineParsers.forArguments(numberMap).parse("-Nnumber=1", "-Nnumber=2");
 	 * assertThat(parsed.get(numberMap).get("number")).isEqualTo(Arrays.asList(1, 2));
 	 * </code>
 	 * 
@@ -435,17 +495,15 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * <pre>
-	 * {@link Finalizer}s are called after {@link ArgumentHandler#parse(java.util.ListIterator, Object, Argument)} 
+	 * {@link Finalizer}s are called after {@link StringParser#parse(String)}
 	 * but before {@link Limiter#withinLimits(Object)}.
 	 * 
-	 * Can be used to modify the value produced by
-	 * {@link ArgumentHandler#parse(java.util.ListIterator, Object, Argument)}.
+	 * Can be used to modify the value produced by {@link StringParser#parse(String)}.
 	 * 
-	 * For example {@link RepeatedArgument} uses this to make the resulting
-	 * {@link List} {@link Immutable}.
+	 * For example {@link RepeatedArgumentParser} uses this to make the resulting {@link List} {@link Immutable}.
 	 * 
-	 * <b>Note:</b> If {@link #finalizeWith(Finalizer)} have been 
-	 * called before, the given <code>aFinalizer</code> will be run after that finalizer.
+	 * <b>Note:</b> If {@link #finalizeWith(Finalizer)} have been called before,
+	 * the given <code>aFinalizer</code> will be run after that finalizer.
 	 * To clear out any previously set {@link Finalizer}s use {@link #clearFinalizers()}
 	 * </pre>
 	 * 
@@ -526,8 +584,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * Clear out all {@link Callback}s set by
-	 * {@link #callbackForValues(Callback)}
+	 * Clear out all {@link Callback}s set by {@link #callbackForValues(Callback)}
 	 * 
 	 * @return this builder
 	 */
@@ -546,7 +603,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Copies all values from the given copy into this one, except for:
-	 * {@link ArgumentBuilder#handler} & {@link ArgumentBuilder#defaultValueProvider} as they may change between different builders
+	 * {@link ArgumentBuilder#internalStringParser}, {@link ArgumentBuilder#provider} & {@link ArgumentBuilder#defaulValueDescriber}
+	 * as they may change between different builders
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;List&lt;Boolean&gt;&gt; are not compatible)
 	 * @param copy the ArgumentBuilder to copy from
 	 */
@@ -561,8 +619,52 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		this.isAllowedToRepeat = copy.isAllowedToRepeat;
 		this.metaDescription = copy.metaDescription;
 		this.hideFromUsage = copy.hideFromUsage;
-		this.defaultValueDescription = copy.defaultValueDescription;
 	}
+
+	SELF_TYPE allowRepeatedArguments()
+	{
+		isAllowedToRepeat = true;
+		return self();
+	}
+
+	SELF_TYPE setAsPropertyMap()
+	{
+		isPropertyMap = true;
+		return self();
+	}
+
+	/**
+	 * @formatter:off
+	 */
+	@Nonnull
+	List<String> names(){ return names; }
+
+	@Nullable Describer<T> describer(){ return defaulValueDescriber; }
+
+	@Nonnull String description(){ return description; }
+
+	boolean isRequired(){ return required; }
+
+	@Nullable String separator(){ return separator; }
+
+	boolean isIgnoringCase(){ return ignoreCase; }
+
+	boolean isPropertyMap(){ return isPropertyMap; }
+
+	boolean isAllowedToRepeat(){ return isAllowedToRepeat; }
+
+	@Nonnull String metaDescription(){ return metaDescription; }
+	boolean isHiddenFromUsage(){ return hideFromUsage; }
+
+	@Nullable Provider<T> defaultValueProvider(){ return defaultValueProvider; }
+
+	@Nullable Finalizer<T> finalizer(){ return finalizer; }
+	@Nonnull Limiter<T> limiter(){ return limiter; }
+	@Nonnull Callback<T> callback(){ return callback; }
+
+	/**
+	 * @formatter:on
+	 */
 
 	// Non-Interesting builders below, most declarations here under handles
 	// (by deprecating) invalid invariants between different argument properties
@@ -571,10 +673,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	{
 		public ListArgumentBuilder(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder, final int argumentsToConsume)
 		{
-			super(new ListArgument<T>(builder.handler(), argumentsToConsume));
+			super(new ListParser<T>(builder.internalParser(), argumentsToConsume));
 			copy(builder);
-			this.finalizer = Finalizers.unmodifiableListFinalizer();
-			this.finalizer = Finalizers.compound(Finalizers.forListValues(builder.finalizer), this.finalizer);
+
+			finalizeWith(Finalizers.forListValues(builder.finalizer));
+			finalizeWith(Finalizers.<T>unmodifiableListFinalizer());
 
 			callbackForValues(Callbacks.forListValues(builder.callback));
 			limitTo(Limiters.forListValues(builder.limiter));
@@ -583,7 +686,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		/**
 		 * This doesn't work with {@link ArgumentBuilder#arity(int)} or
 		 * {@link ArgumentBuilder#consumeAll()},
-		 * either separate your arguments with a splitter or a space
+		 * either separate your arguments with a {@link StringSplitter} or a space
 		 */
 		@Deprecated
 		@Override
@@ -597,19 +700,19 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	{
 		public RepeatedArgumentBuilder(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder)
 		{
-			super(new RepeatedArgument<T>(builder.handler()));
+			super(new RepeatedArgumentParser<T>(builder.internalParser()));
 			copy(builder);
 			if(builder.defaultValueProvider != null)
 			{
-				this.defaultValueProvider = listWithOneValue(builder.defaultValueProvider);
+				this.defaultValueProvider(listWithOneValue(builder.defaultValueProvider));
 			}
 
-			this.finalizer = Finalizers.unmodifiableListFinalizer();
-			this.finalizer = Finalizers.compound(Finalizers.forListValues(builder.finalizer), this.finalizer);
+			finalizeWith(Finalizers.forListValues(builder.finalizer));
+			finalizeWith(Finalizers.<T>unmodifiableListFinalizer());
 
 			callbackForValues(Callbacks.forListValues(builder.callback));
 			limitTo(Limiters.forListValues(builder.limiter));
-			isAllowedToRepeat = true;
+			allowRepeatedArguments();
 		}
 
 		/**
@@ -643,18 +746,17 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
-	public static class OptionArgumentBuilder extends ArgumentBuilder<OptionArgumentBuilder, Boolean>
+	public static final class OptionArgumentBuilder extends ArgumentBuilder<OptionArgumentBuilder, Boolean>
 	{
-		public OptionArgumentBuilder()
+		OptionArgumentBuilder()
 		{
-			super(null);
-			defaultValueProvider = nonLazyProvider(false);
+			defaultValueProvider(nonLazyProvider(false));
 		}
 
 		@Override
-		protected ArgumentHandler<Boolean> handler()
+		protected InternalStringParser<Boolean> internalParser()
 		{
-			return new OptionArgument(defaultValueProvider.defaultValue());
+			return optionParser(defaultValueProvider().provideValue());
 		}
 
 		// TODO: as these are starting to get out of hand, maybe introduce a
@@ -677,7 +779,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		@Override
 		public OptionArgumentBuilder separator(final String aSeparator)
 		{
-			throw new IllegalStateException("A seperator for an optional flag isn't supported as " + "an optional flag can't be assigned a value");
+			throw new IllegalStateException("A seperator for an optional flag isn't supported as an optional flag can't be assigned a value");
 		}
 
 		/**
@@ -711,35 +813,35 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
-	public static class MapArgumentBuilder<T> extends ArgumentBuilder<MapArgumentBuilder<T>, Map<String, T>>
+	public static class MapArgumentBuilder<K extends Comparable<K>, V> extends ArgumentBuilder<MapArgumentBuilder<K, V>, Map<K, V>>
 	{
-		protected MapArgumentBuilder(@Nonnull final ArgumentBuilder<?, T> builder)
+		protected MapArgumentBuilder(@Nonnull final ArgumentBuilder<?, V> builder, StringParser<K> keyParser)
 		{
-			super(new MapArgument<T>(builder.handler()));
+			super(new KeyValueParser<K, V>(builder.internalParser(), keyParser));
 			copy(builder);
 
-			this.limiter = Limiters.forMapValues(builder.limiter);
-			this.callback = Callbacks.forMapValues(builder.callback);
-			this.finalizer = Finalizers.unmodifiableMapFinalizer();
-			this.finalizer = Finalizers.compound(Finalizers.forMapValues(builder.finalizer), this.finalizer);
+			limitTo(Limiters.<K, V>forMapValues(builder.limiter));
+			callbackForValues(Callbacks.<K, V>forMapValues(builder.callback));
 
-			if(this.separator == null)
+			finalizeWith(Finalizers.<K, V>forMapValues(builder.finalizer));
+			finalizeWith(Finalizers.<K, V>unmodifiableMapFinalizer());
+
+			if(this.separator() == null)
 			{
 				// Maybe use assignment instead?
-				this.separator = MapArgument.DEFAULT_SEPARATOR;
+				this.separator(KeyValueParser.DEFAULT_SEPARATOR);
 			}
-			this.isPropertyMap = true;
-			if(names.isEmpty())
+			setAsPropertyMap();
+			if(names().isEmpty())
 				throw new IllegalStateException("No leading identifier (otherwise called names), for example -D, specified for property map. Call names(...) to provide it.");
 		}
 
 		/**
-		 * @deprecated because {@link #repeated()} should be called before
-		 *             {@link #asPropertyMap()}
+		 * @deprecated because {@link #repeated()} should be called before {@link #asPropertyMap()}
 		 */
 		@Deprecated
 		@Override
-		public RepeatedArgumentBuilder<Map<String, T>> repeated()
+		public RepeatedArgumentBuilder<Map<K, V>> repeated()
 		{
 			throw new IllegalStateException("You'll need to call repeated before asPropertyMap");
 		}
@@ -748,12 +850,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		 * @deprecated because {@link #splitWith(StringSplitter)} should be
 		 *             called before {@link #asPropertyMap()}.
 		 *             This is to make generic work it's magic and produce the
-		 *             correct type, for example
-		 *             {@code Map<String, List<Integer>>}.
+		 *             correct type, for example {@code Map<String, List<Integer>>}.
 		 */
 		@Deprecated
 		@Override
-		public SplitterArgumentBuilder<Map<String, T>> splitWith(final StringSplitter splitter)
+		public SplitterArgumentBuilder<Map<K, V>> splitWith(final StringSplitter splitter)
 		{
 			throw new IllegalStateException("You'll need to call splitWith before asPropertyMap");
 		}
@@ -763,21 +864,22 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	{
 		protected SplitterArgumentBuilder(@Nonnull final ArgumentBuilder<?, T> builder, @Nonnull final StringSplitter splitter)
 		{
-			super(new ArgumentSplitter<T>(splitter, builder.handler()));
+			super(new StringSplitterParser<T>(splitter, builder.internalParser()));
 			copy(builder);
 			if(builder.defaultValueProvider != null)
 			{
-				this.defaultValueProvider = listWithOneValue(builder.defaultValueProvider);
+				defaultValueProvider(listWithOneValue(builder.defaultValueProvider));
 			}
-			this.finalizer = Finalizers.unmodifiableListFinalizer();
-			this.finalizer = Finalizers.compound(Finalizers.forListValues(builder.finalizer), this.finalizer);
+
+			finalizeWith(Finalizers.forListValues(builder.finalizer));
+			finalizeWith(Finalizers.<T>unmodifiableListFinalizer());
+
 			callbackForValues(Callbacks.forListValues(builder.callback));
 			limitTo(Limiters.forListValues(builder.limiter));
 		}
 
 		/**
-		 * @deprecated you can't use both {@link #splitWith(StringSplitter)} and
-		 *             {@link #arity(int)}
+		 * @deprecated you can't use both {@link #splitWith(StringSplitter)} and {@link #arity(int)}
 		 */
 		@Deprecated
 		@Override

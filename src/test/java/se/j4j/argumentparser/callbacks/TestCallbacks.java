@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.Callback;
 import se.j4j.argumentparser.Callbacks;
-import se.j4j.argumentparser.exceptions.ArgumentException;
 
 import com.google.common.collect.ImmutableList;
 

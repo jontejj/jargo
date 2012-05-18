@@ -10,9 +10,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.Finalizer;
 import se.j4j.argumentparser.Finalizers;
-import se.j4j.argumentparser.exceptions.ArgumentException;
 
 import com.google.common.collect.ImmutableList;
 
@@ -76,5 +76,17 @@ public class TestFinalizers
 	public void testThatFinalizersAreClearable() throws ArgumentException
 	{
 		assertThat(integerArgument("-n").finalizeWith(new AddOne()).clearFinalizers().parse("-n", "0")).isZero();
+	}
+
+	@Test
+	public void testThatDefaultValuesAreFinalized() throws ArgumentException
+	{
+		assertThat(integerArgument("-n").finalizeWith(new AddOne()).defaultValue(0).parse()).isEqualTo(1);
+	}
+
+	@Test
+	public void testThatDefaultValuesAreFinalizedForUsage()
+	{
+		assertThat(integerArgument("-n").finalizeWith(new AddOne()).usage("")).contains("Default: 1");
 	}
 }
