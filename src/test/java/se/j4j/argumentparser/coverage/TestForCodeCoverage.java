@@ -14,12 +14,10 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.ArgumentFactory;
-import se.j4j.argumentparser.Callbacks;
 import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
 import se.j4j.argumentparser.Finalizers;
 import se.j4j.argumentparser.Limiters;
-import se.j4j.argumentparser.Providers;
 import se.j4j.argumentparser.StringParsers;
 import se.j4j.argumentparser.StringParsers.Radix;
 import se.j4j.argumentparser.internal.Lines;
@@ -47,8 +45,7 @@ public class TestForCodeCoverage
 			InvocationTargetException
 	{
 		Class<?>[] classesToConstruct = {ArgumentFactory.class, Lines.class, ListUtil.class, StringsUtil.class, StringComparison.class,
-				Descriptions.class, Limiters.class, Callbacks.class, Finalizers.class, Providers.class, StringParsers.class,
-				ArgumentExceptions.class, Describers.class};
+				Descriptions.class, Limiters.class, Finalizers.class, StringParsers.class, ArgumentExceptions.class, Describers.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{

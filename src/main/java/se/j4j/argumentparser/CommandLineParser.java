@@ -311,7 +311,6 @@ public final class CommandLineParser
 		{
 			arg.finalizeValue(holder);
 			limitArgument(arg, holder);
-			arg.parsedValue(holder);
 		}
 		return new ParsedArguments(holder);
 	}
