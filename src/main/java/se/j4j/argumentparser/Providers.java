@@ -8,7 +8,6 @@ import java.util.List;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Gives you static access to implementations of the {@link Provider} interface.
@@ -22,9 +21,8 @@ public final class Providers
 	/**
 	 * Returns a {@link Provider} that will save the result of {@link Provider#provideValue()} and
 	 * return the same value for subsequent calls. Only calls {@link Provider#provideValue()} when
-	 * it's actually needed. The returned {@link Provider} should be seen as {@link Immutable}.
-	 * This wrapper could be useful if the {@link Provider#provideValue()} is costly for
-	 * <code>valueProvider</code> or if the {@link Provider#provideValue()} may return
+	 * it's actually needed. This wrapper could be useful if the {@link Provider#provideValue()} is
+	 * costly for <code>valueProvider</code> or if the {@link Provider#provideValue()} may return
 	 * different values when called at different times and this isn't wanted behavior.
 	 */
 	@Nonnull

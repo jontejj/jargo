@@ -1,11 +1,15 @@
 package se.j4j.argumentparser.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import static com.google.common.base.Strings.repeat;
+import static com.google.common.collect.Lists.transform;
+import static se.j4j.argumentparser.StringParsers.asFunction;
+import static se.j4j.argumentparser.StringParsers.lowerCaseParser;
 
+import java.util.List;
+
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class StringsUtil
 {
@@ -13,23 +17,34 @@ public final class StringsUtil
 	{
 	}
 
+	/**
+	 * @param nrOfSpaces number of spaces to put in the created string
+	 * @return a string with nrOfSpaces in it
+	 */
 	@Nonnull
-	public static StringBuilder appendSpaces(final int spacesToAppend, @Nonnull final StringBuilder toBuilder)
+	@CheckReturnValue
+	public static String spaces(final int nrOfSpaces)
 	{
-		for(int i = 0; i < spacesToAppend; i++)
-		{
-			toBuilder.append(' ');
-		}
-		return toBuilder;
+		return repeat(" ", nrOfSpaces);
 	}
 
-	public static List<String> toLowerCase(@Nonnull final Collection<String> strings)
+	@Nonnull
+	public static String surroundWithMarkers(@Nullable String tagToSurround)
 	{
-		List<String> lowerCaseStrings = new ArrayList<String>(strings.size());
-		for(String s : strings)
-		{
-			lowerCaseStrings.add(s.toLowerCase(Locale.getDefault()));
-		}
-		return lowerCaseStrings;
+		if(tagToSurround == null || tagToSurround.isEmpty())
+			return "";
+		return "<" + tagToSurround + ">";
+	}
+
+	/**
+	 * Converts all {@link String}s in <code>strings</code> into lower case using the default
+	 * locale.
+	 * TODO: add overloaded method that takes in the Locale as well
+	 * 
+	 * @return a new list with lower case strings in
+	 */
+	public static List<String> toLowerCase(List<String> strings)
+	{
+		return transform(strings, asFunction(lowerCaseParser()));
 	}
 }

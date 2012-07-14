@@ -24,13 +24,19 @@ public class UniqueLetters implements StringParser<Set<Character>>
 	@Override
 	public String descriptionOfValidValues()
 	{
-		return "Any number of letters";
+		return "any number of letters (duplicates will be filtered)";
 	}
 
 	@Override
 	public Set<Character> defaultValue()
 	{
 		return emptySet();
+	}
+
+	@Override
+	public String metaDescription()
+	{
+		return "letters";
 	}
 
 }

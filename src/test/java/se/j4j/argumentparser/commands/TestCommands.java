@@ -5,7 +5,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.command;
-import static se.j4j.argumentparser.CommandLineParsers.forAnyArguments;
+import static se.j4j.argumentparser.CommandLineParser.forAnyArguments;
 
 import java.io.File;
 import java.util.Arrays;
@@ -19,8 +19,7 @@ import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.commands.Build.BuildTarget;
 import se.j4j.argumentparser.commands.CommitCommand.Commit;
 import se.j4j.argumentparser.commands.CommitCommand.Repository;
@@ -35,7 +34,7 @@ public class TestCommands
 	{
 		String[] args = {"commit", "--amend", "A.java", "B.java"}; // No author
 
-		CommandLineParsers.forArguments(COMMIT).parse(args);
+		CommandLineParser.forArguments(COMMIT).parse(args);
 	}
 
 	@Test(expected = UnexpectedArgumentException.class)
@@ -43,7 +42,7 @@ public class TestCommands
 	{
 		String[] args = {"-v", "init", "commit", "--amend", "A.java", "B.java"};
 
-		CommandLineParsers.forArguments(COMMIT, INIT).parse(args);
+		CommandLineParser.forArguments(COMMIT, INIT).parse(args);
 	}
 
 	@Test
@@ -54,7 +53,7 @@ public class TestCommands
 		CommitCommand commitCommand = new CommitCommand(new Repository());
 		Argument<String> commit = command(commitCommand).build();
 		Argument<String> init = command(new InitCommand()).build();
-		CommandLineParser parser = CommandLineParsers.forArguments(commit, init);
+		CommandLineParser parser = CommandLineParser.forArguments(commit, init);
 
 		ParsedArguments parsed = parser.parse(initArgs);
 		assertNotNull(parsed.get(init));
@@ -82,7 +81,7 @@ public class TestCommands
 
 		BuildTarget target = new BuildTarget();
 
-		CommandLineParsers.forCommands(new Build(target), new Clean(target)).parse(arguments);
+		CommandLineParser.forCommands(new Build(target), new Clean(target)).parse(arguments);
 
 		assertThat(target.isBuilt()).isTrue();
 		assertThat(target.isClean()).isTrue();
@@ -95,7 +94,7 @@ public class TestCommands
 		String[] invalidArgs = {"commit", "--amend", "A.java", "B.java"};
 		String[] validArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
 
-		CommandLineParser parser = CommandLineParsers.forArguments(COMMIT);
+		CommandLineParser parser = CommandLineParser.forArguments(COMMIT);
 		// First make a successful parsing
 		parser.parse(validArgs);
 		for(int i = 0; i < 2; i++)
@@ -119,7 +118,7 @@ public class TestCommands
 		Repository repo = new Repository();
 		Argument<String> commitCommand = command(new CommitCommand(repo)).build();
 
-		CommandLineParser parser = CommandLineParsers.forArguments(commitCommand);
+		CommandLineParser parser = CommandLineParser.forArguments(commitCommand);
 
 		for(int i = 0; i < 2; i++)
 		{
@@ -138,7 +137,7 @@ public class TestCommands
 		Argument<String> buildCommand = ArgumentFactory.command(new Build(target)).description("Builds a target").build();
 		Argument<String> cleanCommand = ArgumentFactory.command(new Clean(target)).description("Cleans a target").build();
 		Argument<String> commitCommand = command(new CommitCommand(new Repository())).build();
-		String usage = CommandLineParsers.forArguments(buildCommand, cleanCommand, commitCommand).usage("CommandUsage");
+		String usage = CommandLineParser.forArguments(buildCommand, cleanCommand, commitCommand).usage("CommandUsage");
 		// TODO: fix and assert
 		System.out.println(usage);
 	}
@@ -158,7 +157,8 @@ public class TestCommands
 
 		assertThat(ProfilingCommand.numberOfCallsToCreate).isZero();
 		command.parse("profile");
-		command.usage("ProgramName");
+		assertThat(command.usage("CallUsageToEnsureUsageUsesTheSameParserAsParseUsed")).isNotEmpty();
+
 		assertThat(ProfilingCommand.numberOfCallsToCreate).isEqualTo(1);
 	}
 

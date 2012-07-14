@@ -9,8 +9,7 @@ import java.util.List;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 import com.google.common.collect.Lists;
 
@@ -86,7 +85,7 @@ public final class ArgumentExpector
 		public void given(String arguments) throws ArgumentException
 		{
 			actualArguments.addAll(Arrays.asList(arguments.split(" ")));
-			CommandLineParser parser = CommandLineParsers.forArguments(arguments());
+			CommandLineParser parser = CommandLineParser.forArguments(arguments());
 			ParsedArguments parsedArguments = parser.parse(actualArguments);
 			for(Expectation<?> expectation : expectations)
 			{

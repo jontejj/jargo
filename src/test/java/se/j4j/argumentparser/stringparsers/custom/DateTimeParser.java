@@ -5,8 +5,8 @@ import static se.j4j.argumentparser.ArgumentFactory.withParser;
 
 import org.joda.time.DateTime;
 
+import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentFactory.DefaultArgumentBuilder;
 import se.j4j.argumentparser.StringParser;
 
 public class DateTimeParser implements StringParser<DateTime>
@@ -14,7 +14,7 @@ public class DateTimeParser implements StringParser<DateTime>
 	@Override
 	public String descriptionOfValidValues()
 	{
-		return "An ISO8601 date, such as 2011-02-28";
+		return "an ISO8601 date, such as 2011-02-28";
 	}
 
 	@Override
@@ -38,6 +38,12 @@ public class DateTimeParser implements StringParser<DateTime>
 
 	public static DefaultArgumentBuilder<DateTime> dateArgument(String ... names)
 	{
-		return withParser(new DateTimeParser()).metaDescription("date").defaultValueDescription("Current time").names(names);
+		return withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);
+	}
+
+	@Override
+	public String metaDescription()
+	{
+		return "date";
 	}
 }

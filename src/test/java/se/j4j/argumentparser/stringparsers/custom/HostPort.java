@@ -5,7 +5,7 @@ public class HostPort
 	public final int port;
 	public final String host;
 
-	public HostPort(final String host, final int port)
+	private HostPort(final String host, final int port)
 	{
 		this.port = port;
 		this.host = host;
@@ -14,6 +14,14 @@ public class HostPort
 	@Override
 	public String toString()
 	{
-		return "localhost:8080";
+		return host + ":" + port;
 	}
+
+	public static HostPort parse(String hostAndPort)
+	{
+		String[] s = hostAndPort.split(":");
+		return new HostPort(s[0], Integer.parseInt(s[1]));
+	}
+
+	public static final HostPort DEFAULT = new HostPort("localhost", 8080);
 }

@@ -1,35 +1,40 @@
 package se.j4j.argumentparser;
 
-import java.util.ListIterator;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
+import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
 /**
  * <pre>
  * {@link Command}s are used for advanced {@link Argument}s that have a {@link CommandLineParser} themselves.
- * That is they execute a command and may support additional arguments.
+ * That is they execute a command and may support contextual arguments.
  * 
- * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}.
+ * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}
+ * or {@link CommandLineParser#forCommands(Command...)} if you have several commands.
  * 
  * <b>Mutability note:</b> although a {@link Command}
  * should be {@link Immutable} the objects it handles doesn't have to be.
- * So repeated invocations of {@link #execute(ParsedArguments)} is allowed to yield different results
+ * So repeated invocations of execute is allowed to yield different results
  * or to affect external state.
+ * 
+ * TODO: show code example
  * </pre>
  */
 @Immutable
 public abstract class Command extends InternalStringParser<String>
 {
 	/**
-	 * Will only be called once and only if this command is encountered
+	 * Will only be called once and only if this command is encountered.
+	 * TODO: should this have a default implementation calling
+	 * {@link CommandLineParser#forAnyArguments()}?
 	 * 
 	 * @return a {@link CommandLineParser} for the arguments this command supports,
-	 *         use {@link CommandLineParsers#forAnyArguments()} if this command doesn't need any
+	 *         use {@link CommandLineParser#forAnyArguments()} if this command doesn't need any
 	 *         extra arguments.
 	 */
 	@CheckReturnValue
@@ -68,10 +73,11 @@ public abstract class Command extends InternalStringParser<String>
 	}
 
 	@Override
-	final String parse(final ListIterator<String> currentArgument, final String previousOccurance, final Argument<?> argumentDefinition)
-			throws ArgumentException
+	final String parse(final Arguments arguments, final String previousOccurance, final ArgumentSettings argumentSettings) throws ArgumentException
 	{
-		ParsedArguments result = parser().parse(currentArgument);
+		// TODO: test running CommitCommand & InitCommand in the same parse,
+		// arguments probably needs to be copied and not just passed on
+		ParsedArguments result = parser().parse(arguments);
 		execute(result);
 		return commandName(); // Can be used to check for the existence of this
 								// command in the given input arguments
@@ -86,20 +92,27 @@ public abstract class Command extends InternalStringParser<String>
 	// TODO: provide usage and validValues
 
 	@Override
-	public String descriptionOfValidValues()
-	{
-		return parser().usage("");
-	}
-
-	@Override
 	public String defaultValue()
 	{
 		return null;
 	}
 
 	@Override
-	String describeValue(String value)
+	String descriptionOfValidValues(ArgumentSettings argumentSettings)
+	{
+		return parser().usage("");
+	}
+
+	@Override
+	String describeValue(String value, ArgumentSettings argumentSettings)
 	{
 		return value;
+	}
+
+	@Override
+	String metaDescription(ArgumentSettings argumentSettings)
+	{
+		// TODO: verify that this looks ok
+		return "";
 	}
 }

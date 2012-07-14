@@ -15,8 +15,8 @@ public interface Callback<T>
 {
 	/**
 	 * Tells the callback that a value has been parsed.
-	 * This method is called after all {@link Finalizer#finalizeValue(Object)} and
-	 * {@link Limiter#withinLimits(Object)} methods have been called.
+	 * This is called after {@link Finalizer#finalizeValue(Object)} and
+	 * {@link Limiter#withinLimits(Object)} have been called.
 	 * 
 	 * @param parsedValue the parsed value
 	 */

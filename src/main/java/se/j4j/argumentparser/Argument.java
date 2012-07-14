@@ -10,17 +10,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.LimitException;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArgumentHolder;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.Providers.NonLazyValueProvider;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
 /**
  * <pre>
- * An {@link Argument} instance is the fundamental building block that glues all functionality in this package together.
+ * An {@link Argument} instance is the fundamental building block that glues all
+ * functionality in this package together.
  * 
  * Usual {@link Argument}s are created with the static methods in {@link ArgumentFactory} and then
- * used by the {@link CommandLineParsers} to parse strings (typically from the command line).
+ * used by the {@link CommandLineParser} to parse strings (typically from the command line).
  * 
  * TODO: document each property of an argument here
  * 
@@ -34,12 +37,13 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
  * </pre>
  */
 @Immutable
-public final class Argument<T>
+public final class Argument<T> extends ArgumentSettings
 {
+	// TODO: think about equals/hashCode and document the decision
 	@Nonnull private final List<String> names;
 
-	@Nonnull private final String description;
-	@Nonnull private final String metaDescription;
+	@Nonnull private final Description description;
+	@Nullable private final String metaDescription;
 	@Nullable private final String separator;
 
 	private final boolean required;
@@ -56,6 +60,19 @@ public final class Argument<T>
 	@Nonnull private final Limiter<T> limiter;
 	@Nonnull private final Callback<T> valueCallback;
 
+	@Nonnull private final Cache<CommandLineParser> commandLineParser = new Cache<CommandLineParser>(){
+		@Override
+		protected CommandLineParser createInstance()
+		{
+			return CommandLineParser.forArguments(Argument.this);
+		}
+	};
+
+	private CommandLineParser commandLineParser()
+	{
+		return commandLineParser.getCachedInstance();
+	}
+
 	/**
 	 * <pre>
 	 * Creates a basic object for handling {@link Argument}s taken from a command line invocation.
@@ -71,7 +88,7 @@ public final class Argument<T>
 	{
 		this.parser = builder.internalParser();
 		this.defaultValueProvider = builder.defaultValueProvider();
-		this.defaultValueDescriber = builder.describer();
+		this.defaultValueDescriber = builder.defaultValueDescriber();
 		this.description = builder.description();
 		this.required = builder.isRequired();
 		this.separator = builder.separator();
@@ -85,6 +102,14 @@ public final class Argument<T>
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
 		this.valueCallback = builder.callback();
+
+		// TODO: verify this, run finalizers before checking limits...
+		// TODO: what if defaultValueProvider is a ListValueProvider/MapValueProvider with a
+		// NonLazyValueProvider as elementProvider?
+		if(defaultValueProvider instanceof NonLazyValueProvider<?>)
+		{
+			checkLimitForDefaultValue(defaultValueProvider.provideValue());
+		}
 	}
 
 	/**
@@ -92,8 +117,8 @@ public final class Argument<T>
 	 * This is a shorthand method that should be used if only one {@link Argument} is expected as it
 	 * will result in an unnecessary amount of {@link CommandLineParser} instance creations.
 	 * If several arguments are expected use {@link CommandLineParser#forArguments(Argument...)}
-	 * instead. Especially if you're concerned about performance or want to support several
-	 * arguments.
+	 * instead. Especially if you're concerned about performance, want to support several
+	 * arguments or provide usable usage texts.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the <code>actualArguments</code>
@@ -103,16 +128,14 @@ public final class Argument<T>
 	@Nullable
 	public T parse(@Nonnull String ... actualArguments) throws ArgumentException
 	{
-		// TODO: consider saving the CommandLineParser instance
-		return CommandLineParsers.forArguments(this).parse(actualArguments).get(this);
+		return commandLineParser().parse(actualArguments).get(this);
 	}
 
 	@Nonnull
 	@CheckReturnValue
 	public String usage(@Nonnull String programName)
 	{
-		// TODO: consider saving the CommandLineParser instance
-		return CommandLineParsers.forArguments(this).usage(programName);
+		return commandLineParser().usage(programName);
 	}
 
 	@Nonnull
@@ -121,11 +144,20 @@ public final class Argument<T>
 		return parser;
 	}
 
+	String validValuesDescription()
+	{
+		// if(limiter != Limiters.noLimits())
+		// return limiter.validValuesDescription();
+
+		return parser().descriptionOfValidValues(this);
+	}
+
 	boolean isRequired()
 	{
 		return required;
 	}
 
+	@Override
 	@Nullable
 	String separator()
 	{
@@ -135,25 +167,23 @@ public final class Argument<T>
 	@Nonnull
 	String description()
 	{
-		return description;
+		return description.description();
 	}
 
-	boolean isNamed()
-	{
-		return !names.isEmpty();
-	}
-
+	@Override
 	@Nonnull
 	List<String> names()
 	{
 		return names;
 	}
 
+	@Override
 	boolean isPropertyMap()
 	{
 		return isPropertyMap;
 	}
 
+	@Override
 	boolean isAllowedToRepeat()
 	{
 		return isAllowedToRepeat;
@@ -181,12 +211,14 @@ public final class Argument<T>
 		{
 			value = finalizer.finalizeValue(value);
 		}
-		// If this throws it indicates that a bad combination of Provider/Limiter is used
+		// If this throws it indicates that a bad combination of Provider/Limiter
+		// is used or simply put that it's an invalid default value
 		checkLimitForDefaultValue(value);
 
 		return value;
 	}
 
+	@Override
 	boolean isIgnoringCase()
 	{
 		return ignoreCase;
@@ -195,7 +227,7 @@ public final class Argument<T>
 	@Override
 	public String toString()
 	{
-		return CommandLineParsers.forArguments(this).usage("");
+		return commandLineParser().usage("");
 	}
 
 	@Nullable
@@ -204,13 +236,28 @@ public final class Argument<T>
 		T defaultValue = defaultValue();
 		if(defaultValueDescriber != null)
 			return defaultValueDescriber.describe(defaultValue);
-		return parser().describeValue(defaultValue);
+		return parser().describeValue(defaultValue, this);
 	}
 
 	@Nonnull
-	String metaDescription()
+	String metaDescriptionInLeftColumn()
 	{
-		return metaDescription;
+		// First check if the description has been overridden
+		if(metaDescription != null)
+			return ' ' + metaDescription;
+
+		String meta = parser.metaDescriptionInLeftColumn(this);
+		return meta;
+	}
+
+	@Override
+	@Nonnull
+	String metaDescriptionInRightColumn()
+	{
+		// First check if the description has been overridden
+		if(metaDescription != null)
+			return metaDescription;
+		return parser.metaDescriptionInRightColumn(this);
 	}
 
 	boolean shouldBeHiddenInUsage()
@@ -237,7 +284,7 @@ public final class Argument<T>
 		}
 		catch(LimitException e)
 		{
-			throw new IllegalArgumentException("Invalid default value given: " + e.getMessage(), e);
+			throw new IllegalArgumentException("Invalid default value: " + e.getMessage(), e);
 		}
 	}
 

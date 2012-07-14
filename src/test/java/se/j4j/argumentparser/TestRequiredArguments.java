@@ -8,7 +8,7 @@ import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestRequiredArguments
@@ -40,7 +40,7 @@ public class TestRequiredArguments
 	public void testThatRequiredArgumentsIsResetBetweenParsings() throws ArgumentException
 	{
 		Argument<Integer> required = integerArgument("-n").required().build();
-		CommandLineParser parser = CommandLineParsers.forArguments(required);
+		CommandLineParser parser = CommandLineParser.forArguments(required);
 
 		try
 		{
@@ -61,7 +61,7 @@ public class TestRequiredArguments
 
 		try
 		{
-			ParsedArguments parsed = CommandLineParsers.forArguments(number, number2).parse();
+			ParsedArguments parsed = CommandLineParser.forArguments(number, number2).parse();
 			fail("Required argument silently ignored. Parsed data: " + parsed);
 		}
 		catch(MissingRequiredArgumentException e)

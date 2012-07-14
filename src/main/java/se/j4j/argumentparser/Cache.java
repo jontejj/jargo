@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -12,27 +13,32 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public abstract class Cache<T>
 {
-	private T cachedValue;
+	@Nonnull private T cachedValue;
 	private boolean hasInitializedCache = false;
 
 	/**
 	 * @return the instance this {@link Cache} manages.
 	 */
 	@Nonnull
-	public final synchronized T getCachedInstance()
+	@CheckReturnValue
+	public final T getCachedInstance()
 	{
-		if(!hasInitializedCache)
+		synchronized(this)
 		{
-			cachedValue = createInstance();
-			// TODO: check null and throw IllegalStateException
-			hasInitializedCache = true;
+			if(!hasInitializedCache)
+			{
+				cachedValue = createInstance();
+				if(cachedValue == null)
+					throw new IllegalStateException("Cached values may not be null");
+				hasInitializedCache = true;
+			}
+			return cachedValue;
 		}
-		return cachedValue;
 	}
 
 	/**
 	 * @return the instance this {@link Cache} should manage.
-	 *         Only called once and only when the instance is requested.
+	 *         Only called once and only if an instance is requested.
 	 */
 	@Nonnull
 	protected abstract T createInstance();

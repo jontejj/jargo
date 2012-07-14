@@ -10,8 +10,7 @@ import java.util.List;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 import com.google.common.collect.Lists;
 
@@ -19,9 +18,9 @@ public class CommitCommand extends Command
 {
 	public final Repository repository;
 
-	private static Argument<Boolean> AMEND = optionArgument("--amend").build();
-	private static Argument<String> AUTHOR = stringArgument("--author").required().separator("=").build();
-	private static Argument<List<File>> FILES = fileArgument().consumeAll().build();
+	private static final Argument<Boolean> AMEND = optionArgument("--amend").build();
+	private static final Argument<String> AUTHOR = stringArgument("--author").required().separator("=").build();
+	private static final Argument<List<File>> FILES = fileArgument().variableArity().build();
 
 	public CommitCommand(final Repository repo)
 	{
@@ -31,7 +30,7 @@ public class CommitCommand extends Command
 	@Override
 	public CommandLineParser createParserForCommandArguments()
 	{
-		return CommandLineParsers.forArguments(AMEND, AUTHOR, FILES);
+		return CommandLineParser.forArguments(AMEND, AUTHOR, FILES);
 	}
 
 	@Override

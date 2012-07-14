@@ -3,7 +3,7 @@ package se.j4j.argumentparser;
 import javax.annotation.Nonnull;
 
 /**
- * Factory for creating/using {@link Description} instances.
+ * Gives you static access to implementations of the {@link Description} interface.
  */
 public final class Descriptions
 {
@@ -23,13 +23,7 @@ public final class Descriptions
 	/**
 	 * Returns an empty string as a description.
 	 */
-	public static final Description EMPTY_STRING = new Description(){
-		@Override
-		public String description()
-		{
-			return "";
-		}
-	};
+	public static final Description EMPTY_STRING = forString("");
 
 	private static final class NonLazyDescription implements Description
 	{

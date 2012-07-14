@@ -31,8 +31,6 @@ public final class Callbacks
 		// Don't create a CompoundCallback when it's not needed
 		if(first == noCallback())
 			return second;
-		else if(second == noCallback())
-			return first;
 
 		return new CompoundCallback<T>(ImmutableList.of(first, second));
 	}
@@ -43,14 +41,14 @@ public final class Callbacks
 		return new CompoundCallback<T>(ImmutableList.copyOf(callbacks));
 	}
 
-	public static <E> Callback<List<E>> forListValues(Callback<E> elementCallback)
+	static <E> Callback<List<E>> forListValues(Callback<E> elementCallback)
 	{
 		if(elementCallback == noCallback())
 			return noCallback();
 		return new ListValueCallback<E>(elementCallback);
 	}
 
-	public static <K, V> Callback<Map<K, V>> forMapValues(Callback<V> elementCallback)
+	static <K, V> Callback<Map<K, V>> forMapValues(Callback<V> elementCallback)
 	{
 		if(elementCallback == noCallback())
 			return noCallback();
@@ -58,9 +56,9 @@ public final class Callbacks
 
 	}
 
-	public static <T> Callback<T> noCallback()
+	static <T> Callback<T> noCallback()
 	{
-		// Doesn't modify anything, i.e T is unused here
+		// Any object can be cast to Object
 		@SuppressWarnings("unchecked")
 		Callback<T> instance = (Callback<T>) NoCallback.INSTANCE;
 		return instance;
@@ -134,12 +132,12 @@ public final class Callbacks
 	 * 
 	 * @param <T> the type of the parsed value
 	 */
-	private static final class NoCallback<T> implements Callback<T>
+	private static final class NoCallback implements Callback<Object>
 	{
-		private static final Callback<?> INSTANCE = new NoCallback<Object>();
+		private static final Callback<Object> INSTANCE = new NoCallback();
 
 		@Override
-		public void parsedValue(T parsedValue)
+		public void parsedValue(Object parsedValue)
 		{
 		}
 	}

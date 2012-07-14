@@ -14,14 +14,19 @@ public class HostPortParser implements StringParser<HostPort>
 	@Override
 	public HostPort defaultValue()
 	{
-		return new HostPort("localhost", 8080);
+		return HostPort.DEFAULT;
 	}
 
 	@Override
 	public HostPort parse(String argument) throws ArgumentException
 	{
-		String[] s = argument.split(":");
-		return new HostPort(s[0], Integer.parseInt(s[1]));
+		return HostPort.parse(argument);
+	}
+
+	@Override
+	public String metaDescription()
+	{
+		return "hostinformation";
 	}
 
 }

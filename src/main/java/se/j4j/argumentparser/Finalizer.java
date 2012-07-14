@@ -3,7 +3,7 @@ package se.j4j.argumentparser;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 /**
  * <pre>

@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.INVALID_PARAMETER;
 import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -16,7 +15,6 @@ import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Callbacks;
-import se.j4j.argumentparser.CommandLineParsers;
 import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
 import se.j4j.argumentparser.Finalizers;
@@ -24,7 +22,6 @@ import se.j4j.argumentparser.Limiters;
 import se.j4j.argumentparser.Providers;
 import se.j4j.argumentparser.StringParsers;
 import se.j4j.argumentparser.StringParsers.Radix;
-import se.j4j.argumentparser.StringSplitters;
 import se.j4j.argumentparser.internal.Lines;
 import se.j4j.argumentparser.internal.ListUtil;
 import se.j4j.argumentparser.internal.StringComparison;
@@ -44,16 +41,14 @@ public class TestForCodeCoverage
 	/**
 	 * Detects if a utility class isn't final or if its no-args constructor
 	 * isn't private. Also calls the constructor to get code coverage for it.
-	 * 
-	 * @throws IOException
 	 */
 	@Test
 	public void callPrivateConstructorsForCodeCoverage() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			InvocationTargetException, IOException
+			InvocationTargetException
 	{
 		Class<?>[] classesToConstruct = {ArgumentFactory.class, Lines.class, ListUtil.class, StringsUtil.class, StringComparison.class,
-				Descriptions.class, Limiters.class, Callbacks.class, Finalizers.class, StringSplitters.class, Providers.class,
-				CommandLineParsers.class, StringParsers.class, ArgumentExceptions.class, Describers.class};
+				Descriptions.class, Limiters.class, Callbacks.class, Finalizers.class, Providers.class, StringParsers.class,
+				ArgumentExceptions.class, Describers.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{
@@ -68,8 +63,8 @@ public class TestForCodeCoverage
 	}
 
 	/**
-	 * The compiler injects methods into the byte code for enums that
-	 * the code coverage tool detects
+	 * The compiler injects the valueOf method into the byte code for enums
+	 * and the code coverage tool detects that
 	 */
 	@Test
 	public void testEnumsForCodeCoverage()

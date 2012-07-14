@@ -2,7 +2,6 @@ package se.j4j.argumentparser.callbacks;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.StringSplitters.comma;
 
 import java.util.Arrays;
 
@@ -39,7 +38,7 @@ public class TestCallbacks
 	{
 		PrintStringsWhenParsed printer = new PrintStringsWhenParsed();
 
-		stringArgument().callbackForValues(printer).consumeAll().parse("hello", "world");
+		stringArgument().callbackForValues(printer).variableArity().parse("hello", "world");
 
 		assertThat(printer.printQueue).isEqualTo(Arrays.asList("hello", "world"));
 	}
@@ -49,7 +48,7 @@ public class TestCallbacks
 	{
 		PrintStringsWhenParsed printer = new PrintStringsWhenParsed();
 
-		stringArgument().callbackForValues(printer).splitWith(comma()).parse("hello,world");
+		stringArgument().callbackForValues(printer).splitWith(",").parse("hello,world");
 
 		assertThat(printer.printQueue).isEqualTo(Arrays.asList("hello", "world"));
 	}
@@ -72,10 +71,6 @@ public class TestCallbacks
 
 		stringArgument().callbackForValues(Callbacks.compound(ImmutableList.of(profiler, profiler))).parse("foo");
 		assertThat(profiler.callsMade).isEqualTo(2);
-
-		profiler.callsMade = 0;
-		stringArgument().callbackForValues(Callbacks.compound(profiler, Callbacks.<String>noCallback())).parse("bar");
-		assertThat(profiler.callsMade).isEqualTo(1);
 
 		profiler.callsMade = 0;
 		stringArgument().callbackForValues(Callbacks.compound(profiler, profiler)).parse("zoo");

@@ -1,0 +1,5 @@
+'0F' is not in the range 42 to 60 (hex)
+
+Usage: OutOfRangeInHex [Options]
+ <integer>    <integer>: 42 to 60 (hex)
+              Default: 0

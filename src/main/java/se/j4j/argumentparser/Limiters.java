@@ -5,9 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 
 /**
  * Gives you static access to implementations of the {@link Limiter} interface.
@@ -26,49 +30,72 @@ public final class Limiters
 	 * @param second another {@link Limiter}
 	 * @return a merged {@link Limiter}
 	 */
+	@Nonnull
+	@CheckReturnValue
 	public static <T> Limiter<T> compound(@Nonnull Limiter<T> first, @Nonnull Limiter<T> second)
 	{
 		// Don't create a CompoundLimiter when it's not needed
 		if(first == noLimits())
 			return second;
-		else if(second == noLimits())
-			return first;
 
 		return new CompoundLimiter<T>(ImmutableList.of(first, second));
 	}
 
+	@Nonnull
+	@CheckReturnValue
 	public static <T> Limiter<T> compound(@Nonnull Iterable<? extends Limiter<T>> limiters)
 	{
 		return new CompoundLimiter<T>(ImmutableList.copyOf(limiters));
 	}
 
-	public static Limiter<Integer> positiveInteger()
+	@Nonnull
+	@CheckReturnValue
+	public static <C extends Comparable<C>> Limiter<C> range(C start, C end)
 	{
-		return PositiveInteger.INSTANCE;
+		return new RangeLimiter<C>(Ranges.closed(start, end));
 	}
 
-	public static Limiter<File> existingFile()
+	/**
+	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
+	 */
+	@Beta
+	@Nonnull
+	@CheckReturnValue
+	public static <C extends Comparable<C>> Limiter<C> range(Range<C> range)
+	{
+		return new RangeLimiter<C>(range);
+	}
+
+	@Nonnull
+	@CheckReturnValue
+	public static Limiter<File> existingFiles()
 	{
 		return ExistingFile.INSTANCE;
 	}
 
 	// TODO: add regex limiter (maybe to ArgumentBuilder#limitWith instead, as a pre-limiter?)
 
-	public static <E> Limiter<List<E>> forListValues(Limiter<E> elementLimiter)
+	@Nonnull
+	@CheckReturnValue
+	static <E> Limiter<List<E>> forListValues(@Nonnull Limiter<E> elementLimiter)
 	{
 		if(elementLimiter == noLimits())
 			return noLimits();
 		return new ListValueLimiter<E>(elementLimiter);
 	}
 
-	public static <K, V> Limiter<Map<K, V>> forMapValues(Limiter<V> valueLimiter)
+	@Nonnull
+	@CheckReturnValue
+	static <K, V> Limiter<Map<K, V>> forMapValues(@Nonnull Limiter<V> valueLimiter)
 	{
 		if(valueLimiter == noLimits())
 			return noLimits();
 		return new MapValueLimiter<K, V>(valueLimiter);
 	}
 
-	public static <T> Limiter<T> noLimits()
+	@Nonnull
+	@CheckReturnValue
+	static <T> Limiter<T> noLimits()
 	{
 		// Doesn't modify anything, i.e T is unused here
 		@SuppressWarnings("unchecked")
@@ -100,23 +127,6 @@ public final class Limiters
 					return limit;
 			}
 			return Limit.OK;
-		}
-	}
-
-	/**
-	 * Limits values to {@link Integer}s greater than or equal to zero.
-	 */
-	private static final class PositiveInteger implements Limiter<Integer>
-	{
-		private static final Limiter<Integer> INSTANCE = new PositiveInteger();
-
-		@Override
-		public Limit withinLimits(@Nonnull final Integer value)
-		{
-			if(value >= 0)
-				return Limit.OK;
-
-			return Limit.notOk(value + " is not a positive integer");
 		}
 	}
 
@@ -194,6 +204,24 @@ public final class Limiters
 					return limit;
 			}
 			return Limit.OK;
+		}
+	}
+
+	private static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
+	{
+		private final Range<C> rangeToLimitValuesTo;
+
+		private RangeLimiter(final Range<C> rangeToLimitValuesTo)
+		{
+			this.rangeToLimitValuesTo = rangeToLimitValuesTo;
+		}
+
+		@Override
+		public Limit withinLimits(C value)
+		{
+			if(rangeToLimitValuesTo.contains(value))
+				return Limit.OK;
+			return Limit.notOk("'" + value + "' is not in the range " + rangeToLimitValuesTo.toString());
 		}
 	}
 

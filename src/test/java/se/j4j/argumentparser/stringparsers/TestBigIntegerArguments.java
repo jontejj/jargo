@@ -38,7 +38,7 @@ public class TestBigIntegerArguments
 	public void testDescription()
 	{
 		String usage = bigIntegerArgument("-b").usage("BigIntegerArgument");
-		assertThat(usage).contains("<big-integer>: Any integer");
+		assertThat(usage).contains("<big-integer>: any integer");
 	}
 
 	@Test

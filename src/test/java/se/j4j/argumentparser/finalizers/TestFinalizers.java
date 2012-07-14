@@ -1,11 +1,10 @@
 package se.j4j.argumentparser.finalizers;
 
+import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-import static se.j4j.argumentparser.Limiters.positiveInteger;
-import static se.j4j.argumentparser.StringSplitters.comma;
+import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
+import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Test;
@@ -21,72 +20,72 @@ public class TestFinalizers
 	@Test
 	public void testThatFinalizersAreCalled() throws ArgumentException
 	{
-		assertThat(integerArgument().finalizeWith(new AddOne()).parse("1")).isEqualTo(2);
+		assertThat(stringArgument().finalizeWith(new AddBar()).parse("foo")).isEqualTo("foobar");
 	}
 
 	@Test
 	public void testThatFinalizersAreCalledBeforeLimiters() throws ArgumentException
 	{
-		assertThat(integerArgument().limitTo(positiveInteger()).finalizeWith(new AddOne()).parse("-1")).isZero();
+		assertThat(stringArgument().limitTo(foos()).finalizeWith(new AddFoo()).parse("")).isEqualTo("foo");
 	}
 
 	@Test
 	public void testThatFinalizersAreCalledForPropertyValues() throws ArgumentException
 	{
-		Map<String, Integer> map = integerArgument("-N").finalizeWith(new AddOne()).asPropertyMap().parse("-Nfoo=1", "-Nbar=2");
+		Map<String, String> map = stringArgument("-N").finalizeWith(new AddBar()).asPropertyMap().parse("-Nfoo=bar", "-Nbar=foo");
 
-		assertThat(map.get("foo")).isEqualTo(2);
-		assertThat(map.get("bar")).isEqualTo(3);
+		assertThat(map.get("foo")).isEqualTo("barbar");
+		assertThat(map.get("bar")).isEqualTo("foobar");
 	}
 
 	@Test
 	public void testThatFinalizersAreCalledBeforeLimitersForPropertyValues() throws ArgumentException
 	{
-		assertThat(integerArgument("-N").finalizeWith(new AddOne()).limitTo(positiveInteger()).asPropertyMap().parse("-Nfoo=-1").get("foo")).isZero();
+		assertThat(stringArgument("-N").finalizeWith(new AddFoo()).limitTo(foos()).asPropertyMap().parse("-Nbar=").get("bar")).isEqualTo("foo");
 	}
 
 	@Test
 	public void testThatFinalizersAreCalledForValuesInLists() throws ArgumentException
 	{
-		assertThat(integerArgument().finalizeWith(new AddOne()).consumeAll().parse("1", "2")).isEqualTo(Arrays.asList(2, 3));
+		assertThat(stringArgument().finalizeWith(new AddBar()).variableArity().parse("foo", "bar")).isEqualTo(asList("foobar", "barbar"));
 	}
 
 	@Test
 	public void testThatFinalizersAreCalledForRepeatedValues() throws ArgumentException
 	{
-		assertThat(integerArgument("-n").finalizeWith(new AddOne()).repeated().parse("-n", "1", "-n", "2")).isEqualTo(Arrays.asList(2, 3));
+		assertThat(stringArgument("-n").finalizeWith(new AddBar()).repeated().parse("-n", "foo", "-n", "foo")).isEqualTo(asList("foobar", "foobar"));
 	}
 
 	@Test
 	public void testThatCallbacksAreCalledForValuesFromSplit() throws ArgumentException
 	{
-		assertThat(integerArgument().finalizeWith(new AddOne()).splitWith(comma()).parse("1,2")).isEqualTo(Arrays.asList(2, 3));
+		assertThat(stringArgument().finalizeWith(new AddBar()).splitWith(",").parse("foo,bar")).isEqualTo(asList("foobar", "barbar"));
 	}
 
 	@Test
 	public void testMultipleFinalizers() throws ArgumentException
 	{
-		Finalizer<Integer> compoundFinalizer = Finalizers.compound(ImmutableList.of(new AddOne(), new MultiplyByFive()));
+		Finalizer<String> compoundFinalizer = Finalizers.compound(ImmutableList.of(new AddFoo(), new AddBar()));
 
-		assertThat(integerArgument().finalizeWith(compoundFinalizer).parse("1")).isEqualTo(10);
-		assertThat(integerArgument().finalizeWith(Finalizers.compound(new AddOne(), null)).parse("2")).isEqualTo(3);
+		assertThat(stringArgument().finalizeWith(compoundFinalizer).parse("_")).isEqualTo("_foobar");
+		assertThat(stringArgument().finalizeWith(Finalizers.compound(new AddBar(), null)).parse("foo")).isEqualTo("foobar");
 	}
 
 	@Test
 	public void testThatFinalizersAreClearable() throws ArgumentException
 	{
-		assertThat(integerArgument("-n").finalizeWith(new AddOne()).clearFinalizers().parse("-n", "0")).isZero();
+		assertThat(stringArgument("-n").finalizeWith(new AddBar()).clearFinalizers().parse("-n", "foo")).isEqualTo("foo");
 	}
 
 	@Test
 	public void testThatDefaultValuesAreFinalized() throws ArgumentException
 	{
-		assertThat(integerArgument("-n").finalizeWith(new AddOne()).defaultValue(0).parse()).isEqualTo(1);
+		assertThat(stringArgument("-n").finalizeWith(new AddBar()).defaultValue("foo").parse()).isEqualTo("foobar");
 	}
 
 	@Test
 	public void testThatDefaultValuesAreFinalizedForUsage()
 	{
-		assertThat(integerArgument("-n").finalizeWith(new AddOne()).usage("")).contains("Default: 1");
+		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage("")).contains("Default: foo");
 	}
 }

@@ -1,0 +1,3 @@
+Usage: LowerCase [Options]
+-I<string=integer>    <string=integer>: where "string" is any string and "integer" is -2147483648 to 2147483647 (decimal)
+                      Default: empty map

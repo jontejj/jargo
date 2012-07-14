@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
  * <pre>
  * Understands how to only create values (lazily) when they're needed.
  * 
- * If you only want {@link #provideValue()} to be called once wrap your provider with
+ * If you only want {@link #provideValue()} to be called once wrap your provider with a
  * {@link Providers#cachingProvider(Provider)}.
  * </pre>
  * 

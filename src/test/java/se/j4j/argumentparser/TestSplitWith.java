@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-import static se.j4j.argumentparser.StringSplitters.comma;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,20 +13,27 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class TestStringSplitter
+public class TestSplitWith
 {
 	@Test
 	public void testSplittingWithComma() throws ArgumentException
 	{
-		List<Integer> numbers = integerArgument("-n").splitWith(comma()).parse("-n", "1,2");
+		List<Integer> numbers = integerArgument("-n").splitWith(",").parse("-n", "1,2");
 
 		assertThat(numbers).isEqualTo(asList(1, 2));
 	}
 
 	@Test
+	public void testThatUsageTextForSplittingWithCommaLooksGood()
+	{
+		String usage = integerArgument("-n").splitWith(",").usage("Split");
+		assertThat(usage).isEqualTo(expected("splitArgument"));
+	}
+
+	@Test
 	public void testArityCombinedWithPropertyMap() throws ArgumentException
 	{
-		Map<String, List<Integer>> numbers = integerArgument("-n").splitWith(comma()).asPropertyMap().parse("-nsmall=1,2", "-nbig=3,4");
+		Map<String, List<Integer>> numbers = integerArgument("-n").splitWith(",").asPropertyMap().parse("-nsmall=1,2", "-nbig=3,4");
 
 		Map<String, List<Integer>> expected = new HashMap<String, List<Integer>>();
 		expected.put("small", asList(1, 2));
@@ -37,7 +44,7 @@ public class TestStringSplitter
 	@Test
 	public void testSplittingCombinedWithRepeating() throws ArgumentException
 	{
-		List<List<Integer>> numbers = integerArgument("-n").separator("=").splitWith(comma()).repeated().parse("-n=1,2", "-n=3,4");
+		List<List<Integer>> numbers = integerArgument("-n").separator("=").splitWith(",").repeated().parse("-n=1,2", "-n=3,4");
 
 		List<List<Integer>> expected = new ArrayList<List<Integer>>();
 		expected.add(asList(1, 2));
@@ -48,13 +55,13 @@ public class TestStringSplitter
 	@Test(expected = ArgumentException.class)
 	public void testSplittingWithNoArg() throws ArgumentException
 	{
-		integerArgument("-n").splitWith(comma()).parse("-n");
+		integerArgument("-n").splitWith(",").parse("-n");
 	}
 
 	@Test
 	public void testThatListsWithSplitValuesAreUnmodifiable() throws ArgumentException
 	{
-		List<Integer> numbers = integerArgument("-N").splitWith(comma()).parse("-N", "1,2");
+		List<Integer> numbers = integerArgument("-N").splitWith(",").parse("-N", "1,2");
 		try
 		{
 			numbers.add(3);
@@ -73,7 +80,7 @@ public class TestStringSplitter
 	{
 		// The intent is to guide the user of the API to how he should have used
 		// it
-		integerArgument("-n").asPropertyMap().splitWith(comma());
+		integerArgument("-n").asPropertyMap().splitWith(",");
 	}
 
 	/**
@@ -87,14 +94,14 @@ public class TestStringSplitter
 	@Test(expected = IllegalStateException.class)
 	public void testArityCombinedWithSplitting()
 	{
-		integerArgument("-n").splitWith(comma()).arity(2);
+		integerArgument("-n").splitWith(",").arity(2);
 	}
 
 	@SuppressWarnings("deprecation")
 	// This is what's tested
 	@Test(expected = IllegalStateException.class)
-	public void testConsumeAllCombinedWithSplitting()
+	public void testVariableArityCombinedWithSplitting()
 	{
-		integerArgument("-n").splitWith(comma()).consumeAll();
+		integerArgument("-n").splitWith(",").variableArity();
 	}
 }
