@@ -12,17 +12,10 @@ public class ArgumentException extends Exception
 	// TODO: to enable proper behavior when serialized these needs to
 	// be transient (or Serializable and the usage needs to be transferred as a string
 	private CommandLineParser originParser;
-	private Argument<?> errorneousArgument;
 
 	protected ArgumentException(final ArgumentExceptionCodes errorCode)
 	{
 		this.errorCode = errorCode;
-	}
-
-	public ArgumentException errorneousArgument(final Argument<?> anErrorneousArgument)
-	{
-		errorneousArgument = anErrorneousArgument;
-		return this;
 	}
 
 	void setOriginParser(final CommandLineParser theParserThatTriggeredMe)
@@ -40,16 +33,6 @@ public class ArgumentException extends Exception
 	public String getMessageAndUsage(String programName)
 	{
 		return getMessage() + Lines.NEWLINE + Lines.NEWLINE + getUsage(programName);
-	}
-
-	/**
-	 * TODO: should this be removed?
-	 * 
-	 * @return the argument that caused this exception
-	 */
-	public Argument<?> errorneousArgument()
-	{
-		return errorneousArgument;
 	}
 
 	public ArgumentExceptionCodes code()

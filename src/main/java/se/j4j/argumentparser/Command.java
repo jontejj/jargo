@@ -1,5 +1,7 @@
 package se.j4j.argumentparser;
 
+import java.util.List;
+
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -9,13 +11,16 @@ import se.j4j.argumentparser.CommandLineParser.Arguments;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * <pre>
  * {@link Command}s are used for advanced {@link Argument}s that have a {@link CommandLineParser} themselves.
  * That is they execute a command and may support contextual arguments.
  * 
  * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}
- * or {@link CommandLineParser#forCommands(Command...)} if you have several commands.
+ * or {@link CommandLineParser#forCommands(Command...)} if you have several commands. If you support several commands
+ * and a user enters several of them at the same time they will be executed in the order given by the user.
  * 
  * <b>Mutability note:</b> although a {@link Command}
  * should be {@link Immutable} the objects it handles doesn't have to be.
@@ -29,21 +34,24 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
 public abstract class Command extends InternalStringParser<String>
 {
 	/**
-	 * Will only be called once and only if this command is encountered.
-	 * TODO: should this have a default implementation calling
-	 * {@link CommandLineParser#forAnyArguments()}?
+	 * <pre>
+	 * The arguments that is specific for this command.
 	 * 
-	 * @return a {@link CommandLineParser} for the arguments this command supports,
-	 *         use {@link CommandLineParser#forAnyArguments()} if this command doesn't need any
-	 *         extra arguments.
+	 * Will only be called once and only if this command is encountered.
+	 * 
+	 * @return a list of arguments that this command supports
+	 * </pre>
 	 */
 	@CheckReturnValue
 	@Nonnull
-	protected abstract CommandLineParser createParserForCommandArguments();
+	protected List<Argument<?>> commandArguments()
+	{
+		return ImmutableList.of();
+	}
 
 	/**
 	 * At least one name should be used to trigger this Command.
-	 * For several names (or none) override this with {@link ArgumentBuilder#names(String...)}
+	 * For several names override this with {@link ArgumentBuilder#names(String...)}
 	 * 
 	 * @return the default name that this command uses
 	 */
@@ -53,30 +61,27 @@ public abstract class Command extends InternalStringParser<String>
 
 	/**
 	 * Called when this command should be executed.
-	 * May be executed from different threads with different arguments
 	 * 
-	 * @param parsedArguments
+	 * @param parsedArguments a container with parsed values from the {@link #commandArguments()}
 	 */
 	protected abstract void execute(@Nonnull ParsedArguments parsedArguments);
 
-	private final Cache<CommandLineParser> subArgumentParser = new Cache<CommandLineParser>(){
+	private final Cache<CommandLineParser> commandArgumentParser = new Cache<CommandLineParser>(){
 		@Override
 		protected CommandLineParser createInstance()
 		{
-			return createParserForCommandArguments();
+			return new CommandLineParser(commandArguments(), true);
 		}
 	};
 
 	private CommandLineParser parser()
 	{
-		return subArgumentParser.getCachedInstance();
+		return commandArgumentParser.getCachedInstance();
 	}
 
 	@Override
 	final String parse(final Arguments arguments, final String previousOccurance, final ArgumentSettings argumentSettings) throws ArgumentException
 	{
-		// TODO: test running CommitCommand & InitCommand in the same parse,
-		// arguments probably needs to be copied and not just passed on
 		ParsedArguments result = parser().parse(arguments);
 		execute(result);
 		return commandName(); // Can be used to check for the existence of this
@@ -92,7 +97,7 @@ public abstract class Command extends InternalStringParser<String>
 	// TODO: provide usage and validValues
 
 	@Override
-	public String defaultValue()
+	public final String defaultValue()
 	{
 		return null;
 	}

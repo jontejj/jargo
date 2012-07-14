@@ -269,11 +269,7 @@ public final class Argument<T> extends ArgumentSettings
 	{
 		Limit limit = limiter.withinLimits(value);
 		if(limit != Limit.OK)
-		{
-			LimitException e = forLimit(limit);
-			e.errorneousArgument(this);
-			throw e;
-		}
+			throw forLimit(limit);
 	}
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
