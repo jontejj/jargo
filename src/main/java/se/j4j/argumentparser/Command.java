@@ -11,6 +11,8 @@ import se.j4j.argumentparser.CommandLineParser.Arguments;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -66,17 +68,17 @@ public abstract class Command extends InternalStringParser<String>
 	 */
 	protected abstract void execute(@Nonnull ParsedArguments parsedArguments);
 
-	private final Cache<CommandLineParser> commandArgumentParser = new Cache<CommandLineParser>(){
+	@Nonnull private final Supplier<CommandLineParser> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
 		@Override
-		protected CommandLineParser createInstance()
+		public CommandLineParser get()
 		{
 			return new CommandLineParser(commandArguments(), true);
 		}
-	};
+	});
 
 	private CommandLineParser parser()
 	{
-		return commandArgumentParser.getCachedInstance();
+		return commandArgumentParser.get();
 	}
 
 	@Override

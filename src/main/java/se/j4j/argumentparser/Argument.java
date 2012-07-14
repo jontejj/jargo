@@ -14,8 +14,10 @@ import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
-import se.j4j.argumentparser.Providers.NonLazyValueProvider;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
+
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * <pre>
@@ -53,24 +55,31 @@ public final class Argument<T> extends ArgumentSettings
 	private final boolean hideFromUsage;
 
 	@Nonnull private final InternalStringParser<T> parser;
-	@Nullable private final Provider<T> defaultValueProvider;
-	@Nullable private final Describer<T> defaultValueDescriber;
 
-	@Nullable private final Finalizer<T> finalizer;
-	@Nonnull private final Limiter<T> limiter;
-	@Nonnull private final Callback<T> valueCallback;
-
-	@Nonnull private final Cache<CommandLineParser> commandLineParser = new Cache<CommandLineParser>(){
+	@Nonnull private Supplier<T> defaultValue = new Supplier<T>(){
 		@Override
-		protected CommandLineParser createInstance()
+		public T get()
 		{
-			return CommandLineParser.forArguments(Argument.this);
+			return parser.defaultValue();
 		}
 	};
 
+	@Nullable private final Describer<T> defaultValueDescriber;
+
+	@Nonnull private final Finalizer<T> finalizer;
+	@Nonnull private final Limiter<T> limiter;
+
+	@Nonnull private final Supplier<CommandLineParser> commandLineParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
+		@Override
+		public CommandLineParser get()
+		{
+			return CommandLineParser.forArguments(Argument.this);
+		}
+	});
+
 	private CommandLineParser commandLineParser()
 	{
-		return commandLineParser.getCachedInstance();
+		return commandLineParser.get();
 	}
 
 	/**
@@ -87,7 +96,10 @@ public final class Argument<T> extends ArgumentSettings
 	Argument(@Nonnull final ArgumentBuilder<?, T> builder)
 	{
 		this.parser = builder.internalParser();
-		this.defaultValueProvider = builder.defaultValueProvider();
+		if(builder.defaultValueSupplier() != null)
+		{
+			this.defaultValue = builder.defaultValueSupplier();
+		}
 		this.defaultValueDescriber = builder.defaultValueDescriber();
 		this.description = builder.description();
 		this.required = builder.isRequired();
@@ -101,15 +113,16 @@ public final class Argument<T> extends ArgumentSettings
 
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
-		this.valueCallback = builder.callback();
 
 		// TODO: verify this, run finalizers before checking limits...
 		// TODO: what if defaultValueProvider is a ListValueProvider/MapValueProvider with a
 		// NonLazyValueProvider as elementProvider?
-		if(defaultValueProvider instanceof NonLazyValueProvider<?>)
-		{
-			checkLimitForDefaultValue(defaultValueProvider.provideValue());
-		}
+		/*
+		 * if(defaultValueProvider instanceof NonLazyValueProvider<?>)
+		 * {
+		 * checkLimitForDefaultValue(defaultValueProvider.provideValue());
+		 * }
+		 */
 	}
 
 	/**
@@ -198,19 +211,8 @@ public final class Argument<T> extends ArgumentSettings
 	@Nullable
 	T defaultValue()
 	{
-		T value = null;
-		if(defaultValueProvider != null)
-		{
-			value = defaultValueProvider.provideValue();
-		}
-		else
-		{
-			value = parser.defaultValue();
-		}
-		if(finalizer != null)
-		{
-			value = finalizer.finalizeValue(value);
-		}
+		T value = finalizer.finalizeValue(defaultValue.get());
+
 		// If this throws it indicates that a bad combination of Provider/Limiter
 		// is used or simply put that it's an invalid default value
 		checkLimitForDefaultValue(value);
@@ -233,10 +235,10 @@ public final class Argument<T> extends ArgumentSettings
 	@Nullable
 	String defaultValueDescription()
 	{
-		T defaultValue = defaultValue();
+		T value = defaultValue();
 		if(defaultValueDescriber != null)
-			return defaultValueDescriber.describe(defaultValue);
-		return parser().describeValue(defaultValue, this);
+			return defaultValueDescriber.describe(value);
+		return parser().describeValue(value, this);
 	}
 
 	@Nonnull
@@ -286,16 +288,8 @@ public final class Argument<T> extends ArgumentSettings
 
 	void finalizeValue(@Nonnull ParsedArgumentHolder holder)
 	{
-		if(finalizer != null)
-		{
-			T value = holder.getValue(this);
-			T finalizedValue = finalizer.finalizeValue(value);
-			holder.put(this, finalizedValue);
-		}
-	}
-
-	void parsedValue(@Nonnull ParsedArgumentHolder holder)
-	{
-		valueCallback.parsedValue(holder.getValue(this));
+		T value = holder.getValue(this);
+		T finalizedValue = finalizer.finalizeValue(value);
+		holder.put(this, finalizedValue);
 	}
 }

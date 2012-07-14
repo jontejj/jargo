@@ -9,6 +9,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -35,45 +36,58 @@ public final class Finalizers
 	 * @param second another {@link Finalizer}
 	 * @return a merged {@link Finalizer}
 	 */
-	@Nullable
-	public static <T> Finalizer<T> compound(@Nullable Finalizer<T> first, @Nullable Finalizer<T> second)
+	@Nonnull
+	public static <T> Finalizer<T> compound(@Nonnull Finalizer<T> first, @Nonnull Finalizer<T> second)
 	{
 		// Don't create a CompoundFinalizer when it's not needed
-		if(first == null)
+		if(first == noFinalizer())
 			return second;
-		else if(second == null)
-			return first;
 
 		return new CompoundFinalizer<T>(ImmutableList.of(first, second));
 	}
 
+	@Nonnull
 	public static <T> Finalizer<T> compound(@Nonnull Iterable<? extends Finalizer<T>> finalizers)
 	{
 		return new CompoundFinalizer<T>(ImmutableList.copyOf(finalizers));
 	}
 
-	public static <E> Finalizer<List<E>> forListValues(Finalizer<E> elementFinalizer)
+	@Nonnull
+	static <E> Finalizer<List<E>> forListValues(@Nonnull Finalizer<E> elementFinalizer)
 	{
-		if(elementFinalizer == null)
-			return null;
+		if(elementFinalizer == noFinalizer())
+			return noFinalizer();
 		return new ListValueFinalizer<E>(elementFinalizer);
 	}
 
-	public static <K, V> Finalizer<Map<K, V>> forMapValues(Finalizer<V> valueFinalizer)
+	@Nonnull
+	static <K, V> Finalizer<Map<K, V>> forMapValues(@Nonnull Finalizer<V> valueFinalizer)
 	{
-		if(valueFinalizer == null)
-			return null;
+		if(valueFinalizer == noFinalizer())
+			return noFinalizer();
 		return new MapValueFinalizer<K, V>(valueFinalizer);
 	}
 
-	public static <E> Finalizer<List<E>> unmodifiableListFinalizer()
+	@Nonnull
+	static <E> Finalizer<List<E>> unmodifiableListFinalizer()
 	{
 		return new UnmodifiableListMaker<E>();
 	}
 
-	public static <K, V> Finalizer<Map<K, V>> unmodifiableMapFinalizer()
+	@Nonnull
+	static <K, V> Finalizer<Map<K, V>> unmodifiableMapFinalizer()
 	{
 		return new UnmodifiableMapMaker<K, V>();
+	}
+
+	@Nonnull
+	@CheckReturnValue
+	static <T> Finalizer<T> noFinalizer()
+	{
+		// Doesn't modify anything, i.e T is unused here
+		@SuppressWarnings("unchecked")
+		Finalizer<T> instance = (Finalizer<T>) NoFinalizer.INSTANCE;
+		return instance;
 	}
 
 	/**
@@ -166,4 +180,18 @@ public final class Finalizers
 		}
 	}
 
+	/**
+	 * A null object {@link Finalizer} that doesn't modify the received object in any way before
+	 * returning it.
+	 */
+	private static final class NoFinalizer<T> implements Finalizer<T>
+	{
+		private static final Finalizer<?> INSTANCE = new NoFinalizer<Object>();
+
+		@Override
+		public T finalizeValue(T value)
+		{
+			return value;
+		}
+	}
 }

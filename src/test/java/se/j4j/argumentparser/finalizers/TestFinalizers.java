@@ -68,7 +68,6 @@ public class TestFinalizers
 		Finalizer<String> compoundFinalizer = Finalizers.compound(ImmutableList.of(new AddFoo(), new AddBar()));
 
 		assertThat(stringArgument().finalizeWith(compoundFinalizer).parse("_")).isEqualTo("_foobar");
-		assertThat(stringArgument().finalizeWith(Finalizers.compound(new AddBar(), null)).parse("foo")).isEqualTo("foobar");
 	}
 
 	@Test

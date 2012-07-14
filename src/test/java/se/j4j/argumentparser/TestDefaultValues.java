@@ -15,8 +15,11 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
-import se.j4j.argumentparser.providers.BarProvider;
-import se.j4j.argumentparser.providers.ChangingProvider;
+import se.j4j.argumentparser.suppliers.BarSupplier;
+import se.j4j.argumentparser.suppliers.ChangingSupplier;
+
+import com.google.common.base.Supplier;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestDefaultValues
@@ -47,10 +50,10 @@ public class TestDefaultValues
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void testThatInvalidDefaultValueProviderValuesAreInvalidated() throws ArgumentException
+	public void testThatInvalidDefaultValueSupplierValuesAreInvalidated() throws ArgumentException
 	{
-		// Throws because bar (which is given by BarProvider) isn't foo
-		stringArgument("-n").defaultValueProvider(new BarProvider()).limitTo(foos()).parse();
+		// Throws because bar (which is given by BarSupplier) isn't foo
+		stringArgument("-n").defaultValueSupplier(new BarSupplier()).limitTo(foos()).parse();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -76,15 +79,15 @@ public class TestDefaultValues
 
 	@Test(expected = RuntimeException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "fail-fast during configuration phase")
-	public void testThatRequiredArgumentsCantHaveADefaultValueProvider()
+	public void testThatRequiredArgumentsCantHaveADefaultValueSupplier()
 	{
-		stringArgument("-n").required().defaultValueProvider(new BarProvider());
+		stringArgument("-n").required().defaultValueSupplier(new BarSupplier());
 	}
 
 	@Test
-	public void testThatDefaultValueProviderAreMovedBetweenBuilders() throws ArgumentException
+	public void testThatADefaultValueSupplierIsMovedBetweenBuilders() throws ArgumentException
 	{
-		DefaultArgumentBuilder<String> builder = stringArgument("-n").defaultValueProvider(new BarProvider());
+		DefaultArgumentBuilder<String> builder = stringArgument("-n").defaultValueSupplier(new BarSupplier());
 
 		Argument<List<String>> argument = builder.repeated().build();
 
@@ -113,9 +116,9 @@ public class TestDefaultValues
 	@Test
 	public void testThatDefaultValueProviderIsAskedForEachArgumentParsing() throws ArgumentException
 	{
-		Provider<Integer> provider = new ChangingProvider();
+		Supplier<Integer> supplier = new ChangingSupplier();
 
-		Argument<Integer> n = integerArgument("-n").defaultValueProvider(provider).build();
+		Argument<Integer> n = integerArgument("-n").defaultValueSupplier(supplier).build();
 
 		assertThat(n.parse()).isNotEqualTo(n.parse());
 	}

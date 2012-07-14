@@ -5,8 +5,6 @@ import static java.util.Collections.emptyList;
 import static se.j4j.argumentparser.Describers.withStaticString;
 import static se.j4j.argumentparser.Descriptions.EMPTY_STRING;
 import static se.j4j.argumentparser.Descriptions.forString;
-import static se.j4j.argumentparser.Providers.listWithOneValue;
-import static se.j4j.argumentparser.Providers.nonLazyProvider;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.argumentparser.internal.StringsUtil.surroundWithMarkers;
@@ -33,6 +31,10 @@ import se.j4j.argumentparser.StringParsers.StringSplitterParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.NumberType;
 
+import com.google.common.annotations.Beta;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 
@@ -73,12 +75,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
-	@Nullable private Provider<T> defaultValueProvider = null;
-	// No Null Object instance because it would require an unnecessary put
-	// operation
-	@Nullable private Finalizer<T> finalizer = null;
+	// TODO: introduce NoSupplier Supplier? instead of null...
+	@Nullable private Supplier<T> defaultValue = null;
+
+	@Nonnull private Finalizer<T> finalizer = Finalizers.noFinalizer();
 	@Nonnull private Limiter<T> limiter = Limiters.noLimits();
-	@Nonnull private Callback<T> callback = Callbacks.noCallback();
 
 	protected ArgumentBuilder()
 	{
@@ -260,8 +261,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE required()
 	{
-		if(defaultValueProvider != null)
-			throw new IllegalStateException("Having a requried argument defaulting to some value (" + defaultValueProvider
+		if(defaultValue != null)
+			throw new IllegalStateException("Having a requried argument defaulting to some value (" + defaultValue.get()
 					+ ") makes no sense. Remove the call to ArgumentBuilder#defaultValue(...) to use a required argument.");
 
 		required = true;
@@ -288,7 +289,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			throw new IllegalStateException("Having a requried argument defaulting to some value(" + value
 					+ ") makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
 
-		defaultValueProvider = nonLazyProvider(value);
+		defaultValue = Suppliers.ofInstance(value);
 		return self();
 	}
 
@@ -296,18 +297,21 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * Sets a provider that can provide default values in the absence of this argument
 	 * 
-	 * @see Providers#cachingProvider(Provider)
+	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
+	 * 
+	 * @see Suppliers#memoize(Supplier)
 	 * 
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,
 	 * because these two methods are mutually exclusive
 	 */
-	public SELF_TYPE defaultValueProvider(@Nonnull final Provider<T> provider)
+	@Beta
+	public SELF_TYPE defaultValueSupplier(@Nonnull final Supplier<T> defaultValueSupplier)
 	{
 		if(required)
 			throw new IllegalStateException("Having a requried argument and a default value provider makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
 
-		defaultValueProvider = provider;
+		defaultValue = defaultValueSupplier;
 		return self();
 	}
 
@@ -558,7 +562,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE clearFinalizers()
 	{
-		finalizer = null;
+		finalizer = Finalizers.noFinalizer();
 		return self();
 	}
 
@@ -592,40 +596,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	public SELF_TYPE clearLimiters()
 	{
 		limiter = Limiters.noLimits();
-		return self();
-	}
-
-	/**
-	 * <pre>
-	 * Can be used to perform some action when an argument value has been
-	 * parsed.
-	 * 
-	 * <b>Note:</b> If {@link #callbackForValues(Callback)} has been called
-	 * before for this builder the previous {@link Callback} will be called
-	 * before this newly added one, i.e both will be called.
-	 * 
-	 * To clear out previously set {@link Callback}s call
-	 * {@link #clearCallbacks()}.
-	 * 
-	 * </pre>
-	 * 
-	 * @param aCallback a listener for parsed values
-	 * @return this builder
-	 */
-	public SELF_TYPE callbackForValues(@Nonnull Callback<T> aCallback)
-	{
-		callback = Callbacks.compound(callback, aCallback);
-		return self();
-	}
-
-	/**
-	 * Clear out all {@link Callback}s set by {@link #callbackForValues(Callback)}
-	 * 
-	 * @return this builder
-	 */
-	public SELF_TYPE clearCallbacks()
-	{
-		callback = Callbacks.noCallback();
 		return self();
 	}
 
@@ -692,11 +662,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nullable String metaDescription(){ return metaDescription; }
 	boolean isHiddenFromUsage(){ return hideFromUsage; }
 
-	@Nullable Provider<T> defaultValueProvider(){ return defaultValueProvider; }
+	@Nullable Supplier<T> defaultValueSupplier(){ return defaultValue; }
 
-	@Nullable Finalizer<T> finalizer(){ return finalizer; }
+	@Nonnull Finalizer<T> finalizer(){ return finalizer; }
 	@Nonnull Limiter<T> limiter(){ return limiter; }
-	@Nonnull Callback<T> callback(){ return callback; }
 
 	/**
 	 * @formatter.on
@@ -821,7 +790,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			finalizeWith(Finalizers.forListValues(builder.finalizer));
 			finalizeWith(Finalizers.<T>unmodifiableListFinalizer());
 
-			callbackForValues(Callbacks.forListValues(builder.callback));
 			limitTo(Limiters.forListValues(builder.limiter));
 		};
 	}
@@ -844,6 +812,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		{
 			copy(builder);
 			copyAsListBuilder(builder);
+
+			// TODO: Throw if defaultValue has been set.
 		}
 
 		/**
@@ -868,9 +838,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			super(new RepeatedArgumentParser<T>(builder.internalParser()));
 			copy(builder);
 			copyAsListBuilder(builder);
-			if(builder.defaultValueProvider != null)
+			if(builder.defaultValue != null)
 			{
-				this.defaultValueProvider(listWithOneValue(builder.defaultValueProvider));
+				this.defaultValueSupplier(new OneElementedListSupplier<T>(builder.defaultValue));
 			}
 			allowRepeatedArguments();
 		}
@@ -910,13 +880,13 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	{
 		OptionArgumentBuilder()
 		{
-			defaultValueProvider(nonLazyProvider(false));
+			defaultValue(false);
 		}
 
 		@Override
 		protected InternalStringParser<Boolean> internalParser()
 		{
-			return optionParser(defaultValueProvider().provideValue());
+			return optionParser(defaultValueSupplier().get());
 		}
 
 		// TODO: as these are starting to get out of hand, maybe introduce a
@@ -984,7 +954,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 				throw new IllegalStateException("No leading identifier (otherwise called names), for example -D, specified for property map. Call names(...) to provide it.");
 
 			limitTo(Limiters.<K, V>forMapValues(builder.limiter));
-			callbackForValues(Callbacks.<K, V>forMapValues(builder.callback));
 
 			finalizeWith(Finalizers.<K, V>forMapValues(builder.finalizer));
 			finalizeWith(Finalizers.<K, V>unmodifiableMapFinalizer());
@@ -1030,9 +999,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			super(new StringSplitterParser<T>(valueSeparator, builder.internalParser()));
 			copy(builder);
 			copyAsListBuilder(builder);
-			if(builder.defaultValueProvider != null)
+			if(builder.defaultValue != null)
 			{
-				defaultValueProvider(listWithOneValue(builder.defaultValueProvider));
+				defaultValueSupplier(new OneElementedListSupplier<T>(builder.defaultValue));
 			}
 		}
 
@@ -1082,5 +1051,23 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		{
 			return !names().isEmpty();
 		}
+	}
+
+	private static final class OneElementedListSupplier<T> implements Supplier<List<T>>
+	{
+		private final Supplier<T> singleElementSupplier;
+
+		OneElementedListSupplier(Supplier<T> elementSupplier)
+		{
+			singleElementSupplier = elementSupplier;
+		}
+
+		@Override
+		public List<T> get()
+		{
+			// TODO: memoize result?
+			return ImmutableList.of(singleElementSupplier.get());
+		}
+
 	}
 }
