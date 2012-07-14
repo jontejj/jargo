@@ -1,14 +1,13 @@
 package se.j4j.argumentparser.limiters;
 
-import static java.util.concurrent.TimeUnit.DAYS;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-import static se.j4j.argumentparser.Limiters.existingFile;
-import static se.j4j.argumentparser.Limiters.positiveInteger;
-import static se.j4j.argumentparser.StringSplitters.comma;
-import static se.j4j.argumentparser.utils.Constants.ONE_SECOND_IN_MILLIS;
+import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
+import static se.j4j.argumentparser.Limiters.existingFiles;
+import static se.j4j.argumentparser.Limiters.range;
+import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
 import java.io.File;
 
@@ -19,8 +18,6 @@ import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
 import se.j4j.argumentparser.Description;
 import se.j4j.argumentparser.Limit;
 import se.j4j.argumentparser.Limiter;
@@ -31,30 +28,11 @@ import com.google.common.collect.ImmutableList;
 public class TestLimiters
 {
 	@Test
-	public void testPositiveInteger() throws ArgumentException
-	{
-		Argument<Integer> positiveArgument = integerArgument("-i", "--index").limitTo(positiveInteger()).build();
-
-		CommandLineParser parser = CommandLineParsers.forArguments(positiveArgument);
-		try
-		{
-			parser.parse("-i", "-5");
-			Fail.fail("-5 shouldn't be a valid positive integer");
-		}
-		catch(ArgumentException expected)
-		{
-			assertThat(expected.getMessage()).isEqualTo("-5 is not a positive integer");
-		}
-		ParsedArguments parsed = parser.parse("-i", "10");
-		assertThat(parsed.get(positiveArgument)).isEqualTo(10);
-	}
-
-	@Test
 	public void testExistingFile()
 	{
-		Argument<File> file = fileArgument("--file").limitTo(existingFile()).build();
+		Argument<File> file = fileArgument("--file").limitTo(existingFiles()).build();
 
-		CommandLineParser parser = CommandLineParsers.forArguments(file);
+		CommandLineParser parser = CommandLineParser.forArguments(file);
 		try
 		{
 			parser.parse("--file", ".");
@@ -75,21 +53,34 @@ public class TestLimiters
 	}
 
 	@Test(expected = LimitException.class)
-	public void testRepeatedPositiveIntegers() throws ArgumentException
+	public void testRepeatedWithLimiter() throws ArgumentException
 	{
-		integerArgument("-i", "--index").limitTo(positiveInteger()).repeated().parse("-i", "10", "-i", "-5");
+		stringArgument("-i", "--index").limitTo(foos()).repeated().parse("-i", "foo", "-i", "bar");
 	}
 
 	@Test(expected = LimitException.class)
-	public void testArityOfPositiveIntegers() throws ArgumentException
+	public void testArityOfWithLimiter() throws ArgumentException
 	{
-		integerArgument("-i", "--indices").limitTo(positiveInteger()).arity(2).parse("-i", "10", "-5");
+		stringArgument("-i", "--indices").limitTo(foos()).arity(2).parse("-i", "foo", "bar");
 	}
 
 	@Test(expected = LimitException.class)
 	public void testSplittingAndLimiting() throws ArgumentException
 	{
-		integerArgument("-n").separator("=").limitTo(positiveInteger()).splitWith(comma()).parse("-n=1,-2");
+		stringArgument("-n").separator("=").limitTo(foos()).splitWith(",").parse("-n=foo,bar");
+	}
+
+	@Test
+	public void testRangeLimiter()
+	{
+		try
+		{
+			integerArgument().limitTo(range(1, 5)).parse("6");
+		}
+		catch(ArgumentException e)
+		{
+			assertThat(e).hasMessage("'6' is not in the range [1‥5]");
+		}
 	}
 
 	// This is what's tested
@@ -104,10 +95,10 @@ public class TestLimiters
 	@Test(expected = IllegalArgumentException.class)
 	public void testThatDefaultValuesAreLimited() throws ArgumentException
 	{
-		integerArgument("-n").limitTo(positiveInteger()).defaultValue(-1).parse();
+		stringArgument("-n").limitTo(foos()).defaultValue("bar").parse();
 	}
 
-	@Test(expected = LimitException.class, timeout = ONE_SECOND_IN_MILLIS)
+	@Test(expected = LimitException.class)
 	public void testThatLimitersAreDescribable() throws ArgumentException
 	{
 		integerArgument("-n").limitTo(new Limiter<Integer>(){
@@ -115,26 +106,20 @@ public class TestLimiters
 			public Limit withinLimits(Integer value)
 			{
 				return Limit.notOk(new Description(){
-
 					@Override
 					public String description()
 					{
-						try
-						{
-							// As this should never be run it shouldn't
-							// matter how long it takes to compute the
-							// description
-							Thread.sleep(DAYS.toNanos(1));
-						}
-						catch(InterruptedException e)
-						{
-							Thread.interrupted();
-							throw new IllegalStateException("Was interrupted while sleeping.", e);
-						}
+						fail("Description should not be called when it's not needed");
 						return "";
 					}
 				});
 			}
+
+			// @Override
+			// public String validValuesDescription()
+			// {
+			// return "Not used";
+			// }
 		}).parse("-n", "1");
 	}
 
@@ -159,20 +144,20 @@ public class TestLimiters
 	{
 		ProfilingLimiter<Integer> profiler = new ProfilingLimiter<Integer>();
 
-		Limiter<Integer> limitors = Limiters.compound(profiler, Limiters.<Integer>noLimits());
+		Limiter<Integer> limitors = profiler;
 
-		integerArgument("-n").limitTo(limitors).consumeAll().parse("-n", "1", "2");
+		integerArgument("-n").limitTo(limitors).variableArity().parse("-n", "1", "2");
 
 		assertThat(profiler.limitationsMade).isEqualTo(2);
 		profiler = new ProfilingLimiter<Integer>();
 
 		limitors = Limiters.compound(profiler, profiler);
-		integerArgument("-n").limitTo(limitors).consumeAll().parse("-n", "1", "2");
+		integerArgument("-n").limitTo(limitors).variableArity().parse("-n", "1", "2");
 
 		assertThat(profiler.limitationsMade).isEqualTo(4);
 		profiler = new ProfilingLimiter<Integer>();
 
-		integerArgument("-n").limitTo(Limiters.compound(ImmutableList.of(profiler))).consumeAll().parse("-n", "1", "2");
+		integerArgument("-n").limitTo(Limiters.compound(ImmutableList.of(profiler))).variableArity().parse("-n", "1", "2");
 
 		assertThat(profiler.limitationsMade).isEqualTo(2);
 	}
@@ -197,5 +182,11 @@ public class TestLimiters
 			limitationsMade++;
 			return Limit.OK;
 		}
+
+		// @Override
+		// public String validValuesDescription()
+		// {
+		// return "not used";
+		// }
 	}
 }

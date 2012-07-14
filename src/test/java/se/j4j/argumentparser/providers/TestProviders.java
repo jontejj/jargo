@@ -44,18 +44,6 @@ public class TestProviders
 	}
 
 	@Test
-	public void testThatNullValuesAreOnlyCreatedOneTime()
-	{
-		NullProvider nullProvider = new NullProvider();
-		Provider<Integer> cachingProvider = cachingProvider(nullProvider);
-
-		cachingProvider.provideValue();
-		cachingProvider.provideValue();
-
-		assertThat(nullProvider.numberOfCalls).isEqualTo(1);
-	}
-
-	@Test
 	public void testThatValuesAreOnlyCreatedOneTimeEvenDuringHighContention() throws InterruptedException, BrokenBarrierException, TimeoutException
 	{
 		SlowProvider slowProvider = new SlowProvider();

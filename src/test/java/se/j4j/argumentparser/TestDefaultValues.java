@@ -4,55 +4,53 @@ import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
-import static se.j4j.argumentparser.Limiters.positiveInteger;
-import static se.j4j.argumentparser.StringParsers.integerParser;
-import static se.j4j.argumentparser.StringParsers.Radix.DECIMAL;
-import static se.j4j.argumentparser.StringSplitters.comma;
+import static se.j4j.argumentparser.StringParsers.stringParser;
+import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentFactory.RadixiableArgumentBuilder;
+import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
+import se.j4j.argumentparser.providers.BarProvider;
 import se.j4j.argumentparser.providers.ChangingProvider;
-import se.j4j.argumentparser.providers.NegativeValueProvider;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestDefaultValues
 {
 	@Test
-	public void testThatNonRequiredAndNonDefaultedIntegerArgumentDefaultsToZero() throws ArgumentException
+	public void testThatNonRequiredAndNonDefaultedArgumentDefaultsToZero() throws ArgumentException
 	{
 		assertThat(integerArgument("-n").parse()).isZero();
 	}
 
 	@Test
-	public void testThatNonRequiredAndNonDefaultedRepeatedIntegerArgumentDefaultsToEmptyList() throws ArgumentException
+	public void testThatNonRequiredAndNonDefaultedRepeatedArgumentDefaultsToEmptyList() throws ArgumentException
 	{
 		List<Integer> numbers = integerArgument("-n").repeated().parse();
 		assertThat(numbers).isEmpty();
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testThatInvalidDefaultValueFromStringParserIsInvalidated() throws ArgumentException
 	{
-		withParser(new ForwardingStringParser<Integer>(integerParser(DECIMAL)){
+		withParser(new ForwardingStringParser.SimpleForwardingStringParser<String>(stringParser()){
 			@Override
-			public Integer defaultValue()
+			public String defaultValue()
 			{
-				return -1;
+				return "bar";
 			}
-		}).limitTo(positiveInteger()).parse();
+		}).limitTo(foos()).parse();
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void testThatInvalidDefaultValueProviderValuesAreInvalidated() throws ArgumentException
 	{
-		// Throws because -1 (which is given by NegativeValueProvider) isn't
-		// positive
-		integerArgument("-n").defaultValueProvider(new NegativeValueProvider()).limitTo(positiveInteger()).parse();
+		// Throws because bar (which is given by BarProvider) isn't foo
+		stringArgument("-n").defaultValueProvider(new BarProvider()).limitTo(foos()).parse();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -73,38 +71,37 @@ public class TestDefaultValues
 	public void testThatDefaultValuesProvidedToSplitArgumentsAreImmutable() throws ArgumentException
 	{
 		// Should throw because defaultValue makes its argument Immutable
-		integerArgument("-n").splitWith(comma()).defaultValue(asList(1, 2)).parse().add(3);
+		integerArgument("-n").splitWith(",").defaultValue(asList(1, 2)).parse().add(3);
 	}
 
 	@Test(expected = RuntimeException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "fail-fast during configuration phase")
 	public void testThatRequiredArgumentsCantHaveADefaultValueProvider()
 	{
-		integerArgument("-n").required().defaultValueProvider(new NegativeValueProvider());
+		stringArgument("-n").required().defaultValueProvider(new BarProvider());
 	}
 
 	@Test
 	public void testThatDefaultValueProviderAreMovedBetweenBuilders() throws ArgumentException
 	{
-		ArgumentBuilder<RadixiableArgumentBuilder<Integer>, Integer> builder = integerArgument("-n")
-				.defaultValueProvider(new NegativeValueProvider());
+		DefaultArgumentBuilder<String> builder = stringArgument("-n").defaultValueProvider(new BarProvider());
 
-		Argument<List<Integer>> number = builder.repeated().build();
+		Argument<List<String>> argument = builder.repeated().build();
 
-		testUnmodifiableDefaultList(number);
+		testUnmodifiableDefaultList(argument);
 
-		number = builder.splitWith(comma()).build();
+		argument = builder.splitWith(",").build();
 
-		testUnmodifiableDefaultList(number);
+		testUnmodifiableDefaultList(argument);
 	}
 
-	private void testUnmodifiableDefaultList(Argument<List<Integer>> number) throws ArgumentException
+	private void testUnmodifiableDefaultList(Argument<List<String>> argument) throws ArgumentException
 	{
-		List<Integer> defaultValue = number.parse();
-		assertThat(defaultValue).isEqualTo(Arrays.asList(-1));
+		List<String> defaultValue = argument.parse();
+		assertThat(defaultValue).isEqualTo(Arrays.asList("bar"));
 		try
 		{
-			defaultValue.add(-2);
+			defaultValue.add("foo");
 			fail("Lists with default values in them should be unmodifiable");
 		}
 		catch(UnsupportedOperationException expected)

@@ -1,19 +1,14 @@
 Usage: SortingOfIndexedArguments [Options]
  <string>      IndexOne
-               <string>: Any string
+               <string>: any string
                Default: 
-
  <string>      IndexTwo
-               <string>: Any string
+               <string>: any string
                Default: 
-
  <string>      IndexThree
-               <string>: Any string
+               <string>: any string
                Default: 
-
--S <string>    <string>: Any string
+-S <string>    <string>: any string
                Default: 
-
--T <string>    <string>: Any string
+-T <string>    <string>: any string
                Default: 
-

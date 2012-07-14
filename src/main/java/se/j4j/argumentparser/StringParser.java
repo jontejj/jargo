@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+// TODO: make this follow the visitor pattern
 /**
  * <pre>
  * Parses {@link String}s into values of the type <code>T</code>.
@@ -37,11 +38,17 @@ public interface StringParser<T>
 	String descriptionOfValidValues();
 
 	/**
-	 * If you can provide a default value do so, it will look much better
-	 * in the usage texts, if not return null
-	 * 
-	 * @return
+	 * If you can provide a default value do so, if not, return null
 	 */
 	@Nullable
 	T defaultValue();
+
+	/**
+	 * The meta description is the text displayed surrounded by &lt; and &gt;
+	 * 
+	 * @return a meta description that very briefly explains what value this parser expects
+	 *         may return null if no description is needed
+	 */
+	@Nullable
+	String metaDescription();
 }

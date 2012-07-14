@@ -1,0 +1,5 @@
+Missing <integer> parameter for '-n'.
+
+Usage: MissingParameterTest [Options]
+--number, -n <integer>    <integer>: -2147483648 to 2147483647 (decimal)
+                          Default: 0

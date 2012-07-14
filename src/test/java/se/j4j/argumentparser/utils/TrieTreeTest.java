@@ -1,5 +1,6 @@
 package se.j4j.argumentparser.utils;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -7,9 +8,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -17,16 +16,6 @@ import se.j4j.argumentparser.internal.TrieTree;
 
 public class TrieTreeTest
 {
-	private <T> List<T> asList(final T ... values)
-	{
-		List<T> list = new ArrayList<T>();
-		for(T value : values)
-		{
-			list.add(value);
-		}
-		return list;
-	}
-
 	@Test
 	public void testTrieTree()
 	{

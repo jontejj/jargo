@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 /**
  * Response object for {@link Limiter#withinLimits(Object)}
  */
+// TODO: maybe rename Limit -> Limited?
 public final class Limit
 {
 	@Nonnull private final Description reasonForNotBeingWithinLimits;
@@ -17,10 +18,14 @@ public final class Limit
 	@Nonnull public static final Limit OK = new Limit(Descriptions.EMPTY_STRING);
 
 	/**
-	 * Produces a limit response that tells why a value isn't within the limits
+	 * <pre>
+	 * Produces a limit response that tells why a value isn't within the limits.
+	 * This is the error message that is displayed when
+	 * {@link ArgumentException#getMessage()} is called
 	 * 
 	 * @param reason the reason why a {@link Limiter} didn't accept a value
 	 * @return a newly created {@link Limit} instance
+	 * </pre>
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -33,6 +38,9 @@ public final class Limit
 	 * <pre>
 	 * Produces a limit response that tells why a value wasn't within the
 	 * limits.
+	 * 
+	 * This is the error message that is displayed when
+	 * {@link ArgumentException#getMessage()} is called
 	 * 
 	 * Works just like {@link #notOk(String)} except that it allows the
 	 * descriptions to be lazily created instead.

@@ -2,8 +2,7 @@ package se.j4j.argumentparser.commands;
 
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.commands.Build.BuildTarget;
 
 public class Clean extends Command
@@ -18,7 +17,7 @@ public class Clean extends Command
 	@Override
 	protected CommandLineParser createParserForCommandArguments()
 	{
-		return CommandLineParsers.forAnyArguments();
+		return CommandLineParser.forAnyArguments();
 	}
 
 	@Override

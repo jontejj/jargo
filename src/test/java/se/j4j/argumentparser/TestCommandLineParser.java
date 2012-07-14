@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.MISSING_PARAMETER;
@@ -7,8 +8,9 @@ import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.CommandLineParsers.forAnyArguments;
-import static se.j4j.argumentparser.CommandLineParsers.forArguments;
+import static se.j4j.argumentparser.CommandLineParser.forAnyArguments;
+import static se.j4j.argumentparser.CommandLineParser.forArguments;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +18,9 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
+import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.utils.ArgumentExpector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -64,7 +67,7 @@ public class TestCommandLineParser
 
 		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
 
-		ParsedArguments arguments = CommandLineParsers.forArguments(enableLogging, port, greetingPhrase).parse(args);
+		ParsedArguments arguments = CommandLineParser.forArguments(enableLogging, port, greetingPhrase).parse(args);
 
 		assertThat(arguments.get(enableLogging)).isTrue();
 		assertThat(arguments.get(port)).isEqualTo(8090);
@@ -82,13 +85,13 @@ public class TestCommandLineParser
 	@Test(expected = UnexpectedArgumentException.class)
 	public void testUnhandledParameter() throws ArgumentException
 	{
-		CommandLineParsers.forArguments().parse("Unhandled");
+		CommandLineParser.forArguments().parse("Unhandled");
 	}
 
 	@Test
 	public void testMultipleParametersForNamedArgument() throws ArgumentException
 	{
-		assertThat(integerArgument("--numbers").consumeAll().parse("--numbers", "5", "6")).isEqualTo(Arrays.asList(5, 6));
+		assertThat(integerArgument("--numbers").variableArity().parse("--numbers", "5", "6")).isEqualTo(asList(5, 6));
 	}
 
 	/**
@@ -97,46 +100,35 @@ public class TestCommandLineParser
 	@Test(expected = UnsupportedOperationException.class)
 	public void testMultipleParametersForNamedArgumentUnmodifiableResult() throws ArgumentException
 	{
-		integerArgument("--numbers").consumeAll().parse("--numbers", "2", "3").add(1);
+		integerArgument("--numbers").variableArity().parse("--numbers", "2", "3").add(1);
 	}
 
 	@Test
-	public void testMissingParameterForArgument()
+	public void testMissingParameterForArgument() throws ArgumentException
 	{
-		Argument<Integer> numbers = integerArgument("--number").build();
+		Argument<Integer> numbers = integerArgument("--number", "-n").build();
 		try
 		{
-			numbers.parse("--number");
-			fail("--number parameter should be missing a parameter");
+			numbers.parse("-n");
+			fail("-n parameter should be missing a parameter");
 		}
-		catch(ArgumentException exception)
+		catch(MissingParameterException expected)
 		{
-			assertThat(exception.code()).isEqualTo(MISSING_PARAMETER);
-			assertThat(exception.errorneousArgument()).isEqualTo(numbers);
+			// As -n was given on the command line that is the one that should appear in the
+			// exception message
+			assertThat(expected.getMessageAndUsage("MissingParameterTest")).isEqualTo(expected("missingParameter"));
+			assertThat(expected.code()).isEqualTo(MISSING_PARAMETER);
+			assertThat(expected.errorneousArgument()).isEqualTo(numbers);
 		}
 	}
 
 	@Test
 	public void testDefaultValuesForMultipleParametersForNamedArgument() throws ArgumentException
 	{
-		List<Integer> defaults = Arrays.asList(5, 6);
-		List<Integer> numbers = integerArgument("--numbers").consumeAll().defaultValue(defaults).parse();
+		List<Integer> defaults = asList(5, 6);
+		List<Integer> numbers = integerArgument("--numbers").variableArity().defaultValue(defaults).parse();
 
 		assertThat(numbers).isEqualTo(defaults);
-	}
-
-	@Test
-	public void testTwoParametersForNamedArgument() throws ArgumentException
-	{
-		String[] args = {"--numbers", "5", "6", "Rest", "Of", "ArgumentFactory"};
-
-		Argument<List<Integer>> numbers = integerArgument("--numbers").arity(2).build();
-		Argument<List<String>> unhandledArguments = stringArgument().consumeAll().build();
-
-		ParsedArguments parsed = CommandLineParsers.forArguments(numbers, unhandledArguments).parse(args);
-
-		assertThat(parsed.get(numbers)).isEqualTo(Arrays.asList(5, 6));
-		assertThat(parsed.get(unhandledArguments)).isEqualTo(Arrays.asList("Rest", "Of", "ArgumentFactory"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -144,7 +136,7 @@ public class TestCommandLineParser
 	public void testErrorHandlingForTwoParametersWithTheSameName()
 	{
 		Argument<Integer> number = integerArgument("--number").build();
-		CommandLineParsers.forArguments(number, number);
+		CommandLineParser.forArguments(number, number);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -152,7 +144,7 @@ public class TestCommandLineParser
 	public void testErrorHandlingForTwoIndexedParametersWithTheSameDefinition()
 	{
 		Argument<Integer> numberOne = integerArgument().build();
-		CommandLineParsers.forArguments(numberOne, numberOne);
+		CommandLineParser.forArguments(numberOne, numberOne);
 	}
 
 	@Test
@@ -168,7 +160,7 @@ public class TestCommandLineParser
 	{
 		assertThat(integerArgument().toString()).contains("<integer>: -2147483648 to 2147483647");
 
-		CommandLineParser parser = CommandLineParsers.forArguments();
+		CommandLineParser parser = CommandLineParser.forArguments();
 		assertThat(parser.toString()).contains("<main class>");
 
 		assertThat(parser.parse().toString()).isEqualTo("{}");
@@ -193,10 +185,12 @@ public class TestCommandLineParser
 
 		Argument<Integer> number = integerArgument("--number").build();
 
-		ParsedArguments listResult = CommandLineParsers.forArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args));
-		ParsedArguments arrayResult = CommandLineParsers.forArguments(number).parse(args);
+		ParsedArguments listResult = CommandLineParser.forArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args));
+		ParsedArguments arrayResult = CommandLineParser.forArguments(number).parse(args);
+		ParsedArguments iteratorResult = CommandLineParser.forArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args).listIterator());
 
 		assertThat(listResult).isEqualTo(arrayResult);
+		assertThat(iteratorResult).isEqualTo(arrayResult);
 	}
 
 	@Test
@@ -204,7 +198,7 @@ public class TestCommandLineParser
 	{
 		Argument<Integer> number = integerArgument("--number").build();
 
-		CommandLineParser parser = CommandLineParsers.forArguments(number);
+		CommandLineParser parser = CommandLineParser.forArguments(number);
 		ParsedArguments parsedArguments = parser.parse();
 
 		assertThat(parsedArguments).isNotEqualTo(null);

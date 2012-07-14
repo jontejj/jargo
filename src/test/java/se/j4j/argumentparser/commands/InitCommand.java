@@ -1,9 +1,8 @@
 package se.j4j.argumentparser.commands;
 
-import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
 import se.j4j.argumentparser.Command;
+import se.j4j.argumentparser.CommandLineParser;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 public class InitCommand extends Command
 {
@@ -11,7 +10,7 @@ public class InitCommand extends Command
 	@Override
 	public CommandLineParser createParserForCommandArguments()
 	{
-		return CommandLineParsers.forArguments();
+		return CommandLineParser.forArguments();
 	}
 
 	@Override

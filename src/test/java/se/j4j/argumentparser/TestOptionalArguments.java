@@ -2,7 +2,6 @@ package se.j4j.argumentparser;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
-import static se.j4j.argumentparser.StringSplitters.comma;
 
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ public class TestOptionalArguments
 	public void testDescription()
 	{
 		String usage = optionArgument("--enable-logging").usage("OptionArgument");
-		assertThat(usage).contains("Default: false");
+		assertThat(usage).contains("Default: disabled");
 	}
 
 	@Test
@@ -25,7 +24,7 @@ public class TestOptionalArguments
 	public void testForDefaultTrue() throws ArgumentException
 	{
 		String usage = optionArgument("--disable-logging").defaultValue(true).usage("OptionArgument");
-		assertThat(usage).contains("Default: true");
+		assertThat(usage).contains("Default: enabled");
 
 		assertThat(optionArgument("--disable-logging").defaultValue(true).parse()).isTrue();
 	}
@@ -53,15 +52,15 @@ public class TestOptionalArguments
 
 	@SuppressWarnings("deprecation")
 	@Test(expected = IllegalStateException.class)
-	public void testThatOptionalArgumentsCantConsumeAllArguments()
+	public void testThatOptionalArgumentsCantHaveVariableArity()
 	{
-		optionArgument("-l").consumeAll();
+		optionArgument("-l").variableArity();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Test(expected = IllegalStateException.class)
 	public void testThatOptionalArgumentsCantBeSplit()
 	{
-		optionArgument("-l").splitWith(comma());
+		optionArgument("-l").splitWith(",");
 	}
 }

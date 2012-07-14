@@ -5,7 +5,7 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 
 /**
- * @formatter:off
+ * @formatter.off
  */
 public final class Lines
 {

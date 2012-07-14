@@ -1,5 +1,6 @@
 package se.j4j.argumentparser.concurrency;
 
+import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.bigIntegerArgument;
@@ -14,12 +15,10 @@ import static se.j4j.argumentparser.ArgumentFactory.longArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.shortArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.StringSplitters.comma;
 import static se.j4j.argumentparser.stringparsers.custom.DateTimeParser.dateArgument;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +35,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParsers;
-import se.j4j.argumentparser.CommandLineParsers.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 public class TestArgumentParserConcurrency
 {
@@ -73,12 +71,12 @@ public class TestArgumentParserConcurrency
 
 	final Argument<List<Integer>> repeatedArgument = integerArgument("--repeated").repeated().build();
 
-	final Argument<List<Float>> splittedArgument = floatArgument("--split").separator("=").splitWith(comma()).build();
+	final Argument<List<Float>> splittedArgument = floatArgument("--split").separator("=").splitWith(",").build();
 
 	// The shared instance that the different threads will use
-	final CommandLineParser parser = CommandLineParsers.forArguments(	greetingPhrase, enableLogging, port, longArgument, bigInteger, date,
-																		doubleArgument, shortArgument, byteArgument, file, string, charArgument,
-																		bool, propertyArgument, arityArgument, repeatedArgument, splittedArgument);
+	final CommandLineParser parser = CommandLineParser.forArguments(greetingPhrase, enableLogging, port, longArgument, bigInteger, date,
+																	doubleArgument, shortArgument, byteArgument, file, string, charArgument, bool,
+																	propertyArgument, arityArgument, repeatedArgument, splittedArgument);
 
 	private static final int ITERATION_COUNT = 300;
 
@@ -124,7 +122,7 @@ public class TestArgumentParserConcurrency
 		assertThat(executor.shutdownNow()).isEmpty();
 	}
 
-	private final class ArgumentParseRunner extends Thread
+	private final class ArgumentParseRunner implements Runnable
 	{
 		private final int offset;
 		private final Thread originThread;
@@ -132,7 +130,6 @@ public class TestArgumentParserConcurrency
 
 		public ArgumentParseRunner(int offset)
 		{
-			super(ArgumentParseRunner.class.getSimpleName() + "[" + offset + "]");
 			this.offset = offset;
 			originThread = Thread.currentThread();
 		}
@@ -186,9 +183,9 @@ public class TestArgumentParserConcurrency
 					checkThat(string).isEqualTo(str);
 					checkThat(charArgument).isEqualTo('T');
 					checkThat(bool).isEqualTo(true);
-					checkThat(arityArgument).isEqualTo(Arrays.asList(true, false, true, false, true, false));
-					checkThat(repeatedArgument).isEqualTo(Arrays.asList(1, offset));
-					checkThat(splittedArgument).isEqualTo(Arrays.asList(1.234f, 2.4343f + offset, 5.23232f));
+					checkThat(arityArgument).isEqualTo(asList(true, false, true, false, true, false));
+					checkThat(repeatedArgument).isEqualTo(asList(1, offset));
+					checkThat(splittedArgument).isEqualTo(asList(1.234f, 2.4343f + offset, 5.23232f));
 					checkThat(propertyArgument).isEqualTo(propertyMap);
 				}
 			}

@@ -19,6 +19,7 @@ import static se.j4j.argumentparser.StringParsers.Radix.DECIMAL;
 import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.StringParsers.Radix.OCTAL;
 import static se.j4j.argumentparser.StringParsers.Radix.UnsignedOutput.NO;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -29,11 +30,13 @@ import java.util.Map;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
+import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.Radix;
 import se.j4j.argumentparser.StringParsers.Radix.UnsignedOutput;
 import se.j4j.argumentparser.StringParsers.RadixiableParser;
 import se.j4j.argumentparser.internal.Lines;
-import se.j4j.argumentparser.utils.UsageTexts;
+import se.j4j.argumentparser.internal.NumberType;
+import se.j4j.argumentparser.internal.OneBitType;
 
 import com.google.common.collect.Lists;
 
@@ -58,7 +61,7 @@ public class TestRadixArguments
 	public void testBinaryInput() throws ArgumentException
 	{
 		Integer binary = integerArgument("-b").radix(BINARY).parse("-b", "1001");
-		assertThat(binary).isEqualTo(9);
+		assertThat(binary).isEqualTo(0b1001);
 	}
 
 	@Test
@@ -97,7 +100,7 @@ public class TestRadixArguments
 		{
 			RadixiableParser<Byte> parser = (RadixiableParser<Byte>) byteParser(radix);
 
-			for(Byte value : numbersToTest(parser))
+			for(Byte value : numbersToTest(NumberType.BYTE))
 			{
 				String describedValue = parser.describeValue(value);
 				Byte parsedValue = parser.parse(describedValue);
@@ -107,6 +110,28 @@ public class TestRadixArguments
 			assertThat(usage).contains("<byte>: " + validInputs.get(radix) + Lines.NEWLINE);
 			assertThat(usage).contains("Default: " + defaultValues.get(radix) + Lines.NEWLINE);
 		}
+	}
+
+	@Test
+	public void testOutOfRangeInHex() throws ArgumentException
+	{
+		// TODO: what should the defaultValue be here?
+		Argument<Integer> hexArgument = integerArgument().radix(HEX).minValue(0x42).maxValue(0x60).build();
+
+		CommandLineParser parser = CommandLineParser.forArguments(hexArgument);
+		try
+		{
+			parser.parse("0F");
+			fail("0x0F shouldn't be valid since it's lower than 0x42");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected.getMessageAndUsage("OutOfRangeInHex")).isEqualTo(expected("outOfRangeInHex"));
+		}
+		ParsedArguments parsed = parser.parse("42");
+		assertThat(parsed.get(hexArgument)).isEqualTo(0x42);
+
+		assertThat(integerArgument().minValue(1).maxValue(3).parse("2")).isEqualTo(2);
 	}
 
 	@Test
@@ -122,8 +147,7 @@ public class TestRadixArguments
 			}
 			catch(InvalidArgument e)
 			{
-				String expectedUsage = UsageTexts.get("InvalidByte" + input + ".txt");
-				assertThat(e.getMessageAndUsage("InvalidByte")).isEqualTo(expectedUsage);
+				assertThat(e.getMessageAndUsage("InvalidByte")).isEqualTo(expected("InvalidByte" + input));
 			}
 		}
 
@@ -134,8 +158,7 @@ public class TestRadixArguments
 		}
 		catch(InvalidArgument e)
 		{
-			String expectedUsage = UsageTexts.get("ByteNaN.txt");
-			assertThat(e.getMessageAndUsage("NaNTest")).isEqualTo(expectedUsage);
+			assertThat(e.getMessageAndUsage("NaNTest")).isEqualTo(expected("ByteNaN"));
 		}
 	}
 
@@ -167,7 +190,7 @@ public class TestRadixArguments
 		for(Radix radix : Radix.values())
 		{
 			RadixiableParser<Short> parser = (RadixiableParser<Short>) shortParser(radix);
-			for(Short value : numbersToTest(parser))
+			for(Short value : numbersToTest(NumberType.SHORT))
 			{
 				String describedValue = parser.describeValue(value);
 				Short parsedValue = parser.parse(describedValue);
@@ -225,7 +248,7 @@ public class TestRadixArguments
 		for(Radix radix : Radix.values())
 		{
 			RadixiableParser<Integer> parser = (RadixiableParser<Integer>) integerParser(radix);
-			for(Integer value : numbersToTest(parser))
+			for(Integer value : numbersToTest(NumberType.INTEGER))
 			{
 				String describedValue = parser.describeValue(value);
 				Integer parsedValue = parser.parse(describedValue);
@@ -279,13 +302,13 @@ public class TestRadixArguments
 		assertThat(longArgument("-b").parse()).isZero();
 	}
 
-	public static <T extends Number & Comparable<T>> Iterable<T> numbersToTest(RadixiableParser<T> arg)
+	public static <T extends Number & Comparable<T>> Iterable<T> numbersToTest(NumberType<T> type)
 	{
-		T minValueT = arg.minValue();
-		long minValue = arg.cast(minValueT);
+		T minValueT = type.minValue();
+		long minValue = type.cast(minValueT);
 
-		T maxValueT = arg.maxValue();
-		long maxValue = arg.cast(maxValueT);
+		T maxValueT = type.maxValue();
+		long maxValue = type.cast(maxValueT);
 
 		double stepSize = (double) 5 / 100;
 
@@ -294,7 +317,7 @@ public class TestRadixArguments
 
 		for(long i = (long) (minValue + rangeLength * stepSize); i < maxValue; i = (long) (i + rangeLength * stepSize))
 		{
-			numbers.add(arg.cast(i));
+			numbers.add(type.cast(i));
 		}
 		numbers.add(maxValueT);
 		numbers.add(minValueT);
@@ -365,7 +388,7 @@ public class TestRadixArguments
 	{
 		long stepSize = (long) (Long.MAX_VALUE * (double) 5 / 100);
 
-		List<Long> numbers = Lists.newArrayListWithExpectedSize(100);
+		List<Long> numbers = Lists.newArrayListWithExpectedSize(22);
 
 		long end = Long.MAX_VALUE - stepSize;
 		for(long i = Long.MIN_VALUE + stepSize; i < end; i += stepSize)
@@ -381,57 +404,12 @@ public class TestRadixArguments
 	@Test
 	public void testOneBitNumber()
 	{
-		TestOneBitRadix parser = new TestOneBitRadix(BINARY);
+		RadixiableParser<Integer> parser = StringParsers.RadixiableParser.radixiableParser(Radix.DECIMAL, new OneBitType());
 
 		String bitString = parser.describeValue(0);
 		assertThat(bitString).isEqualTo("0");
 
 		bitString = parser.describeValue(1);
 		assertThat(bitString).isEqualTo("1");
-	}
-
-	private static final class TestOneBitRadix extends RadixiableParser<Integer>
-	{
-
-		TestOneBitRadix(Radix radix)
-		{
-			super(radix);
-		}
-
-		@Override
-		Integer minValue()
-		{
-			return 0;
-		}
-
-		@Override
-		Integer maxValue()
-		{
-			return 1;
-		}
-
-		@Override
-		Integer cast(Long value)
-		{
-			return value.intValue();
-		}
-
-		@Override
-		Long cast(Integer value)
-		{
-			return value.longValue();
-		}
-
-		@Override
-		int bitSize()
-		{
-			return 1;
-		}
-
-		@Override
-		public Integer defaultValue()
-		{
-			return 0;
-		}
 	}
 }

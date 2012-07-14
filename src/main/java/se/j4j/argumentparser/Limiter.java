@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
  * <pre>
  * Allows for only allowing a subset of values parsed by {@link StringParser#parse(String)} implementations.
  * 
- * As an example, look at {@link Limiters#positiveInteger()} and {@link Limiters#existingFile()}.
+ * As an example, look at {@link Limiters#range(Comparable, Comparable)}.
  * 
  * Values have been passed through any {@link Finalizer#finalizeValue(Object)} before {@link #withinLimits(Object)} is called.
  * 
@@ -33,5 +33,11 @@ public interface Limiter<T>
 	Limit withinLimits(@Nullable T value);
 
 	// TODO: print this pro active in usage somehow:
+	// Error message: "'" + valueDescriber.describe(value) / valueFromCommandLine + "'" is not " +
+	// limiter.validValuesDescription();
+	//
+	// boolean isWithinLimits(T value)
 	// String validValuesDescription();
+	// TODO: or remove Limiter all together and refer to ForwardingStringParser instead,
+	// Finalizer and Callback could also be replaced by ForwardingStringParser
 }

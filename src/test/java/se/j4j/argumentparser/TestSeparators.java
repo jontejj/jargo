@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-
 public class TestSeparators
 {
 	@Test
@@ -17,7 +16,7 @@ public class TestSeparators
 	{
 		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("=").build();
 
-		CommandLineParser parser = CommandLineParsers.forArguments(logLevel);
+		CommandLineParser parser = CommandLineParser.forArguments(logLevel);
 
 		assertThat(parser.parse("-Log=debug").get(logLevel)).as("wrong log level").isEqualTo("debug");
 		assertThat(parser.parse("-log=debug").get(logLevel)).as("wrong log level").isEqualTo("debug");
@@ -28,7 +27,7 @@ public class TestSeparators
 	{
 		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("A").build();
 
-		CommandLineParser parser = CommandLineParsers.forArguments(logLevel);
+		CommandLineParser parser = CommandLineParser.forArguments(logLevel);
 
 		assertThat(parser.parse("-LogAdebug").get(logLevel)).as("wrong log level").isEqualTo("debug");
 		assertThat(parser.parse("-logAdebug").get(logLevel)).as("wrong log level").isEqualTo("debug");

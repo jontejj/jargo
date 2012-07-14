@@ -2,7 +2,9 @@ package se.j4j.argumentparser.stringparsers.custom;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
+import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.argumentparser.stringparsers.custom.DateTimeParser.dateArgument;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Set;
 
@@ -11,7 +13,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
-import se.j4j.argumentparser.StringParsers;
+import se.j4j.argumentparser.StringParser;
 
 public class TestCustomStringParsers
 {
@@ -26,7 +28,7 @@ public class TestCustomStringParsers
 	@Test
 	public void testUniqueLetters() throws ArgumentException
 	{
-		Set<Character> letters = withParser(new UniqueLetters()).names("-l").parse("-l", "abc");
+		Set<Character> letters = withParser(new UniqueLetters()).names("-l").parse("-l", "aabc");
 
 		assertThat(letters).containsOnly('c', 'a', 'b');
 	}
@@ -37,8 +39,7 @@ public class TestCustomStringParsers
 		assertThat(dateArgument("--start").parse("--start", "2011-03-30")).isEqualTo(new DateTime("2011-03-30"));
 
 		String usage = dateArgument("--start").usage("");
-		assertThat(usage).contains("--start <date>    <date>: An ISO8601 date, such as 2011-02-28");
-		assertThat(usage).contains("Default: Current time");
+		assertThat(usage).isEqualTo(expected("dateTime"));
 	}
 
 	@Test
@@ -49,17 +50,12 @@ public class TestCustomStringParsers
 		assertThat(result).isSameAs(argumentValue.intern());
 
 		String usage = withParser(new CustomizedStringParser()).names("-f").usage("ForwardingStringParser");
-		assertThat(usage).contains("-f    Valid input: Any string");
+		assertThat(usage).contains("-f <string>    <string>: any string");
 		assertThat(usage).contains("Default: foo");
 	}
 
 	private static final class CustomizedStringParser extends ForwardingStringParser<String>
 	{
-		CustomizedStringParser()
-		{
-			super(StringParsers.stringParser());
-		}
-
 		@Override
 		public String parse(String value) throws ArgumentException
 		{
@@ -70,6 +66,12 @@ public class TestCustomStringParsers
 		public String defaultValue()
 		{
 			return "foo";
+		}
+
+		@Override
+		protected StringParser<String> delegate()
+		{
+			return stringParser();
 		}
 	}
 }

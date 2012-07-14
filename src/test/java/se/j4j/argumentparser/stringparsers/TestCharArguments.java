@@ -36,7 +36,7 @@ public class TestCharArguments
 	public void testDescription()
 	{
 		String usage = charArgument("-c").usage("CharArgument");
-		assertThat(usage).contains("<character>: Any unicode character");
+		assertThat(usage).contains("<character>: any unicode character");
 		assertThat(usage).contains("Default: the Null character");
 
 		assertThat(charArgument("-c").defaultValue(null).usage("CharArgument")).contains("Default: null");

@@ -1,0 +1,2 @@
+Usage: OptionalArgumentDescription [Options]
+-l, --enable-logging    Default: disabled

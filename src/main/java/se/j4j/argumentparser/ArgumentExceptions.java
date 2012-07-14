@@ -1,26 +1,24 @@
 package se.j4j.argumentparser;
 
 import static com.google.common.collect.Collections2.transform;
+import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.MISSING_PARAMETER;
 import static se.j4j.argumentparser.Describers.argumentDescriber;
-import static se.j4j.argumentparser.Describers.functionFor;
+import static se.j4j.argumentparser.Describers.asFunction;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.ListIterator;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
+import se.j4j.argumentparser.CommandLineParser.Arguments;
+
 public final class ArgumentExceptions
 {
 	private ArgumentExceptions()
 	{
-	}
-
-	public static ArgumentException forErrorCode(final ArgumentExceptionCodes errorCode)
-	{
-		return new ArgumentException(errorCode);
 	}
 
 	public static InvalidArgument forInvalidValue(final Object invalidValue, final String explanation)
@@ -43,6 +41,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	public static LimitException forLimit(@Nonnull Limit reason)
 	{
+		// TODO , see usage for '-i' for proper values.
 		return new LimitException(reason);
 	}
 
@@ -65,7 +64,8 @@ public final class ArgumentExceptions
 		// TODO: verify that the actual value from the commandline is used
 		// (finalizers should not have changed the value for example),
 		// think about arity, split with when printing the previous value
-		return new UnhandledRepeatedArgument(unhandledArgument.names() + ", previous value: " + unhandledArgument.parser().describeValue(oldValue));
+		String previousValueDescribed = unhandledArgument.parser().describeValue(oldValue, unhandledArgument);
+		return new UnhandledRepeatedArgument(unhandledArgument.names() + ", previous value: " + previousValueDescribed);
 	}
 
 	@CheckReturnValue
@@ -74,8 +74,14 @@ public final class ArgumentExceptions
 		return new UnhandledRepeatedArgument(reason);
 	}
 
+	@CheckReturnValue
+	static MissingParameterException forMissingParameter(ArgumentSettings argumentRequiringTheParameter, String usedArgumentName)
+	{
+		return new MissingParameterException(argumentRequiringTheParameter, usedArgumentName);
+	}
+
 	@Nonnull
-	static UnexpectedArgumentException forUnexpectedArgument(@Nonnull final ListIterator<String> arguments)
+	static UnexpectedArgumentException forUnexpectedArgument(@Nonnull final Arguments arguments)
 	{
 		String unexpectedArgument = arguments.previous();
 		String previousArgument = null;
@@ -102,7 +108,32 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage()
 		{
-			return "'" + invalidValue + "'" + explanation.description();
+			return "'" + invalidValue + "' " + explanation.description();
+		}
+
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static final class MissingParameterException extends ArgumentException
+	{
+		private final String usedArgumentName;
+		private final ArgumentSettings argumentRequiringTheParameter;
+
+		private MissingParameterException(ArgumentSettings argumentRequiringTheParameter, final String usedArgumentName)
+		{
+			super(MISSING_PARAMETER);
+			this.usedArgumentName = usedArgumentName;
+			this.argumentRequiringTheParameter = argumentRequiringTheParameter;
+		}
+
+		@Override
+		public String getMessage()
+		{
+			String parameterDescription = argumentRequiringTheParameter.metaDescriptionInRightColumn();
+			return "Missing " + parameterDescription + " parameter for '" + usedArgumentName + "'.";
 		}
 
 		/**
@@ -124,7 +155,7 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage()
 		{
-			return "Missing required arguments: " + transform(missingArguments, functionFor(argumentDescriber()));
+			return "Missing required arguments: " + transform(missingArguments, asFunction(argumentDescriber()));
 		}
 
 		/**
@@ -248,7 +279,7 @@ public final class ArgumentExceptions
 		UNHANDLED_PARAMETER,
 
 		/**
-		 * Thrown when {@link Argument#required()} has been specified but the
+		 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
 		 * argument wasn't found in the input arguments
 		 */
 		MISSING_REQUIRED_PARAMETER,
