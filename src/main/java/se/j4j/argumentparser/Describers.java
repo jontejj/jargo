@@ -31,7 +31,7 @@ public final class Describers
 	}
 
 	/**
-	 * Describes {@link File}s by {@link File#getAbsolutePath()} instead of {@link File#getPath()}
+	 * Describes {@link File}s with {@link File#getAbsolutePath()} instead of {@link File#getPath()}
 	 * as {@link File#toString()} does.
 	 */
 	public static Describer<File> fileDescriber()
