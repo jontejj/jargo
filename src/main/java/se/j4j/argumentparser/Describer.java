@@ -2,6 +2,7 @@ package se.j4j.argumentparser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Describes values of the type <code>T</code>.
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
  * 
  * @param <T> the type to describe
  */
+@Immutable
 public interface Describer<T>
 {
 	/**
