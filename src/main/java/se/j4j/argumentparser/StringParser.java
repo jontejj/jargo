@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-// TODO: make this follow the visitor pattern
 /**
  * <pre>
  * Parses {@link String}s into values of the type <code>T</code>.

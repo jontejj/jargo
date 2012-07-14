@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
  * 
  * @param <T> the type to provide
  */
+// TODO: replace with Guava's Supplier? Or remove defaultValueProvider feature?
 public interface Provider<T>
 {
 	@Nullable

@@ -8,7 +8,6 @@ import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.CommandLineParser.forAnyArguments;
 import static se.j4j.argumentparser.CommandLineParser.forArguments;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
@@ -118,7 +117,6 @@ public class TestCommandLineParser
 			// exception message
 			assertThat(expected.getMessageAndUsage("MissingParameterTest")).isEqualTo(expected("missingParameter"));
 			assertThat(expected.code()).isEqualTo(MISSING_PARAMETER);
-			assertThat(expected.errorneousArgument()).isEqualTo(numbers);
 		}
 	}
 
@@ -161,7 +159,7 @@ public class TestCommandLineParser
 		assertThat(integerArgument().toString()).contains("<integer>: -2147483648 to 2147483647");
 
 		CommandLineParser parser = CommandLineParser.forArguments();
-		assertThat(parser.toString()).contains("<main class>");
+		assertThat(parser.toString()).contains("CommandLineParser#toString");
 
 		assertThat(parser.parse().toString()).isEqualTo("{}");
 	}
@@ -208,7 +206,7 @@ public class TestCommandLineParser
 
 		assertThat(parsedArguments.hashCode()).isEqualTo(parsedArgumentsTwo.hashCode());
 
-		assertThat(forAnyArguments().parse()).isEqualTo(forArguments().parse());
+		assertThat(forArguments().parse()).isEqualTo(forArguments().parse());
 	}
 
 	/**

@@ -27,7 +27,7 @@ import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
 import se.j4j.argumentparser.CommandLineParser.Arguments;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.KeyValueParser;
-import se.j4j.argumentparser.commands.InitCommand;
+import se.j4j.argumentparser.commands.Build;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -223,7 +223,7 @@ public class TestPropertyMap
 	{
 		// In all honesty, this is for code coverage:)
 		Argument<String> badArgument = stringArgument().build();
-		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(new InitCommand(), stringParser());
+		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(new Build(), stringParser());
 
 		Arguments arguments = Arguments.forSingleArgument("-Nfoo=bar");
 		Map<String, String> parsedResult = parser.parse(arguments, null, badArgument);
