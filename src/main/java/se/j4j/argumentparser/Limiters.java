@@ -9,6 +9,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
@@ -71,6 +72,27 @@ public final class Limiters
 	public static Limiter<File> existingFiles()
 	{
 		return ExistingFile.INSTANCE;
+	}
+
+	/**
+	 * <pre>
+	 * Exposes a {@link Limiter} as a Guava {@link Predicate}.
+	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
+	 * 
+	 * @param limiter the limiter to use as the {@link Predicate}
+	 * @return a {@link Predicate} that filters out any values not within the limits of the given <code>limiter</code>
+	 * </pre>
+	 */
+	@Beta
+	public static <T> Predicate<T> asPredicate(final Limiter<T> limiter)
+	{
+		return new Predicate<T>(){
+			@Override
+			public boolean apply(T input)
+			{
+				return limiter.withinLimits(input) == Limit.OK;
+			}
+		};
 	}
 
 	// TODO: add regex limiter (maybe to ArgumentBuilder#limitWith instead, as a pre-limiter?)
