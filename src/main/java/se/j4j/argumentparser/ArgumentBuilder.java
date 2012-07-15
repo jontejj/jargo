@@ -75,7 +75,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
-	// TODO: introduce NoSupplier Supplier? instead of null...
 	@Nullable private Supplier<T> defaultValue = null;
 
 	@Nonnull private Finalizer<T> finalizer = Finalizers.noFinalizer();
@@ -392,9 +391,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Makes this argument handle properties like arguments:
-	 * -Dproperty.name=value
-	 * where "-D" is the string supplied to {@link #names(String...)}, "value" is decoded by the previously set {@link StringParser}.
-	 * "property.name" is the key in the resulting {@link Map}
+	 * -Dproperty_name=value
+	 * where "-D" is the string supplied to {@link #names(String...)},
+	 * "value" is decoded by the previously set {@link StringParser}.
+	 * "property_name" is the key in the resulting {@link Map}
 	 * </pre>
 	 * 
 	 * @return this builder wrapped in a more specific builder
@@ -408,8 +408,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Makes this argument handle properties like arguments:
-	 * -Dproperty.name=value
-	 * where "-D" is the string supplied to {@link #names(String...)}, key is decoded by <code>keyParser</code> and value is decoded by the {@link StringParser} previously passed to the constructor.
+	 * -Dproperty_name=value
+	 * where "-D" is one of the strings supplied to {@link #names(String...)},
+	 * "property_name" is decoded by <code>keyParser</code> and
+	 * "value" is decoded by the {@link StringParser} previously passed to the constructor.
 	 * 
 	 * For example:
 	 * <code>

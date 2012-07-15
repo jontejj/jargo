@@ -387,6 +387,8 @@ public final class StringParsers
 		private EnumParser(final Class<E> enumToHandle)
 		{
 			enumType = enumToHandle;
+			// TODO: As this check causes the enum to load, consider making it possible to opt out
+			// of it
 			if(enumType.getEnumConstants().length == 0)
 				throw new IllegalArgumentException(enumType.getSimpleName() + " has no possible values defined");
 		}
@@ -706,6 +708,9 @@ public final class StringParsers
 		}
 	}
 
+	/**
+	 * Base class for {@link StringParser}s that uses a sub parser to parse element values
+	 */
 	private static abstract class ListParser<T> extends InternalStringParser<List<T>>
 	{
 		protected final InternalStringParser<T> parser;
@@ -740,6 +745,9 @@ public final class StringParsers
 		}
 	}
 
+	/**
+	 * Implements {@link ArgumentBuilder#arity(int)}
+	 */
 	static final class FixedArityParser<T> extends ListParser<T>
 	{
 		private final int arity;
@@ -753,7 +761,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final Arguments arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
 		{
-			List<T> parsedArguments = new ArrayList<T>(arity);
+			List<T> parsedArguments = newArrayListWithCapacity(arity);
 			for(int i = 0; i < arity; i++)
 			{
 				// TODO: should this wrap the exception when there's missing arguments?
@@ -784,6 +792,9 @@ public final class StringParsers
 		}
 	}
 
+	/**
+	 * Implements {@link ArgumentBuilder#variableArity()}
+	 */
 	static final class VariableArityParser<T> extends ListParser<T>
 	{
 		VariableArityParser(final InternalStringParser<T> parser)
@@ -841,7 +852,8 @@ public final class StringParsers
 	}
 
 	/**
-	 * Implements {@link ArgumentBuilder#asPropertyMap()}.
+	 * Implements {@link ArgumentBuilder#asPropertyMap()} &
+	 * {@link ArgumentBuilder#asKeyValuesWithKeyParser(StringParser)}.
 	 * 
 	 * @param <K> the type of key in the resulting map
 	 * @param <V> the type of values in the resulting map
@@ -896,11 +908,13 @@ public final class StringParsers
 					K parsedKey = keyParser.parse(key);
 
 					// Remove "-Dkey=" from "-Dkey=value"
-					String value = keyValue.substring(keyEndIndex + 1);
+					String value = keyValue.substring(keyEndIndex + separator.length());
 					// Hide what we just did to the parser that handles the "value"
 					arguments.setNextArgumentTo(value);
 
 					V oldValue = map.get(key);
+					// TODO: what if null is an actual value then unallowed repitions won't be
+					// detected
 					if(oldValue != null && !argumentSettings.isAllowedToRepeat())
 						// TODO: the last occurrence wasn't necessarily propertyIdentifier it could
 						// be any propertyIdentifiers

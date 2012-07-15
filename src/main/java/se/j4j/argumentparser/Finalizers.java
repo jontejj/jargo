@@ -46,6 +46,9 @@ public final class Finalizers
 		return new CompoundFinalizer<T>(ImmutableList.of(first, second));
 	}
 
+	/**
+	 * @see #compound(Finalizer, Finalizer)
+	 */
 	@Nonnull
 	public static <T> Finalizer<T> compound(@Nonnull Iterable<? extends Finalizer<T>> finalizers)
 	{

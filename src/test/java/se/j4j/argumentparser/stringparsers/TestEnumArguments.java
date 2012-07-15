@@ -61,6 +61,26 @@ public class TestEnumArguments
 		assertThat(usageText).contains("Default: null");
 	}
 
+	public enum ShouldNotInitialize
+	{
+		VALUE;
+
+		static
+		{
+			staticEnumCodeHaveBeenRun = true;
+		};
+	}
+
+	static boolean staticEnumCodeHaveBeenRun = false;
+
+	@Test
+	public void testThatEnumIsNotInitializedUntilParse()
+	{
+		enumArgument(ShouldNotInitialize.class, "-UselessParameter");
+		// TODO: how should this be solved?
+		// assertThat(staticEnumCodeHaveBeenRun).isFalse();
+	}
+
 	@Test
 	public void testInvalidEnumArgument() throws ArgumentException
 	{

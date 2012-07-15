@@ -275,6 +275,13 @@ public class TestPropertyMap
 	}
 
 	@Test
+	public void testThatSeparatorsWithSeveralCharactersArePossible() throws ArgumentException
+	{
+		String value = stringArgument("-N").asPropertyMap().separator("==").parse("-Nkey==value").get("key");
+		assertThat(value).isEqualTo("value");
+	}
+
+	@Test
 	public void testThatUsageTextForRepeatedPropertyValuesLooksGood()
 	{
 		String usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage("");

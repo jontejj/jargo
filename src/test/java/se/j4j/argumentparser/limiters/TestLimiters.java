@@ -1,15 +1,19 @@
 package se.j4j.argumentparser.limiters;
 
+import static com.google.common.collect.Collections2.filter;
+import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
+import static se.j4j.argumentparser.Limiters.asPredicate;
 import static se.j4j.argumentparser.Limiters.existingFiles;
 import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.fest.assertions.Fail;
 import org.junit.Test;
@@ -160,6 +164,14 @@ public class TestLimiters
 		integerArgument("-n").limitTo(Limiters.compound(ImmutableList.of(profiler))).variableArity().parse("-n", "1", "2");
 
 		assertThat(profiler.limitationsMade).isEqualTo(2);
+	}
+
+	@Test
+	public void testThatLimitersCanBeUsedAsPredicates()
+	{
+		Collection<Integer> filteredNumbers = filter(asList(10, 20, 30), asPredicate(range(15, 60)));
+		// FilteredCollection in Guava doesn't implement equals
+		assertThat(ImmutableList.copyOf(filteredNumbers)).isEqualTo(asList(20, 30));
 	}
 
 	@Test
