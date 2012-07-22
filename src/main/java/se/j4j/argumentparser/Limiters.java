@@ -1,5 +1,7 @@
 package se.j4j.argumentparser;
 
+import static se.j4j.argumentparser.Describers.fileDescriber;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -180,7 +182,7 @@ public final class Limiters
 			@Override
 			public String description()
 			{
-				return file.getAbsolutePath() + " doesn't exist as a file";
+				return fileDescriber().describe(file) + " doesn't exist as a file";
 			}
 		}
 	}
