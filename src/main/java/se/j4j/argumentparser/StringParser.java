@@ -37,7 +37,7 @@ public interface StringParser<T>
 	String descriptionOfValidValues();
 
 	/**
-	 * If you can provide a default value do so, if not, return null
+	 * Used when the {@link Argument} this parser is connected to wasn't given
 	 */
 	@Nullable
 	T defaultValue();
@@ -46,8 +46,7 @@ public interface StringParser<T>
 	 * The meta description is the text displayed surrounded by &lt; and &gt;
 	 * 
 	 * @return a meta description that very briefly explains what value this parser expects
-	 *         may return null if no description is needed
 	 */
-	@Nullable
+	@Nonnull
 	String metaDescription();
 }

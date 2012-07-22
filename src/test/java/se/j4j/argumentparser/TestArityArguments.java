@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
@@ -12,8 +13,9 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
-import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestArityArguments
 {
@@ -23,6 +25,20 @@ public class TestArityArguments
 	public void testThatArityAndSplitWithIncompabilityIsEnforced()
 	{
 		integerArgument().arity(2).splitWith(",");
+	}
+
+	@Test
+	public void testThatArityOfOneIsForbidden()
+	{
+		try
+		{
+			integerArgument().arity(1);
+			fail("Arity should require at least 2 parameters");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Arity requires at least 2 parameters (got 1)");
+		}
 	}
 
 	@Test
@@ -73,8 +89,17 @@ public class TestArityArguments
 	@Test
 	public void testThatNrOfRemainingArgumentsGivesTheCorrectCapacity()
 	{
-		Arguments args = Arguments.forSingleArgument("foo");
+		ArgumentIterator args = ArgumentIterator.forSingleArgument("foo");
 		assertThat(args.nrOfRemainingArguments()).isEqualTo(1);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	public void testThatTwoUnnamedVariableArityArgumentsIsIllegal()
+	{
+		Argument<List<Integer>> numbers = integerArgument().variableArity().build();
+		Argument<List<String>> strings = stringArgument().variableArity().build();
+
+		CommandLineParser.forArguments(numbers, strings);
+	}
 }

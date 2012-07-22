@@ -1,6 +1,8 @@
 package se.j4j.argumentparser;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
@@ -50,6 +52,11 @@ public final class Describers
 	static Describer<Argument<?>> argumentDescriber()
 	{
 		return ArgumentDescriber.INSTANCE;
+	}
+
+	static <T> Describer<List<T>> forListValues(Describer<T> valueDescriber)
+	{
+		return new ListDescriber<T>(valueDescriber);
 	}
 
 	/**
@@ -133,6 +140,33 @@ public final class Describers
 		{
 			// TODO: handle indexed arguments that have no names
 			return argument.names().get(0);
+		}
+	}
+
+	private static final class ListDescriber<T> implements Describer<List<T>>
+	{
+		private final Describer<T> valueDescriber;
+
+		ListDescriber(Describer<T> valueDescriber)
+		{
+			this.valueDescriber = valueDescriber;
+		}
+
+		@Override
+		public String describe(List<T> value)
+		{
+			if(value.isEmpty())
+				return "Empty list";
+
+			StringBuilder sb = new StringBuilder(value.size() * 10);
+			Iterator<T> values = value.iterator();
+			sb.append('[').append(valueDescriber.describe(values.next()));
+			while(values.hasNext())
+			{
+				sb.append(", ").append(valueDescriber.describe(values.next()));
+			}
+			sb.append(']');
+			return sb.toString();
 		}
 	}
 }

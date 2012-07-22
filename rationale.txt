@@ -1,3 +1,5 @@
+A tool to ease the handling of program arguments.
+
 1)
 Because typesafety and readability matters
 

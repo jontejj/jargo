@@ -3,7 +3,6 @@ package se.j4j.argumentparser;
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.MISSING_PARAMETER;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
@@ -52,7 +51,7 @@ public class TestCommandLineParser
 	 * An example of how to create an unreadable command line invocation:
 	 * java program true 8090 Hello
 	 * Note that the order of the arguments matter and who knows what true
-	 * means? Please don't overuse this feature:)
+	 * means? Please don't overuse this feature :)
 	 * </pre>
 	 */
 	@Test
@@ -116,7 +115,6 @@ public class TestCommandLineParser
 			// As -n was given on the command line that is the one that should appear in the
 			// exception message
 			assertThat(expected.getMessageAndUsage("MissingParameterTest")).isEqualTo(expected("missingParameter"));
-			assertThat(expected.code()).isEqualTo(MISSING_PARAMETER);
 		}
 	}
 
@@ -151,6 +149,19 @@ public class TestCommandLineParser
 		Integer number = integerArgument("-n").defaultValue(null).parse();
 
 		assertThat(number).isNull();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "Checks enforcement of the annotation")
+	public void testNullMetaDescription()
+	{
+		integerArgument("-n").metaDescription(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testEmptyMetaDescription()
+	{
+		integerArgument("-n").metaDescription("");
 	}
 
 	@Test

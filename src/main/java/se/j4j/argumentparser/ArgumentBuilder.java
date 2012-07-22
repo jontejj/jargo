@@ -1,6 +1,10 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static java.util.Collections.emptyList;
 import static se.j4j.argumentparser.Describers.withStaticString;
 import static se.j4j.argumentparser.Descriptions.EMPTY_STRING;
@@ -34,9 +38,10 @@ import se.j4j.argumentparser.internal.NumberType;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * <pre>
@@ -60,32 +65,32 @@ import com.google.common.collect.Ranges;
 @NotThreadSafe
 public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T>, T>
 {
+	// ArgumentSetting variables, think about #copy() when adding new ones
 	@Nonnull private List<String> names = emptyList();
-
-	@Nullable private Describer<T> defaulValueDescriber = null;
 	@Nonnull private Description description = EMPTY_STRING;
 	private boolean required = false;
 	@Nullable private String separator = null;
 	private boolean ignoreCase = false;
-
 	private boolean isPropertyMap = false;
 	private boolean isAllowedToRepeat = false;
 	@Nullable private String metaDescription = null;
 	private boolean hideFromUsage = false;
 
-	@Nullable private final InternalStringParser<T> internalStringParser;
-
-	@Nullable private Supplier<T> defaultValue = null;
-
+	// Members that uses the T type, think about
+	// ListArgumentBuilder#copyAsListBuilder() when adding new ones
+	@Nullable private Supplier<T> defaultValueSupplier = null;
+	@Nullable private Describer<T> defaultValueDescriber = null;
 	@Nonnull private Finalizer<T> finalizer = Finalizers.noFinalizer();
 	@Nonnull private Limiter<T> limiter = Limiters.noLimits();
+
+	@Nullable private final InternalStringParser<T> internalStringParser;
 
 	protected ArgumentBuilder()
 	{
 		this.internalStringParser = null;
 	}
 
-	ArgumentBuilder(@Nullable final InternalStringParser<T> stringParser)
+	ArgumentBuilder(@Nonnull final InternalStringParser<T> stringParser)
 	{
 		this.internalStringParser = stringParser;
 	}
@@ -127,12 +132,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *             argument
 	 */
 	@Nullable
-	public T parse(@Nonnull String ... actualArguments) throws ArgumentException
+	public final T parse(@Nonnull String ... actualArguments) throws ArgumentException
 	{
 		return build().parse(actualArguments);
 	}
 
-	public String usage(@Nonnull String programName)
+	public final String usage(@Nonnull String programName)
 	{
 		return CommandLineParser.forArguments(build()).usage(programName);
 	}
@@ -151,11 +156,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalStateException if the parser have been configured wrongly
 	 * </pre>
 	 */
-	@Nullable
+	// @Nonnull TODO: this causes a warning that should be ignored but for some reason can't
 	protected abstract StringParser<T> parser();
 
 	@Nonnull
-	InternalStringParser<T> internalParser()
+	final InternalStringParser<T> internalParser()
 	{
 		StringParser<T> parser = parser();
 		if(parser != null)
@@ -185,10 +190,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *            <li>"-o", "--option-name" to give the user both choices</li>
 	 *            <li>zero elements: the argument must be given at the same position on the command
 	 *            line as it is given to {@link CommandLineParser#forArguments(Argument...)} (not
-	 *            counting named arguments) which is discouraged because it makes your program
-	 *            arguments harder to read and makes your program less maintainable and harder to
-	 *            keep backwards compatible with old scripts as you can't change the order of the
-	 *            arguments without changing those scripts.</li>
+	 *            counting named arguments) which is <b>discouraged</b> because it makes your
+	 *            program arguments harder to read and makes your program less maintainable and
+	 *            harder to keep backwards compatible with old scripts as you can't change the order
+	 *            of the arguments without changing those scripts.</li>
 	 *            </ul>
 	 * @return this builder
 	 */
@@ -255,14 +260,15 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * {@link MissingRequiredArgumentException} if this argument isn't given
 	 * 
 	 * @return this builder
-	 * @throws IllegalStateException if {@link #defaultValue(Object)} has been
+	 * @throws IllegalStateException if {@link #defaultValue(Object)} (or
+	 *             {@link #defaultValueSupplier(Supplier)}) has been
 	 *             called, because these two methods are mutually exclusive
 	 */
 	public SELF_TYPE required()
 	{
-		if(defaultValue != null)
-			throw new IllegalStateException("Having a requried argument defaulting to some value (" + defaultValue.get()
-					+ ") makes no sense. Remove the call to ArgumentBuilder#defaultValue(...) to use a required argument.");
+		if(defaultValueSupplier != null)
+			throw new IllegalStateException("Having a requried argument defaulting to some value (" + defaultValueSupplier.get()
+					+ ") makes no sense. Remove the call to ArgumentBuilder#defaultValueSupplier(...) to use a required argument.");
 
 		required = true;
 		return self();
@@ -288,13 +294,13 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			throw new IllegalStateException("Having a requried argument defaulting to some value(" + value
 					+ ") makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
 
-		defaultValue = Suppliers.ofInstance(value);
+		defaultValueSupplier = Suppliers.ofInstance(value);
 		return self();
 	}
 
 	/**
 	 * <pre>
-	 * Sets a provider that can provide default values in the absence of this argument
+	 * Sets a supplier that can supply default values in the absence of this argument
 	 * 
 	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
 	 * 
@@ -305,12 +311,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * because these two methods are mutually exclusive
 	 */
 	@Beta
-	public SELF_TYPE defaultValueSupplier(@Nonnull final Supplier<T> defaultValueSupplier)
+	public SELF_TYPE defaultValueSupplier(@Nonnull final Supplier<T> aDefaultValueSupplier)
 	{
 		if(required)
-			throw new IllegalStateException("Having a requried argument and a default value provider makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
+			throw new IllegalStateException("Having a requried argument and a default value supplier makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
 
-		defaultValue = defaultValueSupplier;
+		defaultValueSupplier = aDefaultValueSupplier;
 		return self();
 	}
 
@@ -323,7 +329,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE defaultValueDescription(@Nonnull final String aDescription)
 	{
-		this.defaulValueDescriber = withStaticString(aDescription);
+		this.defaultValueDescriber = withStaticString(aDescription);
 		return self();
 	}
 
@@ -336,7 +342,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE defaultValueDescription(@Nonnull final Describer<T> describer)
 	{
-		this.defaulValueDescriber = describer;
+		this.defaultValueDescriber = describer;
 		return self();
 	}
 
@@ -352,14 +358,15 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * ?
 	 * </pre>
 	 * 
+	 * <b>Note:</b> empty meta descriptions aren't allowed
+	 * 
 	 * @param aMetaDescription "track nr" in the above example
 	 * @return this builder
+	 * @throws IllegalArgumentException if aMetaDescription is empty or null
 	 */
 	public SELF_TYPE metaDescription(@Nonnull final String aMetaDescription)
 	{
-		// TODO: if this is called before asPropertyMap is called, the value (in key=value) should
-		// get this description, or maybe not...
-		// TODO: should this really surround with markers?
+		checkArgument(!isNullOrEmpty(aMetaDescription), "a meta description can't be null/empty");
 		this.metaDescription = surroundWithMarkers(aMetaDescription);
 		return self();
 	}
@@ -383,7 +390,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE separator(@Nonnull final String aSeparator)
 	{
-		// TODO: test empty separator
 		separator = aSeparator;
 		return self();
 	}
@@ -400,8 +406,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @return this builder wrapped in a more specific builder
 	 */
 	@CheckReturnValue
-	public MapArgumentBuilder<String, T> asPropertyMap()
+	public final MapArgumentBuilder<String, T> asPropertyMap()
 	{
+		checkState(defaultValueSupplier == null, "The default value needs to be set after the asPropertyMap invocation.");
+		checkState(defaultValueDescriber == null, "The default value describer needs to be set after the asPropertyMap invocation.");
 		return new MapArgumentBuilder<String, T>(this, stringParser());
 	}
 
@@ -420,13 +428,18 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 						.parse("-N1=5", "-N2=10");
 	 * assertThat(numberMap.get(1)).isEqualTo(5);
 	 * </code>
+	 * 
+	 * For this to work correctly it's paramount that <code>Key</code> implements a
+	 * proper {@link Object#hashCode()} because it's going to be used a key in a {@link Map}.
 	 * </pre>
 	 * 
 	 * @return this builder wrapped in a more specific builder
 	 */
 	@CheckReturnValue
-	public <Key extends Comparable<Key>> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(StringParser<Key> keyParser)
+	public final <Key extends Comparable<Key>> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(@Nonnull StringParser<Key> keyParser)
 	{
+		checkState(defaultValueSupplier == null, "The default value needs to be set after the asKeyValuesWithKeyParser invocation.");
+		checkState(defaultValueDescriber == null, "The default value describer needs to be set after the asKeyValuesWithKeyParser invocation.");
 		return new MapArgumentBuilder<Key, T>(this, keyParser);
 	}
 
@@ -494,7 +507,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
 	{
-		// TODO: verify numberOfParameters > 1
+		checkArgument(numberOfParameters > 1, "Arity requires at least 2 parameters (got %s)", numberOfParameters);
+
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
@@ -610,7 +624,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Copies all values from the given copy into this one, except for:
-	 * {@link ArgumentBuilder#internalStringParser}, {@link ArgumentBuilder#defaultValueProvider} & {@link ArgumentBuilder#defaulValueDescriber}
+	 * {@link ArgumentBuilder#parser()}, {@link ArgumentBuilder#defaultValueSupplier} & {@link ArgumentBuilder#defaulValueDescriber}
 	 * as they may change between different builders
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;List&lt;Boolean&gt;&gt; are not compatible)
 	 * @param copy the ArgumentBuilder to copy from
@@ -647,7 +661,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nonnull
 	List<String> names(){ return names; }
 
-	@Nullable Describer<T> defaultValueDescriber(){ return defaulValueDescriber; }
+	@Nullable Describer<T> defaultValueDescriber(){ return defaultValueDescriber; }
 
 	@Nonnull Description description(){ return description; }
 
@@ -664,7 +678,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nullable String metaDescription(){ return metaDescription; }
 	boolean isHiddenFromUsage(){ return hideFromUsage; }
 
-	@Nullable Supplier<T> defaultValueSupplier(){ return defaultValue; }
+	@Nullable Supplier<T> defaultValueSupplier(){ return defaultValueSupplier; }
 
 	@Nonnull Finalizer<T> finalizer(){ return finalizer; }
 	@Nonnull Limiter<T> limiter(){ return limiter; }
@@ -766,11 +780,13 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 		}
 
-		InternalArgumentBuilder(InternalStringParser<T> parser)
+		InternalArgumentBuilder(@Nonnull InternalStringParser<T> parser)
 		{
 			super(parser);
 		}
 
+		@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION",
+				justification = "the API doesn't allow this to return null but internally it's ok, the exception that proves the rule")
 		@Override
 		protected StringParser<T> parser()
 		{
@@ -785,41 +801,47 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			super(parser);
 		}
 
-		void copyAsListBuilder(ArgumentBuilder<?, T> builder)
+		void copyAsListBuilder(ArgumentBuilder<?, T> builder, int nrOfElementsInDefaultValue)
 		{
-			// TODO: what about defaultValue?
-			// TODO: this doesn't copy the defaultValueDescriber
 			finalizeWith(Finalizers.forListValues(builder.finalizer));
 			finalizeWith(Finalizers.<T>unmodifiableListFinalizer());
 
 			limitTo(Limiters.forListValues(builder.limiter));
+			if(builder.defaultValueSupplier != null)
+			{
+				defaultValueSupplier(new ListSupplier<T>(builder.defaultValueSupplier, nrOfElementsInDefaultValue));
+			}
+			if(builder.defaultValueDescriber != null)
+			{
+				defaultValueDescription(Describers.forListValues(builder.defaultValueDescriber));
+			}
 		};
 	}
 
+	@NotThreadSafe
 	public static final class ArityArgumentBuilder<T> extends ListArgumentBuilder<ArityArgumentBuilder<T>, T>
 	{
 		private ArityArgumentBuilder(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder, final int arity)
 		{
 			super(new FixedArityParser<T>(builder.internalParser(), arity));
-			init(builder);
+			init(builder, arity);
 		}
 
 		private ArityArgumentBuilder(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder)
 		{
 			super(new VariableArityParser<T>(builder.internalParser()));
-			init(builder);
+			init(builder, 1);
 		}
 
-		private void init(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder)
+		private void init(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder, int nrOfElementsInDefaultValue)
 		{
 			copy(builder);
-			copyAsListBuilder(builder);
-
-			// TODO: Throw if defaultValue has been set.
+			copyAsListBuilder(builder, nrOfElementsInDefaultValue);
 		}
 
 		/**
-		 * <pre>
+		 * @Deprecated
+		 *             <pre>
 		 * This doesn't work with {@link ArgumentBuilder#arity(int)} or {@link ArgumentBuilder#variableArity()}
 		 * I.e --foo 1,2 3,4
 		 * is currently unsupported
@@ -833,22 +855,19 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
+	@NotThreadSafe
 	public static final class RepeatedArgumentBuilder<T> extends ListArgumentBuilder<RepeatedArgumentBuilder<T>, T>
 	{
 		private RepeatedArgumentBuilder(@Nonnull final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder)
 		{
 			super(new RepeatedArgumentParser<T>(builder.internalParser()));
 			copy(builder);
-			copyAsListBuilder(builder);
-			if(builder.defaultValue != null)
-			{
-				this.defaultValueSupplier(new OneElementedListSupplier<T>(builder.defaultValue));
-			}
+			copyAsListBuilder(builder, 1);
 			allowRepeatedArguments();
 		}
 
 		/**
-		 * This method should be called before repeated()
+		 * @Deprecated this method should be called before {@link #repeated()}
 		 */
 		@Deprecated
 		@Override
@@ -858,7 +877,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 
 		/**
-		 * This method should be called before repeated()
+		 * @Deprecated this method should be called before {@link #repeated()}
 		 */
 		@Override
 		@Deprecated
@@ -868,7 +887,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 
 		/**
-		 * Call {@link #splitWith(String)} before {@link #repeated()}
+		 * @Deprecated call {@link #splitWith(String)} before {@link #repeated()}
 		 */
 		@Deprecated
 		@Override
@@ -878,6 +897,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
+	@NotThreadSafe
 	public static final class OptionArgumentBuilder extends InternalArgumentBuilder<OptionArgumentBuilder, Boolean>
 	{
 		OptionArgumentBuilder()
@@ -886,13 +906,13 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 
 		@Override
-		protected InternalStringParser<Boolean> internalParser()
+		protected StringParser<Boolean> parser()
 		{
 			return optionParser(defaultValueSupplier().get());
 		}
 
-		// TODO: as these are starting to get out of hand, maybe introduce a
-		// basic builder without any advanced stuff
+		// TODO: as these are starting to get out of hand, maybe introduce
+		// BasicArgumentBuilder without any advanced stuff
 		/**
 		 * @deprecated an optional flag can't be required
 		 */
@@ -945,28 +965,31 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
+	@NotThreadSafe
 	public static final class MapArgumentBuilder<K extends Comparable<K>, V> extends InternalArgumentBuilder<MapArgumentBuilder<K, V>, Map<K, V>>
 	{
 		private MapArgumentBuilder(@Nonnull final ArgumentBuilder<?, V> builder, StringParser<K> keyParser)
 		{
-			super(new KeyValueParser<K, V>(builder.internalParser(), keyParser));
+			super(new KeyValueParser<K, V>(builder.internalParser(), bridgedParser(keyParser)));
 			copy(builder);
 
 			if(names().isEmpty())
 				throw new IllegalStateException("No leading identifier (otherwise called names), for example -D, specified for property map. Call names(...) to provide it.");
+
+			if(separator() != null)
+			{
+				checkState(!separator().isEmpty(), "In a key=value pair a separator of at least one character is required");
+			}
+			else
+			{
+				separator("=");
+			}
 
 			limitTo(Limiters.<K, V>forMapValues(builder.limiter));
 
 			finalizeWith(Finalizers.<K, V>forMapValues(builder.finalizer));
 			finalizeWith(Finalizers.<K, V>unmodifiableMapFinalizer());
 
-			// TODO: what about if the defaultValue is set? throw IllegalStateException?
-
-			if(this.separator() == null)
-			{
-				// Maybe use assignment instead?
-				this.separator(KeyValueParser.DEFAULT_SEPARATOR);
-			}
 			setAsPropertyMap();
 		}
 
@@ -994,17 +1017,14 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
+	@NotThreadSafe
 	public static final class SplitterArgumentBuilder<T> extends ListArgumentBuilder<SplitterArgumentBuilder<T>, T>
 	{
 		private SplitterArgumentBuilder(@Nonnull final ArgumentBuilder<?, T> builder, @Nonnull final String valueSeparator)
 		{
 			super(new StringSplitterParser<T>(valueSeparator, builder.internalParser()));
 			copy(builder);
-			copyAsListBuilder(builder);
-			if(builder.defaultValue != null)
-			{
-				defaultValueSupplier(new OneElementedListSupplier<T>(builder.defaultValue));
-			}
+			copyAsListBuilder(builder, 1);
 		}
 
 		/**
@@ -1055,20 +1075,26 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
-	private static final class OneElementedListSupplier<T> implements Supplier<List<T>>
+	private static final class ListSupplier<T> implements Supplier<List<T>>
 	{
 		private final Supplier<T> singleElementSupplier;
+		private final int elementsToSupply;
 
-		OneElementedListSupplier(Supplier<T> elementSupplier)
+		ListSupplier(Supplier<T> elementSupplier, final int elementsToSupply)
 		{
-			singleElementSupplier = elementSupplier;
+			this.singleElementSupplier = elementSupplier;
+			this.elementsToSupply = elementsToSupply;
 		}
 
 		@Override
 		public List<T> get()
 		{
-			// TODO: memoize result?
-			return ImmutableList.of(singleElementSupplier.get());
+			List<T> result = newArrayListWithCapacity(elementsToSupply);
+			for(int i = 0; i < elementsToSupply; i++)
+			{
+				result.add(singleElementSupplier.get());
+			}
+			return result;
 		}
 
 	}

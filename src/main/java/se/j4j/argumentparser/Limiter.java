@@ -3,6 +3,7 @@ package se.j4j.argumentparser;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * <pre>
@@ -17,6 +18,7 @@ import javax.annotation.Nullable;
  * @param <T> the type to limit
  * </pre>
  */
+@Immutable
 public interface Limiter<T>
 {
 	/**
@@ -32,12 +34,13 @@ public interface Limiter<T>
 	@Nonnull
 	Limit withinLimits(@Nullable T value);
 
-	// TODO: print this pro active in usage somehow:
+	// TODO: print the acceptable values in the usage somehow:
 	// Error message: "'" + valueDescriber.describe(value) / valueFromCommandLine + "'" is not " +
 	// limiter.validValuesDescription();
 	//
 	// boolean isWithinLimits(T value)
 	// String validValuesDescription();
-	// TODO: or remove Limiter all together and refer to ForwardingStringParser instead,
+	//
+	// Or remove Limiter all together and refer to ForwardingStringParser instead,
 	// Finalizer and Callback could also be replaced by ForwardingStringParser
 }

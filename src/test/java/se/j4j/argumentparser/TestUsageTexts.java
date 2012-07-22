@@ -3,77 +3,23 @@ package se.j4j.argumentparser;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
-import static se.j4j.argumentparser.ArgumentFactory.bigIntegerArgument;
-import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
-import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
-import static se.j4j.argumentparser.ArgumentFactory.charArgument;
-import static se.j4j.argumentparser.ArgumentFactory.doubleArgument;
-import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-import static se.j4j.argumentparser.ArgumentFactory.longArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
-import static se.j4j.argumentparser.ArgumentFactory.shortArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.ArgumentFactory.withParser;
-import static se.j4j.argumentparser.stringparsers.custom.DateTimeParser.dateArgument;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
-import java.io.File;
-import java.math.BigInteger;
-import java.util.List;
-
 import org.fest.assertions.Fail;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.stringparsers.custom.HostPortParser;
 
 /**
  * @formatter:off
  */
 public class TestUsageTexts
 {
-	public static void main(final String ... strings)
-	{
-		// TODO: remove main method
-
-		Argument<Boolean> enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
-
-		Argument<Integer> port = integerArgument("-p", "--listen-port").required().description("The port to start the server on.").build();
-
-		Argument<String> greetingPhrase = stringArgument().required().description("A greeting phrase to greet new connections with").build();
-
-		Argument<Long> longArgument = longArgument("--long").build();
-		Argument<BigInteger> bigIntegerArgument = bigIntegerArgument("--big").build();
-
-		Argument<DateTime> date = dateArgument("--date").build();
-		Argument<Double> doubleArgument = doubleArgument("--double").build();
-
-		Argument<List<Short>> shortArgument = shortArgument("--short").repeated().build();
-
-		Argument<List<Byte>> byteArgument = byteArgument("--byte").arity(3).build();
-
-		Argument<List<File>> fileArgument = fileArgument("--file").variableArity().build();
-
-		Argument<String> stringArgument = stringArgument("--string").build();
-
-		Argument<Character> charArgument = charArgument("--char").build();
-
-		Argument<Boolean> boolArgument = booleanArgument("--bool").build();
-		try
-		{
-			CommandLineParser.forArguments(greetingPhrase, enableLogging, port, longArgument, bigIntegerArgument, date, doubleArgument,
-											shortArgument, byteArgument, fileArgument, stringArgument, charArgument, boolArgument).parse();
-		}
-		catch(ArgumentException e)
-		{
-			System.out.println(e.getUsage("TestUsageTexts"));
-		}
-	}
-
 	@Test
 	public void testUsageWithRequiredArguments()
 	{
@@ -156,14 +102,6 @@ public class TestUsageTexts
 	{
 		String usage = integerArgument().defaultValue(1).repeated().usage("DefaultList");
 		assertThat(usage).contains("Default: [1]");
-	}
-
-	@Test
-	public void testEmptyMetaDescription()
-	{
-		String usage = withParser(new HostPortParser()).metaDescription("").description("port:host").usage("EmptyMeta");
-		// "Valid input" is the place holder for <meta>
-		assertThat(usage).contains("Valid input: port:host");
 	}
 
 	@Test

@@ -10,7 +10,7 @@ import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnhandledRepeatedArgument;
 import static se.j4j.argumentparser.ArgumentExceptions.withDescription;
 import static se.j4j.argumentparser.StringParsers.RadixiableParser.radixiableParser;
-import static se.j4j.argumentparser.internal.Lines.NEWLINE;
+import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.internal.StringsUtil.surroundWithMarkers;
 import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
 
@@ -30,9 +30,8 @@ import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
-import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
-import se.j4j.argumentparser.internal.ListUtil;
 import se.j4j.argumentparser.internal.NumberType;
 
 import com.google.common.annotations.Beta;
@@ -246,7 +245,7 @@ public final class StringParsers
 
 	@CheckReturnValue
 	@Nonnull
-	static InternalStringParser<Boolean> optionParser(final boolean defaultValue)
+	static StringParser<Boolean> optionParser(final boolean defaultValue)
 	{
 		if(defaultValue)
 			return OptionParser.DEFAULT_TRUE;
@@ -451,7 +450,7 @@ public final class StringParsers
 		}
 
 		@Override
-		Boolean parse(Arguments arguments, Boolean previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
+		Boolean parse(ArgumentIterator arguments, Boolean previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
 		{
 			return enabledValue;
 		}
@@ -476,7 +475,7 @@ public final class StringParsers
 		@Override
 		String metaDescription(ArgumentSettings argumentSettings)
 		{
-			return null;
+			return "";
 		}
 	}
 
@@ -610,8 +609,8 @@ public final class StringParsers
 	abstract static class InternalStringParser<T>
 	{
 		/**
-		 * @param arguments the arguments given from the command line where {@link Arguments#next()}
-		 *            points to the parameter
+		 * @param arguments the arguments given from the command line where
+		 *            {@link ArgumentIterator#next()} points to the parameter
 		 *            for a named argument, for an indexed argument it points to the single unnamed
 		 *            argument
 		 * @param previousOccurance the previously parsed value for this
@@ -621,8 +620,8 @@ public final class StringParsers
 		 * @return the parsed value
 		 * @throws ArgumentException if an error occurred while parsing the value
 		 */
-		abstract T parse(@Nonnull final Arguments arguments, @Nullable final T previousOccurance, @Nonnull final ArgumentSettings argumentSettings)
-				throws ArgumentException;
+		abstract T parse(@Nonnull final ArgumentIterator arguments, @Nullable final T previousOccurance,
+				@Nonnull final ArgumentSettings argumentSettings) throws ArgumentException;
 
 		/**
 		 * Describes the values this parser accepts
@@ -647,16 +646,12 @@ public final class StringParsers
 		@Nullable
 		abstract String describeValue(@Nullable T value, ArgumentSettings argumentSettings);
 
+		@Nonnull
 		abstract String metaDescription(ArgumentSettings argumentSettings);
 
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			String meta = surroundWithMarkers(metaDescription(argumentSettings));
-			if(!argumentSettings.isPropertyMap() && !meta.isEmpty())
-			{
-				meta = ' ' + meta;
-			}
-			return meta;
+			return surroundWithMarkers(metaDescription(argumentSettings));
 		}
 
 		String metaDescriptionInRightColumn(ArgumentSettings argumentSettings)
@@ -683,7 +678,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final Arguments arguments, final List<T> oldValue, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings) throws ArgumentException
 		{
 			if(!arguments.hasNext())
 				throw forMissingParameter(argumentSettings, arguments.getCurrentArgumentName());
@@ -693,7 +688,7 @@ public final class StringParsers
 
 			for(String value : splitter.split(values))
 			{
-				Arguments argument = Arguments.forSingleArgument(value);
+				ArgumentIterator argument = ArgumentIterator.forSingleArgument(value);
 				T parsedValue = parser.parse(argument, null, argumentSettings);
 				result.add(parsedValue);
 			}
@@ -704,7 +699,7 @@ public final class StringParsers
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
 			String metaDescriptionForValue = surroundWithMarkers(metaDescription(argumentSettings));
-			return ' ' + metaDescriptionForValue + valueSeparator + metaDescriptionForValue + valueSeparator + "...";
+			return metaDescriptionForValue + valueSeparator + metaDescriptionForValue + valueSeparator + "...";
 		}
 	}
 
@@ -741,7 +736,18 @@ public final class StringParsers
 		@Override
 		String describeValue(List<T> value, ArgumentSettings argumentSettings)
 		{
-			return ListUtil.describeList(value);
+			if(value.isEmpty())
+				return "Empty list";
+
+			StringBuilder sb = new StringBuilder(value.size() * 10);
+			Iterator<T> values = value.iterator();
+			sb.append('[').append(parser.describeValue(values.next(), argumentSettings));
+			while(values.hasNext())
+			{
+				sb.append(", ").append(parser.describeValue(values.next(), argumentSettings));
+			}
+			sb.append(']');
+			return sb.toString();
 		}
 	}
 
@@ -759,7 +765,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final Arguments arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
 		{
 			List<T> parsedArguments = newArrayListWithCapacity(arity);
 			for(int i = 0; i < arity; i++)
@@ -786,9 +792,8 @@ public final class StringParsers
 		@Override
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			// TODO: test null metaDescription
-			String metaDescriptionForValue = ' ' + surroundWithMarkers(metaDescription(argumentSettings));
-			return repeat(metaDescriptionForValue, arity);
+			String metaDescriptionForValue = surroundWithMarkers(metaDescription(argumentSettings));
+			return metaDescriptionForValue + repeat(" " + metaDescriptionForValue, arity - 1);
 		}
 	}
 
@@ -803,7 +808,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final Arguments arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
 		{
 			List<T> parsedArguments = newArrayListWithCapacity(arguments.nrOfRemainingArguments());
 			while(arguments.hasNext())
@@ -817,8 +822,7 @@ public final class StringParsers
 		@Override
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			// TODO: test , also test null metaDescription
-			String metaDescriptionForValue = ' ' + surroundWithMarkers(metaDescription(argumentSettings));
+			String metaDescriptionForValue = surroundWithMarkers(metaDescription(argumentSettings));
 			return metaDescriptionForValue + " ...";
 		}
 	}
@@ -836,7 +840,8 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final Arguments arguments, List<T> previouslyCreatedList, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final ArgumentSettings argumentSettings)
+				throws ArgumentException
 		{
 			T parsedValue = parser.parse(arguments, null, argumentSettings);
 
@@ -861,19 +866,17 @@ public final class StringParsers
 	@VisibleForTesting
 	static final class KeyValueParser<K extends Comparable<K>, V> extends InternalStringParser<Map<K, V>>
 	{
-		static final String DEFAULT_SEPARATOR = "=";
-
 		@Nonnull private final InternalStringParser<V> valueParser;
-		@Nonnull private final StringParser<K> keyParser;
+		@Nonnull private final InternalStringParser<K> keyParser;
 
-		KeyValueParser(@Nonnull final InternalStringParser<V> valueParser, @Nonnull final StringParser<K> keyParser)
+		KeyValueParser(@Nonnull final InternalStringParser<V> valueParser, @Nonnull final InternalStringParser<K> keyParser)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
 		}
 
 		@Override
-		Map<K, V> parse(final Arguments arguments, Map<K, V> previousMap, final ArgumentSettings argumentSettings) throws ArgumentException
+		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final ArgumentSettings argumentSettings) throws ArgumentException
 		{
 			Map<K, V> map = previousMap;
 			if(map == null)
@@ -905,7 +908,8 @@ public final class StringParsers
 						throw forInvalidValue(keyValue, "Missing assignment operator(" + separator + ")");
 
 					String key = keyValue.substring(keyStartIndex, keyEndIndex);
-					K parsedKey = keyParser.parse(key);
+					ArgumentIterator keyArgument = ArgumentIterator.forSingleArgument(key);
+					K parsedKey = keyParser.parse(keyArgument, null, argumentSettings);
 
 					// Remove "-Dkey=" from "-Dkey=value"
 					String value = keyValue.substring(keyEndIndex + separator.length());
@@ -931,9 +935,9 @@ public final class StringParsers
 		@Override
 		public String descriptionOfValidValues(ArgumentSettings argumentSettings)
 		{
-			String keyMeta = '"' + keyParser.metaDescription() + '"';
+			String keyMeta = '"' + keyParser.metaDescription(argumentSettings) + '"';
 			String valueMeta = '"' + valueParser.metaDescription(argumentSettings) + '"';
-			String keyDescription = keyParser.descriptionOfValidValues();
+			String keyDescription = keyParser.descriptionOfValidValues(argumentSettings);
 			String valueDescription = valueParser.descriptionOfValidValues(argumentSettings);
 
 			return "where " + keyMeta + " is " + keyDescription + " and " + valueMeta + " is " + valueDescription;
@@ -967,8 +971,10 @@ public final class StringParsers
 				public String next()
 				{
 					K key = keyIterator.next();
+					String describedKey = keyParser.describeValue(key, argumentSettings);
 					String separator = argumentSettings.separator();
-					return key + separator + values.get(key);
+					String describedValue = valueParser.describeValue(values.get(key), argumentSettings);
+					return describedKey + separator + describedValue;
 				}
 			});
 		}
@@ -976,7 +982,7 @@ public final class StringParsers
 		@Override
 		String metaDescription(ArgumentSettings argumentSettings)
 		{
-			String keyMeta = keyParser.metaDescription();
+			String keyMeta = keyParser.metaDescription(argumentSettings);
 			String separator = argumentSettings.separator();
 			String valueMeta = valueParser.metaDescription(argumentSettings);
 			return keyMeta + separator + valueMeta;

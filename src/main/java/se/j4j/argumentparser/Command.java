@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
@@ -82,7 +82,8 @@ public abstract class Command extends InternalStringParser<String>
 	}
 
 	@Override
-	final String parse(final Arguments arguments, final String previousOccurance, final ArgumentSettings argumentSettings) throws ArgumentException
+	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings)
+			throws ArgumentException
 	{
 		ParsedArguments result = parser().parse(arguments);
 		execute(result);
@@ -95,8 +96,6 @@ public abstract class Command extends InternalStringParser<String>
 	{
 		return commandName();
 	}
-
-	// TODO: provide usage and validValues
 
 	@Override
 	public final String defaultValue()
@@ -119,7 +118,6 @@ public abstract class Command extends InternalStringParser<String>
 	@Override
 	String metaDescription(ArgumentSettings argumentSettings)
 	{
-		// TODO: verify that this looks ok
 		return "";
 	}
 }

@@ -4,11 +4,13 @@ import static java.util.Collections.emptyList;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.command;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
@@ -155,7 +157,11 @@ public class TestCommands
 		}
 	}
 
+	/**
+	 * TODO: fix usage for commands
+	 */
 	@Test
+	@Ignore
 	public void testUsageForCommands()
 	{
 		BuildTarget target = new BuildTarget();
@@ -164,8 +170,7 @@ public class TestCommands
 		Argument<String> commitCommand = command(new CommitCommand(new Repository())).build();
 
 		String usage = CommandLineParser.forArguments(buildCommand, cleanCommand, commitCommand).usage("CommandUsage");
-		// TODO: fix and assert
-		System.out.println(usage);
+		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
 	}
 
 	@Test

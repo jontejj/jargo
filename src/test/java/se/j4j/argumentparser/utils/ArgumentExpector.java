@@ -99,13 +99,13 @@ public final class ArgumentExpector
 		assertThat(arguments.get(expectation.definition)).isEqualTo(expectation.expect);
 	}
 
-	private Argument<?>[] arguments()
+	private List<Argument<?>> arguments()
 	{
 		List<Argument<?>> argumentDefinitions = new ArrayList<Argument<?>>(expectations.size());
 		for(Expectation<?> expectation : expectations)
 		{
 			argumentDefinitions.add(expectation.definition);
 		}
-		return argumentDefinitions.toArray(new Argument<?>[argumentDefinitions.size()]);
+		return argumentDefinitions;
 	}
 }
