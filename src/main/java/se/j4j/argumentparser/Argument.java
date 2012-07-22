@@ -31,7 +31,7 @@ import com.google.common.base.Suppliers;
  * 
  * TODO: add readFromConsole(), should required arguments be handled by this always?
  * 			think about Multiple Occurrences (ask Do you want to enter one more value for [-s] (y/N):
- * 			Can autocomplete be provided?
+ * 			Can auto complete be provided?
  * 			Repeat reading for invalid values
  * 
  * @param <T> the type of values this {@link Argument} is configured to parse
@@ -56,13 +56,7 @@ public final class Argument<T> extends ArgumentSettings
 
 	@Nonnull private final InternalStringParser<T> parser;
 
-	@Nonnull private Supplier<T> defaultValue = new Supplier<T>(){
-		@Override
-		public T get()
-		{
-			return parser.defaultValue();
-		}
-	};
+	@Nonnull private final Supplier<T> defaultValue;
 
 	@Nullable private final Describer<T> defaultValueDescriber;
 
@@ -96,10 +90,6 @@ public final class Argument<T> extends ArgumentSettings
 	Argument(@Nonnull final ArgumentBuilder<?, T> builder)
 	{
 		this.parser = builder.internalParser();
-		if(builder.defaultValueSupplier() != null)
-		{
-			this.defaultValue = builder.defaultValueSupplier();
-		}
 		this.defaultValueDescriber = builder.defaultValueDescriber();
 		this.description = builder.description();
 		this.required = builder.isRequired();
@@ -113,7 +103,20 @@ public final class Argument<T> extends ArgumentSettings
 
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
-
+		if(builder.defaultValueSupplier() != null)
+		{
+			this.defaultValue = builder.defaultValueSupplier();
+		}
+		else
+		{
+			this.defaultValue = new Supplier<T>(){
+				@Override
+				public T get()
+				{
+					return parser.defaultValue();
+				}
+			};
+		}
 		// TODO: verify this, run finalizers before checking limits...
 		// TODO: what if defaultValueProvider is a ListValueProvider/MapValueProvider with a
 		// NonLazyValueProvider as elementProvider?
@@ -206,7 +209,7 @@ public final class Argument<T> extends ArgumentSettings
 	 * @return the default value for this argument, defaults to
 	 *         {@link InternalStringParser#defaultValue()}.
 	 *         Set by {@link ArgumentBuilder#defaultValue(Object)} or
-	 *         {@link ArgumentBuilder#defaultValueProvider(Provider)}
+	 *         {@link ArgumentBuilder#defaultValueSupplier(Supplier)}
 	 */
 	@Nullable
 	T defaultValue()
@@ -244,11 +247,25 @@ public final class Argument<T> extends ArgumentSettings
 	@Nonnull
 	String metaDescriptionInLeftColumn()
 	{
-		// First check if the description has been overridden
-		if(metaDescription != null)
-			return ' ' + metaDescription;
+		String meta = metaDescription;
+		// If the meta description hasn't been overridden we default to the one provided by
+		// the StringParser interface
+		if(meta == null)
+		{
+			meta = parser.metaDescriptionInLeftColumn(this);
+		}
 
-		String meta = parser.metaDescriptionInLeftColumn(this);
+		if(!isPropertyMap())
+		{
+			if(separator == null)
+			{
+				meta = " " + meta;
+			}
+			else
+			{
+				meta = separator + meta;
+			}
+		}
 		return meta;
 	}
 

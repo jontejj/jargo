@@ -1,4 +1,4 @@
-package se.j4j.argumentparser.utils;
+package se.j4j.argumentparser.internal;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
@@ -12,9 +12,9 @@ import java.util.HashSet;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.internal.TrieTree;
+import se.j4j.argumentparser.internal.CharacterTrie;
 
-public class TrieTreeTest
+public class CharacterTrieTest
 {
 	@Test
 	public void testTrieTree()
@@ -24,7 +24,7 @@ public class TrieTreeTest
 		Object him = new Object();
 		Object himmi = new Object();
 		Object world = new Object();
-		TrieTree<Object> tree = TrieTree.newTree();
+		CharacterTrie<Object> tree = CharacterTrie.newTrie();
 
 		assertEquals("{}", tree.toString());
 		assertEquals(new HashSet<Object>(), tree.keys());
@@ -68,7 +68,7 @@ public class TrieTreeTest
 	@Test
 	public void testStartsWith()
 	{
-		TrieTree<Object> tree = TrieTree.newTree();
+		CharacterTrie<Object> tree = CharacterTrie.newTrie();
 		Object value = new Object();
 
 		tree.set("name=", value);
@@ -80,22 +80,22 @@ public class TrieTreeTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidKeys()
 	{
-		assertFalse(TrieTree.validKey(""));
-		assertFalse(TrieTree.validKey(null));
-		TrieTree<Object> tree = TrieTree.newTree();
+		assertFalse(CharacterTrie.validKey(""));
+		assertFalse(CharacterTrie.validKey(null));
+		CharacterTrie<Object> tree = CharacterTrie.newTrie();
 		tree.set("", null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullKey()
 	{
-		TrieTree<Object> tree = TrieTree.newTree();
+		CharacterTrie<Object> tree = CharacterTrie.newTrie();
 		tree.set(null, null);
 	}
 
 	@Test
 	public void testValidKeys()
 	{
-		assertTrue(TrieTree.validKey("a"));
+		assertTrue(CharacterTrie.validKey("a"));
 	}
 }

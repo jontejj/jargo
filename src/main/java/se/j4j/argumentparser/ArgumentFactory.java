@@ -125,10 +125,10 @@ public final class ArgumentFactory
 
 	@CheckReturnValue
 	@Nonnull
-	public static OptionArgumentBuilder optionArgument(@Nonnull final String name, @Nonnull final String ... names)
+	public static OptionArgumentBuilder optionArgument(@Nonnull final String mandatoryName, @Nonnull final String ... optionalNames)
 	{
 		// TODO: booleanAsEnabledDisabled really be called here?
-		return new OptionArgumentBuilder().defaultValueDescription(booleanAsEnabledDisabled()).names(asList(name, names));
+		return new OptionArgumentBuilder().defaultValueDescription(booleanAsEnabledDisabled()).names(asList(mandatoryName, optionalNames));
 	}
 
 	@CheckReturnValue

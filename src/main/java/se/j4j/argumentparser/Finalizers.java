@@ -1,5 +1,7 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.isEmpty;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 
@@ -52,6 +54,8 @@ public final class Finalizers
 	@Nonnull
 	public static <T> Finalizer<T> compound(@Nonnull Iterable<? extends Finalizer<T>> finalizers)
 	{
+		checkArgument(!isEmpty(finalizers), "A compound finalizer requires at least one finalizer");
+
 		return new CompoundFinalizer<T>(ImmutableList.copyOf(finalizers));
 	}
 
@@ -100,9 +104,9 @@ public final class Finalizers
 	 */
 	private static final class CompoundFinalizer<T> implements Finalizer<T>
 	{
-		@Nonnull private final List<Finalizer<T>> finalizers;
+		@Nonnull private final ImmutableList<Finalizer<T>> finalizers;
 
-		private CompoundFinalizer(@Nonnull List<Finalizer<T>> finalizers)
+		private CompoundFinalizer(@Nonnull ImmutableList<Finalizer<T>> finalizers)
 		{
 			this.finalizers = finalizers;
 		}

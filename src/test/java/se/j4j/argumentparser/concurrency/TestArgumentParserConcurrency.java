@@ -36,6 +36,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.utils.UsageTexts;
 
 public class TestArgumentParserConcurrency
 {
@@ -57,7 +58,7 @@ public class TestArgumentParserConcurrency
 
 	final Argument<Byte> byteArgument = byteArgument("--byte").build();
 
-	final Argument<File> file = fileArgument("--file").build();
+	final Argument<File> file = fileArgument("--file").defaultValueDescription("The current directory").build();
 
 	final Argument<String> string = stringArgument("--string").build();
 
@@ -77,6 +78,8 @@ public class TestArgumentParserConcurrency
 	final CommandLineParser parser = CommandLineParser.forArguments(greetingPhrase, enableLogging, port, longArgument, bigInteger, date,
 																	doubleArgument, shortArgument, byteArgument, file, string, charArgument, bool,
 																	propertyArgument, arityArgument, repeatedArgument, splittedArgument);
+
+	final String expectedUsageText = UsageTexts.expected("allFeaturesInUsage");
 
 	private static final int ITERATION_COUNT = 300;
 
@@ -187,6 +190,12 @@ public class TestArgumentParserConcurrency
 					checkThat(repeatedArgument).isEqualTo(asList(1, offset));
 					checkThat(splittedArgument).isEqualTo(asList(1.234f, 2.4343f + offset, 5.23232f));
 					checkThat(propertyArgument).isEqualTo(propertyMap);
+
+					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
+					{
+						String usage = parser.usage("HelloWorld");
+						assertThat(usage).isEqualTo(expectedUsageText);
+					}
 				}
 			}
 			catch(AssertionError e)

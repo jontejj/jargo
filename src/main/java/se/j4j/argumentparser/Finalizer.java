@@ -2,6 +2,7 @@ package se.j4j.argumentparser;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
@@ -14,6 +15,7 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
  * @param <T> the type of value to finalize
  * </pre>
  */
+@Immutable
 public interface Finalizer<T>
 {
 	/**

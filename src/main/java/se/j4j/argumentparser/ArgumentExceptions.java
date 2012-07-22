@@ -1,7 +1,6 @@
 package se.j4j.argumentparser;
 
 import static com.google.common.collect.Collections2.transform;
-import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.MISSING_PARAMETER;
 import static se.j4j.argumentparser.Describers.argumentDescriber;
 import static se.j4j.argumentparser.Describers.asFunction;
 
@@ -13,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 
 public final class ArgumentExceptions
 {
@@ -52,20 +51,15 @@ public final class ArgumentExceptions
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static IllegalArgumentException withDescription(@Nonnull final Description exceptionMessage, @Nullable final Throwable cause)
+	public static IllegalArgumentException withDescription(@Nonnull final Description exceptionMessage, @Nonnull final ArgumentException cause)
 	{
 		return new UncheckedArgumentException(exceptionMessage, cause);
 	}
 
 	@CheckReturnValue
-	static <T> UnhandledRepeatedArgument forUnhandledRepeatedArgument(final Argument<T> unhandledArgument, final T oldValue)
+	static <T> UnhandledRepeatedArgument forUnhandledRepeatedArgument(final Argument<T> unhandledArgument)
 	{
-		// TODO: handle indexed arguments as well,
-		// TODO: verify that the actual value from the commandline is used
-		// (finalizers should not have changed the value for example),
-		// think about arity, split with when printing the previous value
-		String previousValueDescribed = unhandledArgument.parser().describeValue(oldValue, unhandledArgument);
-		return new UnhandledRepeatedArgument(unhandledArgument.names() + ", previous value: " + previousValueDescribed);
+		return new UnhandledRepeatedArgument("Non-allowed repetition of the argument " + unhandledArgument.names());
 	}
 
 	@CheckReturnValue
@@ -81,7 +75,7 @@ public final class ArgumentExceptions
 	}
 
 	@Nonnull
-	static UnexpectedArgumentException forUnexpectedArgument(@Nonnull final Arguments arguments)
+	static UnexpectedArgumentException forUnexpectedArgument(@Nonnull final ArgumentIterator arguments)
 	{
 		String unexpectedArgument = arguments.previous();
 		String previousArgument = null;
@@ -93,6 +87,10 @@ public final class ArgumentExceptions
 		return new UnexpectedArgumentException(unexpectedArgument, previousArgument);
 	}
 
+	/**
+	 * May be thrown by {@link StringParser#parse(String)} when
+	 * it considers it's received argument to be invalid
+	 */
 	public static final class InvalidArgument extends ArgumentException
 	{
 		private final Description explanation;
@@ -100,7 +98,6 @@ public final class ArgumentExceptions
 
 		private InvalidArgument(final Description explanation, final Object invalidValue)
 		{
-			super(ArgumentExceptionCodes.INVALID_PARAMETER);
 			this.explanation = explanation;
 			this.invalidValue = invalidValue;
 		}
@@ -117,6 +114,11 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
+	/**
+	 * Used when
+	 * "-p 8080" is expected but
+	 * "-p" is given
+	 */
 	public static final class MissingParameterException extends ArgumentException
 	{
 		private final String usedArgumentName;
@@ -124,7 +126,6 @@ public final class ArgumentExceptions
 
 		private MissingParameterException(ArgumentSettings argumentRequiringTheParameter, final String usedArgumentName)
 		{
-			super(MISSING_PARAMETER);
 			this.usedArgumentName = usedArgumentName;
 			this.argumentRequiringTheParameter = argumentRequiringTheParameter;
 		}
@@ -142,13 +143,16 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
+	/**
+	 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
+	 * argument wasn't found in the input arguments
+	 */
 	public static final class MissingRequiredArgumentException extends ArgumentException
 	{
 		private final Collection<Argument<?>> missingArguments;
 
 		private MissingRequiredArgumentException(final Collection<Argument<?>> missingArguments)
 		{
-			super(ArgumentExceptionCodes.MISSING_REQUIRED_PARAMETER);
 			this.missingArguments = missingArguments;
 		}
 
@@ -170,7 +174,6 @@ public final class ArgumentExceptions
 
 		private LimitException(Limit reason)
 		{
-			super(ArgumentExceptionCodes.PARAMETER_VALUE_NOT_WITHIN_LIMITS);
 			this.reason = reason;
 		}
 
@@ -186,6 +189,11 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
+	/**
+	 * Used when
+	 * "1 2" is expected but
+	 * "1 2 3" is given
+	 */
 	public static final class UnexpectedArgumentException extends ArgumentException
 	{
 		private final String unexpectedArgument;
@@ -193,7 +201,6 @@ public final class ArgumentExceptions
 
 		private UnexpectedArgumentException(@Nonnull final String unexpectedArgument, @Nullable final String previousArgument)
 		{
-			super(ArgumentExceptionCodes.UNHANDLED_PARAMETER);
 			this.unexpectedArgument = unexpectedArgument;
 			this.previousArgument = previousArgument;
 		}
@@ -215,21 +222,24 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
+	/**
+	 * Used when
+	 * "--numbers 1 2" is expected but
+	 * "--numbers 1 2 --numbers 3 4" is given
+	 */
 	public static final class UnhandledRepeatedArgument extends ArgumentException
 	{
 		private final Object reason;
 
 		private UnhandledRepeatedArgument(final Object reason)
 		{
-			super(ArgumentExceptionCodes.UNHANDLED_REPEATED_PARAMETER);
 			this.reason = reason;
 		}
 
 		@Override
 		public String getMessage()
 		{
-			// TODO: verify for propertyMaps
-			return "Non-allowed repetition of: " + reason;
+			return reason.toString();
 		}
 
 		/**
@@ -259,46 +269,4 @@ public final class ArgumentExceptions
 		 */
 		private static final long serialVersionUID = 1L;
 	};
-
-	public enum ArgumentExceptionCodes
-	{
-		// TODO: these should take in an argument describing the exact cause
-
-		/**
-		 * Used when
-		 * "-p 8080" is expected but
-		 * "-p" is given
-		 */
-		MISSING_PARAMETER,
-
-		/**
-		 * Used when
-		 * "1 2" is expected but
-		 * "1 2 3" is given
-		 */
-		UNHANDLED_PARAMETER,
-
-		/**
-		 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
-		 * argument wasn't found in the input arguments
-		 */
-		MISSING_REQUIRED_PARAMETER,
-
-		/**
-		 * Used when
-		 * "--numbers 1 2" is expected but
-		 * "--numbers 1 2 --numbers 3 4" is given
-		 */
-		UNHANDLED_REPEATED_PARAMETER,
-
-		/**
-		 * May be thrown by {@link StringParser#parse(String)} when
-		 * it considers it's received argument to be invalid
-		 */
-		INVALID_PARAMETER,
-
-		PARAMETER_VALUE_NOT_WITHIN_LIMITS,
-
-		UNKNOWN
-	}
 }

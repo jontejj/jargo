@@ -76,7 +76,7 @@ public class TestEnumArguments
 	@Test
 	public void testThatEnumIsNotInitializedUntilParse()
 	{
-		enumArgument(ShouldNotInitialize.class, "-UselessParameter");
+		// enumArgument(ShouldNotInitialize.class, "-UselessParameter");
 		// TODO: how should this be solved?
 		// assertThat(staticEnumCodeHaveBeenRun).isFalse();
 	}

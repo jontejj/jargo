@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class TestSplitWith
 {
 	@Test
@@ -28,6 +30,28 @@ public class TestSplitWith
 	{
 		String usage = integerArgument("-n").splitWith(",").usage("Split");
 		assertThat(usage).isEqualTo(expected("splitArgument"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	public void testThatSplittingWithEmptyStringIsForbidden()
+	{
+		integerArgument("-n").splitWith("");
+	}
+
+	@Test
+	public void testThatSeparatorIsPrintedBetweenArgumentNameAndMetaDescription()
+	{
+		String usage = integerArgument("-N").separator("=").usage("SeparatorBetweenNameAndMeta");
+
+		assertThat(usage).isEqualTo(expected("separatorBetweenNameAndMeta"));
+	}
+
+	@Test
+	public void testThatSeparatorCombinedWithSplitterLooksGoodInUsage()
+	{
+		String usage = integerArgument("-N").separator("=").splitWith(",").usage("SeparatorCombinedWithSplitter");
+		assertThat(usage).isEqualTo(expected("separatorCombinedWithSplitter"));
 	}
 
 	@Test

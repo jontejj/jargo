@@ -19,6 +19,7 @@ import static se.j4j.argumentparser.StringParsers.Radix.DECIMAL;
 import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.StringParsers.Radix.OCTAL;
 import static se.j4j.argumentparser.StringParsers.Radix.UnsignedOutput.NO;
+import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.math.BigInteger;
@@ -34,7 +35,6 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.Radix;
 import se.j4j.argumentparser.StringParsers.Radix.UnsignedOutput;
 import se.j4j.argumentparser.StringParsers.RadixiableParser;
-import se.j4j.argumentparser.internal.Lines;
 import se.j4j.argumentparser.internal.NumberType;
 import se.j4j.argumentparser.internal.OneBitType;
 
@@ -107,8 +107,8 @@ public class TestRadixArguments
 				assertThat(parsedValue).isEqualTo(value);
 			}
 			String usage = byteArgument("-b").defaultValue((byte) 32).radix(radix).usage("");
-			assertThat(usage).contains("<byte>: " + validInputs.get(radix) + Lines.NEWLINE);
-			assertThat(usage).contains("Default: " + defaultValues.get(radix) + Lines.NEWLINE);
+			assertThat(usage).contains("<byte>: " + validInputs.get(radix) + NEWLINE);
+			assertThat(usage).contains("Default: " + defaultValues.get(radix) + NEWLINE);
 		}
 	}
 
@@ -197,8 +197,8 @@ public class TestRadixArguments
 				assertThat(parsedValue).isEqualTo(value);
 			}
 			String usage = shortArgument("-b").defaultValue((short) 32).radix(radix).usage("");
-			assertThat(usage).contains("<short>: " + validInputs.get(radix) + Lines.NEWLINE);
-			assertThat(usage).contains("Default: " + defaultValues.get(radix) + Lines.NEWLINE);
+			assertThat(usage).contains("<short>: " + validInputs.get(radix) + NEWLINE);
+			assertThat(usage).contains("Default: " + defaultValues.get(radix) + NEWLINE);
 		}
 	}
 
@@ -255,8 +255,8 @@ public class TestRadixArguments
 				assertThat(parsedValue).isEqualTo(value);
 			}
 			String usage = integerArgument("-b").defaultValue(32).radix(radix).usage("");
-			assertThat(usage).contains("<integer>: " + validInputs.get(radix) + Lines.NEWLINE);
-			assertThat(usage).contains("Default: " + defaultValues.get(radix) + Lines.NEWLINE);
+			assertThat(usage).contains("<integer>: " + validInputs.get(radix) + NEWLINE);
+			assertThat(usage).contains("Default: " + defaultValues.get(radix) + NEWLINE);
 		}
 	}
 
@@ -361,8 +361,8 @@ public class TestRadixArguments
 				assertThat(parsedValue).isEqualTo(value);
 			}
 			String usage = longArgument("-b").defaultValue(32L).radix(radix).usage("");
-			assertThat(usage).contains("<long>: " + validInputs.get(radix) + Lines.NEWLINE);
-			assertThat(usage).contains("Default: " + defaultValues.get(radix) + Lines.NEWLINE);
+			assertThat(usage).contains("<long>: " + validInputs.get(radix) + NEWLINE);
+			assertThat(usage).contains("Default: " + defaultValues.get(radix) + NEWLINE);
 		}
 	}
 

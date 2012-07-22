@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
 /**
@@ -23,6 +23,7 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
  * @param <T> the type the decorated {@link StringParser} handles
  * </pre>
  */
+@Immutable
 public abstract class ForwardingStringParser<T> extends InternalStringParser<T> implements StringParser<T>
 {
 	/**
@@ -63,7 +64,7 @@ public abstract class ForwardingStringParser<T> extends InternalStringParser<T> 
 	// Bridged InternalStringParser methods
 
 	@Override
-	T parse(Arguments arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
+	T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
 	{
 		if(!arguments.hasNext())
 			throw forMissingParameter(argumentSettings, arguments.getCurrentArgumentName());

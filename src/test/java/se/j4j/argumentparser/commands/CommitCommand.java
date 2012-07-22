@@ -19,7 +19,6 @@ public class CommitCommand extends Command
 	public final Repository repository;
 
 	private static final Argument<Boolean> AMEND = optionArgument("--amend").build();
-	// TODO: verify that the separator is printed in usage
 	private static final Argument<String> AUTHOR = stringArgument("--author").required().separator("=").build();
 	private static final Argument<List<File>> FILES = fileArgument().variableArity().build();
 

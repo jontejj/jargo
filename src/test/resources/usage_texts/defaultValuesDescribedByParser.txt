@@ -1,0 +1,3 @@
+Usage: F9PrintedTwoTimes [Options]
+-n <integer> <integer>    <integer>: 00000000 to FFFFFFFF (hex)
+                          Default: [F9, F9]

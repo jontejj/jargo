@@ -1,6 +1,7 @@
 package se.j4j.argumentparser.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,30 +10,35 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * TODO: Move this into it's own project
+ * TODO: Move CharacterTrie into it's own project
  * 
  * @param <E> the type of values stored in the tree
  */
-public final class TrieTree<E>
+public final class CharacterTrie<E>
 {
 	private int size;
 	private final Entry<E> root;
 
 	/**
-	 * A entry represents a node in the tree.
+	 * An entry represents a node in the tree.
 	 */
 	private static final class Entry<E>
 	{
 		/**
-		 * the value of this node
+		 * The char the parent node will use to reference this child with
 		 */
 		private final Character index;
+
 		/**
 		 * If true this node represents a value
 		 */
 		private boolean isValue;
 
+		/**
+		 * the value of this node
+		 */
 		private E value;
+
 		/**
 		 * The nodes that belongs to this Node
 		 */
@@ -122,7 +128,8 @@ public final class TrieTree<E>
 		private Entry<E> findLastChild(final CharSequence key)
 		{
 			// Start at the root and search the tree for an entry starting with
-			// key
+			// key, return the last possible match so that matches with more matching chars will be
+			// prioritized
 			Entry<E> current = this;
 			for(int i = 0, len = key.length(); i < len; i++)
 			{
@@ -174,8 +181,8 @@ public final class TrieTree<E>
 		}
 
 		/**
-		 * Makes sure that a child that represents the given {@link childChar}
-		 * is found in this entry.
+		 * Makes sure that a child that represents the given {@link childChar} is found in this
+		 * entry.
 		 * 
 		 * @param childChar the character to create/get a child for
 		 * @return either the already existing child or a newly created one
@@ -268,21 +275,29 @@ public final class TrieTree<E>
 				return child.value;
 			return null;
 		}
+
+		public CharSequence getMatchingKey(CharSequence key)
+		{
+			Entry<E> child = findLastChild(key);
+			if(child.isValue)
+				return child.keyName();
+			return null;
+		}
 	}
 
-	public static <E> TrieTree<E> newTree()
+	public static <E> CharacterTrie<E> newTrie()
 	{
-		return new TrieTree<E>();
+		return new CharacterTrie<E>();
 	}
 
-	private TrieTree()
+	private CharacterTrie()
 	{
 		root = createRoot();
 	}
 
 	/**
 	 * @param key
-	 * @return true if the given key can work as a key in a TrieTree
+	 * @return true if the given key can work as a key in a CharacterTrie
 	 */
 	public static boolean validKey(final CharSequence key)
 	{
@@ -298,9 +313,9 @@ public final class TrieTree<E>
 	public E set(final CharSequence key, final E value)
 	{
 		if(key == null)
-			throw new IllegalArgumentException("As Null keys are errorprone they aren't supported in a TrieTree");
+			throw new IllegalArgumentException("As Null keys are errorprone they aren't supported in a CharacterTrie");
 		if(key.length() == 0)
-			throw new IllegalArgumentException("Empty keys aren't supported in a TrieTree as they are errorprone");
+			throw new IllegalArgumentException("Empty keys aren't supported in a CharacterTrie as they are errorprone");
 
 		// Start at the root and search the tree for the entry to insert the
 		// final character into
@@ -312,6 +327,7 @@ public final class TrieTree<E>
 			current = current.ensureChild(c);
 		}
 		E oldValue = current.setValue(value);
+		// TODO: what if null was actually inserted?
 		if(oldValue == null)
 		{
 			size++;
@@ -387,12 +403,20 @@ public final class TrieTree<E>
 
 	/**
 	 * @param key
-	 * @return the entry that starts with the same characters as
-	 *         <code>key</code>
+	 * @return the entry that starts with the same characters as <code>key</code>
 	 */
 	public E getLastMatch(final CharSequence key)
 	{
 		return root.getLastMatch(key);
+	}
+
+	/**
+	 * @param key
+	 * @return a key that starts with the same characters as <code>key</code>
+	 */
+	public CharSequence getMatchingKey(final CharSequence key)
+	{
+		return root.getMatchingKey(key);
 	}
 
 	/**
@@ -416,7 +440,7 @@ public final class TrieTree<E>
 	/**
 	 * @return all the values in this tree
 	 */
-	public List<E> values()
+	public Collection<E> values()
 	{
 		return root.values();
 	}

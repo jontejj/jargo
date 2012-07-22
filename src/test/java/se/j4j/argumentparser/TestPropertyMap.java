@@ -5,13 +5,16 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.Limiters.range;
+import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.lowerCaseParser;
-import static se.j4j.argumentparser.StringParsers.stringParser;
-import static se.j4j.argumentparser.internal.Lines.NEWLINE;
+import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
+import static se.j4j.argumentparser.StringParsers.Radix.HEX;
+import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
@@ -24,10 +27,9 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
-import se.j4j.argumentparser.CommandLineParser.Arguments;
+import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.KeyValueParser;
-import se.j4j.argumentparser.commands.Build;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -120,12 +122,11 @@ public class TestPropertyMap
 		try
 		{
 			integerArgument("-I").asPropertyMap().parse("-Ifoo=10", "-Ifoo=NotANumber");
-			fail("Repeated key (and limited value) wasn't invalidated");
+			fail("Repeated key wasn't invalidated");
 		}
 		catch(UnhandledRepeatedArgument expected)
 		{
-			System.out.println(expected.getMessageAndUsage(""));
-			// TODO: assert printout
+			assertThat(expected).hasMessage("-Ifoo was found as a key several times in the input.");
 		}
 	}
 
@@ -219,13 +220,14 @@ public class TestPropertyMap
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "unreferenced in code path")
 	public void testThatKeyValueParserBehaveCivilizedWhenNoNamesMatchTheArgument() throws ArgumentException
 	{
 		// In all honesty, this is for code coverage:)
 		Argument<String> badArgument = stringArgument().build();
-		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(new Build(), stringParser());
+		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(null, null);
 
-		Arguments arguments = Arguments.forSingleArgument("-Nfoo=bar");
+		ArgumentIterator arguments = ArgumentIterator.forSingleArgument("-Nfoo=bar");
 		Map<String, String> parsedResult = parser.parse(arguments, null, badArgument);
 
 		assertThat(parsedResult).isEmpty();
@@ -266,11 +268,11 @@ public class TestPropertyMap
 	@Test
 	public void testDefaultValuesInUsageForPropertyMap()
 	{
-		Map<String, Integer> defaults = newLinkedHashMap();
-		defaults.put("World", 42);
-		defaults.put("Hello", 1);
+		Map<Byte, Byte> defaults = newLinkedHashMap();
+		defaults.put((byte) 0x0F, (byte) 0b1001);
+		defaults.put((byte) 0x0E, (byte) 0b0110);
 
-		String usage = integerArgument("-N").asPropertyMap().separator(":").defaultValue(defaults).usage("");
+		String usage = byteArgument("-N").radix(BINARY).asKeyValuesWithKeyParser(byteParser(HEX)).separator(":").defaultValue(defaults).usage("");
 		assertThat(usage).isEqualTo(expected("defaultValuePropertyMap"));
 	}
 
@@ -286,7 +288,6 @@ public class TestPropertyMap
 	{
 		String usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage("");
 		assertThat(usage).isEqualTo(expected("repeatedPropertyValues"));
-
 	}
 
 	@Test

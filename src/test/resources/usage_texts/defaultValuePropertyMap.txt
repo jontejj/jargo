@@ -1,4 +1,4 @@
 Usage:  [Options]
--N<string:integer>    <string:integer>: where "string" is any string and "integer" is -2147483648 to 2147483647 (decimal)
-                      Default: Hello:1
-                               World:42
+-N<byte:byte>    <byte:byte>: where "byte" is 00 to FF (hex) and "byte" is 00000000 to 11111111 (binary)
+                 Default: E:00000110
+                          F:00001001

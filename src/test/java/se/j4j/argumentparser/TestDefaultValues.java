@@ -7,7 +7,9 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
+import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Arrays;
 import java.util.List;
@@ -121,5 +123,31 @@ public class TestDefaultValues
 		Argument<Integer> n = integerArgument("-n").defaultValueSupplier(supplier).build();
 
 		assertThat(n.parse()).isNotEqualTo(n.parse());
+	}
+
+	@Test
+	public void testThatDefaultValueIsUsedForEachValueInArityArgument() throws ArgumentException
+	{
+		assertThat(integerArgument("-n").defaultValue(1).arity(2).parse()).isEqualTo(asList(1, 1));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testThatDefaultValueIsImmutableWhenUsedForEachValueInArityArgument() throws ArgumentException
+	{
+		integerArgument("-n").defaultValue(1).arity(2).parse().add(3);
+	}
+
+	@Test
+	public void testThatEachDefaultValueIsDescribedInArityArgument()
+	{
+		String usage = integerArgument("-n").defaultValue(1).defaultValueDescription("One").arity(2).usage("OnePrintedTwoTimes");
+		assertThat(usage).isEqualTo(expected("arityOfDefaultValuesDescribed"));
+	}
+
+	@Test
+	public void testThatEachDefaultValueIsDescribedInCorrectRadix()
+	{
+		String usage = integerArgument("-n").defaultValue(0xF9).radix(HEX).arity(2).usage("F9PrintedTwoTimes");
+		assertThat(usage).isEqualTo(expected("defaultValuesDescribedByParser"));
 	}
 }

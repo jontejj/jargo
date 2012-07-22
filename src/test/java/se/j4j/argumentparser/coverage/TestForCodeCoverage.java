@@ -2,7 +2,6 @@ package se.j4j.argumentparser.coverage;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes.INVALID_PARAMETER;
 import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
 
 import java.lang.reflect.Constructor;
@@ -12,7 +11,6 @@ import java.lang.reflect.Modifier;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions;
-import se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
@@ -20,9 +18,7 @@ import se.j4j.argumentparser.Finalizers;
 import se.j4j.argumentparser.Limiters;
 import se.j4j.argumentparser.StringParsers;
 import se.j4j.argumentparser.StringParsers.Radix;
-import se.j4j.argumentparser.internal.Lines;
-import se.j4j.argumentparser.internal.ListUtil;
-import se.j4j.argumentparser.internal.StringComparison;
+import se.j4j.argumentparser.internal.Platform;
 import se.j4j.argumentparser.internal.StringsUtil;
 
 /**
@@ -44,8 +40,8 @@ public class TestForCodeCoverage
 	public void callPrivateConstructorsForCodeCoverage() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			InvocationTargetException
 	{
-		Class<?>[] classesToConstruct = {ArgumentFactory.class, Lines.class, ListUtil.class, StringsUtil.class, StringComparison.class,
-				Descriptions.class, Limiters.class, Finalizers.class, StringParsers.class, ArgumentExceptions.class, Describers.class};
+		Class<?>[] classesToConstruct = {ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class, Finalizers.class,
+				StringParsers.class, ArgumentExceptions.class, Describers.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{
@@ -66,7 +62,6 @@ public class TestForCodeCoverage
 	@Test
 	public void testEnumsForCodeCoverage()
 	{
-		assertThat(ArgumentExceptionCodes.valueOf(INVALID_PARAMETER.toString())).isEqualTo(INVALID_PARAMETER);
 		assertThat(Radix.valueOf(BINARY.toString())).isEqualTo(BINARY);
 	}
 }

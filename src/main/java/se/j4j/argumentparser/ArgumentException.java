@@ -1,21 +1,17 @@
 package se.j4j.argumentparser;
 
-import java.io.Serializable;
+import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 
-import se.j4j.argumentparser.ArgumentExceptions.ArgumentExceptionCodes;
-import se.j4j.argumentparser.internal.Lines;
+import java.io.Serializable;
 
 public class ArgumentException extends Exception
 {
-	private final ArgumentExceptionCodes errorCode;
-
 	// TODO: to enable proper behavior when serialized these needs to
 	// be transient (or Serializable and the usage needs to be transferred as a string
 	private CommandLineParser originParser;
 
-	protected ArgumentException(final ArgumentExceptionCodes errorCode)
+	protected ArgumentException()
 	{
-		this.errorCode = errorCode;
 	}
 
 	void setOriginParser(final CommandLineParser theParserThatTriggeredMe)
@@ -32,12 +28,7 @@ public class ArgumentException extends Exception
 
 	public String getMessageAndUsage(String programName)
 	{
-		return getMessage() + Lines.NEWLINE + Lines.NEWLINE + getUsage(programName);
-	}
-
-	public ArgumentExceptionCodes code()
-	{
-		return errorCode;
+		return getMessage() + NEWLINE + NEWLINE + getUsage(programName);
 	}
 
 	/**

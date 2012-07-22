@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.junit.Test;
@@ -87,4 +88,11 @@ public class TestFinalizers
 	{
 		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage("")).contains("Default: foo");
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testThatEmptyListIsIllegal()
+	{
+		Finalizers.compound(new ArrayList<Finalizer<Object>>());
+	}
+
 }

@@ -5,14 +5,16 @@ import static java.security.AccessController.doPrivileged;
 import java.security.PrivilegedAction;
 
 /**
+ * Manages code that needs to be platform specific so that all other code can be platform independent.
+ *
  * @formatter.off
  */
-public final class Lines
+public final class Platform
 {
-	private Lines(){};
+	private Platform(){};
 
 	/**
-	 * Contains the line.separator property string
+	 * A suitable string to represent newlines on this specific platform
 	 */
 	public static final String NEWLINE =  doPrivileged(new PrivilegedAction<String>(){
 		@Override public String run(){ return System.getProperty("line.separator");}});

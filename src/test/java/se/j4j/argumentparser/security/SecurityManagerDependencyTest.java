@@ -17,7 +17,7 @@ public class SecurityManagerDependencyTest
 {
 	public static void main(String[] args)
 	{
-		// TODO: test this better
+		// TODO: introduce this as a security test
 		System.setSecurityManager(new SecurityManager(){
 			@Override
 			public void checkPermission(Permission perm)
