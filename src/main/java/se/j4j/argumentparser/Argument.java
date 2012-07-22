@@ -41,7 +41,6 @@ import com.google.common.base.Suppliers;
 @Immutable
 public final class Argument<T> extends ArgumentSettings
 {
-	// TODO: think about equals/hashCode and document the decision
 	@Nonnull private final List<String> names;
 
 	@Nonnull private final Description description;

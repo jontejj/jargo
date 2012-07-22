@@ -41,8 +41,6 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * <pre>
  * Responsible for building {@link Argument} instances.
@@ -57,7 +55,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * 
  * @param <SELF_TYPE> the type of the subclass extending this class.
  * 		Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
- * 		The pattern can also be called <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
+ * 		The pattern also resembles the <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
  * @param <T> the type of arguments the built {@link Argument} instance should handle,
  * 	such as {@link Integer} in the case of {@link ArgumentFactory#integerArgument(String...)}
  * </pre>
@@ -156,14 +154,14 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalStateException if the parser have been configured wrongly
 	 * </pre>
 	 */
-	// @Nonnull TODO: this causes a warning that should be ignored but for some reason can't
+	@Nonnull
 	protected abstract StringParser<T> parser();
 
 	@Nonnull
 	final InternalStringParser<T> internalParser()
 	{
 		StringParser<T> parser = parser();
-		if(parser != null)
+		if(parser != InternalArgumentBuilder.NULL)
 			return bridgedParser(parser);
 		return internalStringParser;
 	}
@@ -775,6 +773,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	private static class InternalArgumentBuilder<Builder extends InternalArgumentBuilder<Builder, T>, T> extends ArgumentBuilder<Builder, T>
 	{
+		static final StringParser<?> NULL = new ForwardingStringParser.SimpleForwardingStringParser<Object>(){
+		};
+
 		InternalArgumentBuilder()
 		{
 
@@ -785,12 +786,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			super(parser);
 		}
 
-		@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION",
-				justification = "the API doesn't allow this to return null but internally it's ok, the exception that proves the rule")
+		// Only used to flag that this builder is an internal one
+		@SuppressWarnings("unchecked")
 		@Override
 		protected StringParser<T> parser()
 		{
-			return null;
+			return (StringParser<T>) NULL;
 		}
 	}
 
