@@ -386,10 +386,6 @@ public final class StringParsers
 		private EnumParser(final Class<E> enumToHandle)
 		{
 			enumType = enumToHandle;
-			// TODO: As this check causes the enum to load, consider making it possible to opt out
-			// of it
-			if(enumType.getEnumConstants().length == 0)
-				throw new IllegalArgumentException(enumType.getSimpleName() + " has no possible values defined");
 		}
 
 		@Override
@@ -435,7 +431,7 @@ public final class StringParsers
 	 * Inherits from InternalStringParser because implementing StringParser
 	 * would make it require a parameter which an Option doesn't.
 	 */
-	private static final class OptionParser extends SimpleForwardingStringParser<Boolean>
+	static final class OptionParser extends SimpleForwardingStringParser<Boolean>
 	{
 		private static final OptionParser DEFAULT_FALSE = new OptionParser(false);
 		private static final OptionParser DEFAULT_TRUE = new OptionParser(true);
@@ -1041,7 +1037,7 @@ public final class StringParsers
 				if(notInRange(result))
 					throw forInvalidValue(value, "is not in the range " + descriptionOfValidValues());
 
-				return type.cast(result);
+				return type.fromLong(result);
 			}
 			catch(NumberFormatException nfe)
 			{
@@ -1094,8 +1090,8 @@ public final class StringParsers
 			String minimumValue;
 			if(radix.isUnsignedOutput())
 			{
-				T maxValueToDisplay = (maxValue.equals(type.maxValue())) ? type.cast(-1L) : maxValue;
-				T minValueToDisplay = (minValue.equals(type.minValue())) ? type.cast(0L) : minValue;
+				T maxValueToDisplay = (maxValue.equals(type.maxValue())) ? type.fromLong(-1L) : maxValue;
+				T minValueToDisplay = (minValue.equals(type.minValue())) ? type.fromLong(0L) : minValue;
 
 				maximumValue = describeValue(maxValueToDisplay);
 				minimumValue = describeValue(minValueToDisplay);
@@ -1125,12 +1121,12 @@ public final class StringParsers
 						String result = null;
 						if(radix.isUnsignedOutput())
 						{
-							result = UnsignedLongs.toString(type.cast(value), radix.radix()).toUpperCase(Locale.ENGLISH);
+							result = UnsignedLongs.toString(type.toLong(value), radix.radix()).toUpperCase(Locale.ENGLISH);
 						}
 						else
 						{
 							// TODO: is it better to use java.text.NumberFormat?
-							result = Long.toString(type.cast(value), radix.radix());
+							result = Long.toString(type.toLong(value), radix.radix());
 						}
 						return result;
 					}
@@ -1147,7 +1143,7 @@ public final class StringParsers
 
 		private String toBinaryString(T tValue)
 		{
-			long value = type.cast(tValue);
+			long value = type.toLong(tValue);
 
 			final int size = type.bitSize();
 			char[] binaryString = new char[size];

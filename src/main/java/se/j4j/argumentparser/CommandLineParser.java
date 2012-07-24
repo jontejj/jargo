@@ -5,7 +5,6 @@ import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.newIdentityHashMap;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
@@ -40,12 +39,14 @@ import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
+import se.j4j.argumentparser.StringParsers.OptionParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.CharacterTrie;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
 
 /**
@@ -158,10 +159,9 @@ public final class CommandLineParser
 
 	CommandLineParser(@Nonnull final List<Argument<?>> argumentDefinitions, boolean abortOnUnexpectedArguments)
 	{
-		namedArguments = newHashMapWithExpectedSize(argumentDefinitions.size());
+		namedArguments = new NamedArguments(argumentDefinitions.size());
 		indexedArguments = newArrayListWithCapacity(argumentDefinitions.size());
 		specialSeparatorArguments = CharacterTrie.newTrie();
-		ignoreCaseArguments = newHashMap();
 		ignoreCaseSpecialSeparatorArguments = CharacterTrie.newTrie();
 		requiredArguments = newLinkedHashSetWithExpectedSize(argumentDefinitions.size());
 		propertyMapArguments = CharacterTrie.newTrie();
@@ -191,20 +191,15 @@ public final class CommandLineParser
 	@Nonnull private final List<Argument<?>> indexedArguments;
 
 	/**
-	 * A map containing both short-named and long-named arguments
+	 * A map containing short-named arguments, long-named arguments and named arguments that ignore
+	 * case
 	 */
-	@Nonnull private final Map<String, Argument<?>> namedArguments;
+	@Nonnull private final NamedArguments namedArguments;
 
 	/**
 	 * A map with arguments that has special {@link Argument#separator()}s
 	 */
 	@Nonnull private final CharacterTrie<Argument<?>> specialSeparatorArguments;
-
-	/**
-	 * Map for arguments that's {@link Argument#isIgnoringCase()}.
-	 * Stores it's keys with lower case.
-	 */
-	@Nonnull private final Map<String, Argument<?>> ignoreCaseArguments;
 
 	/**
 	 * A map with arguments that has special {@link Argument#separator()}s
@@ -277,13 +272,6 @@ public final class CommandLineParser
 		else
 		{
 			oldDefinition = namedArguments.put(key, definition);
-			if(definition.isIgnoringCase())
-			{
-				// TODO: as ignoreCase may match some arguments in
-				// namedArguments that it shouldn't, we need to loop over every argument
-				// and check for duplicates
-				ignoreCaseArguments.put(key.toLowerCase(Locale.ENGLISH), definition);
-			}
 		}
 		if(oldDefinition != null)
 			throw new IllegalArgumentException(definition + " handles the same argument as: " + oldDefinition);
@@ -328,7 +316,9 @@ public final class CommandLineParser
 			}
 			catch(ArgumentException e)
 			{
-				e.setOriginParser(this);
+				// TODO: for commands, should this really print usage for the
+				// whole program and not the specific command?
+				e.originatedFrom(this);
 				throw e;
 			}
 		}
@@ -347,31 +337,31 @@ public final class CommandLineParser
 
 		T parsedValue = parser.parse(arguments, oldValue, definition);
 
+		// TODO: parsedValue could be put into Argument in a ThreadLocal and be available by a get()
+		// method
 		parsedArguments.put(definition, parsedValue);
 	}
 
 	/**
-	 * @param arguments
-	 * @param holder
 	 * @return a definition that defines how to handle an argument
 	 * @throws UnexpectedArgumentException if no definition could be found
 	 *             for the current argument
 	 */
 	@Nullable
 	private Argument<?> getDefinitionForCurrentArgument(@Nonnull final ArgumentIterator arguments, @Nonnull final ParsedArgumentHolder holder)
-			throws UnexpectedArgumentException
+			throws ArgumentException
 	{
 		String currentArgument = arguments.next();
 		arguments.setCurrentArgumentName(currentArgument);
-		Argument<?> definition = namedArguments.get(currentArgument);
 
+		// Ordinary, named, arguments
+		Argument<?> definition = namedArguments.get(currentArgument);
 		if(definition != null)
 			return definition;
+
 		String lowerCase = currentArgument.toLowerCase(Locale.ENGLISH);
 
-		definition = ignoreCaseArguments.get(lowerCase);
-		if(definition != null)
-			return definition;
+		// Property Maps
 		definition = propertyMapArguments.getLastMatch(currentArgument);
 		if(definition == null)
 		{
@@ -382,16 +372,18 @@ public final class CommandLineParser
 			arguments.previous();
 			return definition;
 		}
+
+		// Special separator arguments
 		CharSequence matchingKey;
-		definition = ignoreCaseSpecialSeparatorArguments.getLastMatch(lowerCase);
+		definition = specialSeparatorArguments.getLastMatch(currentArgument);
 		if(definition != null)
 		{
-			matchingKey = ignoreCaseSpecialSeparatorArguments.getMatchingKey(lowerCase);
+			matchingKey = specialSeparatorArguments.getMatchingKey(currentArgument);
 		}
 		else
 		{
-			definition = specialSeparatorArguments.getLastMatch(currentArgument);
-			matchingKey = specialSeparatorArguments.getMatchingKey(currentArgument);
+			definition = ignoreCaseSpecialSeparatorArguments.getLastMatch(lowerCase);
+			matchingKey = ignoreCaseSpecialSeparatorArguments.getMatchingKey(lowerCase);
 		}
 
 		if(definition != null)
@@ -399,31 +391,63 @@ public final class CommandLineParser
 			// Remove "--name=" from "--name=value"
 			String valueAfterSeparator = currentArgument.substring(matchingKey.length());
 			arguments.setNextArgumentTo(valueAfterSeparator);
+			return definition;
 		}
-		else
-		{
-			if(holder.unnamedArgumentsParsed >= indexedArguments.size())
-			{
-				if(abortOnUnexpectedArguments)
-				{
-					// Rolling back here means that the next parser will receive the argument
-					// instead and maybe it can handle it better
-					arguments.previous();
-					return null;
-				}
-				/**
-				 * TODO: handle "-fs" as well as "-f -s"
-				 */
-				// TODO: suggest alternative options/parameters based on the
-				// faulty characters' distance (keyboard wise (consider dvorak))
-				// Ask Did you mean and provide y/n
-				throw forUnexpectedArgument(arguments);
-			}
 
-			definition = indexedArguments.get(holder.unnamedArgumentsParsed);
-			arguments.previous();
+		// Batch of short-named optional arguments
+		// For instance, "-fs" was used instead of "-f -s"
+		if(currentArgument.startsWith("-") && !currentArgument.startsWith("--") && currentArgument.length() > 1)
+		{
+			List<Character> optionCharacters = Lists.charactersOf(currentArgument.substring(1));
+			Set<Argument<?>> foundOptions = newLinkedHashSetWithExpectedSize(optionCharacters.size());
+			Argument<?> lastOption = null;
+			for(Character optionName : optionCharacters)
+			{
+				lastOption = namedArguments.get("-" + optionName);
+				if(lastOption == null || !(lastOption.parser() instanceof OptionParser) || !foundOptions.add(lastOption))
+				{
+					// Abort as soon we discover an unexpected character
+					break;
+				}
+			}
+			// Only accept the argument if all characters could be matched and no duplicate
+			// characters were found
+			if(foundOptions.size() == optionCharacters.size())
+			{
+				// The last option is handled with the return
+				foundOptions.remove(lastOption);
+
+				for(Argument<?> option : foundOptions)
+				{
+					parseArgument(arguments, holder, option);
+				}
+				return lastOption;
+			}
 		}
-		return definition;
+
+		// Indexed arguments
+		if(holder.indexedArgumentsParsed < indexedArguments.size())
+		{
+			definition = indexedArguments.get(holder.indexedArgumentsParsed);
+			arguments.previous();
+			return definition;
+		}
+
+		// Command parsers exit here instead of throwing
+		if(abortOnUnexpectedArguments)
+		{
+			// Rolling back here means that the next parser will receive the argument
+			// instead and maybe it can handle it better
+			arguments.previous();
+			return null;
+		}
+
+		// TODO: suggest alternative options/parameters based on the
+		// faulty characters' distance (keyboard wise (consider dvorak))
+		// Ask Did you mean and provide y/n
+
+		// We're out of order, tell the user what we didn't like
+		throw forUnexpectedArgument(arguments);
 	}
 
 	@Override
@@ -440,7 +464,7 @@ public final class CommandLineParser
 		}
 		catch(LimitException e)
 		{
-			e.setOriginParser(this);
+			e.originatedFrom(this);
 			throw e;
 		}
 	}
@@ -721,9 +745,9 @@ public final class CommandLineParser
 		@Nonnull final Map<Argument<?>, Object> parsedArguments = newIdentityHashMap();
 		@Nonnull final Set<Argument<?>> requiredArgumentsLeft;
 		/**
-		 * Keeps a running total of how many unnamed arguments that have been parsed
+		 * Keeps a running total of how many indexed arguments that have been parsed
 		 */
-		int unnamedArgumentsParsed = 0;
+		int indexedArgumentsParsed = 0;
 
 		ParsedArgumentHolder(Set<Argument<?>> requiredArguments)
 		{
@@ -738,7 +762,7 @@ public final class CommandLineParser
 			}
 			if(!definition.isNamed() && !parsedArguments.containsKey(definition))
 			{
-				unnamedArgumentsParsed++;
+				indexedArgumentsParsed++;
 			}
 			parsedArguments.put(definition, value);
 		}
@@ -846,6 +870,34 @@ public final class CommandLineParser
 		public String toString()
 		{
 			return arguments.toString();
+		}
+	}
+
+	private static final class NamedArguments
+	{
+		private final Map<String, Argument<?>> namedArguments;
+
+		public NamedArguments(int expectedSize)
+		{
+			namedArguments = newHashMapWithExpectedSize(expectedSize);
+		}
+
+		public Argument<?> put(String name, Argument<?> definition)
+		{
+			if(definition.isIgnoringCase())
+				return namedArguments.put(name.toLowerCase(Locale.ENGLISH), definition);
+			return namedArguments.put(name, definition);
+		}
+
+		public Argument<?> get(String name)
+		{
+			Argument<?> definition = namedArguments.get(name);
+			if(definition != null)
+				return definition;
+
+			String lowerCase = name.toLowerCase(Locale.ENGLISH);
+			definition = namedArguments.get(lowerCase);
+			return definition;
 		}
 	}
 

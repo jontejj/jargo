@@ -14,9 +14,10 @@ public class ArgumentException extends Exception
 	{
 	}
 
-	void setOriginParser(final CommandLineParser theParserThatTriggeredMe)
+	ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
 	{
 		originParser = theParserThatTriggeredMe;
+		return this;
 	}
 
 	public String getUsage(String programName)

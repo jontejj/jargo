@@ -10,6 +10,13 @@ import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class TestCharArguments
 {
+	@Test
+	public void testValidCharacter() throws ArgumentException
+	{
+		Character z = charArgument("-c").parse("-c", "Z");
+
+		assertThat(z).isEqualTo('Z');
+	}
 
 	@Test
 	public void testInvalidLength() throws ArgumentException
@@ -22,14 +29,6 @@ public class TestCharArguments
 		{
 			assertThat(e.getMessage()).isEqualTo("'abc' is not a valid character");
 		}
-	}
-
-	@Test
-	public void testValidCharacter() throws ArgumentException
-	{
-		Character z = charArgument("-c").parse("-c", "Z");
-
-		assertThat(z).isEqualTo('Z');
 	}
 
 	@Test

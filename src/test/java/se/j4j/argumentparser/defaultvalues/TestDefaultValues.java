@@ -1,4 +1,4 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.defaultvalues;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
@@ -16,9 +16,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
-import se.j4j.argumentparser.suppliers.BarSupplier;
-import se.j4j.argumentparser.suppliers.ChangingSupplier;
+import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ForwardingStringParser;
 
 import com.google.common.base.Supplier;
 
@@ -116,6 +117,12 @@ public class TestDefaultValues
 	}
 
 	@Test
+	public void testNullAsDefaultValue() throws ArgumentException
+	{
+		assertThat(integerArgument("-n").defaultValue(null).parse()).isNull();
+	}
+
+	@Test
 	public void testThatDefaultValueProviderIsAskedForEachArgumentParsing() throws ArgumentException
 	{
 		Supplier<Integer> supplier = new ChangingSupplier();
@@ -129,6 +136,15 @@ public class TestDefaultValues
 	public void testThatDefaultValueIsUsedForEachValueInArityArgument() throws ArgumentException
 	{
 		assertThat(integerArgument("-n").defaultValue(1).arity(2).parse()).isEqualTo(asList(1, 1));
+	}
+
+	@Test
+	public void testDefaultValuesForMultipleParametersForNamedArgument() throws ArgumentException
+	{
+		List<Integer> defaults = asList(5, 6);
+		List<Integer> numbers = integerArgument("--numbers").variableArity().defaultValue(defaults).parse();
+
+		assertThat(numbers).isEqualTo(defaults);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

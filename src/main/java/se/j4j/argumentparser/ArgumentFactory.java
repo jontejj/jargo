@@ -142,7 +142,7 @@ public final class ArgumentFactory
 	@Nonnull
 	public static CommandBuilder command(@Nonnull final Command command)
 	{
-		return new CommandBuilder(command).names(command.commandName());
+		return new CommandBuilder(command).names(command.commandName()).description(command);
 	}
 
 	@CheckReturnValue

@@ -24,6 +24,12 @@ public class Build extends Command
 	}
 
 	@Override
+	public String description()
+	{
+		return "Builds a target";
+	}
+
+	@Override
 	protected void execute(ParsedArguments parsedArguments)
 	{
 		target.build();

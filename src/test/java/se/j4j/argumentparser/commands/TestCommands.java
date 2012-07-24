@@ -15,9 +15,6 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
-import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
@@ -30,20 +27,34 @@ public class TestCommands
 	static final Argument<String> COMMIT = command(new CommitCommand(new Repository())).build();
 	static final Argument<String> LOG = command(new LogCommand(new Repository())).build();
 
-	@Test(expected = MissingRequiredArgumentException.class)
-	public void testCommandWithMissingRequiredArgument() throws ArgumentException
+	@Test
+	public void testCommandWithMissingRequiredArgument()
 	{
 		String[] args = {"commit", "--amend", "A.java", "B.java"}; // No author
-
-		CommandLineParser.forArguments(COMMIT).parse(args);
+		try
+		{
+			COMMIT.parse(args);
+			fail("--author=??? wasn't given in the input and it should have been required");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Missing required arguments: [--author]");
+		}
 	}
 
-	@Test(expected = UnexpectedArgumentException.class)
-	public void testThatUnhandledVerboseArgumentIsCaught() throws ArgumentException
+	@Test
+	public void testThatUnhandledVerboseArgumentIsCaught()
 	{
 		String[] args = {"-verbose", "log", "commit", "--amend", "A.java", "B.java"};
-
-		CommandLineParser.forArguments(COMMIT, LOG).parse(args);
+		try
+		{
+			CommandLineParser.forArguments(COMMIT, LOG).parse(args);
+			fail("-verbose should have been reported as an unhandled argument");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Unexpected argument: -verbose");
+		}
 	}
 
 	@Test
@@ -55,6 +66,7 @@ public class TestCommands
 		LogCommand logCommand = new LogCommand(new Repository());
 		CommandLineParser parser = CommandLineParser.forCommands(commitCommand, logCommand);
 
+		// LogCommand
 		parser.parse(logArgs);
 
 		assertThat(logCommand.repository.logLimit).isEqualTo(20);
@@ -62,6 +74,7 @@ public class TestCommands
 
 		logCommand.repository.logLimit = 10;
 
+		// CommitCommand
 		parser.parse(commitArgs);
 
 		Commit commit = commitCommand.repository.commits.get(0);
@@ -69,6 +82,7 @@ public class TestCommands
 		assertThat(commit.author).isEqualTo("jjonsson");
 		assertThat(commit.files).isEqualTo(Arrays.asList(new File("A.java"), new File("B.java")));
 
+		// Make sure that the parsing of the commit command didn't change the logLimit
 		assertThat(logCommand.repository.logLimit).isEqualTo(10);
 	}
 
@@ -83,15 +97,14 @@ public class TestCommands
 	public void testThatMultipleCommandsFromTheSameCommandLineAreExecuted() throws ArgumentException
 	{
 		String[] combinedInvocation = {"log", "--limit", "30", "commit", "--author=jjonsson"};
-		CommitCommand commitCommand = new CommitCommand(new Repository());
-		LogCommand logCommand = new LogCommand(new Repository());
-		CommandLineParser parser = CommandLineParser.forCommands(commitCommand, logCommand);
+		Repository repo = new Repository();
+		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo), new LogCommand(repo));
 
 		parser.parse(combinedInvocation);
 
-		assertThat(logCommand.repository.logLimit).isEqualTo(30);
+		assertThat(repo.logLimit).isEqualTo(30);
 
-		Commit commit = commitCommand.repository.commits.get(0);
+		Commit commit = repo.commits.get(0);
 		assertThat(commit.amend).isFalse();
 		assertThat(commit.author).isEqualTo("jjonsson");
 		assertThat(commit.files).isEqualTo(emptyList());
@@ -121,40 +134,37 @@ public class TestCommands
 		String[] invalidArgs = {"commit", "--amend", "A.java", "B.java"};
 		String[] validArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
 
-		CommandLineParser parser = CommandLineParser.forArguments(COMMIT);
 		// First make a successful parsing
-		parser.parse(validArgs);
+		COMMIT.parse(validArgs);
 		for(int i = 0; i < 2; i++)
 		{
 			try
 			{
-				parser.parse(invalidArgs);
+				// Then make sure that the previous --author didn't "stick"
+				COMMIT.parse(invalidArgs);
 				fail("--author=??? wasn't given in the input and it should have been required");
 			}
-			catch(MissingRequiredArgumentException expected)
+			catch(ArgumentException expected)
 			{
+				assertThat(expected).hasMessage("Missing required arguments: [--author]");
 			}
 		}
 	}
 
 	@Test
-	public void testThatRepeatedParsingsWithACommandParserWorks() throws ArgumentException
+	public void testThatRepeatedParsingsWithACommandParserDoesNotAffectEachOther() throws ArgumentException
 	{
-		String[] args = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
+		String[] firstArgs = {"commit", "--author=jjonsson"};
+		String[] secondArgs = {"commit", "--author=nobody"};
 
 		Repository repo = new Repository();
-		Argument<String> commitCommand = command(new CommitCommand(repo)).build();
+		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo));
 
-		CommandLineParser parser = CommandLineParser.forArguments(commitCommand);
+		parser.parse(firstArgs);
+		parser.parse(secondArgs);
 
-		for(int i = 0; i < 2; i++)
-		{
-			parser.parse(args);
-			Commit commit = repo.commits.get(i);
-			assertThat(commit.amend).isTrue();
-			assertThat(commit.author).isEqualTo("jjonsson");
-			assertThat(commit.files).isEqualTo(Arrays.asList(new File("A.java"), new File("B.java")));
-		}
+		assertThat(repo.commits.get(0).author).isEqualTo("jjonsson");
+		assertThat(repo.commits.get(1).author).isEqualTo("nobody");
 	}
 
 	/**
@@ -165,18 +175,15 @@ public class TestCommands
 	public void testUsageForCommands()
 	{
 		BuildTarget target = new BuildTarget();
-		Argument<String> buildCommand = ArgumentFactory.command(new Build(target)).description("Builds a target").build();
-		Argument<String> cleanCommand = ArgumentFactory.command(new Clean(target)).description("Cleans a target").build();
-		Argument<String> commitCommand = command(new CommitCommand(new Repository())).build();
-
-		String usage = CommandLineParser.forArguments(buildCommand, cleanCommand, commitCommand).usage("CommandUsage");
+		CommandLineParser parser = CommandLineParser.forCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
+		String usage = parser.usage("CommandUsage");
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
 	}
 
 	@Test
 	public void testThatToStringReturnsCommandName()
 	{
-		Command command = new Build();
+		Build command = new Build();
 		assertThat(command.toString()).isEqualTo(command.commandName());
 	}
 
@@ -213,6 +220,34 @@ public class TestCommands
 		@Override
 		protected void execute(ParsedArguments parsedArguments)
 		{
+		}
+	}
+
+	@Test
+	public void testThatDescriptionForCommandIsLazilyCreated() throws ArgumentException
+	{
+		FailInDescription failDescription = new FailInDescription();
+		command(failDescription).parse("fail_description");
+	}
+
+	private static final class FailInDescription extends Command
+	{
+		@Override
+		public String commandName()
+		{
+			return "fail_description";
+		}
+
+		@Override
+		protected void execute(ParsedArguments parsedArguments)
+		{
+		}
+
+		@Override
+		public String description()
+		{
+			fail("Description should only be called if usage is printed");
+			return "Unreachable description";
 		}
 	}
 }

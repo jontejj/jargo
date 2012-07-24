@@ -12,6 +12,13 @@ import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class TestBigIntegerArguments
 {
+	@Test
+	public void testValidInteger() throws ArgumentException
+	{
+		BigInteger b = bigIntegerArgument("-n").parse("-n", "123456789123456789");
+
+		assertThat(b).isEqualTo(new BigInteger("123456789123456789"));
+	}
 
 	@Test
 	public void testInvalidInteger() throws ArgumentException
@@ -24,14 +31,6 @@ public class TestBigIntegerArguments
 		{
 			assertThat(e.getMessage()).isEqualTo("'1a' is not a valid big-integer");
 		}
-	}
-
-	@Test
-	public void testValidInteger() throws ArgumentException
-	{
-		BigInteger b = bigIntegerArgument("-n").parse("-n", "123456789123456789");
-
-		assertThat(b).isEqualTo(new BigInteger("123456789123456789"));
 	}
 
 	@Test

@@ -81,6 +81,7 @@ public class TestArgumentParserConcurrency
 
 	final String expectedUsageText = UsageTexts.expected("allFeaturesInUsage");
 
+	// Amount of test harness
 	private static final int ITERATION_COUNT = 300;
 
 	private static final int RUNNERS_PER_PROCESSOR = 3; // We want the threads
@@ -88,7 +89,10 @@ public class TestArgumentParserConcurrency
 
 	private static final int nrOfConcurrentRunners = Runtime.getRuntime().availableProcessors() * RUNNERS_PER_PROCESSOR;
 
-	private final AtomicReference<String> failure = new AtomicReference<String>(null);
+	/**
+	 * Used by other threads to report failure
+	 */
+	private final AtomicReference<Throwable> failure = new AtomicReference<Throwable>(null);
 	private CountDownLatch activeWorkers;
 	private CyclicBarrier startup;
 	private CyclicBarrier parseDone;
@@ -154,7 +158,7 @@ public class TestArgumentParserConcurrency
 			propertyMap.put("foo", true);
 			propertyMap.put("bar", false);
 
-			String inputArguments = "-l -p " + portNumber + " Helloj --long " + longNumber + " --big " + bigNumber + " --date " + time + " --double "
+			String inputArguments = "-l -p " + portNumber + " Hello --long " + longNumber + " --big " + bigNumber + " --date " + time + " --double "
 					+ doubleNumber + " --short " + shortNumber + " --byte " + byteNumber + " --file /Users/ --string " + str
 					+ " --char T --bool true -Bfoo=true -Bbar=false" + " --arity true false true false true false --repeated 1 --repeated " + offset
 					+ " --split=1.234," + (2.4343f + offset) + ",5.23232";
@@ -175,7 +179,7 @@ public class TestArgumentParserConcurrency
 
 					checkThat(enableLogging).isEqualTo(true);
 					checkThat(port).isEqualTo(portNumber);
-					checkThat(greetingPhrase).isEqualTo("Helloj");
+					checkThat(greetingPhrase).isEqualTo("Hello");
 					checkThat(longArgument).isEqualTo(longNumber);
 					checkThat(bigInteger).isEqualTo(bigNumber);
 					checkThat(date).isEqualTo(time);
@@ -200,19 +204,24 @@ public class TestArgumentParserConcurrency
 			}
 			catch(AssertionError e)
 			{
-				failure.set(e.getMessage());
+				e.fillInStackTrace();
+				failure.set(e);
 				originThread.interrupt();
 				return;
 			}
 			catch(Exception e)
 			{
-				failure.set(e.getMessage());
+				e.fillInStackTrace();
+				failure.set(e);
 				originThread.interrupt();
 				return;
 			}
 			activeWorkers.countDown();
 		}
 
+		/**
+		 * Verifies that an argument received an expected value
+		 */
 		public <T> Checker<T> checkThat(Argument<T> argument)
 		{
 			return new Checker<T>(argument);
@@ -229,15 +238,17 @@ public class TestArgumentParserConcurrency
 
 			public void isEqualTo(final T expectation)
 			{
-				final T actual = arguments.get(arg);
+				final T parsedValue = arguments.get(arg);
 				Description description = new Description(){
+					// In a concurrency test it makes a big performance difference
+					// with lazily created descriptions
 					@Override
 					public String value()
 					{
-						return "Failed to match: " + arg + ", actual: " + actual + ", expected: " + expectation;
+						return "Failed to match: " + arg + ", actual: " + parsedValue + ", expected: " + expectation;
 					}
 				};
-				assertThat(actual).as(description).isEqualTo(expectation);
+				assertThat(parsedValue).as(description).isEqualTo(expectation);
 			}
 		}
 	}

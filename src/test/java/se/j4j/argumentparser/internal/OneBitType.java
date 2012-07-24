@@ -1,6 +1,8 @@
 package se.j4j.argumentparser.internal;
 
-
+/**
+ * To cover the edge case where a type has a {@link #bitSize()} of 1
+ */
 public final class OneBitType extends NumberType<Integer>
 {
 	@Override
@@ -16,13 +18,13 @@ public final class OneBitType extends NumberType<Integer>
 	}
 
 	@Override
-	public Integer cast(Long value)
+	public Integer fromLong(Long value)
 	{
 		return value.intValue();
 	}
 
 	@Override
-	public Long cast(Integer value)
+	public Long toLong(Integer value)
 	{
 		return value.longValue();
 	}

@@ -302,13 +302,16 @@ public class TestRadixArguments
 		assertThat(longArgument("-b").parse()).isZero();
 	}
 
+	/**
+	 * Generates some good numbers to test for the given <code>type</code>
+	 */
 	public static <T extends Number & Comparable<T>> Iterable<T> numbersToTest(NumberType<T> type)
 	{
 		T minValueT = type.minValue();
-		long minValue = type.cast(minValueT);
+		long minValue = type.toLong(minValueT);
 
 		T maxValueT = type.maxValue();
-		long maxValue = type.cast(maxValueT);
+		long maxValue = type.toLong(maxValueT);
 
 		double stepSize = (double) 5 / 100;
 
@@ -317,7 +320,7 @@ public class TestRadixArguments
 
 		for(long i = (long) (minValue + rangeLength * stepSize); i < maxValue; i = (long) (i + rangeLength * stepSize))
 		{
-			numbers.add(type.cast(i));
+			numbers.add(type.fromLong(i));
 		}
 		numbers.add(maxValueT);
 		numbers.add(minValueT);
@@ -384,6 +387,9 @@ public class TestRadixArguments
 		}
 	}
 
+	/**
+	 * Generates some good long numbers to test
+	 */
 	private static Iterable<Long> longNumbers()
 	{
 		long stepSize = (long) (Long.MAX_VALUE * (double) 5 / 100);
