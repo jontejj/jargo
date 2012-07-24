@@ -10,6 +10,13 @@ import se.j4j.argumentparser.ArgumentException;
 public class TestBooleanArguments
 {
 	@Test
+	public void testThatBooleanParsesTrueOk() throws ArgumentException
+	{
+		boolean result = booleanArgument("-b").parse("-b", "true");
+		assertThat(result).isTrue();
+	}
+
+	@Test
 	public void testDescription()
 	{
 		String usage = booleanArgument("-b").usage("BooleanArgument");

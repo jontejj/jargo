@@ -10,6 +10,13 @@ import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class TestDoubleArguments
 {
+	@Test
+	public void testValidDouble() throws ArgumentException
+	{
+		double d = doubleArgument("-d").parse("-d", "555.666");
+
+		assertThat(d).isEqualTo(555.666);
+	}
 
 	@Test
 	public void testInvalidDouble() throws ArgumentException
@@ -22,14 +29,6 @@ public class TestDoubleArguments
 		{
 			assertThat(e.getMessage()).isEqualTo("'1,a' is not a valid double (64-bit IEEE 754 floating point)");
 		}
-	}
-
-	@Test
-	public void testValidDouble() throws ArgumentException
-	{
-		double d = doubleArgument("-d").parse("-d", "555.666");
-
-		assertThat(d).isEqualTo(555.666);
 	}
 
 	@Test

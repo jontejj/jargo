@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 public class TestFinalizers
 {
 	@Test
-	public void testThatFinalizersAreCalled() throws ArgumentException
+	public void testThatFinalizersAreCalledForParsedValues() throws ArgumentException
 	{
 		assertThat(stringArgument().finalizeWith(new AddBar()).parse("foo")).isEqualTo("foobar");
 	}
@@ -68,7 +68,7 @@ public class TestFinalizers
 	{
 		Finalizer<String> compoundFinalizer = Finalizers.compound(ImmutableList.of(new AddFoo(), new AddBar()));
 
-		assertThat(stringArgument().finalizeWith(compoundFinalizer).parse("_")).isEqualTo("_foobar");
+		assertThat(stringArgument().finalizeWith(compoundFinalizer).parse("")).isEqualTo("foobar");
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class TestFinalizers
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testThatEmptyListIsIllegal()
+	public void testThatEmptyListOfFinalizersIsIllegal()
 	{
 		Finalizers.compound(new ArrayList<Finalizer<Object>>());
 	}

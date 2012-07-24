@@ -10,6 +10,13 @@ import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class TestFloatArguments
 {
+	@Test
+	public void testValidFloat() throws ArgumentException
+	{
+		float f = floatArgument("-d").parse("-d", "555.666");
+
+		assertThat(f).isEqualTo(555.666f);
+	}
 
 	@Test
 	public void testInvalidFloat() throws ArgumentException
@@ -22,14 +29,6 @@ public class TestFloatArguments
 		{
 			assertThat(e.getMessage()).isEqualTo("'1,a' is not a valid float (32-bit IEEE 754 floating point)");
 		}
-	}
-
-	@Test
-	public void testValidFloat() throws ArgumentException
-	{
-		float f = floatArgument("-d").parse("-d", "555.666");
-
-		assertThat(f).isEqualTo(555.666f);
 	}
 
 	@Test

@@ -11,4 +11,9 @@ public class Foo
 		bar = aBar;
 	}
 
+	@Override
+	public String toString()
+	{
+		return foo + ":" + bar;
+	}
 }

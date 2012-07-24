@@ -1,0 +1,3 @@
+Usage: SeparatorWithArity [Options]
+-numbers=<integer> <integer> <integer>    <integer>: -2147483648 to 2147483647 (decimal)
+                                          Default: [0, 0, 0]

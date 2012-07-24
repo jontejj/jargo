@@ -17,10 +17,8 @@ public class TestSeparators
 	{
 		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("=").build();
 
-		CommandLineParser parser = CommandLineParser.forArguments(logLevel);
-
-		assertThat(parser.parse("-Log=debug").get(logLevel)).as("wrong log level").isEqualTo("debug");
-		assertThat(parser.parse("-log=debug").get(logLevel)).as("wrong log level").isEqualTo("debug");
+		assertThat(logLevel.parse("-Log=debug")).isEqualTo("debug");
+		assertThat(logLevel.parse("-log=debug")).isEqualTo("debug");
 	}
 
 	@Test
@@ -28,15 +26,16 @@ public class TestSeparators
 	{
 		Argument<String> logLevel = stringArgument("-log").ignoreCase().separator("A").build();
 
-		CommandLineParser parser = CommandLineParser.forArguments(logLevel);
-
-		assertThat(parser.parse("-LogAdebug").get(logLevel)).as("wrong log level").isEqualTo("debug");
-		assertThat(parser.parse("-logAdebug").get(logLevel)).as("wrong log level").isEqualTo("debug");
+		assertThat(logLevel.parse("-LogAdebug")).isEqualTo("debug");
+		assertThat(logLevel.parse("-logAdebug")).isEqualTo("debug");
 	}
 
 	@Test
 	public void testArityCombinedWithSeparator() throws ArgumentException
 	{
+		String usage = integerArgument("-numbers").arity(3).separator("=").usage("SeparatorWithArity");
+		assertThat(usage).isEqualTo(expected("separatorCombinedWithArity"));
+
 		List<Integer> numbers = integerArgument("-numbers").arity(3).separator("=").parse("-numbers=1", "2", "3");
 		assertThat(numbers).isEqualTo(Arrays.asList(1, 2, 3));
 	}

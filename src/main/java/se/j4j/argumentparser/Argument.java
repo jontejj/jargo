@@ -1,6 +1,5 @@
 package se.j4j.argumentparser;
 
-import static java.util.Collections.unmodifiableList;
 import static se.j4j.argumentparser.ArgumentExceptions.forLimit;
 
 import java.util.List;
@@ -94,7 +93,7 @@ public final class Argument<T> extends ArgumentSettings
 		this.required = builder.isRequired();
 		this.separator = builder.separator();
 		this.ignoreCase = builder.isIgnoringCase();
-		this.names = unmodifiableList(builder.names());
+		this.names = builder.names();
 		this.isPropertyMap = builder.isPropertyMap();
 		this.isAllowedToRepeat = builder.isAllowedToRepeat();
 		this.hideFromUsage = builder.isHiddenFromUsage();

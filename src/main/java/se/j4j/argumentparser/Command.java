@@ -1,5 +1,7 @@
 package se.j4j.argumentparser;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import javax.annotation.CheckReturnValue;
@@ -13,7 +15,6 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 
 /**
  * <pre>
@@ -33,7 +34,7 @@ import com.google.common.collect.ImmutableList;
  * </pre>
  */
 @Immutable
-public abstract class Command extends InternalStringParser<String>
+public abstract class Command extends InternalStringParser<String> implements Description
 {
 	/**
 	 * <pre>
@@ -48,7 +49,7 @@ public abstract class Command extends InternalStringParser<String>
 	@Nonnull
 	protected List<Argument<?>> commandArguments()
 	{
-		return ImmutableList.of();
+		return emptyList();
 	}
 
 	/**
@@ -59,7 +60,18 @@ public abstract class Command extends InternalStringParser<String>
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public abstract String commandName();
+	protected abstract String commandName();
+
+	/**
+	 * Override to provide a description to print in the usage text for this command
+	 * 
+	 * @return the description to use in the usage text
+	 */
+	@Override
+	public String description()
+	{
+		return "";
+	}
 
 	/**
 	 * Called when this command should be executed.

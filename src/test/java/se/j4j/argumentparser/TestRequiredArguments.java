@@ -8,11 +8,43 @@ import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestRequiredArguments
 {
+	@Test
+	public void testMissingRequiredArgument() throws ArgumentException
+	{
+		Argument<Integer> number = integerArgument("--number").required().build();
+		Argument<Integer> number2 = integerArgument("--number2").required().build();
+
+		try
+		{
+			CommandLineParser.forArguments(number, number2).parse();
+			fail("Required argument silently ignored");
+		}
+		catch(MissingRequiredArgumentException e)
+		{
+			assertThat(e).hasMessage("Missing required arguments: [--number, --number2]");
+		}
+	}
+
+	@Test(expected = MissingRequiredArgumentException.class)
+	public void testThatRequiredArgumentsIsResetBetweenParsings() throws ArgumentException
+	{
+		Argument<Integer> required = integerArgument("-n").required().build();
+		CommandLineParser parser = CommandLineParser.forArguments(required);
+
+		try
+		{
+			parser.parse("-n", "1");
+		}
+		catch(ArgumentException e)
+		{
+			fail("Parser failed to handle required argument");
+		}
+		parser.parse(); // The second time shouldn't be affected by the first
+	}
 
 	@SuppressWarnings("deprecation")
 	// This is what's tested
@@ -34,39 +66,5 @@ public class TestRequiredArguments
 	public void testMakingARequiredArgumentWithDefaultValue()
 	{
 		integerArgument("-l").defaultValue(42).required();
-	}
-
-	@Test(expected = MissingRequiredArgumentException.class)
-	public void testThatRequiredArgumentsIsResetBetweenParsings() throws ArgumentException
-	{
-		Argument<Integer> required = integerArgument("-n").required().build();
-		CommandLineParser parser = CommandLineParser.forArguments(required);
-
-		try
-		{
-			parser.parse("-n", "1");
-		}
-		catch(ArgumentException e)
-		{
-			fail("Parser failed to handle required argument");
-		}
-		parser.parse(); // The second time shouldn't be affected by the first
-	}
-
-	@Test
-	public void testMissingRequiredArgument() throws ArgumentException
-	{
-		Argument<Integer> number = integerArgument("--number").required().build();
-		Argument<Integer> number2 = integerArgument("--number2").required().build();
-
-		try
-		{
-			ParsedArguments parsed = CommandLineParser.forArguments(number, number2).parse();
-			fail("Required argument silently ignored. Parsed data: " + parsed);
-		}
-		catch(MissingRequiredArgumentException e)
-		{
-			assertThat(e).hasMessage("Missing required arguments: [--number, --number2]");
-		}
 	}
 }

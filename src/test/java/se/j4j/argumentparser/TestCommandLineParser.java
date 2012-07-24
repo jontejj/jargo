@@ -1,6 +1,5 @@
 package se.j4j.argumentparser;
 
-import static java.util.Arrays.asList;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
@@ -8,10 +7,10 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CommandLineParser.forArguments;
+import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class TestCommandLineParser
 {
 	/**
-	 * An example of how to create a pretty readable command line invocation:
+	 * An example of how to create a <b>easy to understand</b> command line invocation:<br>
 	 * java testprog --enable-logging --listen-port 8090 Hello
 	 */
 	@Test
@@ -48,10 +47,13 @@ public class TestCommandLineParser
 
 	/**
 	 * <pre>
-	 * An example of how to create an unreadable command line invocation:
+	 * An example of how to create a <b>hard to understand</b> command line invocation:
 	 * java program true 8090 Hello
 	 * Note that the order of the arguments matter and who knows what true
-	 * means? Please don't overuse this feature :)
+	 * means?
+	 * 
+	 * This feature is allowed only because there exists some use cases where indexed arguments makes sense, one example is:<br>
+	 * echo "Hello World"
 	 * </pre>
 	 */
 	@Test
@@ -72,33 +74,10 @@ public class TestCommandLineParser
 		assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
 	}
 
-	@Test
-	public void testFlagArgumentDefaultValue() throws ArgumentException
-	{
-		Boolean loggingEnabled = optionArgument("--disable-logging").defaultValue(true).parse();
-
-		assertThat(loggingEnabled).as("defaults to true").isTrue();
-	}
-
 	@Test(expected = UnexpectedArgumentException.class)
 	public void testUnhandledParameter() throws ArgumentException
 	{
 		CommandLineParser.forArguments().parse("Unhandled");
-	}
-
-	@Test
-	public void testMultipleParametersForNamedArgument() throws ArgumentException
-	{
-		assertThat(integerArgument("--numbers").variableArity().parse("--numbers", "5", "6")).isEqualTo(asList(5, 6));
-	}
-
-	/**
-	 * a list of values should be unmodifiable
-	 */
-	@Test(expected = UnsupportedOperationException.class)
-	public void testMultipleParametersForNamedArgumentUnmodifiableResult() throws ArgumentException
-	{
-		integerArgument("--numbers").variableArity().parse("--numbers", "2", "3").add(1);
 	}
 
 	@Test
@@ -118,15 +97,6 @@ public class TestCommandLineParser
 		}
 	}
 
-	@Test
-	public void testDefaultValuesForMultipleParametersForNamedArgument() throws ArgumentException
-	{
-		List<Integer> defaults = asList(5, 6);
-		List<Integer> numbers = integerArgument("--numbers").variableArity().defaultValue(defaults).parse();
-
-		assertThat(numbers).isEqualTo(defaults);
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
 	public void testErrorHandlingForTwoParametersWithTheSameName()
@@ -140,21 +110,15 @@ public class TestCommandLineParser
 	public void testErrorHandlingForTwoIndexedParametersWithTheSameDefinition()
 	{
 		Argument<Integer> numberOne = integerArgument().build();
+		// There wouldn't be a way to know which argument numberOne referenced
 		CommandLineParser.forArguments(numberOne, numberOne);
-	}
-
-	@Test
-	public void testNullAsDefaultValue() throws ArgumentException
-	{
-		Integer number = integerArgument("-n").defaultValue(null).parse();
-
-		assertThat(number).isNull();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "Checks enforcement of the annotation")
 	public void testNullMetaDescription()
 	{
+		// TODO: should this use NullPointerTester in guava-testlib instead?
 		integerArgument("-n").metaDescription(null);
 	}
 
@@ -178,6 +142,7 @@ public class TestCommandLineParser
 	@Test
 	public void testShorthandInvocation() throws ArgumentException
 	{
+		// For a single argument it's easier to call parse directly on the ArgumentBuilder
 		assertThat(integerArgument().parse("42")).isEqualTo(42);
 	}
 
@@ -185,6 +150,27 @@ public class TestCommandLineParser
 	public void testWrongArgumentForShorthandInvocation() throws ArgumentException
 	{
 		integerArgument().parse("a42");
+	}
+
+	@Test
+	public void testSeveralOptionsInOneArgument() throws ArgumentException
+	{
+		Argument<Boolean> logging = optionArgument("-l").build();
+		Argument<Boolean> promiscousMode = optionArgument("-p").build();
+
+		ParsedArguments args = CommandLineParser.forArguments(logging, promiscousMode).parse("-pl");
+
+		assertThat(args.get(logging)).isTrue();
+		assertThat(args.get(promiscousMode)).isTrue();
+	}
+
+	@Test(expected = UnexpectedArgumentException.class)
+	public void testSeveralOptionsInOneArgumentWithOneNonOptionArgument() throws ArgumentException
+	{
+		Argument<Boolean> logging = optionArgument("-l").build();
+		Argument<Integer> number = integerArgument("-n").build();
+
+		CommandLineParser.forArguments(logging, number).parse("-ln");
 	}
 
 	@Test
@@ -218,6 +204,13 @@ public class TestCommandLineParser
 		assertThat(parsedArguments.hashCode()).isEqualTo(parsedArgumentsTwo.hashCode());
 
 		assertThat(forArguments().parse()).isEqualTo(forArguments().parse());
+	}
+
+	@Test
+	public void testThatOptionalArgumentDefaultsToTrue()
+	{
+		assertThat(optionParser(true).defaultValue()).isTrue();
+		assertThat(optionParser(false).defaultValue()).isFalse();
 	}
 
 	/**

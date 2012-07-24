@@ -2,7 +2,6 @@ package se.j4j.argumentparser.stringparsers;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.enumArgument;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class TestEnumArguments
 {
-	public enum Action
+	enum Action
 	{
 		start,
 		stop,
@@ -26,24 +25,6 @@ public class TestEnumArguments
 	{
 		Action action = enumArgument(Action.class).parse("stop");
 		assertThat(action).isEqualTo(Action.stop);
-	}
-
-	public enum NoPossibleValues
-	{
-	}
-
-	@Test
-	public void testThatEnumsWithoutPossibleValuesAreInvalidated()
-	{
-		try
-		{
-			enumArgument(NoPossibleValues.class, "-UselessParameter");
-			fail("Enum wasn't invalidated");
-		}
-		catch(IllegalArgumentException expected)
-		{
-			assertThat(expected).hasMessage("NoPossibleValues has no possible values defined");
-		}
 	}
 
 	@Test
@@ -61,7 +42,7 @@ public class TestEnumArguments
 		assertThat(usageText).contains("Default: null");
 	}
 
-	public enum ShouldNotInitialize
+	enum ShouldNotInitialize
 	{
 		VALUE;
 
@@ -76,9 +57,8 @@ public class TestEnumArguments
 	@Test
 	public void testThatEnumIsNotInitializedUntilParse()
 	{
-		// enumArgument(ShouldNotInitialize.class, "-UselessParameter");
-		// TODO: how should this be solved?
-		// assertThat(staticEnumCodeHaveBeenRun).isFalse();
+		enumArgument(ShouldNotInitialize.class, "-UselessParameter");
+		assertThat(staticEnumCodeHaveBeenRun).isFalse();
 	}
 
 	@Test

@@ -26,29 +26,6 @@ public final class ArgumentExpector
 		return new Expectation<T>(definition);
 	}
 
-	/**
-	 * <pre>
-	 * Useful for concurrency testing as you can reuse the same parser
-	 * instance.
-	 * 
-	 * Note that {@link Assertion#given(String)} should not be used in
-	 * conjunction with this method
-	 * 
-	 * @param arguments a complete set of command line arguments
-	 * @param parser the configured parser instance, it should contain all
-	 *            {@link Argument} instances that {@link #expectThat(Argument)}
-	 *            has received
-	 * @throws ArgumentException
-	 */
-	public void assertForArguments(String arguments, CommandLineParser parser) throws ArgumentException
-	{
-		ParsedArguments parsedArguments = parser.parse(Arrays.asList(arguments.split(" ")));
-		for(Expectation<?> expectation : expectations)
-		{
-			assertExpectation(expectation, parsedArguments);
-		}
-	}
-
 	public class Expectation<T>
 	{
 		Argument<T> definition;

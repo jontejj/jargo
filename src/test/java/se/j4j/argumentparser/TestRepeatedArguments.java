@@ -7,7 +7,6 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,46 +19,8 @@ import com.google.common.collect.ImmutableList;
 
 public class TestRepeatedArguments
 {
-
-	@SuppressWarnings("deprecation")
-	// This is what's tested
-	@Test(expected = IllegalStateException.class)
-	public void testCallingRepeatedBeforeArity()
-	{
-		integerArgument("--number").repeated().arity(2);
-	}
-
-	@SuppressWarnings("deprecation")
-	// This is what's tested
-	@Test(expected = IllegalStateException.class)
-	public void testCallingRepeatedBeforeVariableArity()
-	{
-		integerArgument("--number").repeated().variableArity();
-	}
-
-	@SuppressWarnings("deprecation")
-	// This is what's tested
-	@Test(expected = IllegalStateException.class)
-	public void testCallingSplitWithAfterRepeated()
-	{
-		integerArgument().repeated().splitWith(",");
-	}
-
 	@Test
-	public void testTwoParametersForNamedArgumentRepeated() throws ArgumentException
-	{
-		String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
-
-		List<List<Integer>> numbers = integerArgument("--numbers").arity(2).repeated().parse(args);
-
-		List<List<Integer>> expected = new ArrayList<List<Integer>>();
-		expected.add(Arrays.asList(5, 6));
-		expected.add(Arrays.asList(3, 4));
-		assertThat(numbers).isEqualTo(expected);
-	}
-
-	@Test
-	public void testTwoParametersForNamedArgumentRepeatedSingle() throws ArgumentException
+	public void testRepeatedIntegerArgument() throws ArgumentException
 	{
 		String[] args = {"--number", "1", "--number", "2"};
 
@@ -68,14 +29,22 @@ public class TestRepeatedArguments
 		assertThat(numbers).isEqualTo(Arrays.asList(1, 2));
 	}
 
+	@Test
+	public void testRepeatedArityArgument() throws ArgumentException
+	{
+		String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
+		List<List<Integer>> numbers = integerArgument("--numbers").arity(2).repeated().parse(args);
+		assertThat(numbers).isEqualTo(ImmutableList.of(of(5, 6), of(3, 4)));
+	}
+
 	@Test(expected = UnhandledRepeatedArgument.class)
-	public void testNamedArgumentRepeatedNotAllowed() throws ArgumentException
+	public void testUnhandledRepition() throws ArgumentException
 	{
 		integerArgument("-number").parse("-number", "5", "-number", "3");
 	}
 
 	@Test(expected = UnhandledRepeatedArgument.class)
-	public void testTwoParametersForNamedArgumentRepeatedNotAllowed() throws ArgumentException
+	public void testUnhandledRepitionForArityArgument() throws ArgumentException
 	{
 		integerArgument("--numbers").arity(2).parse("--numbers", "5", "6", "--numbers", "3", "4");
 	}
@@ -122,5 +91,29 @@ public class TestRepeatedArguments
 		catch(UnsupportedOperationException expected)
 		{
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	// This is what's tested
+	@Test(expected = IllegalStateException.class)
+	public void testCallingRepeatedBeforeArity()
+	{
+		integerArgument("--number").repeated().arity(2);
+	}
+
+	@SuppressWarnings("deprecation")
+	// This is what's tested
+	@Test(expected = IllegalStateException.class)
+	public void testCallingRepeatedBeforeVariableArity()
+	{
+		integerArgument("--number").repeated().variableArity();
+	}
+
+	@SuppressWarnings("deprecation")
+	// This is what's tested
+	@Test(expected = IllegalStateException.class)
+	public void testCallingSplitWithAfterRepeated()
+	{
+		integerArgument().repeated().splitWith(",");
 	}
 }

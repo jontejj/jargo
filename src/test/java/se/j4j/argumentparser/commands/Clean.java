@@ -20,6 +20,12 @@ public class Clean extends Command
 	}
 
 	@Override
+	public String description()
+	{
+		return "Cleans a target";
+	}
+
+	@Override
 	protected void execute(ParsedArguments parsedArguments)
 	{
 		target.clean();

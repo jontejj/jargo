@@ -6,7 +6,7 @@ import com.google.common.collect.Ranges;
 
 /**
  * A class that exposes static fields, such as {@link Integer#SIZE}, for subclasses of
- * {@link Number}
+ * {@link Number} in an object oriented way
  * 
  * @param <T> the subclass of {@link Number}
  */
@@ -26,9 +26,9 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 
 	public abstract T maxValue();
 
-	public abstract T cast(Long value);
+	public abstract T fromLong(Long value);
 
-	public abstract Long cast(T value);
+	public abstract Long toLong(T value);
 
 	/**
 	 * @return Number of bits needed to represent <code>T</code>
@@ -39,7 +39,7 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 
 	public final T defaultValue()
 	{
-		return cast(0L);
+		return fromLong(0L);
 	}
 
 	/**
@@ -66,13 +66,13 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		}
 
 		@Override
-		public Byte cast(Long value)
+		public Byte fromLong(Long value)
 		{
 			return value.byteValue();
 		}
 
 		@Override
-		public Long cast(Byte value)
+		public Long toLong(Byte value)
 		{
 			return value.longValue();
 		}
@@ -105,13 +105,13 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		}
 
 		@Override
-		public Integer cast(Long value)
+		public Integer fromLong(Long value)
 		{
 			return value.intValue();
 		}
 
 		@Override
-		public Long cast(Integer value)
+		public Long toLong(Integer value)
 		{
 			return value.longValue();
 		}
@@ -144,13 +144,13 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		}
 
 		@Override
-		public Short cast(Long value)
+		public Short fromLong(Long value)
 		{
 			return value.shortValue();
 		}
 
 		@Override
-		public Long cast(Short value)
+		public Long toLong(Short value)
 		{
 			return value.longValue();
 		}
@@ -183,7 +183,13 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		}
 
 		@Override
-		public Long cast(Long value)
+		public Long fromLong(Long value)
+		{
+			return value;
+		}
+
+		@Override
+		public Long toLong(Long value)
 		{
 			return value;
 		}

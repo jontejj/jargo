@@ -30,20 +30,6 @@ public final class ArgumentExceptions
 		return new InvalidArgument(explanation, invalidValue);
 	}
 
-	public static MissingRequiredArgumentException forMissingArguments(final Collection<Argument<?>> missingArguments, final CommandLineParser parser)
-	{
-		MissingRequiredArgumentException exception = new MissingRequiredArgumentException(missingArguments);
-		exception.setOriginParser(parser);
-		return exception;
-	}
-
-	@Nonnull
-	public static LimitException forLimit(@Nonnull Limit reason)
-	{
-		// TODO , see usage for '-i' for proper values.
-		return new LimitException(reason);
-	}
-
 	/**
 	 * @param exceptionMessage the {@link Description} to use in {@link Throwable#getMessage()}
 	 * @return an unchecked exception that uses {@link Description#description()} as
@@ -54,6 +40,20 @@ public final class ArgumentExceptions
 	public static IllegalArgumentException withDescription(@Nonnull final Description exceptionMessage, @Nonnull final ArgumentException cause)
 	{
 		return new UncheckedArgumentException(exceptionMessage, cause);
+	}
+
+	static MissingRequiredArgumentException forMissingArguments(final Collection<Argument<?>> missingArguments, final CommandLineParser parser)
+	{
+		MissingRequiredArgumentException exception = new MissingRequiredArgumentException(missingArguments);
+		exception.originatedFrom(parser);
+		return exception;
+	}
+
+	@Nonnull
+	static LimitException forLimit(@Nonnull Limit reason)
+	{
+		// TODO , see usage for '-i' for proper values.
+		return new LimitException(reason);
 	}
 
 	@CheckReturnValue
@@ -119,7 +119,7 @@ public final class ArgumentExceptions
 	 * "-p 8080" is expected but
 	 * "-p" is given
 	 */
-	public static final class MissingParameterException extends ArgumentException
+	static final class MissingParameterException extends ArgumentException
 	{
 		private final String usedArgumentName;
 		private final ArgumentSettings argumentRequiringTheParameter;
@@ -147,7 +147,7 @@ public final class ArgumentExceptions
 	 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
 	 * argument wasn't found in the input arguments
 	 */
-	public static final class MissingRequiredArgumentException extends ArgumentException
+	static final class MissingRequiredArgumentException extends ArgumentException
 	{
 		private final Collection<Argument<?>> missingArguments;
 
@@ -168,7 +168,7 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
-	public static final class LimitException extends ArgumentException
+	static final class LimitException extends ArgumentException
 	{
 		private final Limit reason;
 
@@ -194,7 +194,7 @@ public final class ArgumentExceptions
 	 * "1 2" is expected but
 	 * "1 2 3" is given
 	 */
-	public static final class UnexpectedArgumentException extends ArgumentException
+	static final class UnexpectedArgumentException extends ArgumentException
 	{
 		private final String unexpectedArgument;
 		private final String previousArgument;
@@ -227,7 +227,7 @@ public final class ArgumentExceptions
 	 * "--numbers 1 2" is expected but
 	 * "--numbers 1 2 --numbers 3 4" is given
 	 */
-	public static final class UnhandledRepeatedArgument extends ArgumentException
+	static final class UnhandledRepeatedArgument extends ArgumentException
 	{
 		private final Object reason;
 

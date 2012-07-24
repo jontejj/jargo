@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.Description;
 import se.j4j.argumentparser.Limit;
@@ -56,19 +55,19 @@ public class TestLimiters
 		}
 	}
 
-	@Test(expected = LimitException.class)
+	@Test(expected = ArgumentException.class)
 	public void testRepeatedWithLimiter() throws ArgumentException
 	{
 		stringArgument("-i", "--index").limitTo(foos()).repeated().parse("-i", "foo", "-i", "bar");
 	}
 
-	@Test(expected = LimitException.class)
+	@Test(expected = ArgumentException.class)
 	public void testArityOfWithLimiter() throws ArgumentException
 	{
 		stringArgument("-i", "--indices").limitTo(foos()).arity(2).parse("-i", "foo", "bar");
 	}
 
-	@Test(expected = LimitException.class)
+	@Test(expected = ArgumentException.class)
 	public void testSplittingAndLimiting() throws ArgumentException
 	{
 		stringArgument("-n").separator("=").limitTo(foos()).splitWith(",").parse("-n=foo,bar");
@@ -87,22 +86,13 @@ public class TestLimiters
 		}
 	}
 
-	// This is what's tested
-	@SuppressWarnings("unchecked")
-	@Test(expected = ClassCastException.class)
-	public void testInvalidLimiterType() throws ArgumentException
-	{
-		Object limiter = new ShortString();
-		integerArgument("-n").limitTo((Limiter<Integer>) limiter).parse("-n", "1");
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	public void testThatDefaultValuesAreLimited() throws ArgumentException
 	{
 		stringArgument("-n").limitTo(foos()).defaultValue("bar").parse();
 	}
 
-	@Test(expected = LimitException.class)
+	@Test(expected = ArgumentException.class)
 	public void testThatLimitersAreDescribable() throws ArgumentException
 	{
 		integerArgument("-n").limitTo(new Limiter<Integer>(){

@@ -1,4 +1,4 @@
-package se.j4j.argumentparser.suppliers;
+package se.j4j.argumentparser.defaultvalues;
 
 import com.google.common.base.Supplier;
 

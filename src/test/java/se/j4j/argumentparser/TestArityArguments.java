@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
@@ -19,6 +20,32 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class TestArityArguments
 {
+	@Test
+	public void testTwoParametersForNamedArgument() throws ArgumentException
+	{
+		String[] args = {"--numbers", "5", "6", "Rest", "Of", "Arguments"};
+
+		Argument<List<Integer>> numbers = integerArgument("--numbers").arity(2).build();
+		Argument<List<String>> unhandledArguments = stringArgument().variableArity().build();
+
+		ParsedArguments parsed = CommandLineParser.forArguments(numbers, unhandledArguments).parse(args);
+
+		assertThat(parsed.get(numbers)).isEqualTo(Arrays.asList(5, 6));
+		assertThat(parsed.get(unhandledArguments)).isEqualTo(Arrays.asList("Rest", "Of", "Arguments"));
+	}
+
+	@Test
+	public void testVariableArityForNamedArgument() throws ArgumentException
+	{
+		assertThat(integerArgument("--numbers").variableArity().parse("--numbers", "5", "6")).isEqualTo(asList(5, 6));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testThatParsedValuesIsWrappedInAnUnmodifiableList() throws ArgumentException
+	{
+		integerArgument("--numbers").variableArity().parse("--numbers", "2", "3").add(1);
+	}
+
 	// This is what's being tested
 	@SuppressWarnings("deprecation")
 	@Test(expected = IllegalStateException.class)
@@ -39,20 +66,6 @@ public class TestArityArguments
 		{
 			assertThat(expected).hasMessage("Arity requires at least 2 parameters (got 1)");
 		}
-	}
-
-	@Test
-	public void testTwoParametersForNamedArgument() throws ArgumentException
-	{
-		String[] args = {"--numbers", "5", "6", "Rest", "Of", "Arguments"};
-
-		Argument<List<Integer>> numbers = integerArgument("--numbers").arity(2).build();
-		Argument<List<String>> unhandledArguments = stringArgument().variableArity().build();
-
-		ParsedArguments parsed = CommandLineParser.forArguments(numbers, unhandledArguments).parse(args);
-
-		assertThat(parsed.get(numbers)).isEqualTo(Arrays.asList(5, 6));
-		assertThat(parsed.get(unhandledArguments)).isEqualTo(Arrays.asList("Rest", "Of", "Arguments"));
 	}
 
 	@Test
@@ -97,6 +110,8 @@ public class TestArityArguments
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
 	public void testThatTwoUnnamedVariableArityArgumentsIsIllegal()
 	{
+		// This is illegal because the parser couldn't possibly know when the integerArgument ends
+		// and the stringArgument begins
 		Argument<List<Integer>> numbers = integerArgument().variableArity().build();
 		Argument<List<String>> strings = stringArgument().variableArity().build();
 
