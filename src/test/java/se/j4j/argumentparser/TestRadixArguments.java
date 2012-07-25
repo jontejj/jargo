@@ -58,6 +58,13 @@ public class TestRadixArguments
 	}
 
 	@Test
+	public void testHexInputWithLeadingRadixIdentifier() throws ArgumentException
+	{
+		Integer hex = integerArgument("-h").radix(HEX).parse("-h", "0xFF");
+		assertThat(hex).isEqualTo(0xFF);
+	}
+
+	@Test
 	public void testBinaryInput() throws ArgumentException
 	{
 		Integer binary = integerArgument("-b").radix(BINARY).parse("-b", "1001");
