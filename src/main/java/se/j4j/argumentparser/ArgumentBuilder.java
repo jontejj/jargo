@@ -104,7 +104,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * @return an Immutable {@link Argument} which can be passed to
-	 *         {@link CommandLineParser#forArguments(Argument...)}
+	 *         {@link CommandLineParser#forArguments(Argument...)} <br>
+	 *         When the parsing is done the parsed value for this
+	 *         argument can be fetched with {@link ParsedArguments#get(Argument)}.
 	 */
 	@CheckReturnValue
 	@Nonnull

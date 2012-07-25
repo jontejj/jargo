@@ -1022,17 +1022,7 @@ public final class StringParsers
 		{
 			try
 			{
-				Long result = null;
-				if(radix.isUnsignedOutput())
-				{
-					// TODO: make Radix.HEX handle leading 0x
-					result = UnsignedLongs.parseUnsignedLong(value, radix.radix());
-					result = makeSigned(result);
-				}
-				else
-				{
-					result = Long.parseLong(value, radix.radix());
-				}
+				long result = radix.parse(value, type);
 
 				if(notInRange(result))
 					throw forInvalidValue(value, "is not in the range " + descriptionOfValidValues());
@@ -1056,31 +1046,6 @@ public final class StringParsers
 			return result.compareTo(minValue) < 0 || result.compareTo(maxValue) > 0;
 		}
 
-		private long makeSigned(long value)
-		{
-			long signMask = signBitMask();
-			if(isSigned(value, signMask))
-			{
-				long valueBits = signMask - 1;
-				// Inverse all bits except the sign bit
-				return signMask | (valueBits ^ ~value);
-			}
-			return value;
-		}
-
-		/**
-		 * @return one bit where the sign for the type <code>T</code> is
-		 */
-		private long signBitMask()
-		{
-			return (long) 1 << (type.bitSize() - 1);
-		}
-
-		private boolean isSigned(long value, long signMask)
-		{
-			return (value & signMask) > 0;
-		}
-
 		@Override
 		public String descriptionOfValidValues()
 		{
@@ -1088,7 +1053,7 @@ public final class StringParsers
 			T minValue = validRange.lowerEndpoint();
 			String maximumValue;
 			String minimumValue;
-			if(radix.isUnsignedOutput())
+			if(radix.shouldBePrintedAsUnsigned())
 			{
 				T maxValueToDisplay = (maxValue.equals(type.maxValue())) ? type.fromLong(-1L) : maxValue;
 				T minValueToDisplay = (minValue.equals(type.minValue())) ? type.fromLong(0L) : minValue;
@@ -1108,52 +1073,13 @@ public final class StringParsers
 
 		String describeValue(T value)
 		{
-			// TODO: use strategy pattern instead
-			switch(radix)
-			{
-				case BINARY:
-					return toBinaryString(value);
-				default:
-
-					// TODO: Move this check into subclass or something
-					if(value.getClass() == Long.class)
-					{
-						String result = null;
-						if(radix.isUnsignedOutput())
-						{
-							result = UnsignedLongs.toString(type.toLong(value), radix.radix()).toUpperCase(Locale.ENGLISH);
-						}
-						else
-						{
-							// TODO: is it better to use java.text.NumberFormat?
-							result = Long.toString(type.toLong(value), radix.radix());
-						}
-						return result;
-					}
-					// TODO: Make Locale.ENGLISH settable
-					return String.format(Locale.ENGLISH, "%" + radix.formattingIdentifier(), value);
-			}
+			return type.toString(value, radix);
 		}
 
 		@Override
 		String describeValue(T value, ArgumentSettings argumentSettings)
 		{
 			return describeValue(value);
-		}
-
-		private String toBinaryString(T tValue)
-		{
-			long value = type.toLong(tValue);
-
-			final int size = type.bitSize();
-			char[] binaryString = new char[size];
-			for(int bitPosition = 0; bitPosition < size; bitPosition++)
-			{
-				boolean bitIsSet = (value & (1L << bitPosition)) != 0L;
-				int index = size - 1 - bitPosition;
-				binaryString[index] = bitIsSet ? '1' : '0';
-			}
-			return new String(binaryString);
 		}
 
 		@Override
@@ -1189,12 +1115,30 @@ public final class StringParsers
 		 * The default radix, 10. Handles signed values as well.
 		 * Just like {@link Long#parseLong(String)} does.
 		 */
-		DECIMAL(10, "d", UnsignedOutput.NO),
+		DECIMAL(10, "d", UnsignedOutput.NO)
+		{
+			@Override
+			public long parse(String value, NumberType<?> targetType)
+			{
+				return Long.parseLong(value, radix());
+			}
+		},
 		/**
 		 * Parses hex numbers, such as 0xFF into {@link Number}s, treats the hex numbers as unsigned
 		 * when parsing/printing them. Radix: 16
 		 */
-		HEX(16, "X", UnsignedOutput.YES);
+		HEX(16, "X", UnsignedOutput.YES)
+		{
+			@Override
+			public long parse(String value, NumberType<?> targetType)
+			{
+				if(value.startsWith("0x"))
+				{
+					value = value.substring(2);
+				}
+				return super.parse(value, targetType);
+			}
+		};
 
 		private int radix;
 		private String formattingIdentifier;
@@ -1208,14 +1152,20 @@ public final class StringParsers
 			this.unsignedOutput = unsignedOutput;
 		}
 
-		int radix()
+		public int radix()
 		{
 			return radix;
 		}
 
-		String formattingIdentifier()
+		public String formattingIdentifier()
 		{
 			return formattingIdentifier;
+		}
+
+		public long parse(String value, NumberType<?> targetType)
+		{
+			long result = UnsignedLongs.parseUnsignedLong(value, radix());
+			return makeSigned(result, targetType);
 		}
 
 		String description()
@@ -1223,9 +1173,26 @@ public final class StringParsers
 			return toString().toLowerCase(Locale.ENGLISH);
 		}
 
-		boolean isUnsignedOutput()
+		public boolean shouldBePrintedAsUnsigned()
 		{
 			return unsignedOutput == UnsignedOutput.YES;
+		}
+
+		private long makeSigned(long value, NumberType<?> targetType)
+		{
+			long signMask = targetType.signBitMask();
+			if(isSigned(value, signMask))
+			{
+				long valueBits = signMask - 1;
+				// Inverse all bits except the sign bit
+				return signMask | (valueBits ^ ~value);
+			}
+			return value;
+		}
+
+		private boolean isSigned(long value, long signMask)
+		{
+			return (value & signMask) > 0;
 		}
 
 		/**
