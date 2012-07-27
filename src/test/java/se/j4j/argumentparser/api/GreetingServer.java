@@ -30,7 +30,7 @@ public class GreetingServer
 	// "--listen-port").limitTo(range(0, 65536)).defaultValue(70000).repeated()
 	// .description("The port clients should connect to").metaDescription("port").build();
 
-	static final Argument<Integer> PORTS = integerArgument("-p", "--listen-port").minValue(0).maxValue(65535).defaultValue(70000)
+	static final Argument<Integer> PORTS = integerArgument("-p", "--listen-port").defaultValue(70000)
 			.description("The port clients should connect to").metaDescription("port").build();
 
 	static final Argument<List<String>> GREETING_PHRASES = stringArgument().variableArity()

@@ -6,7 +6,7 @@ import javax.annotation.concurrent.Immutable;
 
 /**
  * <pre>
- * Parses {@link String}s into values of the type <code>T</code>.
+ * Parses {@link String}s into values of the type {@code T}.
  * 
  * Pass your created {@link StringParser}s to {@link ArgumentFactory#withParser(StringParser)}
  * to create an {@link Argument} that uses it to parse values.
@@ -18,7 +18,7 @@ import javax.annotation.concurrent.Immutable;
 public interface StringParser<T>
 {
 	/**
-	 * Parses the given {@link String} into the type <code>T</code>
+	 * Parses the given {@link String} into the type {@code T}
 	 * 
 	 * @param argument the string as given from the command line
 	 * @return the parsed value

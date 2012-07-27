@@ -32,7 +32,7 @@ public class TestStringParserAsFunction
 		}
 		catch(IllegalArgumentException e)
 		{
-			assertThat(e).hasMessage("'a1' is not a valid number.");
+			assertThat(e).hasMessage("'a1' is not a valid decimal number.");
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package se.j4j.argumentparser;
+package se.j4j.argumentparser.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.isEmpty;
@@ -30,7 +30,7 @@ public final class Finalizers
 	/**
 	 * Runs several {@link Finalizer}s in the same order as they are
 	 * given as arguments here.<br>
-	 * If one of the {@link Finalizer}s makes <code>T</code> {@link Immutable},
+	 * If one of the {@link Finalizer}s makes {@code T} {@link Immutable},
 	 * make sure to pass it in last as it's hard to finalize
 	 * an {@link Immutable} value.
 	 * 
@@ -60,7 +60,7 @@ public final class Finalizers
 	}
 
 	@Nonnull
-	static <E> Finalizer<List<E>> forListValues(@Nonnull Finalizer<E> elementFinalizer)
+	public static <E> Finalizer<List<E>> forListValues(@Nonnull Finalizer<E> elementFinalizer)
 	{
 		if(elementFinalizer == noFinalizer())
 			return noFinalizer();
@@ -68,7 +68,7 @@ public final class Finalizers
 	}
 
 	@Nonnull
-	static <K, V> Finalizer<Map<K, V>> forMapValues(@Nonnull Finalizer<V> valueFinalizer)
+	public static <K, V> Finalizer<Map<K, V>> forMapValues(@Nonnull Finalizer<V> valueFinalizer)
 	{
 		if(valueFinalizer == noFinalizer())
 			return noFinalizer();
@@ -76,20 +76,20 @@ public final class Finalizers
 	}
 
 	@Nonnull
-	static <E> Finalizer<List<E>> unmodifiableListFinalizer()
+	public static <E> Finalizer<List<E>> unmodifiableListFinalizer()
 	{
 		return new UnmodifiableListMaker<E>();
 	}
 
 	@Nonnull
-	static <K, V> Finalizer<Map<K, V>> unmodifiableMapFinalizer()
+	public static <K, V> Finalizer<Map<K, V>> unmodifiableMapFinalizer()
 	{
 		return new UnmodifiableMapMaker<K, V>();
 	}
 
 	@Nonnull
 	@CheckReturnValue
-	static <T> Finalizer<T> noFinalizer()
+	public static <T> Finalizer<T> noFinalizer()
 	{
 		// Doesn't modify anything, i.e T is unused here
 		@SuppressWarnings("unchecked")

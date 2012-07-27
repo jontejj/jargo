@@ -1,13 +1,7 @@
 package se.j4j.argumentparser.internal;
 
-import java.util.Locale;
-
+import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.StringParsers.Radix;
-
-import com.google.common.annotations.Beta;
-import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
-import com.google.common.primitives.UnsignedLongs;
 
 /**
  * A class that exposes static fields, such as {@link Integer#SIZE}, for subclasses of
@@ -36,12 +30,12 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 	public abstract Long toLong(T value);
 
 	/**
-	 * @return Number of bits needed to represent <code>T</code>
+	 * @return Number of bits needed to represent {@code T}
 	 */
 	public abstract int bitSize();
 
 	/**
-	 * @return one bit where the sign for the type <code>T</code> is
+	 * @return a mask where the sign for the type {@code T} is set and nothing else
 	 */
 	public long signBitMask()
 	{
@@ -55,46 +49,42 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		return fromLong(0L);
 	}
 
+	/**
+	 * <pre>
+	 * Converts {@code value} (assuming that it's in the given {@code radix}) into a
+	 * {@code T} value.
+	 * 
+	 * For instance:
+	 * {@code Integer fortyTwo = NumberType.INTEGER.parse("42", Radix.DECIMAL);}
+	 * 
+	 * @throws InvalidArgument if the value is too big or in the wrong radix
+	 * </pre>
+	 */
+	public T parse(String value, Radix radix) throws InvalidArgument
+	{
+		return radix.parse(value, this);
+	}
+
 	public String toString(T value, Radix radix)
 	{
-		// TODO: use strategy pattern instead
-		switch(radix)
-		{
-			case BINARY:
-				return toBinaryString(value);
-			default:
-				return describeNonBinaryValueWithRadix(value, radix);
-		}
-	}
-
-	private String toBinaryString(T tValue)
-	{
-		long value = toLong(tValue);
-
-		final int size = bitSize();
-		char[] binaryString = new char[size];
-		for(int bitPosition = 0; bitPosition < size; bitPosition++)
-		{
-			boolean bitIsSet = (value & (1L << bitPosition)) != 0L;
-			int index = size - 1 - bitPosition;
-			binaryString[index] = bitIsSet ? '1' : '0';
-		}
-		return new String(binaryString);
-	}
-
-	public String describeNonBinaryValueWithRadix(T value, Radix radix)
-	{
-		// TODO: Make Locale.ENGLISH settable
-		return String.format(Locale.ENGLISH, "%" + radix.formattingIdentifier(), value);
+		return radix.toString(value, this);
 	}
 
 	/**
-	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
+	 * @return true if {@code value} can be represented with this type without overflowing
 	 */
-	@Beta
-	public Range<T> asRange()
+	public boolean inRange(Long value)
 	{
-		return Ranges.closed(minValue(), maxValue());
+		long minValue = minValue().longValue();
+		long maxValue = maxValue().longValue();
+
+		return value.compareTo(minValue) >= 0 && value.compareTo(maxValue) <= 0;
+	}
+
+	@Override
+	public String toString()
+	{
+		return name();
 	}
 
 	private static final class ByteType extends NumberType<Byte>
@@ -252,23 +242,10 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 			return "long";
 		}
 
-		/**
-		 * Long is unsupported by {@link String#format(String, Object...)} so here we turn to Guava.
-		 */
 		@Override
-		public String describeNonBinaryValueWithRadix(Long value, Radix radix)
+		public String toString(Long value, Radix radix)
 		{
-			String result = null;
-			if(radix.shouldBePrintedAsUnsigned())
-			{
-				result = UnsignedLongs.toString(value, radix.radix()).toUpperCase(Locale.ENGLISH);
-			}
-			else
-			{
-				// TODO: is it better to use java.text.NumberFormat?
-				result = Long.toString(value, radix.radix());
-			}
-			return result;
+			return radix.toString(value);
 		}
 	}
 }

@@ -12,4 +12,10 @@ public class ShortString implements Limiter<String>
 			return Limit.OK;
 		return Limit.notOk(value + " is longer than 10 characters");
 	}
+
+	@Override
+	public String validValuesDescription()
+	{
+		return "a string of max 10 characters";
+	}
 }

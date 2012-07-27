@@ -3,9 +3,11 @@ package se.j4j.argumentparser.defaultvalues;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
+import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
@@ -40,7 +42,7 @@ public class TestDefaultValues
 		assertThat(numbers).isEmpty();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testThatInvalidDefaultValueFromStringParserIsInvalidated() throws ArgumentException
 	{
 		withParser(new ForwardingStringParser.SimpleForwardingStringParser<String>(stringParser()){
@@ -161,9 +163,42 @@ public class TestDefaultValues
 	}
 
 	@Test
+	public void testThatDefaultValueIsDescribedWithEmptyListForARepeatableListEvenThoughADefaultValueDescriberHasBeenSet()
+	{
+		// When a defaultValueDescription has been set before repeated/arity/variableArity that
+		// description is used for each value but if there is no value there is nothing to describe
+		String usage = integerArgument("-n").defaultValueDescription("SomethingThatWillBeReplacedWithEmptyList").repeated().usage("DefaultEmptyList");
+		assertThat(usage).contains("Default: Empty list [Supports Multiple occurrences]");
+	}
+
+	@Test
 	public void testThatEachDefaultValueIsDescribedInCorrectRadix()
 	{
 		String usage = integerArgument("-n").defaultValue(0xF9).radix(HEX).arity(2).usage("F9PrintedTwoTimes");
 		assertThat(usage).isEqualTo(expected("defaultValuesDescribedByParser"));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatSettingDefaultValueForValuesInAPropertyArgumentIsNotAllowed()
+	{
+		integerArgument("-n").defaultValue(1).asPropertyMap();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatSettingDefaultValueDescriptionForValuesInAPropertyArgumentIsNotAllowed()
+	{
+		integerArgument("-n").defaultValueDescription("InvalidInvocation").asPropertyMap();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatSettingDefaultValueForValuesInAKeyValueArgumentIsNotAllowed()
+	{
+		booleanArgument("-n").defaultValue(true).asKeyValuesWithKeyParser(integerParser());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatSettingDefaultValueDescriptionForValuesInAKeyValueArgumentIsNotAllowed()
+	{
+		booleanArgument("-n").defaultValueDescription("InvalidInvocation").asKeyValuesWithKeyParser(integerParser());
 	}
 }

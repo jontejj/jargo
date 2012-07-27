@@ -1,5 +1,5 @@
 'zoo' didn't match any of: [foo, bar]
 
 Usage: LimitedKeysAndLimitedValues [Options]
--I<string=integer>    <string=integer>: where "string" is any of [foo, bar] and "integer" is -2147483648 to 2147483647 (decimal)
+-I<string=integer>    <string=integer>: where "string" is any of [foo, bar] and "integer" is 0 to 10 (decimal)
                       Default: empty map

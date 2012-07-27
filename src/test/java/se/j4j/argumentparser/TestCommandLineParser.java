@@ -7,7 +7,6 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CommandLineParser.forArguments;
-import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Arrays;
@@ -220,13 +219,6 @@ public class TestCommandLineParser
 		assertThat(parsedArguments.hashCode()).isEqualTo(parsedArgumentsTwo.hashCode());
 
 		assertThat(forArguments().parse()).isEqualTo(forArguments().parse());
-	}
-
-	@Test
-	public void testThatOptionalArgumentDefaultsToTrue()
-	{
-		assertThat(optionParser(true).defaultValue()).isTrue();
-		assertThat(optionParser(false).defaultValue()).isFalse();
 	}
 
 	/**

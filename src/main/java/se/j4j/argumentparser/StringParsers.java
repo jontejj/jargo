@@ -6,6 +6,7 @@ import static java.math.BigInteger.ZERO;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
+import static se.j4j.argumentparser.ArgumentExceptions.forLimit;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnhandledRepeatedArgument;
 import static se.j4j.argumentparser.ArgumentExceptions.withDescription;
@@ -36,12 +37,11 @@ import se.j4j.argumentparser.internal.NumberType;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Range;
 import com.google.common.collect.UnmodifiableIterator;
 import com.google.common.primitives.UnsignedLongs;
 
@@ -112,7 +112,7 @@ public final class StringParsers
 
 	/**
 	 * @param enumToHandle the {@link Class} literal for the {@link Enum} to parse strings into
-	 * @return a {@link StringParser} that parse strings into enum values of the type <code>T</code>
+	 * @return a {@link StringParser} that parse strings into enum values of the type {@code T}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -122,7 +122,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that uses <code>radix</code> to parse {@link String}s into {@link Integer}s
+	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Integer}s
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -143,7 +143,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that uses <code>radix</code> to parse {@link String}s into {@link Byte}s
+	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Byte}s
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -153,7 +153,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that uses <code>radix</code> to parse {@link String}s into {@link Short}s
+	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Short}s
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -163,7 +163,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that uses <code>radix</code> to parse {@link String}s into {@link Long}s
+	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Long}s
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -204,15 +204,15 @@ public final class StringParsers
 
 	/**
 	 * <pre>
-	 * Makes it possible to use the given <code>parser</code> as a Guava {@link Function}.
-	 * For example:<code>
+	 * Makes it possible to use the given {@code parser} as a Guava {@link Function}.
+	 * For example:{@code
 	 * List&lt;Integer&gt; result =  Lists.transform(Arrays.asList("1", "3", "2"), StringParsers.asFunction(StringParsers.integerParser()));
-	 * </code>
+	 * }
 	 * 
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
 	 * 
 	 * @param parser the parser to expose as a {@link Function}
-	 * @return <code>parser</code> exposed in a {@link Function} that
+	 * @return {@code parser} exposed in a {@link Function} that
 	 * throws {@link IllegalArgumentException} when given faulty values.
 	 * </pre>
 	 */
@@ -337,7 +337,7 @@ public final class StringParsers
 		@Override
 		public File defaultValue()
 		{
-			return new File("");
+			return new File(".");
 		}
 
 		@Override
@@ -591,7 +591,7 @@ public final class StringParsers
 
 	/**
 	 * <pre>
-	 * Makes it possible to convert several (or zero) {@link String}s into a single <code>T</code> value.
+	 * Makes it possible to convert several (or zero) {@link String}s into a single {@code T} value.
 	 * For a simpler one use {@link StringParser}.
 	 * 
 	 * {@link ArgumentSettings} is passed to the functions that produces text for the usage,
@@ -604,6 +604,7 @@ public final class StringParsers
 	@Immutable
 	abstract static class InternalStringParser<T>
 	{
+
 		/**
 		 * @param arguments the arguments given from the command line where
 		 *            {@link ArgumentIterator#next()} points to the parameter
@@ -630,13 +631,13 @@ public final class StringParsers
 		/**
 		 * If you can provide a suitable value do so, it will look much better
 		 * in the usage texts and providing sane defaults makes your program/code easier to use,
-		 * otherwise return <code>null</code>
+		 * otherwise return {@code null}
 		 */
 		@Nullable
 		public abstract T defaultValue();
 
 		/**
-		 * @return <code>value</code> described, or null if no description is
+		 * @return {@code value} described, or null if no description is
 		 *         needed
 		 */
 		@Nullable
@@ -659,7 +660,7 @@ public final class StringParsers
 	/**
 	 * Implements {@link ArgumentBuilder#splitWith(String)}.
 	 * 
-	 * @param <T> the type that's separated by the <code>valueSeparator</code>
+	 * @param <T> the type that's separated by the {@code valueSeparator}
 	 */
 	static final class StringSplitterParser<T> extends ListParser<T>
 	{
@@ -700,7 +701,8 @@ public final class StringParsers
 	}
 
 	/**
-	 * Base class for {@link StringParser}s that uses a sub parser to parse element values
+	 * Base class for {@link StringParser}s that uses a sub parser to parse element values and puts
+	 * them into a {@link List}
 	 */
 	private static abstract class ListParser<T> extends InternalStringParser<List<T>>
 	{
@@ -864,11 +866,13 @@ public final class StringParsers
 	{
 		@Nonnull private final InternalStringParser<V> valueParser;
 		@Nonnull private final InternalStringParser<K> keyParser;
+		@Nonnull private final Limiter<V> valueLimiter;
 
-		KeyValueParser(@Nonnull final InternalStringParser<V> valueParser, @Nonnull final InternalStringParser<K> keyParser)
+		KeyValueParser(@Nonnull InternalStringParser<K> keyParser, @Nonnull InternalStringParser<V> valueParser, @Nonnull Limiter<V> valueLimiter)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
+			this.valueLimiter = valueLimiter;
 		}
 
 		@Override
@@ -921,6 +925,10 @@ public final class StringParsers
 						throw forUnhandledRepeatedArgument(propertyIdentifier + key + " was found as a key several times in the input.");
 
 					V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
+					Limit limit = valueLimiter.withinLimits(parsedValue);
+					if(limit != Limit.OK)
+						throw forLimit(limit);
+
 					map.put(parsedKey, parsedValue);
 					break;
 				}
@@ -934,7 +942,15 @@ public final class StringParsers
 			String keyMeta = '"' + keyParser.metaDescription(argumentSettings) + '"';
 			String valueMeta = '"' + valueParser.metaDescription(argumentSettings) + '"';
 			String keyDescription = keyParser.descriptionOfValidValues(argumentSettings);
-			String valueDescription = valueParser.descriptionOfValidValues(argumentSettings);
+			String valueDescription;
+			if(valueLimiter != Limiters.noLimits())
+			{
+				valueDescription = valueLimiter.validValuesDescription();
+			}
+			else
+			{
+				valueDescription = valueParser.descriptionOfValidValues(argumentSettings);
+			}
 
 			return "where " + keyMeta + " is " + keyDescription + " and " + valueMeta + " is " + valueDescription;
 		}
@@ -997,78 +1013,28 @@ public final class StringParsers
 	{
 		private final Radix radix;
 		private final NumberType<T> type;
-		private final Range<T> validRange;
 
-		private RadixiableParser(final Radix radix, final NumberType<T> type, Range<T> validRange)
+		private RadixiableParser(final Radix radix, final NumberType<T> type)
 		{
 			this.radix = radix;
 			this.type = type;
-			this.validRange = validRange;
 		}
 
 		static <T extends Number & Comparable<T>> RadixiableParser<T> radixiableParser(final Radix radix, final NumberType<T> type)
 		{
-			return new RadixiableParser<T>(radix, type, type.asRange());
-		}
-
-		static <T extends Number & Comparable<T>> RadixiableParser<T> radixiableParser(final Radix radix, final NumberType<T> type,
-				Range<T> validRange)
-		{
-			return new RadixiableParser<T>(radix, type, validRange);
+			return new RadixiableParser<T>(radix, type);
 		}
 
 		@Override
 		public T parse(final String value) throws ArgumentException
 		{
-			try
-			{
-				long result = radix.parse(value, type);
-
-				if(notInRange(result))
-					throw forInvalidValue(value, "is not in the range " + descriptionOfValidValues());
-
-				return type.fromLong(result);
-			}
-			catch(NumberFormatException nfe)
-			{
-				// TODO: specify which argument that failed
-				InvalidArgument ex = forInvalidValue(value, "is not a valid number.");
-				ex.initCause(nfe);
-				throw ex;
-			}
-		}
-
-		private boolean notInRange(Long result)
-		{
-			long minValue = validRange.lowerEndpoint().longValue();
-			long maxValue = validRange.upperEndpoint().longValue();
-
-			return result.compareTo(minValue) < 0 || result.compareTo(maxValue) > 0;
+			return type.parse(value, radix);
 		}
 
 		@Override
 		public String descriptionOfValidValues()
 		{
-			T maxValue = validRange.upperEndpoint();
-			T minValue = validRange.lowerEndpoint();
-			String maximumValue;
-			String minimumValue;
-			if(radix.shouldBePrintedAsUnsigned())
-			{
-				T maxValueToDisplay = (maxValue.equals(type.maxValue())) ? type.fromLong(-1L) : maxValue;
-				T minValueToDisplay = (minValue.equals(type.minValue())) ? type.fromLong(0L) : minValue;
-
-				maximumValue = describeValue(maxValueToDisplay);
-				minimumValue = describeValue(minValueToDisplay);
-
-				minimumValue = Strings.padStart(minimumValue, maximumValue.length(), '0');
-			}
-			else
-			{
-				maximumValue = describeValue(maxValue);
-				minimumValue = describeValue(minValue);
-			}
-			return minimumValue + " to " + maximumValue + " (" + radix.description() + ")";
+			return radix.descriptionOfValidValues(type);
 		}
 
 		String describeValue(T value)
@@ -1105,51 +1071,91 @@ public final class StringParsers
 		 * Parses ones & zeros into a {@link Number}, treats values as unsigned when
 		 * parsing/printing them. Radix: 2
 		 */
-		BINARY(2, "", UnsignedOutput.YES),
+		BINARY(2, "")
+		{
+			@Override
+			public <T extends Number & Comparable<T>> String toString(T tValue, NumberType<T> type)
+			{
+				long value = type.toLong(tValue);
+				// return UnsignedLongs.toString(value, radix());
+				final int size = type.bitSize();
+				char[] binaryString = new char[size];
+				for(int bitPosition = 0; bitPosition < size; bitPosition++)
+				{
+
+					boolean bitIsSet = (value & (1L << bitPosition)) != 0L;
+					int index = size - 1 - bitPosition;
+					binaryString[index] = bitIsSet ? '1' : '0';
+				}
+				// TODO: handle leading zeros without parsing strings
+				String result = CharMatcher.is('0').trimLeadingFrom(new String(binaryString));
+				if(result.isEmpty())
+					return "0";
+				return result;
+			}
+
+			@Override
+			public String toString(Long value)
+			{
+				return toString(value, NumberType.LONG);
+			}
+		},
 		/**
 		 * Parses octals into {@link Number}s, treats the octals as unsigned when parsing/printing
 		 * them. Radix: 8
 		 */
-		OCTAL(8, "o", UnsignedOutput.YES),
+		OCTAL(8, "o"),
 		/**
 		 * The default radix, 10. Handles signed values as well.
 		 * Just like {@link Long#parseLong(String)} does.
 		 */
-		DECIMAL(10, "d", UnsignedOutput.NO)
+		DECIMAL(10, "d")
 		{
 			@Override
-			public long parse(String value, NumberType<?> targetType)
+			public long parseLong(String value, NumberType<?> targetType)
 			{
 				return Long.parseLong(value, radix());
+			}
+
+			@Override
+			public String toString(Long value)
+			{
+				return Long.toString(value, radix());
+			}
+
+			@Override
+			public <T extends Number & Comparable<T>> String descriptionOfValidValues(NumberType<T> type)
+			{
+				String maxValue = type.toString(type.maxValue(), this);
+				String minValue = type.toString(type.minValue(), this);
+				return minValue + " to " + maxValue + " (" + description() + ")";
 			}
 		},
 		/**
 		 * Parses hex numbers, such as 0xFF into {@link Number}s, treats the hex numbers as unsigned
-		 * when parsing/printing them. Radix: 16
+		 * when parsing/printing them. The {@code 0x} part is optional but preferable
+		 * since it's more clear that the number is in HEX. Radix: 16
 		 */
-		HEX(16, "X", UnsignedOutput.YES)
+		HEX(16, "X")
 		{
 			@Override
-			public long parse(String value, NumberType<?> targetType)
+			protected long parseLong(String value, NumberType<?> targetType)
 			{
 				if(value.startsWith("0x"))
 				{
 					value = value.substring(2);
 				}
-				return super.parse(value, targetType);
+				return super.parseLong(value, targetType);
 			}
 		};
 
 		private int radix;
 		private String formattingIdentifier;
 
-		private UnsignedOutput unsignedOutput;
-
-		Radix(int radix, String formattingIdentifier, UnsignedOutput unsignedOutput)
+		Radix(int radix, String formattingIdentifier)
 		{
 			this.radix = radix;
 			this.formattingIdentifier = formattingIdentifier;
-			this.unsignedOutput = unsignedOutput;
 		}
 
 		public int radix()
@@ -1157,25 +1163,52 @@ public final class StringParsers
 			return radix;
 		}
 
+		/**
+		 * @return a {@link String#format(String, Object...)} identifier for this {@link Radix}
+		 */
 		public String formattingIdentifier()
 		{
 			return formattingIdentifier;
 		}
 
-		public long parse(String value, NumberType<?> targetType)
+		protected long parseLong(String value, NumberType<?> targetType)
 		{
 			long result = UnsignedLongs.parseUnsignedLong(value, radix());
 			return makeSigned(result, targetType);
 		}
 
+		/**
+		 * Parses {@code value}, in this radix, into a {@code T} value and takes
+		 * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4215269">
+		 * Bug ID: 4215269 Some Integer.toHexString(int) results cannot be
+		 * decoded back to an int
+		 * </a> into account.
+		 * 
+		 * @param value the value to parse
+		 * @param targetType is used to know where the sign of the result is
+		 */
+		public <T extends Number & Comparable<T>> T parse(String value, NumberType<T> targetType) throws InvalidArgument
+		{
+			try
+			{
+				long result = parseLong(value, targetType);
+				if(!targetType.inRange(result))
+					throw forInvalidValue(value, "is not in the range " + descriptionOfValidValues(targetType));
+
+				return targetType.fromLong(result);
+			}
+			catch(NumberFormatException nfe)
+			{
+				// TODO: specify which argument that failed
+				InvalidArgument ex = forInvalidValue(value, "is not a valid " + description() + " number.");
+				ex.initCause(nfe);
+				throw ex;
+			}
+		}
+
 		String description()
 		{
 			return toString().toLowerCase(Locale.ENGLISH);
-		}
-
-		public boolean shouldBePrintedAsUnsigned()
-		{
-			return unsignedOutput == UnsignedOutput.YES;
 		}
 
 		private long makeSigned(long value, NumberType<?> targetType)
@@ -1196,17 +1229,47 @@ public final class StringParsers
 		}
 
 		/**
-		 * Tells whether or not this radix'es output is affected by
-		 * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4215269">
-		 * Bug ID: 4215269 Some Integer.toHexString(int) results cannot be
-		 * decoded back to an int
-		 * </a>
+		 * Returns {@code value} as a string in this {@link Radix}
+		 * 
+		 * @param numberType used by {@link Radix#BINARY} to figure out the numeric value of
+		 *            {@code value}
 		 */
-		@VisibleForTesting
-		enum UnsignedOutput
+		public <T extends Number & Comparable<T>> String toString(T value, NumberType<T> numberType)
 		{
-			YES,
-			NO;
+			// TODO: these toString methods should be package-private as this method doesn't support
+			// long
+			// TODO: Make Locale.ENGLISH settable
+			return String.format(Locale.ENGLISH, "%" + formattingIdentifier(), value);
+		}
+
+		public String toString(Long value)
+		{
+			/**
+			 * Long is unsupported by {@link String#format(String, Object...)} so here we turn to
+			 * Guava.
+			 */
+			// TODO: is it better to use java.text.NumberFormat?
+			return UnsignedLongs.toString(value, radix()).toUpperCase(Locale.ENGLISH);
+		}
+
+		/**
+		 * <pre>
+		 * Describes what values the given {@code type} allows in this {@link Radix}.
+		 * 
+		 * {@link #BINARY}, {@link #HEX} & {@link #OCTAL} describes their values as unsigned to
+		 * circumvent the peculiar behavior caused by <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4215269">
+		 * Bug ID: 4215269 Some Integer.toHexString(int) results cannot be decoded back to an int</a>.
+		 * 
+		 * @return a string describing allowed values for the given {@code type}
+		 * </pre>
+		 */
+		public <T extends Number & Comparable<T>> String descriptionOfValidValues(NumberType<T> type)
+		{
+			// For unsigned numbers -1 represents the maximum number and 0 the minimum
+			String maxValue = type.toString(type.fromLong(-1L), this);
+			String minValue = type.toString(type.fromLong(0L), this);
+
+			return minValue + " to " + maxValue + " (" + description() + ")";
 		}
 	}
 

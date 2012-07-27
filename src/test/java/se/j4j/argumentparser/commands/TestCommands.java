@@ -181,13 +181,6 @@ public class TestCommands
 	}
 
 	@Test
-	public void testThatToStringReturnsCommandName()
-	{
-		Build command = new Build();
-		assertThat(command.toString()).isEqualTo(command.commandName());
-	}
-
-	@Test
 	public void testThatParserForCommandArgumentsIsOnlyCreatedWhenCommandIsExecuted() throws ArgumentException
 	{
 		ProfilingCommand profiler = new ProfilingCommand();

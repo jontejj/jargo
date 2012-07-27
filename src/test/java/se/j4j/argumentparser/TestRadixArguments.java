@@ -10,6 +10,7 @@ import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.longArgument;
 import static se.j4j.argumentparser.ArgumentFactory.shortArgument;
+import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.longParser;
@@ -18,7 +19,6 @@ import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
 import static se.j4j.argumentparser.StringParsers.Radix.DECIMAL;
 import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.StringParsers.Radix.OCTAL;
-import static se.j4j.argumentparser.StringParsers.Radix.UnsignedOutput.NO;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
@@ -33,10 +33,8 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.Radix;
-import se.j4j.argumentparser.StringParsers.Radix.UnsignedOutput;
 import se.j4j.argumentparser.StringParsers.RadixiableParser;
 import se.j4j.argumentparser.internal.NumberType;
-import se.j4j.argumentparser.internal.OneBitType;
 
 import com.google.common.collect.Lists;
 
@@ -69,12 +67,7 @@ public class TestRadixArguments
 	{
 		Integer binary = integerArgument("-b").radix(BINARY).parse("-b", "1001");
 		assertThat(binary).isEqualTo(0b1001);
-	}
 
-	@Test
-	public void testUnsignedOutputEnum()
-	{
-		assertThat(UnsignedOutput.valueOf(NO.toString())).isEqualTo(NO);
 	}
 
 	@Test
@@ -84,10 +77,10 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> validInputs = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "00000000 to 11111111 (binary)");
-				put(OCTAL, "000 to 377 (octal)");
+				put(BINARY, "0 to 11111111 (binary)");
+				put(OCTAL, "0 to 377 (octal)");
 				put(DECIMAL, "-128 to 127 (decimal)");
-				put(HEX, "00 to FF (hex)");
+				put(HEX, "0 to FF (hex)");
 			}
 		};
 
@@ -95,7 +88,7 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> defaultValues = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "00100000");
+				put(BINARY, "100000");
 				put(OCTAL, "40");
 				put(DECIMAL, "32");
 				put(HEX, "20");
@@ -122,14 +115,14 @@ public class TestRadixArguments
 	@Test
 	public void testOutOfRangeInHex() throws ArgumentException
 	{
-		// TODO: what should the defaultValue be here?
-		Argument<Integer> hexArgument = integerArgument().radix(HEX).minValue(0x42).maxValue(0x60).build();
+		// TODO: what should the defaultValue be here if range(0x01, 0x60) is used?
+		Argument<Integer> hexArgument = integerArgument().radix(HEX).limitTo(range(0x0, 0x60)).build();
 
 		CommandLineParser parser = CommandLineParser.forArguments(hexArgument);
 		try
 		{
-			parser.parse("0F");
-			fail("0x0F shouldn't be valid since it's lower than 0x42");
+			parser.parse("F3");
+			fail("0xF3 shouldn't be valid since it's lower than 0x60");
 		}
 		catch(ArgumentException expected)
 		{
@@ -138,7 +131,7 @@ public class TestRadixArguments
 		ParsedArguments parsed = parser.parse("42");
 		assertThat(parsed.get(hexArgument)).isEqualTo(0x42);
 
-		assertThat(integerArgument().minValue(1).maxValue(3).parse("2")).isEqualTo(2);
+		assertThat(integerArgument().limitTo(range(1, 3)).parse("2")).isEqualTo(2);
 	}
 
 	@Test
@@ -176,10 +169,10 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> validInputs = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "0000000000000000 to 1111111111111111 (binary)");
-				put(OCTAL, "000000 to 177777 (octal)");
+				put(BINARY, "0 to 1111111111111111 (binary)");
+				put(OCTAL, "0 to 177777 (octal)");
 				put(DECIMAL, "-32768 to 32767 (decimal)");
-				put(HEX, "0000 to FFFF (hex)");
+				put(HEX, "0 to FFFF (hex)");
 			}
 		};
 
@@ -187,7 +180,7 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> defaultValues = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "0000000000100000");
+				put(BINARY, "100000");
 				put(OCTAL, "40");
 				put(DECIMAL, "32");
 				put(HEX, "20");
@@ -234,10 +227,10 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> validInputs = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "00000000000000000000000000000000 to 11111111111111111111111111111111 (binary)");
-				put(OCTAL, "00000000000 to 37777777777 (octal)");
+				put(BINARY, "0 to 11111111111111111111111111111111 (binary)");
+				put(OCTAL, "0 to 37777777777 (octal)");
 				put(DECIMAL, "-2147483648 to 2147483647 (decimal)");
-				put(HEX, "00000000 to FFFFFFFF (hex)");
+				put(HEX, "0 to FFFFFFFF (hex)");
 			}
 		};
 
@@ -245,7 +238,7 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> defaultValues = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "00000000000000000000000000100000");
+				put(BINARY, "100000");
 				put(OCTAL, "40");
 				put(DECIMAL, "32");
 				put(HEX, "20");
@@ -310,7 +303,7 @@ public class TestRadixArguments
 	}
 
 	/**
-	 * Generates some good numbers to test for the given <code>type</code>
+	 * Generates some good numbers to test for the given {@code type}
 	 */
 	public static <T extends Number & Comparable<T>> Iterable<T> numbersToTest(NumberType<T> type)
 	{
@@ -342,11 +335,10 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> validInputs = new HashMap<Radix, String>(){
 			{
-				put(BINARY,
-					"0000000000000000000000000000000000000000000000000000000000000000 to 1111111111111111111111111111111111111111111111111111111111111111 (binary)");
-				put(OCTAL, "0000000000000000000000 to 1777777777777777777777 (octal)");
+				put(BINARY, "0 to 1111111111111111111111111111111111111111111111111111111111111111 (binary)");
+				put(OCTAL, "0 to 1777777777777777777777 (octal)");
 				put(DECIMAL, "-9223372036854775808 to 9223372036854775807 (decimal)");
-				put(HEX, "0000000000000000 to FFFFFFFFFFFFFFFF (hex)");
+				put(HEX, "0 to FFFFFFFFFFFFFFFF (hex)");
 			}
 		};
 
@@ -354,7 +346,7 @@ public class TestRadixArguments
 		@SuppressWarnings("serial")
 		Map<Radix, String> defaultValues = new HashMap<Radix, String>(){
 			{
-				put(BINARY, "0000000000000000000000000000000000000000000000000000000000100000");
+				put(BINARY, "100000");
 				put(OCTAL, "40");
 				put(DECIMAL, "32");
 				put(HEX, "20");
@@ -412,17 +404,5 @@ public class TestRadixArguments
 		numbers.add(Long.MIN_VALUE);
 
 		return numbers;
-	}
-
-	@Test
-	public void testOneBitNumber()
-	{
-		RadixiableParser<Integer> parser = StringParsers.RadixiableParser.radixiableParser(Radix.DECIMAL, new OneBitType());
-
-		String bitString = parser.describeValue(0);
-		assertThat(bitString).isEqualTo("0");
-
-		bitString = parser.describeValue(1);
-		assertThat(bitString).isEqualTo("1");
 	}
 }

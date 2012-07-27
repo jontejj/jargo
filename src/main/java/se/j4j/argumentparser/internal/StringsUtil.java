@@ -40,7 +40,7 @@ public final class StringsUtil
 	}
 
 	/**
-	 * Converts all {@link String}s in <code>strings</code> into lower case using the default
+	 * Converts all {@link String}s in {@code strings} into lower case using the default
 	 * locale.
 	 * TODO: add overloaded method that takes in the Locale as well
 	 * 
@@ -54,7 +54,7 @@ public final class StringsUtil
 	}
 
 	/**
-	 * Returns the {@link String} in <code>validOptions</code> that <code>input</code> has the
+	 * Returns the {@link String} in {@code validOptions} that {@code input} has the
 	 * shortest levenshtein distance(TODO: wiki link) to.
 	 * 
 	 * @throws IllegalArgumentException if there's no valid options to match input against

@@ -54,7 +54,7 @@ import com.google.common.collect.UnmodifiableIterator;
  * Starting point for the call chain:
  * 
  * <pre>
- * <code>
+ * {@code 
  * import static se.j4j.argumentparser.ArgumentFactory.*;
  * ...
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
@@ -74,7 +74,7 @@ import com.google.common.collect.UnmodifiableIterator;
  * 	System.exit(1);
  * }
  * 
- * </code>
+ * }
  * 
  * If something goes wrong during the parsing (Missing required arguments, Unexpected arguments, Invalid values),
  * it will be described by the ArgumentException. Use {@link ArgumentException#getMessageAndUsage(String)} if you
@@ -92,7 +92,7 @@ import com.google.common.collect.UnmodifiableIterator;
 public final class CommandLineParser
 {
 	/**
-	 * Creates a CommandLineParser with support for the given <code>argumentDefinitions</code>.
+	 * Creates a CommandLineParser with support for the given {@code argumentDefinitions}.
 	 * 
 	 * @see CommandLineParser
 	 */
@@ -114,7 +114,7 @@ public final class CommandLineParser
 	}
 
 	/**
-	 * Creates a {@link CommandLineParser} supporting the given <code>commands</code>.
+	 * Creates a {@link CommandLineParser} supporting the given {@code commands}.
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -686,7 +686,7 @@ public final class CommandLineParser
 
 		/**
 		 * @param argumentToFetch
-		 * @return the parsed value for the given <code>argumentToFetch</code>,
+		 * @return the parsed value for the given {@code argumentToFetch},
 		 *         if no value was given on the command line the {@link Argument#defaultValue()} is
 		 *         returned.
 		 */
