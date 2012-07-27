@@ -11,6 +11,7 @@ import static se.j4j.argumentparser.Limiters.asPredicate;
 import static se.j4j.argumentparser.Limiters.existingFiles;
 import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
+import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.io.File;
 import java.util.Collection;
@@ -24,7 +25,6 @@ import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.Description;
 import se.j4j.argumentparser.Limit;
 import se.j4j.argumentparser.Limiter;
-import se.j4j.argumentparser.Limiters;
 
 import com.google.common.collect.ImmutableList;
 
@@ -33,7 +33,7 @@ public class TestLimiters
 	@Test
 	public void testExistingFile()
 	{
-		Argument<File> file = fileArgument("--file").limitTo(existingFiles()).build();
+		Argument<File> file = fileArgument("--file").limitTo(existingFiles()).defaultValueDescription("Current working directory").build();
 
 		CommandLineParser parser = CommandLineParser.forArguments(file);
 		try
@@ -51,7 +51,9 @@ public class TestLimiters
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected.getMessage()).endsWith("non_existing.file doesn't exist as a file");
+			String usage = expected.getMessageAndUsage("OnlyAllowsExistingFiles");
+			assertThat(usage).contains("--file <path>    <path>: an existing file");
+			assertThat(expected.getMessage()).endsWith("non_existing.file isn't an existing file");
 		}
 	}
 
@@ -61,10 +63,18 @@ public class TestLimiters
 		stringArgument("-i", "--index").limitTo(foos()).repeated().parse("-i", "foo", "-i", "bar");
 	}
 
-	@Test(expected = ArgumentException.class)
-	public void testArityOfWithLimiter() throws ArgumentException
+	@Test
+	public void testArityOfWithLimiter()
 	{
-		stringArgument("-i", "--indices").limitTo(foos()).arity(2).parse("-i", "foo", "bar");
+		try
+		{
+			stringArgument("-f", "--foos").required().limitTo(foos()).arity(2).parse("-f", "foo", "bar");
+		}
+		catch(ArgumentException expected)
+		{
+			String usage = expected.getMessageAndUsage("OnlyAllowFoos");
+			assertThat(usage).isEqualTo(expected("arityWithLimitedValues"));
+		}
 	}
 
 	@Test(expected = ArgumentException.class)
@@ -82,14 +92,14 @@ public class TestLimiters
 		}
 		catch(ArgumentException e)
 		{
-			assertThat(e).hasMessage("'6' is not in the range [1‥5]");
+			assertThat(e).hasMessage("'6' is not in the range 1 to 5 (decimal)");
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testThatDefaultValuesAreLimited() throws ArgumentException
+	@Test(expected = IllegalStateException.class)
+	public void testThatDefaultValuesAreLimited()
 	{
-		stringArgument("-n").limitTo(foos()).defaultValue("bar").parse();
+		stringArgument("-n").limitTo(foos()).defaultValue("bar").build();
 	}
 
 	@Test(expected = ArgumentException.class)
@@ -109,51 +119,12 @@ public class TestLimiters
 				});
 			}
 
-			// @Override
-			// public String validValuesDescription()
-			// {
-			// return "Not used";
-			// }
+			@Override
+			public String validValuesDescription()
+			{
+				return "Not used";
+			}
 		}).parse("-n", "1");
-	}
-
-	@Test
-	public void testThatLimiterOkResponseIsEmpty()
-	{
-		assertThat(Limit.OK.reason()).isEmpty();
-	}
-
-	@Test
-	public void testThatLimiterIsNotCalledTooOften() throws ArgumentException
-	{
-		ProfilingLimiter<Integer> profiler = new ProfilingLimiter<Integer>();
-
-		integerArgument("-n").limitTo(profiler).repeated().parse("-n", "1", "-n", "-2");
-
-		assertThat(profiler.limitationsMade).isEqualTo(2);
-	}
-
-	@Test
-	public void testMultipleLimiters() throws ArgumentException
-	{
-		ProfilingLimiter<Integer> profiler = new ProfilingLimiter<Integer>();
-
-		Limiter<Integer> limitors = profiler;
-
-		integerArgument("-n").limitTo(limitors).variableArity().parse("-n", "1", "2");
-
-		assertThat(profiler.limitationsMade).isEqualTo(2);
-		profiler = new ProfilingLimiter<Integer>();
-
-		limitors = Limiters.compound(profiler, profiler);
-		integerArgument("-n").limitTo(limitors).variableArity().parse("-n", "1", "2");
-
-		assertThat(profiler.limitationsMade).isEqualTo(4);
-		profiler = new ProfilingLimiter<Integer>();
-
-		integerArgument("-n").limitTo(Limiters.compound(ImmutableList.of(profiler))).variableArity().parse("-n", "1", "2");
-
-		assertThat(profiler.limitationsMade).isEqualTo(2);
 	}
 
 	@Test
@@ -165,13 +136,11 @@ public class TestLimiters
 	}
 
 	@Test
-	public void testThatLimitersAreClearable() throws ArgumentException
+	public void testThatLimiterIsNotCalledTooOften() throws ArgumentException
 	{
 		ProfilingLimiter<Integer> profiler = new ProfilingLimiter<Integer>();
-
-		integerArgument("-n").limitTo(profiler).repeated().clearLimiters().parse("-n", "1", "-n", "-2");
-
-		assertThat(profiler.limitationsMade).isEqualTo(0);
+		integerArgument("-n").limitTo(profiler).repeated().parse("-n", "1", "-n", "-2");
+		assertThat(profiler.limitationsMade).isEqualTo(2);
 	}
 
 	private static final class ProfilingLimiter<T> implements Limiter<T>
@@ -185,10 +154,10 @@ public class TestLimiters
 			return Limit.OK;
 		}
 
-		// @Override
-		// public String validValuesDescription()
-		// {
-		// return "not used";
-		// }
+		@Override
+		public String validValuesDescription()
+		{
+			return "any value";
+		}
 	}
 }

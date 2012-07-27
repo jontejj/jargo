@@ -307,7 +307,7 @@ public final class CharacterTrie<E>
 	/**
 	 * @param key the key
 	 * @param value the value
-	 * @return the old value associated with <code>key</code>, or null if no
+	 * @return the old value associated with {@code key}, or null if no
 	 *         such association existed before
 	 */
 	public E set(final CharSequence key, final E value)
@@ -403,7 +403,7 @@ public final class CharacterTrie<E>
 
 	/**
 	 * @param key
-	 * @return the entry that starts with the same characters as <code>key</code>
+	 * @return the entry that starts with the same characters as {@code key}
 	 */
 	public E getLastMatch(final CharSequence key)
 	{
@@ -412,7 +412,7 @@ public final class CharacterTrie<E>
 
 	/**
 	 * @param key
-	 * @return a key that starts with the same characters as <code>key</code>
+	 * @return a key that starts with the same characters as {@code key}
 	 */
 	public CharSequence getMatchingKey(final CharSequence key)
 	{

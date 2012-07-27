@@ -180,7 +180,7 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage()
 		{
-			return reason.reason();
+			return reason.toString();
 		}
 
 		/**

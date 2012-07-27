@@ -16,9 +16,9 @@ public class FooLimiter implements Limiter<String>
 		return "foo".equals(value) ? Limit.OK : Limit.notOk(value + " is not foo");
 	}
 
-	// @Override
-	// public String validValuesDescription()
-	// {
-	// return "Only allows the value foo";
-	// }
+	@Override
+	public String validValuesDescription()
+	{
+		return "foo";
+	}
 }

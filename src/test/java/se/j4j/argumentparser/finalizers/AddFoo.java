@@ -1,6 +1,6 @@
 package se.j4j.argumentparser.finalizers;
 
-import se.j4j.argumentparser.Finalizer;
+import se.j4j.argumentparser.internal.Finalizer;
 
 public class AddFoo implements Finalizer<String>
 {

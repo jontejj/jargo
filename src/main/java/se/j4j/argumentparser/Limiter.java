@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import se.j4j.argumentparser.internal.Finalizer;
+
 /**
  * <pre>
  * Allows for only allowing a subset of values parsed by {@link StringParser#parse(String)} implementations.
@@ -34,13 +36,11 @@ public interface Limiter<T>
 	@Nonnull
 	Limit withinLimits(@Nullable T value);
 
-	// TODO: print the acceptable values in the usage somehow:
-	// Error message: "'" + valueDescriber.describe(value) / valueFromCommandLine + "'" is not " +
-	// limiter.validValuesDescription();
-	//
-	// boolean isWithinLimits(T value)
-	// String validValuesDescription();
-	//
-	// Or remove Limiter all together and refer to ForwardingStringParser instead,
-	// Finalizer and Callback could also be replaced by ForwardingStringParser
+	/**
+	 * Printed in the usage instead of the {@link StringParser#descriptionOfValidValues()} string
+	 * 
+	 * @return a more narrow(specific) description than the one supplied by
+	 *         {@link StringParser#descriptionOfValidValues()}
+	 */
+	String validValuesDescription();
 }

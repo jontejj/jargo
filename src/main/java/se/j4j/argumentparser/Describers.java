@@ -17,7 +17,7 @@ public final class Describers
 	}
 
 	/**
-	 * Always describes any value of type <code>T</code> with the given <code>description</code>
+	 * Always describes any value of type {@code T} with the given {@code description}
 	 */
 	public static <T> Describer<T> withStaticString(final String description)
 	{

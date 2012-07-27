@@ -1,4 +1,4 @@
-'NaN' is not a valid number.
+'NaN' is not a valid decimal number.
 
 Usage: NaNTest [Options]
 -b <byte>    <byte>: -128 to 127 (decimal)

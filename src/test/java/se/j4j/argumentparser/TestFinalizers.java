@@ -1,4 +1,4 @@
-package se.j4j.argumentparser.finalizers;
+package se.j4j.argumentparser;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
@@ -10,9 +10,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.Finalizer;
-import se.j4j.argumentparser.Finalizers;
+import se.j4j.argumentparser.finalizers.AddBar;
+import se.j4j.argumentparser.finalizers.AddFoo;
+import se.j4j.argumentparser.internal.Finalizer;
+import se.j4j.argumentparser.internal.Finalizers;
+import se.j4j.argumentparser.limiters.FooLimiter;
 
 import com.google.common.collect.ImmutableList;
 
@@ -37,12 +39,6 @@ public class TestFinalizers
 
 		assertThat(map.get("foo")).isEqualTo("barbar");
 		assertThat(map.get("bar")).isEqualTo("foobar");
-	}
-
-	@Test
-	public void testThatFinalizersAreCalledBeforeLimitersForPropertyValues() throws ArgumentException
-	{
-		assertThat(stringArgument("-N").finalizeWith(new AddFoo()).limitTo(foos()).asPropertyMap().parse("-Nbar=").get("bar")).isEqualTo("foo");
 	}
 
 	@Test
@@ -72,12 +68,6 @@ public class TestFinalizers
 	}
 
 	@Test
-	public void testThatFinalizersAreClearable() throws ArgumentException
-	{
-		assertThat(stringArgument("-n").finalizeWith(new AddBar()).clearFinalizers().parse("-n", "foo")).isEqualTo("foo");
-	}
-
-	@Test
 	public void testThatDefaultValuesAreFinalized() throws ArgumentException
 	{
 		assertThat(stringArgument("-n").finalizeWith(new AddBar()).defaultValue("foo").parse()).isEqualTo("foobar");
@@ -87,6 +77,12 @@ public class TestFinalizers
 	public void testThatDefaultValuesAreFinalizedForUsage()
 	{
 		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage("")).contains("Default: foo");
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatDefaultValueIsFinalizedBeforeLimitIsChecked()
+	{
+		stringArgument("-n").defaultValue("foo").finalizeWith(new AddBar()).limitTo(new FooLimiter()).build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)

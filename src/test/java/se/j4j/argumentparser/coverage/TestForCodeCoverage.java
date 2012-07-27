@@ -14,10 +14,10 @@ import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
-import se.j4j.argumentparser.Finalizers;
 import se.j4j.argumentparser.Limiters;
 import se.j4j.argumentparser.StringParsers;
 import se.j4j.argumentparser.StringParsers.Radix;
+import se.j4j.argumentparser.internal.Finalizers;
 import se.j4j.argumentparser.internal.Platform;
 import se.j4j.argumentparser.internal.StringsUtil;
 

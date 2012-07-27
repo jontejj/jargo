@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 /**
  * Response object for {@link Limiter#withinLimits(Object)}
  */
-// TODO: maybe rename Limit -> Limited?
 public final class Limit
 {
 	@Nonnull private final Description reasonForNotBeingWithinLimits;
@@ -15,7 +14,7 @@ public final class Limit
 	 * The singleton OK instance indicating that the value is within the
 	 * acceptable limits
 	 */
-	@Nonnull public static final Limit OK = new Limit(Descriptions.EMPTY_STRING);
+	@Nonnull public static final Limit OK = new Limit(Descriptions.forString("OK"));
 
 	/**
 	 * <pre>
@@ -56,9 +55,14 @@ public final class Limit
 		return new Limit(reason);
 	}
 
+	/**
+	 * Returns the string "OK" if the value was within the limits, otherwise this returns the
+	 * {@code reason} supplied to {@link #notOk(String)}.
+	 */
+	@Override
 	@CheckReturnValue
 	@Nonnull
-	public String reason()
+	public String toString()
 	{
 		return reasonForNotBeingWithinLimits.description();
 	}

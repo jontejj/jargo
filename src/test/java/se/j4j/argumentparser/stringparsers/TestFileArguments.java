@@ -29,6 +29,6 @@ public class TestFileArguments
 	public void testThatFileArgumentsDefaultsToCurrentDirectory() throws ArgumentException
 	{
 		File defaultFile = fileArgument("-f").parse();
-		assertThat(defaultFile).isEqualTo(new File(""));
+		assertThat(defaultFile).isEqualTo(new File("."));
 	}
 }

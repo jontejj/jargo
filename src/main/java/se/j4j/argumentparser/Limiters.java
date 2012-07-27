@@ -3,16 +3,16 @@ package se.j4j.argumentparser;
 import static se.j4j.argumentparser.Describers.fileDescriber;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
+import se.j4j.argumentparser.StringParsers.Radix;
+import se.j4j.argumentparser.internal.NumberType;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 
@@ -26,47 +26,14 @@ public final class Limiters
 	}
 
 	/**
-	 * Runs several {@link Limiter}s in the same order as they are
-	 * given as arguments here.
-	 * 
-	 * @param first a {@link Limiter}
-	 * @param second another {@link Limiter}
-	 * @return a merged {@link Limiter}
+	 * Returns a {@link Limiter} that limits values to be within {@code start} (inclusive) and
+	 * {@code end} (inclusive).
 	 */
-	@Nonnull
-	@CheckReturnValue
-	public static <T> Limiter<T> compound(@Nonnull Limiter<T> first, @Nonnull Limiter<T> second)
-	{
-		// Don't create a CompoundLimiter when it's not needed
-		if(first == noLimits())
-			return second;
-
-		return new CompoundLimiter<T>(ImmutableList.of(first, second));
-	}
-
-	@Nonnull
-	@CheckReturnValue
-	public static <T> Limiter<T> compound(@Nonnull Iterable<? extends Limiter<T>> limiters)
-	{
-		return new CompoundLimiter<T>(ImmutableList.copyOf(limiters));
-	}
-
 	@Nonnull
 	@CheckReturnValue
 	public static <C extends Comparable<C>> Limiter<C> range(C start, C end)
 	{
 		return new RangeLimiter<C>(Ranges.closed(start, end));
-	}
-
-	/**
-	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
-	 */
-	@Beta
-	@Nonnull
-	@CheckReturnValue
-	public static <C extends Comparable<C>> Limiter<C> range(Range<C> range)
-	{
-		return new RangeLimiter<C>(range);
 	}
 
 	@Nonnull
@@ -82,7 +49,7 @@ public final class Limiters
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
 	 * 
 	 * @param limiter the limiter to use as the {@link Predicate}
-	 * @return a {@link Predicate} that filters out any values not within the limits of the given <code>limiter</code>
+	 * @return a {@link Predicate} that filters out any values not within the limits of the given {@code limiter}
 	 * </pre>
 	 */
 	@Beta
@@ -110,48 +77,12 @@ public final class Limiters
 
 	@Nonnull
 	@CheckReturnValue
-	static <K, V> Limiter<Map<K, V>> forMapValues(@Nonnull Limiter<V> valueLimiter)
-	{
-		if(valueLimiter == noLimits())
-			return noLimits();
-		return new MapValueLimiter<K, V>(valueLimiter);
-	}
-
-	@Nonnull
-	@CheckReturnValue
 	static <T> Limiter<T> noLimits()
 	{
 		// Doesn't modify anything, i.e T is unused here
 		@SuppressWarnings("unchecked")
 		Limiter<T> instance = (Limiter<T>) NoLimits.INSTANCE;
 		return instance;
-	}
-
-	/**
-	 * Puts several {@link Limiter}s together and runs them in sequence
-	 * 
-	 * @param <T> type of value to validate
-	 */
-	private static final class CompoundLimiter<T> implements Limiter<T>
-	{
-		private final Collection<Limiter<T>> limiters;
-
-		private CompoundLimiter(Collection<Limiter<T>> limiters)
-		{
-			this.limiters = limiters;
-		}
-
-		@Override
-		public Limit withinLimits(T value)
-		{
-			for(Limiter<T> limiter : limiters)
-			{
-				Limit limit = limiter.withinLimits(value);
-				if(limit != Limit.OK)
-					return limit;
-			}
-			return Limit.OK;
-		}
 	}
 
 	/**
@@ -170,6 +101,12 @@ public final class Limiters
 			return Limit.notOk(new DescribeAsNonExistingFile(file));
 		}
 
+		@Override
+		public String validValuesDescription()
+		{
+			return "an existing file";
+		}
+
 		private static final class DescribeAsNonExistingFile implements Description
 		{
 			private final File file;
@@ -182,7 +119,7 @@ public final class Limiters
 			@Override
 			public String description()
 			{
-				return fileDescriber().describe(file) + " doesn't exist as a file";
+				return fileDescriber().describe(file) + " isn't an existing file";
 			}
 		}
 	}
@@ -207,33 +144,17 @@ public final class Limiters
 			}
 			return Limit.OK;
 		}
-	}
-
-	private static final class MapValueLimiter<K, V> implements Limiter<Map<K, V>>
-	{
-		private final Limiter<V> limiter;
-
-		private MapValueLimiter(Limiter<V> valueLimiter)
-		{
-			this.limiter = valueLimiter;
-		}
 
 		@Override
-		public Limit withinLimits(Map<K, V> map)
+		public String validValuesDescription()
 		{
-			for(V value : map.values())
-			{
-				Limit limit = limiter.withinLimits(value);
-				if(limit != Limit.OK)
-					return limit;
-			}
-			return Limit.OK;
+			return elementLimiter.validValuesDescription();
 		}
 	}
 
-	private static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
+	static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
 	{
-		private final Range<C> rangeToLimitValuesTo;
+		final Range<C> rangeToLimitValuesTo;
 
 		private RangeLimiter(final Range<C> rangeToLimitValuesTo)
 		{
@@ -245,7 +166,45 @@ public final class Limiters
 		{
 			if(rangeToLimitValuesTo.contains(value))
 				return Limit.OK;
-			return Limit.notOk("'" + value + "' is not in the range " + rangeToLimitValuesTo.toString());
+			return Limit.notOk("'" + value + "' is not in the range " + validValuesDescription());
+		}
+
+		@Override
+		public String validValuesDescription()
+		{
+			return rangeToLimitValuesTo.toString();
+		}
+	}
+
+	static final class RangeLimiterForRadix<T extends Number & Comparable<T>> implements Limiter<T>
+	{
+		private final Range<T> range;
+		private final Radix radix;
+		private final NumberType<T> type;
+
+		RangeLimiterForRadix(final Range<T> range, final Radix radix, final NumberType<T> type)
+		{
+			this.range = range;
+			this.radix = radix;
+			this.type = type;
+		}
+
+		@Override
+		public Limit withinLimits(T value)
+		{
+			if(range.contains(value))
+				return Limit.OK;
+
+			String describedValue = type.toString(value, radix);
+			return Limit.notOk("'" + describedValue + "' is not in the range " + validValuesDescription());
+		}
+
+		@Override
+		public String validValuesDescription()
+		{
+			String minValue = type.toString(range.lowerEndpoint(), radix);
+			String maxValue = type.toString(range.upperEndpoint(), radix);
+			return minValue + " to " + maxValue + " (" + radix.description() + ")";
 		}
 	}
 
@@ -263,6 +222,12 @@ public final class Limiters
 		public Limit withinLimits(T value)
 		{
 			return Limit.OK;
+		}
+
+		@Override
+		public String validValuesDescription()
+		{
+			throw new IllegalStateException("StringParser#descriptionOfValidValues() should be used instead");
 		}
 	}
 

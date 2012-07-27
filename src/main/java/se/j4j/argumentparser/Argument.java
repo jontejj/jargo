@@ -10,10 +10,12 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
+import se.j4j.argumentparser.ArgumentBuilder.SupplierOfInstance;
 import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
+import se.j4j.argumentparser.internal.Finalizer;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -115,15 +117,12 @@ public final class Argument<T> extends ArgumentSettings
 				}
 			};
 		}
-		// TODO: verify this, run finalizers before checking limits...
-		// TODO: what if defaultValueProvider is a ListValueProvider/MapValueProvider with a
-		// NonLazyValueProvider as elementProvider?
-		/*
-		 * if(defaultValueProvider instanceof NonLazyValueProvider<?>)
-		 * {
-		 * checkLimitForDefaultValue(defaultValueProvider.provideValue());
-		 * }
-		 */
+
+		if(defaultValue instanceof SupplierOfInstance<?>)
+		{
+			// Calling this makes sure that the default value is within the limits of any limiter
+			defaultValue();
+		}
 	}
 
 	/**
@@ -135,7 +134,7 @@ public final class Argument<T> extends ArgumentSettings
 	 * arguments or provide usable usage texts.
 	 * 
 	 * @param actualArguments the arguments from the command line
-	 * @return the parsed value from the <code>actualArguments</code>
+	 * @return the parsed value from the {@code actualArguments}
 	 * @throws ArgumentException if actualArguments isn't compatible with this
 	 *             argument
 	 */
@@ -160,8 +159,8 @@ public final class Argument<T> extends ArgumentSettings
 
 	String validValuesDescription()
 	{
-		// if(limiter != Limiters.noLimits())
-		// return limiter.validValuesDescription();
+		if(limiter != Limiters.noLimits())
+			return limiter.validValuesDescription();
 
 		return parser().descriptionOfValidValues(this);
 	}
@@ -297,7 +296,7 @@ public final class Argument<T> extends ArgumentSettings
 		}
 		catch(LimitException e)
 		{
-			throw new IllegalArgumentException("Invalid default value: " + e.getMessage(), e);
+			throw new IllegalStateException("Invalid default value: " + e.getMessage(), e);
 		}
 	}
 

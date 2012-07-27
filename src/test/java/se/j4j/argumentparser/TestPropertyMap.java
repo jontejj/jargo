@@ -145,9 +145,8 @@ public class TestPropertyMap
 		}
 		catch(ArgumentException expected)
 		{
-			// TODO: assert that range(0, 10) is displayed in the usage somehow
-			assertThat(expected.getMessageAndUsage("LimitedKeysAndLimitedValues"))
-					.isEqualTo(expected("limiterUsageForBothValueLimiterAndKeyLimiter"));
+			String usage = expected.getMessageAndUsage("LimitedKeysAndLimitedValues");
+			assertThat(usage).isEqualTo(expected("limiterUsageForBothValueLimiterAndKeyLimiter"));
 		}
 
 		try
@@ -155,9 +154,9 @@ public class TestPropertyMap
 			parser.parse("-Ifoo=1", "-Ibar=-1");
 			fail("Didn't invalidate bar with negative value");
 		}
-		catch(ArgumentException expected)
+		catch(ArgumentException invalidBar)
 		{
-			// TODO: expect nice error message & usage
+			assertThat(invalidBar).hasMessage("'-1' is not in the range 0 to 10 (decimal)");
 		}
 	}
 
@@ -225,7 +224,7 @@ public class TestPropertyMap
 	{
 		// In all honesty, this is for code coverage:)
 		Argument<String> badArgument = stringArgument().build();
-		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(null, null);
+		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(null, null, Limiters.<String>noLimits());
 
 		ArgumentIterator arguments = ArgumentIterator.forSingleArgument("-Nfoo=bar");
 		Map<String, String> parsedResult = parser.parse(arguments, null, badArgument);
@@ -281,6 +280,12 @@ public class TestPropertyMap
 	{
 		String value = stringArgument("-N").asPropertyMap().separator("==").parse("-Nkey==value").get("key");
 		assertThat(value).isEqualTo("value");
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatZeroCharacterSeparatorIsForbidden()
+	{
+		stringArgument("-N").separator("").asPropertyMap().build();
 	}
 
 	@Test

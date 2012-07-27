@@ -12,7 +12,7 @@ public class UsageTexts
 {
 
 	/**
-	 * Loads a usage text (from resources) named /usage_texts/<code>textName</code>.txt
+	 * Loads a usage text (from resources) named /usage_texts/{@code textName}.txt
 	 * 
 	 * @return the file as a string
 	 */
