@@ -17,7 +17,7 @@ public class FooLimiter implements Limiter<String>
 	}
 
 	@Override
-	public String validValuesDescription()
+	public String descriptionOfValidValues()
 	{
 		return "foo";
 	}

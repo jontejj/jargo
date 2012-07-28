@@ -1,9 +1,12 @@
 Usage: CommandUsage [Options]
 build      Builds a target
+           
 clean      Cleans a target
+           
 commit     Commits to a repository
-           [Options]
+            [Options]
             --amend              Default: disabled
             --author=<string>    <string>: any string [Required]
              <path> ...          <path>: a file path
                                  Default: Empty list
+            

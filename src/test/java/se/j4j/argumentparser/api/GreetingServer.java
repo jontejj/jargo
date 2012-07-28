@@ -4,6 +4,7 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CommandLineParser.forArguments;
+import static se.j4j.argumentparser.Limiters.range;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,11 +27,7 @@ public class GreetingServer
 	static final Argument<Boolean> ENABLE_LOGGING = optionArgument("-l", "--enable-logging").description("Output debug information to standard out")
 			.build();
 
-	// static final Argument<List<Integer>> PORTS = integerArgument("-p",
-	// "--listen-port").limitTo(range(0, 65536)).defaultValue(70000).repeated()
-	// .description("The port clients should connect to").metaDescription("port").build();
-
-	static final Argument<Integer> PORTS = integerArgument("-p", "--listen-port").defaultValue(70000)
+	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(range(0, 65536)).defaultValue(10000).repeated()
 			.description("The port clients should connect to").metaDescription("port").build();
 
 	static final Argument<List<String>> GREETING_PHRASES = stringArgument().variableArity()
@@ -63,7 +60,7 @@ public class GreetingServer
 		}
 	}
 
-	void start(boolean loggingIsEnabled, Integer ports, List<String> greetingPhrases)
+	void start(boolean loggingIsEnabled, List<Integer> ports, List<String> greetingPhrases)
 	{
 		if(loggingIsEnabled)
 		{
@@ -71,14 +68,17 @@ public class GreetingServer
 		}
 		try
 		{
-			ServerSocket server = new ServerSocket(ports, 10000);
-			Socket client = server.accept();
-			Writer writer = new OutputStreamWriter(client.getOutputStream(), Charsets.UTF_8);
-			for(String greetingPhrase : greetingPhrases)
+			for(Integer port : ports)
 			{
-				writer.append(greetingPhrase).append((char) Ascii.LF);
+				ServerSocket server = new ServerSocket(port, 10000);
+				Socket client = server.accept();
+				Writer writer = new OutputStreamWriter(client.getOutputStream(), Charsets.UTF_8);
+				for(String greetingPhrase : greetingPhrases)
+				{
+					writer.append(greetingPhrase).append((char) Ascii.LF);
+				}
+				writer.close();
 			}
-			writer.close();
 		}
 		catch(IOException e)
 		{

@@ -5,15 +5,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import se.j4j.argumentparser.internal.Finalizer;
-
 /**
  * <pre>
  * Allows for only allowing a subset of values parsed by {@link StringParser#parse(String)} implementations.
  * 
  * As an example, look at {@link Limiters#range(Comparable, Comparable)}.
- * 
- * Values have been passed through any {@link Finalizer#finalizeValue(Object)} before {@link #withinLimits(Object)} is called.
  * 
  * Integrate your limiter with an {@link Argument} by calling {@link ArgumentBuilder#limitTo(Limiter)}.
  * 
@@ -42,5 +38,5 @@ public interface Limiter<T>
 	 * @return a more narrow(specific) description than the one supplied by
 	 *         {@link StringParser#descriptionOfValidValues()}
 	 */
-	String validValuesDescription();
+	String descriptionOfValidValues();
 }

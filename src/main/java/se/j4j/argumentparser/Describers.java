@@ -49,6 +49,9 @@ public final class Describers
 		return EnabledDescriber.INSTANCE;
 	}
 
+	/**
+	 * Describes {@link Argument}s by their first name.
+	 */
 	static Describer<Argument<?>> argumentDescriber()
 	{
 		return ArgumentDescriber.INSTANCE;

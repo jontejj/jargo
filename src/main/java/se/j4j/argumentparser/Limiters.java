@@ -102,7 +102,7 @@ public final class Limiters
 		}
 
 		@Override
-		public String validValuesDescription()
+		public String descriptionOfValidValues()
 		{
 			return "an existing file";
 		}
@@ -146,9 +146,9 @@ public final class Limiters
 		}
 
 		@Override
-		public String validValuesDescription()
+		public String descriptionOfValidValues()
 		{
-			return elementLimiter.validValuesDescription();
+			return elementLimiter.descriptionOfValidValues();
 		}
 	}
 
@@ -166,11 +166,11 @@ public final class Limiters
 		{
 			if(rangeToLimitValuesTo.contains(value))
 				return Limit.OK;
-			return Limit.notOk("'" + value + "' is not in the range " + validValuesDescription());
+			return Limit.notOk("'" + value + "' is not in the range " + descriptionOfValidValues());
 		}
 
 		@Override
-		public String validValuesDescription()
+		public String descriptionOfValidValues()
 		{
 			return rangeToLimitValuesTo.toString();
 		}
@@ -196,11 +196,11 @@ public final class Limiters
 				return Limit.OK;
 
 			String describedValue = type.toString(value, radix);
-			return Limit.notOk("'" + describedValue + "' is not in the range " + validValuesDescription());
+			return Limit.notOk("'" + describedValue + "' is not in the range " + descriptionOfValidValues());
 		}
 
 		@Override
-		public String validValuesDescription()
+		public String descriptionOfValidValues()
 		{
 			String minValue = type.toString(range.lowerEndpoint(), radix);
 			String maxValue = type.toString(range.upperEndpoint(), radix);
@@ -225,7 +225,7 @@ public final class Limiters
 		}
 
 		@Override
-		public String validValuesDescription()
+		public String descriptionOfValidValues()
 		{
 			throw new IllegalStateException("StringParser#descriptionOfValidValues() should be used instead");
 		}
