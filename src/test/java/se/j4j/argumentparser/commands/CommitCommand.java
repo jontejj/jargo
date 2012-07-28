@@ -45,6 +45,12 @@ public class CommitCommand extends Command
 		return "commit";
 	}
 
+	@Override
+	public String description()
+	{
+		return "Commits to a repository";
+	}
+
 	public static class Repository
 	{
 		List<Commit> commits = Lists.newArrayList();

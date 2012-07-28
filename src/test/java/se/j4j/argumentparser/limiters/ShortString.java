@@ -14,7 +14,7 @@ public class ShortString implements Limiter<String>
 	}
 
 	@Override
-	public String validValuesDescription()
+	public String descriptionOfValidValues()
 	{
 		return "a string of max 10 characters";
 	}

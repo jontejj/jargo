@@ -52,7 +52,7 @@ public class PackagePrivateTests
 	{
 		// Argument should fall back to StringParser#descriptionOfValidValues() instead when no
 		// limit is applied
-		Limiters.noLimits().validValuesDescription();
+		Limiters.noLimits().descriptionOfValidValues();
 	}
 
 }

@@ -54,11 +54,18 @@ public class TestDefaultValues
 		}).limitTo(foos()).parse();
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testThatInvalidDefaultValueSupplierValuesAreInvalidated() throws ArgumentException
 	{
 		// Throws because bar (which is given by BarSupplier) isn't foo
 		stringArgument("-n").defaultValueSupplier(new BarSupplier()).limitTo(foos()).parse();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testThatInvalidDefaultValueInRepeatedArgumentIsInvalidatedDuringBuild()
+	{
+		// Throws because bar (which is given by BarSupplier) isn't foo
+		stringArgument("-n").defaultValue("bar").limitTo(foos()).repeated().build();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

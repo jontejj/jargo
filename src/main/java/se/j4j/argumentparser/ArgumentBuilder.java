@@ -729,8 +729,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		@Override
 		protected StringParser<T> parser()
 		{
-			// TODO: should default value be validated here? What if it's expensive to create the
-			// default value?
 			return StringParsers.RadixiableParser.radixiableParser(radix, type);
 		}
 	}
@@ -1065,9 +1063,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
-	private static final class ListSupplier<T> implements Supplier<List<T>>
+	static final class ListSupplier<T> implements Supplier<List<T>>
 	{
-		private final Supplier<T> singleElementSupplier;
+		final Supplier<T> singleElementSupplier;
 		private final int elementsToSupply;
 
 		ListSupplier(Supplier<T> elementSupplier, final int elementsToSupply)

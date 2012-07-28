@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
+import se.j4j.argumentparser.ArgumentBuilder.ListSupplier;
 import se.j4j.argumentparser.ArgumentBuilder.SupplierOfInstance;
 import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
@@ -118,10 +119,19 @@ public final class Argument<T> extends ArgumentSettings
 			};
 		}
 
+		// Fail-fast for invalid default values that's already created
 		if(defaultValue instanceof SupplierOfInstance<?>)
 		{
 			// Calling this makes sure that the default value is within the limits of any limiter
 			defaultValue();
+		}
+		else if(defaultValue instanceof ListSupplier<?>)
+		{
+			ListSupplier<?> listSupplier = (ListSupplier<?>) defaultValue;
+			if(listSupplier.singleElementSupplier instanceof SupplierOfInstance<?>)
+			{
+				defaultValue();
+			}
 		}
 	}
 
@@ -157,10 +167,10 @@ public final class Argument<T> extends ArgumentSettings
 		return parser;
 	}
 
-	String validValuesDescription()
+	String descriptionOfValidValues()
 	{
 		if(limiter != Limiters.noLimits())
-			return limiter.validValuesDescription();
+			return limiter.descriptionOfValidValues();
 
 		return parser().descriptionOfValidValues(this);
 	}

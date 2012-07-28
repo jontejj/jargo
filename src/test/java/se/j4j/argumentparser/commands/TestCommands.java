@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
@@ -167,11 +166,7 @@ public class TestCommands
 		assertThat(repo.commits.get(1).author).isEqualTo("nobody");
 	}
 
-	/**
-	 * TODO: fix usage for commands
-	 */
 	@Test
-	@Ignore
 	public void testUsageForCommands()
 	{
 		BuildTarget target = new BuildTarget();

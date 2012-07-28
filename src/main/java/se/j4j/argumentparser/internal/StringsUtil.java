@@ -54,10 +54,21 @@ public final class StringsUtil
 	}
 
 	/**
-	 * Returns the {@link String} in {@code validOptions} that {@code input} has the
-	 * shortest levenshtein distance(TODO: wiki link) to.
+	 * <pre>
+	 * Returns the {@link String} in {@code validOptions} that {@code input} has the shortest
+	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to.
+	 * 
+	 * Current performance characteristics:
+	 * n = length of {@code input}
+	 * m = average string length of the strings in {@code validOptions}
+	 * s = amount validOptions
+	 * 
+	 * complexity = n * m * s = O(n<sup>3</sup>)
+	 * 
+	 * So try to limit the number of valid options...
 	 * 
 	 * @throws IllegalArgumentException if there's no valid options to match input against
+	 * </pre>
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -108,6 +119,15 @@ public final class StringsUtil
 		{
 			for(int i = 1; i < m; i++)
 			{
+				/*
+				 * TODO: add support for case-insensitive comparisons
+				 * int currentCharFromOne = Character.toUpperCase(one.codePointAt(i - 1));
+				 * int currentCharFromTwo = Character.toUpperCase(two.codePointAt(j - 1));
+				 * if(currentCharFromOne == currentCharFromTwo)
+				 * {
+				 * }
+				 */
+
 				if(one.codePointAt(i - 1) == two.codePointAt(j - 1))
 				{
 					// no operation required

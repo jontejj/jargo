@@ -1,0 +1,4 @@
+bar is not foo
+
+Usage: OnlyAllowFoos [Options]
+-f, --foos <string> <string>    <string>: foo [Required]

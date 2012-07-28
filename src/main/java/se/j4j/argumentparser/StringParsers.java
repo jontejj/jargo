@@ -945,7 +945,7 @@ public final class StringParsers
 			String valueDescription;
 			if(valueLimiter != Limiters.noLimits())
 			{
-				valueDescription = valueLimiter.validValuesDescription();
+				valueDescription = valueLimiter.descriptionOfValidValues();
 			}
 			else
 			{

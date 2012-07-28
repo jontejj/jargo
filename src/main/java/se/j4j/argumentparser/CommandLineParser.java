@@ -54,7 +54,7 @@ import com.google.common.collect.UnmodifiableIterator;
  * Starting point for the call chain:
  * 
  * <pre>
- * {@code 
+ * {@code
  * import static se.j4j.argumentparser.ArgumentFactory.*;
  * ...
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
@@ -223,6 +223,7 @@ public final class CommandLineParser
 	/**
 	 * Used by {@link Command} to support several {@link Command}s from the same command line
 	 * invocation
+	 * TODO: rename to isSubCommandParser?
 	 */
 	private final boolean abortOnUnexpectedArguments;
 
@@ -316,8 +317,6 @@ public final class CommandLineParser
 			}
 			catch(ArgumentException e)
 			{
-				// TODO: for commands, should this really print usage for the
-				// whole program and not the specific command?
 				e.originatedFrom(this);
 				throw e;
 			}
@@ -396,7 +395,7 @@ public final class CommandLineParser
 
 		// Batch of short-named optional arguments
 		// For instance, "-fs" was used instead of "-f -s"
-		if(currentArgument.startsWith("-") && !currentArgument.startsWith("--") && currentArgument.length() > 1)
+		if(currentArgument.startsWith("-") && currentArgument.length() > 1)
 		{
 			List<Character> optionCharacters = Lists.charactersOf(currentArgument.substring(1));
 			Set<Argument<?>> foundOptions = newLinkedHashSetWithExpectedSize(optionCharacters.size());
@@ -488,6 +487,7 @@ public final class CommandLineParser
 			Iterable<Argument<?>> indexedWithoutVariableArity = filter(indexedArguments, not(IS_OF_VARIABLE_ARITY));
 			Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
 			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, IS_NAMED));
+			// TODO: place commands last?
 			Collections.sort(sortedArgumentsByName, BY_FIRST_NAME);
 
 			return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
@@ -532,7 +532,10 @@ public final class CommandLineParser
 
 		private void mainUsage(@Nonnull final String programName)
 		{
-			builder.append("Usage: " + programName);
+			if(!abortOnUnexpectedArguments)
+			{
+				builder.append("Usage: " + programName);
+			}
 			if(!allArguments.isEmpty())
 			{
 				builder.append(" [Options]");
@@ -639,7 +642,7 @@ public final class CommandLineParser
 		{
 			// TODO: handle long value explanations, replace each newline with enough spaces,
 			// split up long lines
-			String description = arg.validValuesDescription();
+			String description = arg.descriptionOfValidValues();
 			if(!description.isEmpty())
 			{
 				boolean isCommand = arg.parser() instanceof Command;
@@ -647,6 +650,12 @@ public final class CommandLineParser
 				{
 					String meta = arg.metaDescriptionInRightColumn();
 					builder.append(meta + ": ");
+				}
+				else
+				{
+					// +1 = indentation so that command options are tucked under the command
+					String spaces = spaces(indexOfDescriptionColumn + 1);
+					description = description.replace(NEWLINE, NEWLINE + spaces);
 				}
 
 				builder.append(description);

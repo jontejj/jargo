@@ -152,43 +152,6 @@ public class TestCommandLineParser
 	}
 
 	@Test
-	public void testSeveralOptionsInOneArgument() throws ArgumentException
-	{
-		Argument<Boolean> logging = optionArgument("-l").build();
-		Argument<Boolean> promiscousMode = optionArgument("-p").build();
-
-		ParsedArguments args = CommandLineParser.forArguments(logging, promiscousMode).parse("-pl");
-
-		assertThat(args.get(logging)).isTrue();
-		assertThat(args.get(promiscousMode)).isTrue();
-	}
-
-	@Test(expected = UnexpectedArgumentException.class)
-	public void testSeveralOptionsInOneArgumentWithOneNonOptionArgument() throws ArgumentException
-	{
-		Argument<Boolean> logging = optionArgument("-l").build();
-		Argument<Integer> number = integerArgument("-n").build();
-
-		CommandLineParser.forArguments(logging, number).parse("-ln");
-	}
-
-	@Test(expected = UnexpectedArgumentException.class)
-	public void testSeveralOptionsInOneArgumentWithOneDuplicate() throws ArgumentException
-	{
-		Argument<Boolean> logging = optionArgument("-l").build();
-		Argument<Boolean> promiscousMode = optionArgument("-p").build();
-
-		CommandLineParser.forArguments(logging, promiscousMode).parse("-ppl");
-	}
-
-	@Test(expected = UnexpectedArgumentException.class)
-	public void testSeveralOptionsInOneArgumentWithOneUnknownCharacter() throws ArgumentException
-	{
-		// TODO: also test that optionArgument "-l" wasn't even parsed
-		optionArgument("-l").parse("-pl");
-	}
-
-	@Test
 	public void testListInterface() throws ArgumentException
 	{
 		String[] args = {"--number", "1"};

@@ -120,7 +120,7 @@ public class TestLimiters
 			}
 
 			@Override
-			public String validValuesDescription()
+			public String descriptionOfValidValues()
 			{
 				return "Not used";
 			}
@@ -155,7 +155,7 @@ public class TestLimiters
 		}
 
 		@Override
-		public String validValuesDescription()
+		public String descriptionOfValidValues()
 		{
 			return "any value";
 		}

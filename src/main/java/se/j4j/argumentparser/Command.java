@@ -68,6 +68,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	 * @return the description to use in the usage text
 	 */
 	@Override
+	@Nonnull
 	public String description()
 	{
 		return "";
