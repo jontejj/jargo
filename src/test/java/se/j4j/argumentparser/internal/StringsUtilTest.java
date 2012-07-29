@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestStrings
+public class StringsUtilTest
 {
 	@Test
 	public void testThatSpacesCreatesFiveSpaces()

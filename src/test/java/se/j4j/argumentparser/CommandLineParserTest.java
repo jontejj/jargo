@@ -20,7 +20,7 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.utils.ArgumentExpector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestCommandLineParser
+public class CommandLineParserTest
 {
 	/**
 	 * An example of how to create a <b>easy to understand</b> command line invocation:<br>

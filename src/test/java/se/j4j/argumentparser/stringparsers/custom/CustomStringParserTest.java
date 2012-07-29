@@ -15,7 +15,7 @@ import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
 import se.j4j.argumentparser.StringParser;
 
-public class TestCustomStringParsers
+public class CustomStringParserTest
 {
 	@Test
 	public void testHostPort() throws ArgumentException
@@ -46,15 +46,15 @@ public class TestCustomStringParsers
 	public void testForwaringStringParser() throws ArgumentException
 	{
 		String argumentValue = "bar";
-		String result = withParser(new CustomizedStringParser()).parse(argumentValue);
+		String result = withParser(new InterningStringParser()).parse(argumentValue);
 		assertThat(result).isSameAs(argumentValue.intern());
 
-		String usage = withParser(new CustomizedStringParser()).names("-f").usage("ForwardingStringParser");
-		assertThat(usage).contains("-f <string>    <string>: any string");
+		String usage = withParser(new InterningStringParser()).names("-f").usage("ForwardingStringParser");
+		assertThat(usage).contains("-f <interned_string>    <interned_string>: some string");
 		assertThat(usage).contains("Default: foo");
 	}
 
-	private static final class CustomizedStringParser extends ForwardingStringParser<String>
+	private static final class InterningStringParser extends ForwardingStringParser<String>
 	{
 		@Override
 		public String parse(String value) throws ArgumentException
@@ -66,6 +66,18 @@ public class TestCustomStringParsers
 		public String defaultValue()
 		{
 			return "foo";
+		}
+
+		@Override
+		public String metaDescription()
+		{
+			return "interned_string";
+		}
+
+		@Override
+		public String descriptionOfValidValues()
+		{
+			return "some string";
 		}
 
 		@Override

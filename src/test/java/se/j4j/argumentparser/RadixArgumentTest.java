@@ -38,7 +38,7 @@ import se.j4j.argumentparser.internal.NumberType;
 
 import com.google.common.collect.Lists;
 
-public class TestRadixArguments
+public class RadixArgumentTest
 {
 	@Test
 	public void testOctalInput() throws ArgumentException

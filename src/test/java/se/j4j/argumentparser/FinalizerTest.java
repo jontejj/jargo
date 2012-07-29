@@ -18,7 +18,7 @@ import se.j4j.argumentparser.limiters.FooLimiter;
 
 import com.google.common.collect.ImmutableList;
 
-public class TestFinalizers
+public class FinalizerTest
 {
 	@Test
 	public void testThatFinalizersAreCalledForParsedValues() throws ArgumentException

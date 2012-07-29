@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 
-public class TestStringArguments
+public class StringArgumentTest
 {
 	@Test
 	public void testThatTheSameStringIsReturned() throws ArgumentException

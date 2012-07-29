@@ -11,7 +11,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
-public class TestEnumArguments
+public class EnumArgumentTest
 {
 	enum Action
 	{

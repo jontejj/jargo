@@ -8,7 +8,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
-public class TestDoubleArguments
+public class DoubleArgumentTest
 {
 	@Test
 	public void testValidDouble() throws ArgumentException

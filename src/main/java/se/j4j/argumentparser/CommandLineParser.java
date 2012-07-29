@@ -157,7 +157,7 @@ public final class CommandLineParser
 		return new Usage().withProgramName(programName);
 	}
 
-	CommandLineParser(@Nonnull final List<Argument<?>> argumentDefinitions, boolean abortOnUnexpectedArguments)
+	CommandLineParser(@Nonnull final List<Argument<?>> argumentDefinitions, boolean isCommandParser)
 	{
 		namedArguments = new NamedArguments(argumentDefinitions.size());
 		indexedArguments = newArrayListWithCapacity(argumentDefinitions.size());
@@ -167,7 +167,7 @@ public final class CommandLineParser
 		propertyMapArguments = CharacterTrie.newTrie();
 		ignoreCasePropertyMapArguments = CharacterTrie.newTrie();
 		allArguments = newHashSetWithExpectedSize(argumentDefinitions.size());
-		this.abortOnUnexpectedArguments = abortOnUnexpectedArguments;
+		this.isCommandParser = isCommandParser;
 		for(Argument<?> definition : argumentDefinitions)
 		{
 			addArgumentDefinition(definition);
@@ -221,11 +221,9 @@ public final class CommandLineParser
 	@Nonnull private final Set<Argument<?>> allArguments;
 
 	/**
-	 * Used by {@link Command} to support several {@link Command}s from the same command line
-	 * invocation
-	 * TODO: rename to isSubCommandParser?
+	 * Used by {@link Command} to indicate that this parser is part of another parser
 	 */
-	private final boolean abortOnUnexpectedArguments;
+	private final boolean isCommandParser;
 
 	private void addArgumentDefinition(@Nonnull final Argument<?> definition)
 	{
@@ -433,7 +431,7 @@ public final class CommandLineParser
 		}
 
 		// Command parsers exit here instead of throwing
-		if(abortOnUnexpectedArguments)
+		if(isCommandParser)
 		{
 			// Rolling back here means that the next parser will receive the argument
 			// instead and maybe it can handle it better
@@ -532,7 +530,7 @@ public final class CommandLineParser
 
 		private void mainUsage(@Nonnull final String programName)
 		{
-			if(!abortOnUnexpectedArguments)
+			if(!isCommandParser)
 			{
 				builder.append("Usage: " + programName);
 			}

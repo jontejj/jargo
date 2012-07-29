@@ -8,7 +8,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
-public class TestCharArguments
+public class CharArgumentTest
 {
 	@Test
 	public void testValidCharacter() throws ArgumentException

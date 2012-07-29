@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class TestIgnoringCase
+public class IgnoringCaseTest
 {
 	@Test
 	public void testIgnoringCase() throws ArgumentException

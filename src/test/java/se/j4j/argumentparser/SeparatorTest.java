@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class TestSeparators
+public class SeparatorTest
 {
 	@Test
 	public void testIgnoringCaseCombinedWithSeparator() throws ArgumentException

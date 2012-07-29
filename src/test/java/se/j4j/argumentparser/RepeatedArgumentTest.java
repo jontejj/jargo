@@ -17,7 +17,7 @@ import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
 
 import com.google.common.collect.ImmutableList;
 
-public class TestRepeatedArguments
+public class RepeatedArgumentTest
 {
 	@Test
 	public void testRepeatedIntegerArgument() throws ArgumentException

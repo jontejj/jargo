@@ -10,7 +10,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestRequiredArguments
+public class RequiredArgumentTest
 {
 	@Test
 	public void testMissingRequiredArgument() throws ArgumentException

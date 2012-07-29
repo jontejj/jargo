@@ -28,7 +28,7 @@ import se.j4j.argumentparser.Limiter;
 
 import com.google.common.collect.ImmutableList;
 
-public class TestLimiters
+public class LimiterTest
 {
 	@Test
 	public void testExistingFile()
@@ -72,7 +72,7 @@ public class TestLimiters
 		}
 		catch(ArgumentException expected)
 		{
-			String usage = expected.getMessageAndUsage("OnlyAllowFoos");
+			String usage = expected.getMessageAndUsage("OnlyAllowsFoo");
 			assertThat(usage).isEqualTo(expected("arityWithLimitedValues"));
 		}
 	}

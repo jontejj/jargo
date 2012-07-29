@@ -27,7 +27,7 @@ import com.google.common.base.Supplier;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestDefaultValues
+public class DefaultValueTest
 {
 	@Test
 	public void testThatNonRequiredAndNonDefaultedArgumentDefaultsToZero() throws ArgumentException

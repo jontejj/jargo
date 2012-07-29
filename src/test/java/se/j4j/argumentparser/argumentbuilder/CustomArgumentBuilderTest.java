@@ -6,8 +6,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 
-// TODO: Maybe rename all Test* classes to *Test
-public class TestCustomArgumentBuilder
+public class CustomArgumentBuilderTest
 {
 	/**
 	 * The idea here is that all foos created from parsed arguments should use bar=5

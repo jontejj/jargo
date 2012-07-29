@@ -38,7 +38,7 @@ import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.utils.UsageTexts;
 
-public class TestArgumentParserConcurrency
+public class ConcurrencyTest
 {
 	final Argument<Boolean> enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
 
