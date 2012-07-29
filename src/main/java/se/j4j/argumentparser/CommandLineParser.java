@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -172,6 +173,7 @@ public final class CommandLineParser
 		{
 			addArgumentDefinition(definition);
 		}
+		verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments();
 
 		// How would one know when the first argument considers itself satisfied?
 		Collection<Argument<?>> unnamedVariableArityArguments = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
@@ -227,16 +229,16 @@ public final class CommandLineParser
 
 	private void addArgumentDefinition(@Nonnull final Argument<?> definition)
 	{
-		if(definition.isNamed())
+		if(definition.isIndexed())
+		{
+			indexedArguments.add(definition);
+		}
+		else
 		{
 			for(String name : definition.names())
 			{
 				addNamedArgumentDefinition(name, definition);
 			}
-		}
-		else
-		{
-			indexedArguments.add(definition);
 		}
 		if(definition.isRequired())
 		{
@@ -274,6 +276,27 @@ public final class CommandLineParser
 		}
 		if(oldDefinition != null)
 			throw new IllegalArgumentException(definition + " handles the same argument as: " + oldDefinition);
+	}
+
+	private void verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments()
+	{
+		int indexOfLastRequiredIndexedArgument = 0;
+		int indexOfFirstOptionalIndexedArgument = Integer.MAX_VALUE;
+		for(int i = 0; i < indexedArguments.size(); i++)
+		{
+			if(indexedArguments.get(i).isRequired())
+			{
+				indexOfLastRequiredIndexedArgument = i;
+			}
+			else
+			{
+				indexOfFirstOptionalIndexedArgument = i;
+			}
+		}
+
+		checkArgument(indexOfLastRequiredIndexedArgument <= indexOfFirstOptionalIndexedArgument, "Argument given at index "
+				+ indexOfFirstOptionalIndexedArgument + " is optional but argument at index " + indexOfLastRequiredIndexedArgument
+				+ " is required. Required arguments must be given before any optional arguments, at least when they are indexed (without names)");
 	}
 
 	@Nonnull
@@ -427,6 +450,8 @@ public final class CommandLineParser
 		{
 			definition = indexedArguments.get(holder.indexedArgumentsParsed);
 			arguments.previous();
+			// To give better error explanations we use the meta description for indexed arguments
+			arguments.setCurrentArgumentName(definition.metaDescriptionInRightColumn());
 			return definition;
 		}
 
@@ -468,34 +493,17 @@ public final class CommandLineParser
 
 	private final class Usage
 	{
-		@CheckReturnValue
-		@Nonnull
-		String withProgramName(@Nonnull final String programName)
-		{
-			mainUsage(programName);
-			for(Argument<?> arg : sortedArguments())
-			{
-				usageForArgument(arg);
-			}
-			return toString();
-		}
+		/**
+		 * The characters that, for arguments with several names, separates the different names
+		 */
+		private static final String NAME_SEPARATOR = ", ";
+		private static final String DEFAULT_VALUE_START = "Default: ";
+		private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
+		private static final int SPACES_BETWEEN_COLUMNS = 4;
 
-		private Iterable<Argument<?>> sortedArguments()
-		{
-			Iterable<Argument<?>> indexedWithoutVariableArity = filter(indexedArguments, not(IS_OF_VARIABLE_ARITY));
-			Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
-			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, IS_NAMED));
-			// TODO: place commands last?
-			Collections.sort(sortedArgumentsByName, BY_FIRST_NAME);
+		private final Joiner NAME_JOINER = Joiner.on(NAME_SEPARATOR);
 
-			return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
-		}
-
-		@Override
-		public String toString()
-		{
-			return builder.toString();
-		};
+		private final List<Argument<?>> argumentsToPrint = newArrayListWithCapacity(allArguments.size());
 
 		/**
 		 * The builder to append usage texts to
@@ -513,54 +521,41 @@ public final class CommandLineParser
 		private final int indexOfDescriptionColumn;
 		private boolean needsNewline = false;
 
-		private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
-		private static final int SPACES_BETWEEN_COLUMNS = 4;
-
-		private int expectedUsageTextSize()
-		{
-			// Two lines for each argument
-			return 2 * allArguments.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
-		}
-
 		Usage()
 		{
+			for(Argument<?> arg : sortedArguments())
+				if(!arg.isHiddenFromUsage())
+				{
+					argumentsToPrint.add(arg);
+				}
+
 			indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 			builder = new StringBuilder(expectedUsageTextSize());
 		}
 
-		private void mainUsage(@Nonnull final String programName)
+		private Iterable<Argument<?>> sortedArguments()
 		{
-			if(!isCommandParser)
-			{
-				builder.append("Usage: " + programName);
-			}
-			if(!allArguments.isEmpty())
-			{
-				builder.append(" [Options]");
-				builder.append(NEWLINE);
-			}
+			Iterable<Argument<?>> indexedWithoutVariableArity = filter(indexedArguments, not(IS_OF_VARIABLE_ARITY));
+			Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
+			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, IS_NAMED));
+			// TODO: place commands last?
+			Collections.sort(sortedArgumentsByName, BY_FIRST_NAME);
 
+			return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
 		}
 
 		private int determineLongestNameColumn()
 		{
-			int longestNames = 0;
-			for(Argument<?> arg : allArguments)
+			int longestNameSoFar = 0;
+			for(Argument<?> arg : argumentsToPrint)
 			{
-				int length = lengthOfFirstColumn(arg);
-				if(length > longestNames)
-				{
-					longestNames = length;
-				}
+				longestNameSoFar = max(longestNameSoFar, lengthOfNameColumn(arg));
 			}
-			return longestNames;
+			return longestNameSoFar;
 		}
 
-		private int lengthOfFirstColumn(@Nonnull final Argument<?> argument)
+		private int lengthOfNameColumn(@Nonnull final Argument<?> argument)
 		{
-			if(argument.shouldBeHiddenInUsage())
-				return 0;
-
 			int namesLength = 0;
 
 			for(String name : argument.names())
@@ -574,6 +569,43 @@ public final class CommandLineParser
 			return namesLength + separatorLength + metaLength;
 		}
 
+		private int expectedUsageTextSize()
+		{
+			// Two lines for each argument
+			return 2 * argumentsToPrint.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
+		}
+
+		@CheckReturnValue
+		@Nonnull
+		String withProgramName(@Nonnull final String programName)
+		{
+			mainUsage(programName);
+			for(Argument<?> arg : argumentsToPrint)
+			{
+				usageForArgument(arg);
+			}
+			return toString();
+		}
+
+		private void mainUsage(@Nonnull final String programName)
+		{
+			if(!isCommandParser)
+			{
+				builder.append("Usage: " + programName);
+			}
+			if(!argumentsToPrint.isEmpty())
+			{
+				builder.append(" [Options]");
+				builder.append(NEWLINE);
+			}
+		}
+
+		@Override
+		public String toString()
+		{
+			return builder.toString();
+		};
+
 		/**
 		 * <pre>
 		 * 	-foo   Foo something [Required]
@@ -585,15 +617,15 @@ public final class CommandLineParser
 		@Nonnull
 		private void usageForArgument(@Nonnull final Argument<?> arg)
 		{
-			if(arg.shouldBeHiddenInUsage())
-				return;
+			int lengthBeforeCurrentArgument = builder.length();
 
-			int lengthOfFirstColumn = lengthOfFirstColumn(arg);
-
-			Joiner.on(NAME_SEPARATOR).appendTo(builder, arg.names());
+			NAME_JOINER.appendTo(builder, arg.names());
 
 			builder.append(arg.metaDescriptionInLeftColumn());
+
+			int lengthOfFirstColumn = builder.length() - lengthBeforeCurrentArgument;
 			builder.append(spaces(indexOfDescriptionColumn - lengthOfFirstColumn));
+
 			// TODO: handle long descriptions, names, meta descriptions, default value
 			// descriptions
 			String description = arg.description();
@@ -672,9 +704,6 @@ public final class CommandLineParser
 				builder.append(DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
 			}
 		}
-
-		private static final String NAME_SEPARATOR = ", ";
-		private static final String DEFAULT_VALUE_START = "Default: ";
 	}
 
 	/**
@@ -767,7 +796,7 @@ public final class CommandLineParser
 			{
 				requiredArgumentsLeft.remove(definition);
 			}
-			if(!definition.isNamed() && !parsedArguments.containsKey(definition))
+			if(definition.isIndexed() && !parsedArguments.containsKey(definition))
 			{
 				indexedArgumentsParsed++;
 			}
@@ -870,6 +899,7 @@ public final class CommandLineParser
 		public String getCurrentArgumentName()
 		{
 			// TODO: if it was an indexed argument then what should this name be?
+			// Meta description perhaps?
 			return currentArgumentName;
 		}
 
@@ -914,7 +944,7 @@ public final class CommandLineParser
 		@Override
 		public boolean apply(ArgumentSettings input)
 		{
-			return input.isNamed();
+			return !input.isIndexed();
 		}
 	};
 

@@ -2,7 +2,6 @@ package se.j4j.argumentparser;
 
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
@@ -42,35 +41,6 @@ public class CommandLineParserTest
 		expector.expectThat(port).receives(8090).given("--listen-port 8090");
 
 		expector.expectThat(greetingPhrase).receives("Hello").given("Hello");
-	}
-
-	/**
-	 * <pre>
-	 * An example of how to create a <b>hard to understand</b> command line invocation:
-	 * java program true 8090 Hello
-	 * Note that the order of the arguments matter and who knows what true
-	 * means?
-	 * 
-	 * This feature is allowed only because there exists some use cases where indexed arguments makes sense, one example is:<br>
-	 * echo "Hello World"
-	 * </pre>
-	 */
-	@Test
-	public void testIndexedArguments() throws ArgumentException
-	{
-		String[] args = {"true", "8090", "Hello"};
-
-		Argument<Boolean> enableLogging = booleanArgument().description("Output debug information to standard out").build();
-
-		Argument<Integer> port = integerArgument().defaultValue(8080).description("The port to start the server on.").build();
-
-		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
-
-		ParsedArguments arguments = CommandLineParser.forArguments(enableLogging, port, greetingPhrase).parse(args);
-
-		assertThat(arguments.get(enableLogging)).isTrue();
-		assertThat(arguments.get(port)).isEqualTo(8090);
-		assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
 	}
 
 	@Test(expected = UnexpectedArgumentException.class)

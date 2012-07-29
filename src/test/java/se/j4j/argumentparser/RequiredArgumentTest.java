@@ -13,7 +13,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class RequiredArgumentTest
 {
 	@Test
-	public void testMissingRequiredArgument() throws ArgumentException
+	public void testMissingRequiredNamedArgument() throws ArgumentException
 	{
 		Argument<Integer> number = integerArgument("--number").required().build();
 		Argument<Integer> number2 = integerArgument("--number2").required().build();
@@ -26,6 +26,23 @@ public class RequiredArgumentTest
 		catch(MissingRequiredArgumentException e)
 		{
 			assertThat(e).hasMessage("Missing required arguments: [--number, --number2]");
+		}
+	}
+
+	@Test
+	public void testMissingRequiredIndexedArgument() throws ArgumentException
+	{
+		Argument<Integer> number = integerArgument().metaDescription("numberOne").required().build();
+		Argument<Integer> number2 = integerArgument().metaDescription("numberTwo").required().build();
+
+		try
+		{
+			CommandLineParser.forArguments(number, number2).parse();
+			fail("Required argument silently ignored");
+		}
+		catch(MissingRequiredArgumentException e)
+		{
+			assertThat(e).hasMessage("Missing required arguments: [numberOne, numberTwo]");
 		}
 	}
 

@@ -3,6 +3,7 @@ package se.j4j.argumentparser.internal;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.internal.StringsUtil.closestMatch;
+import static se.j4j.argumentparser.internal.StringsUtil.numberToPositionalString;
 import static se.j4j.argumentparser.internal.StringsUtil.spaces;
 import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
 
@@ -54,5 +55,17 @@ public class StringsUtilTest
 	{
 		List<String> strings = asList("ABC", "Def");
 		assertThat(toLowerCase(strings)).isEqualTo(asList("abc", "def"));
+	}
+
+	@Test
+	public void testTextsForPositionalNumbers()
+	{
+		assertThat(numberToPositionalString(0)).isEqualTo("zeroth");
+		assertThat(numberToPositionalString(1)).isEqualTo("first");
+		assertThat(numberToPositionalString(2)).isEqualTo("second");
+		assertThat(numberToPositionalString(3)).isEqualTo("third");
+		assertThat(numberToPositionalString(4)).isEqualTo("fourth");
+		assertThat(numberToPositionalString(5)).isEqualTo("fifth");
+		assertThat(numberToPositionalString(6)).isEqualTo("6th");
 	}
 }

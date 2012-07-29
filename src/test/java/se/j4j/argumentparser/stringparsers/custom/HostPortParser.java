@@ -26,7 +26,7 @@ public class HostPortParser implements StringParser<HostPort>
 	@Override
 	public String metaDescription()
 	{
-		return "hostinformation";
+		return "<hostinformation>";
 	}
 
 }

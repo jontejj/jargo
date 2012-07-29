@@ -65,7 +65,8 @@ public abstract class Command extends InternalStringParser<String> implements De
 	protected abstract String commandName();
 
 	/**
-	 * Override to provide a description to print in the usage text for this command
+	 * Override to provide a description to print in the usage text for this command.
+	 * This is essentially an alternative to {@link ArgumentBuilder#description(Description)}
 	 * 
 	 * @return the description to use in the usage text
 	 */
@@ -87,6 +88,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 		@Override
 		public CommandLineParser get()
 		{
+			// TODO: if commandArguments().isEmpty then use cached instance
 			return new CommandLineParser(commandArguments(), true);
 		}
 	});
@@ -100,6 +102,8 @@ public abstract class Command extends InternalStringParser<String> implements De
 	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings)
 			throws ArgumentException
 	{
+		// TODO: try/catch MissingNthParameterException and add commandName to the exception, only
+		// for indexed arguments?
 		ParsedArguments result = parser().parse(arguments);
 		execute(result);
 		return commandName(); // Can be used to check for the existence of this

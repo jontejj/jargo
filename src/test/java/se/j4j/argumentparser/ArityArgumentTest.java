@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
+import se.j4j.argumentparser.ArgumentExceptions.MissingNthParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -75,7 +75,7 @@ public class ArityArgumentTest
 		{
 			integerArgument("--numbers").arity(2).parse("--numbers", "5");
 		}
-		catch(MissingParameterException expected)
+		catch(MissingNthParameterException expected)
 		{
 			assertThat(expected.getMessageAndUsage("MissingSecondParameter")).isEqualTo(expected("missingSecondParameter"));
 		}

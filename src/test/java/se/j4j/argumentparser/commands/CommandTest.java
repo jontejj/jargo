@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
@@ -171,6 +172,41 @@ public class CommandTest
 		CommandLineParser parser = CommandLineParser.forCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
 		String usage = parser.usage("CommandUsage");
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
+	}
+
+	private static final class CommandWithIndexedArguments extends Command
+	{
+
+		@Override
+		protected List<Argument<?>> commandArguments()
+		{
+			return Arrays.<Argument<?>>asList(integerArgument().arity(2).build());
+		}
+
+		@Override
+		protected String commandName()
+		{
+			return "aCommand";
+		}
+
+		@Override
+		protected void execute(ParsedArguments parsedArguments)
+		{
+			// TODO Auto-generated method stub
+			System.out.println(parsedArguments);
+		}
+
+	}
+
+	@Ignore
+	@Test
+	public void testCommandWithMissingIndexedArgument() throws ArgumentException
+	{
+		// TODO: "Missing second <integer> parameter for '1'" should be replaced with
+		// "Missing second <integer> parameter for aCommand"
+		Argument<List<String>> command = command(new CommandWithIndexedArguments()).arity(2).build();
+		System.out.println(CommandLineParser.forArguments(command).usage("sdas"));
+		CommandLineParser.forArguments(command).parse("aCommand", "1");
 	}
 
 	/**

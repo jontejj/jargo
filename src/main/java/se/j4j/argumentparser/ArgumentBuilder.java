@@ -12,7 +12,6 @@ import static se.j4j.argumentparser.Descriptions.EMPTY_STRING;
 import static se.j4j.argumentparser.Descriptions.forString;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
-import static se.j4j.argumentparser.internal.StringsUtil.surroundWithMarkers;
 
 import java.util.List;
 import java.util.Map;
@@ -352,24 +351,30 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * By default {@link StringParser}s provides a meta description (by implementing {@link StringParser#metaDescription()}
 	 * that describes the type of data they expect. For instance, if you're writing a music player,
-	 * as a user of your application would you rather see:
+	 * a user of your application would (most probably) rather see:
+	 * 
+	 * --track-nr &lt;track nr&gt;    The track number to play (using {@code  metaDescription("<track nr>") })
+	 * 
+	 * instead of
 	 * 
 	 * --track-nr &lt;integer&gt;     The track number to play (the default provided by {@link StringParser#metaDescription()})
-	 * or:
-	 * --track-nr &lt;track nr&gt;    The track number to play (using {@code  metaDescription("track nr") })
-	 * ?
-	 * </pre>
+	 * 
+	 * So when using general data type parsers such as {@link StringParsers#integerParser()} you're better of if
+	 * you provide a meta description that explains what the {@code integer} represents.
 	 * 
 	 * <b>Note:</b> empty meta descriptions aren't allowed
+	 * <b>Note:</b> the surrounding &lt; & &gt; isn't enforced or added automatically but it's
+	 * preferred to have them because a space can easily be mistaken for something else
 	 * 
-	 * @param aMetaDescription "track nr" in the above example
+	 * @param aMetaDescription "&lt;track nr&gt;" in the above example
 	 * @return this builder
 	 * @throws IllegalArgumentException if aMetaDescription is empty or null
+	 * </pre>
 	 */
 	public SELF_TYPE metaDescription(@Nonnull final String aMetaDescription)
 	{
 		checkArgument(!isNullOrEmpty(aMetaDescription), "a meta description can't be null/empty");
-		this.metaDescription = surroundWithMarkers(aMetaDescription);
+		this.metaDescription = aMetaDescription;
 		return self();
 	}
 
@@ -386,6 +391,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
+	 * For instance, "=" in --author=jjonsson
+	 * 
 	 * @param aSeparator the character that separates the argument name and
 	 *            argument value, defaults to a space
 	 * @return this builder
@@ -740,6 +747,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		{
 			super(command);
 		}
+		// description, hideFromUsage, ignoreCase, metaDescription
+
+		// TODO: these shouldn't be available for commands...
+		// limitTo, defaultValue, defaultValueSupplier, defaultValueDescription, repeated, arity,
+		// required, splitWith, variableArity
+
 	}
 
 	// Non-Interesting builders below, most declarations under here handles
@@ -1057,9 +1070,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 		abstract boolean isPropertyMap();
 
-		boolean isNamed()
+		boolean isIndexed()
 		{
-			return !names().isEmpty();
+			return names().isEmpty();
 		}
 	}
 

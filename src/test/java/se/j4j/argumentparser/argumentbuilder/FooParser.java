@@ -33,7 +33,7 @@ public class FooParser implements StringParser<Foo>
 	@Override
 	public String metaDescription()
 	{
-		return "foo";
+		return "<foo>";
 	}
 
 }

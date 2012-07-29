@@ -44,6 +44,6 @@ public class DateTimeParser implements StringParser<DateTime>
 	@Override
 	public String metaDescription()
 	{
-		return "date";
+		return "<date>";
 	}
 }

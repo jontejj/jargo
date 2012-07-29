@@ -71,7 +71,7 @@ public class CustomStringParserTest
 		@Override
 		public String metaDescription()
 		{
-			return "interned_string";
+			return "<interned_string>";
 		}
 
 		@Override

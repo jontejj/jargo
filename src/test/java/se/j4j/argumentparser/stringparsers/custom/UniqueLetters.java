@@ -36,7 +36,7 @@ public class UniqueLetters implements StringParser<Set<Character>>
 	@Override
 	public String metaDescription()
 	{
-		return "letters";
+		return "<letters>";
 	}
 
 }
