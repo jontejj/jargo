@@ -27,7 +27,7 @@ Usage: HelloWorld [Options]
                                                                        Default: Empty list
 --string <string>                                                      <string>: any string
                                                                        Default: 
--B<string=boolean>                                                     <string=boolean>: where "string" is any string and "boolean" is true or false
+-B<string>=<boolean>                                                   <string>=<boolean>: where "<string>" is any string and "<boolean>" is true or false
                                                                        Default: empty map
 -l, --enable-logging                                                   Output debug information to standard out
                                                                        Default: disabled

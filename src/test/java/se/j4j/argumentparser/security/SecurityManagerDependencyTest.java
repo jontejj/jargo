@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
  */
 public class SecurityManagerDependencyTest
 {
-	public static void main(String[] args)
+	public static void main(String[] args) throws Throwable
 	{
 		// TODO: introduce this as a security test
 		System.setSecurityManager(new SecurityManager(){

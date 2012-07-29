@@ -1,4 +1,4 @@
-Missing <integer> parameter for '--numbers'.
+Missing second <integer> parameter for '--numbers'
 
 Usage: MissingSecondParameter [Options]
 --numbers <integer> <integer>    <integer>: -2147483648 to 2147483647 (decimal)

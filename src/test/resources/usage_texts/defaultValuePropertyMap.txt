@@ -1,4 +1,4 @@
 Usage:  [Options]
--N<byte:byte>    <byte:byte>: where "byte" is 0 to FF (hex) and "byte" is 0 to 11111111 (binary)
-                 Default: E:110
-                          F:1001
+-N<byte>:<byte>    <byte>:<byte>: where "<byte>" is 0 to FF (hex) and "<byte>" is 0 to 11111111 (binary)
+                   Default: E:110
+                            F:1001

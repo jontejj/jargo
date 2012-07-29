@@ -12,7 +12,6 @@ import static se.j4j.argumentparser.ArgumentExceptions.forUnhandledRepeatedArgum
 import static se.j4j.argumentparser.ArgumentExceptions.withDescription;
 import static se.j4j.argumentparser.StringParsers.RadixiableParser.radixiableParser;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
-import static se.j4j.argumentparser.internal.StringsUtil.surroundWithMarkers;
 import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
 
 import java.io.File;
@@ -31,6 +30,7 @@ import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
+import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
 import se.j4j.argumentparser.internal.NumberType;
@@ -280,7 +280,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "string";
+			return "<string>";
 		}
 	}
 
@@ -314,7 +314,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "boolean";
+			return "<boolean>";
 		}
 	}
 
@@ -343,7 +343,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "path";
+			return "<path>";
 		}
 	}
 
@@ -375,7 +375,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "character";
+			return "<character>";
 		}
 	}
 
@@ -423,7 +423,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return enumType.getSimpleName();
+			return "<" + enumType.getSimpleName() + ">";
 		}
 	}
 
@@ -509,7 +509,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "big-integer";
+			return "<big-integer>";
 		}
 	}
 
@@ -547,7 +547,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "double";
+			return "<double>";
 		}
 	}
 
@@ -585,7 +585,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return "float";
+			return "<float>";
 		}
 	}
 
@@ -648,12 +648,12 @@ public final class StringParsers
 
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			return surroundWithMarkers(metaDescription(argumentSettings));
+			return metaDescription(argumentSettings);
 		}
 
 		String metaDescriptionInRightColumn(ArgumentSettings argumentSettings)
 		{
-			return surroundWithMarkers(metaDescription(argumentSettings));
+			return metaDescription(argumentSettings);
 		}
 	}
 
@@ -695,7 +695,7 @@ public final class StringParsers
 		@Override
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			String metaDescriptionForValue = surroundWithMarkers(metaDescription(argumentSettings));
+			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + valueSeparator + metaDescriptionForValue + valueSeparator + "...";
 		}
 	}
@@ -768,9 +768,15 @@ public final class StringParsers
 			List<T> parsedArguments = newArrayListWithCapacity(arity);
 			for(int i = 0; i < arity; i++)
 			{
-				// TODO: should this wrap the exception when there's missing arguments?
-				T parsedValue = parser.parse(arguments, null, argumentSettings);
-				parsedArguments.add(parsedValue);
+				try
+				{
+					T parsedValue = parser.parse(arguments, null, argumentSettings);
+					parsedArguments.add(parsedValue);
+				}
+				catch(MissingParameterException toFewParameters)
+				{
+					throw ArgumentExceptions.forMissingNthParameter(toFewParameters, i);
+				}
 			}
 			return parsedArguments;
 		}
@@ -790,7 +796,7 @@ public final class StringParsers
 		@Override
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			String metaDescriptionForValue = surroundWithMarkers(metaDescription(argumentSettings));
+			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + repeat(" " + metaDescriptionForValue, arity - 1);
 		}
 	}
@@ -820,7 +826,7 @@ public final class StringParsers
 		@Override
 		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
 		{
-			String metaDescriptionForValue = surroundWithMarkers(metaDescription(argumentSettings));
+			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + " ...";
 		}
 	}
@@ -1051,7 +1057,7 @@ public final class StringParsers
 		@Override
 		public String metaDescription()
 		{
-			return type.name();
+			return "<" + type.name() + ">";
 		}
 
 		@Override

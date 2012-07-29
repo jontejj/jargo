@@ -1,7 +1,7 @@
 Usage:  [Options]
--N<string=integer>    <string=integer>: where "string" is any string and "integer" is -2147483648 to 2147483647 (decimal)
-                      Default: population=42
-                                The number of citizens in the world
-                               hello=1
-                                The number of times to say hello
-                               
+-N<string>=<integer>    <string>=<integer>: where "<string>" is any string and "<integer>" is -2147483648 to 2147483647 (decimal)
+                        Default: population=42
+                                  The number of citizens in the world
+                                 hello=1
+                                  The number of times to say hello
+                                 

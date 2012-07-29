@@ -285,7 +285,7 @@ public final class Argument<T> extends ArgumentSettings
 		return parser.metaDescriptionInRightColumn(this);
 	}
 
-	boolean shouldBeHiddenInUsage()
+	boolean isHiddenFromUsage()
 	{
 		return hideFromUsage;
 	}

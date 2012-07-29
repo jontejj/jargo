@@ -30,15 +30,6 @@ public final class StringsUtil
 		return repeat(" ", nrOfSpaces);
 	}
 
-	@Nonnull
-	@CheckReturnValue
-	public static String surroundWithMarkers(@Nonnull String tagToSurround)
-	{
-		if(tagToSurround.isEmpty())
-			return "";
-		return "<" + tagToSurround + ">";
-	}
-
 	/**
 	 * Converts all {@link String}s in {@code strings} into lower case using the default
 	 * locale.
@@ -145,4 +136,26 @@ public final class StringsUtil
 		}
 		return distances[m - 1][n - 1];
 	}
+
+	public static String numberToPositionalString(int number)
+	{
+		switch(number)
+		{
+			case 0:
+				return "zeroth";
+			case 1:
+				return "first";
+			case 2:
+				return "second";
+			case 3:
+				return "third";
+			case 4:
+				return "fourth";
+			case 5:
+				return "fifth";
+
+		}
+		return Integer.toString(number) + "th";
+	}
+
 }

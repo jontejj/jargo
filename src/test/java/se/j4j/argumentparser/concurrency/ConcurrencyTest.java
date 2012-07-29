@@ -98,7 +98,7 @@ public class ConcurrencyTest
 	private CyclicBarrier parseDone;
 
 	@Test
-	public void test()
+	public void test() throws Throwable
 	{
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nrOfConcurrentRunners);
 		startup = new CyclicBarrier(nrOfConcurrentRunners);
@@ -123,7 +123,7 @@ public class ConcurrencyTest
 			if(failure.get() != null)
 			{
 				executor.shutdownNow();
-				fail("Failed in a thread in concurrency test: " + failure.get());
+				throw failure.get();
 			}
 		}
 		assertThat(executor.shutdownNow()).isEmpty();
@@ -202,15 +202,10 @@ public class ConcurrencyTest
 					}
 				}
 			}
-			catch(AssertionError e)
+			catch(Throwable e)
 			{
-				e.fillInStackTrace();
-				failure.set(e);
-				originThread.interrupt();
-				return;
-			}
-			catch(Exception e)
-			{
+				// The exception is transfered to another thread so we need to fill in the
+				// stack trace before sending the exception
 				e.fillInStackTrace();
 				failure.set(e);
 				originThread.interrupt();

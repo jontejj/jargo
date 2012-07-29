@@ -141,7 +141,8 @@ public final class Describers
 		@Override
 		public String describe(Argument<?> argument)
 		{
-			// TODO: handle indexed arguments that have no names
+			if(argument.isIndexed())
+				return argument.metaDescriptionInRightColumn();
 			return argument.names().get(0);
 		}
 	}

@@ -3,6 +3,7 @@ package se.j4j.argumentparser;
 import static com.google.common.collect.Collections2.transform;
 import static se.j4j.argumentparser.Describers.argumentDescriber;
 import static se.j4j.argumentparser.Describers.asFunction;
+import static se.j4j.argumentparser.internal.StringsUtil.numberToPositionalString;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -74,6 +75,12 @@ public final class ArgumentExceptions
 		return new MissingParameterException(argumentRequiringTheParameter, usedArgumentName);
 	}
 
+	@CheckReturnValue
+	static MissingNthParameterException forMissingNthParameter(MissingParameterException cause, int missingIndex)
+	{
+		return new MissingNthParameterException(cause, missingIndex);
+	}
+
 	@Nonnull
 	static UnexpectedArgumentException forUnexpectedArgument(@Nonnull final ArgumentIterator arguments)
 	{
@@ -121,8 +128,8 @@ public final class ArgumentExceptions
 	 */
 	static final class MissingParameterException extends ArgumentException
 	{
-		private final String usedArgumentName;
-		private final ArgumentSettings argumentRequiringTheParameter;
+		final String usedArgumentName;
+		final ArgumentSettings argumentRequiringTheParameter;
 
 		private MissingParameterException(ArgumentSettings argumentRequiringTheParameter, final String usedArgumentName)
 		{
@@ -134,7 +141,38 @@ public final class ArgumentExceptions
 		public String getMessage()
 		{
 			String parameterDescription = argumentRequiringTheParameter.metaDescriptionInRightColumn();
-			return "Missing " + parameterDescription + " parameter for '" + usedArgumentName + "'.";
+			return "Missing " + parameterDescription + " parameter for '" + usedArgumentName + "'";
+		}
+
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
+	}
+
+	/**
+	 * Used when
+	 * "-p 8080 7080" is expected but
+	 * "-p 8080" is given
+	 */
+	static final class MissingNthParameterException extends ArgumentException
+	{
+		private final String usedArgumentName;
+		private final ArgumentSettings argumentRequiringTheParameter;
+		private final int missingIndex;
+
+		private MissingNthParameterException(MissingParameterException cause, int missingIndex)
+		{
+			this.usedArgumentName = cause.usedArgumentName;
+			this.argumentRequiringTheParameter = cause.argumentRequiringTheParameter;
+			this.missingIndex = missingIndex;
+		}
+
+		@Override
+		public String getMessage()
+		{
+			String parameterDescription = argumentRequiringTheParameter.metaDescriptionInRightColumn();
+			return "Missing " + numberToPositionalString(missingIndex + 1) + " " + parameterDescription + " parameter for '" + usedArgumentName + "'";
 		}
 
 		/**

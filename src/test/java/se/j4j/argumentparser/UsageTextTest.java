@@ -74,6 +74,13 @@ public class UsageTextTest
 	}
 
 	@Test
+	public void testUsageForNoVisibleArguments()
+	{
+		String usage = CommandLineParser.forArguments(integerArgument().hideFromUsage().build()).usage("NoVisibleArguments");
+		assertThat(usage).isEqualTo("Usage: NoVisibleArguments");
+	}
+
+	@Test
 	public void testUsageWithArguments()
 	{
 		String usage = stringArgument().usage("SomeArguments");
