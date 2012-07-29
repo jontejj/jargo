@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.command;
+import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.io.File;
@@ -21,94 +22,8 @@ import se.j4j.argumentparser.commands.Build.BuildTarget;
 import se.j4j.argumentparser.commands.CommitCommand.Commit;
 import se.j4j.argumentparser.commands.CommitCommand.Repository;
 
-public class TestCommands
+public class CommandTest
 {
-	static final Argument<String> COMMIT = command(new CommitCommand(new Repository())).build();
-	static final Argument<String> LOG = command(new LogCommand(new Repository())).build();
-
-	@Test
-	public void testCommandWithMissingRequiredArgument()
-	{
-		String[] args = {"commit", "--amend", "A.java", "B.java"}; // No author
-		try
-		{
-			COMMIT.parse(args);
-			fail("--author=??? wasn't given in the input and it should have been required");
-		}
-		catch(ArgumentException expected)
-		{
-			assertThat(expected).hasMessage("Missing required arguments: [--author]");
-		}
-	}
-
-	@Test
-	public void testThatUnhandledVerboseArgumentIsCaught()
-	{
-		String[] args = {"-verbose", "log", "commit", "--amend", "A.java", "B.java"};
-		try
-		{
-			CommandLineParser.forArguments(COMMIT, LOG).parse(args);
-			fail("-verbose should have been reported as an unhandled argument");
-		}
-		catch(ArgumentException expected)
-		{
-			assertThat(expected).hasMessage("Unexpected argument: -verbose");
-		}
-	}
-
-	@Test
-	public void testMultipleCommands() throws ArgumentException
-	{
-		String[] logArgs = {"log", "--limit", "20"};
-		String[] commitArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
-		CommitCommand commitCommand = new CommitCommand(new Repository());
-		LogCommand logCommand = new LogCommand(new Repository());
-		CommandLineParser parser = CommandLineParser.forCommands(commitCommand, logCommand);
-
-		// LogCommand
-		parser.parse(logArgs);
-
-		assertThat(logCommand.repository.logLimit).isEqualTo(20);
-		assertThat(commitCommand.repository.commits).isEmpty();
-
-		logCommand.repository.logLimit = 10;
-
-		// CommitCommand
-		parser.parse(commitArgs);
-
-		Commit commit = commitCommand.repository.commits.get(0);
-		assertThat(commit.amend).isTrue();
-		assertThat(commit.author).isEqualTo("jjonsson");
-		assertThat(commit.files).isEqualTo(Arrays.asList(new File("A.java"), new File("B.java")));
-
-		// Make sure that the parsing of the commit command didn't change the logLimit
-		assertThat(logCommand.repository.logLimit).isEqualTo(10);
-	}
-
-	/**
-	 * Tests that the concept Maven has with multiple goals with the command concept from Git works
-	 * in concert.
-	 * Or simply put that multiple commands with command specific parameters can be given at the
-	 * same time.
-	 * As commit ends with a variable arity parameter (files to commit) that command has to be last.
-	 */
-	@Test
-	public void testThatMultipleCommandsFromTheSameCommandLineAreExecuted() throws ArgumentException
-	{
-		String[] combinedInvocation = {"log", "--limit", "30", "commit", "--author=jjonsson"};
-		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo), new LogCommand(repo));
-
-		parser.parse(combinedInvocation);
-
-		assertThat(repo.logLimit).isEqualTo(30);
-
-		Commit commit = repo.commits.get(0);
-		assertThat(commit.amend).isFalse();
-		assertThat(commit.author).isEqualTo("jjonsson");
-		assertThat(commit.files).isEqualTo(emptyList());
-	}
-
 	/**
 	 * Simulate the behavior of <a href="http://maven.apache.org/">maven</a>
 	 * goals. Simple commands without any parameters.
@@ -124,14 +39,97 @@ public class TestCommands
 
 		assertThat(target.isBuilt()).isTrue();
 		assertThat(target.isClean()).isTrue();
+	}
 
+	@Test
+	public void testMultipleCommandsEachWithSpecificArguments() throws ArgumentException
+	{
+		String[] logArgs = {"log", "--limit", "20"};
+		String[] commitArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
+
+		Repository repo = new Repository();
+		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo), new LogCommand(repo));
+
+		// LogCommand
+		parser.parse(logArgs);
+
+		assertThat(repo.logLimit).isEqualTo(20);
+		assertThat(repo.commits).isEmpty();
+
+		repo.logLimit = 10;
+
+		// CommitCommand
+		parser.parse(commitArgs);
+
+		Commit commit = repo.commits.get(0);
+		assertThat(commit.amend).isTrue();
+		assertThat(commit.author).isEqualTo("jjonsson");
+		assertThat(commit.files).isEqualTo(Arrays.asList(new File("A.java"), new File("B.java")));
+
+		// Make sure that the parsing of the commit command didn't change the logLimit
+		assertThat(repo.logLimit).isEqualTo(10);
+	}
+
+	/**
+	 * Tests that the concept Maven has with multiple goals with the command concept from Git works
+	 * in concert. Or simply put that multiple commands with command specific parameters can be
+	 * given at the same time.
+	 * As commit ends with a variable arity parameter (files to commit) that command has to be last.
+	 */
+	@Test
+	public void testThatCombinedCommandsFromTheSameCommandLineBothAreExecuted() throws ArgumentException
+	{
+		String[] combinedInvocation = {"log", "--limit", "30", "commit", "--author=jjonsson"};
+		Repository repo = new Repository();
+		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo), new LogCommand(repo));
+
+		parser.parse(combinedInvocation);
+
+		assertThat(repo.logLimit).isEqualTo(30);
+
+		Commit commit = repo.commits.get(0);
+		assertThat(commit.amend).isFalse();
+		assertThat(commit.author).isEqualTo("jjonsson");
+		assertThat(commit.files).isEqualTo(emptyList());
+	}
+
+	static final Argument<String> COMMIT = command(new CommitCommand(new Repository())).build();
+	static final Argument<String> LOG = command(new LogCommand(new Repository())).build();
+
+	@Test
+	public void testCommandWithMissingRequiredArgument()
+	{
+		try
+		{
+			COMMIT.parse("commit");// No author
+			fail("--author=??? wasn't given in the input and it should have been required");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Missing required arguments: [--author]");
+		}
+	}
+
+	@Test
+	public void testThatUnhandledVerboseArgumentIsCaught()
+	{
+		String[] args = {"log", "-verbose", "commit"};
+		try
+		{
+			CommandLineParser.forArguments(COMMIT, LOG).parse(args);
+			fail("-verbose should have been reported as an unhandled argument");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Unexpected argument: -verbose, previous argument: log");
+		}
 	}
 
 	@Test
 	public void testThatRequiredArgumentsAreResetBetweenParsings() throws ArgumentException
 	{
-		String[] invalidArgs = {"commit", "--amend", "A.java", "B.java"};
-		String[] validArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
+		String[] invalidArgs = {"commit"};
+		String[] validArgs = {"commit", "--author=jjonsson"};
 
 		// First make a successful parsing
 		COMMIT.parse(validArgs);
@@ -173,6 +171,64 @@ public class TestCommands
 		CommandLineParser parser = CommandLineParser.forCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
 		String usage = parser.usage("CommandUsage");
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
+	}
+
+	/**
+	 * Tests that commands within commands works.
+	 */
+	@Test
+	public void testSubCommand() throws ArgumentException
+	{
+		Argument<String> commandWithSubCommand = command(new Command(){
+
+			@Override
+			protected List<Argument<?>> commandArguments()
+			{
+				return Arrays.<Argument<?>>asList(command(new Command(){
+
+					private final Argument<Integer> number = integerArgument("-n").build();
+
+					@Override
+					public String description()
+					{
+						return "A subcommand with an argument";
+					}
+
+					@Override
+					protected List<Argument<?>> commandArguments()
+					{
+						return Arrays.<Argument<?>>asList(number);
+					}
+
+					@Override
+					protected void execute(ParsedArguments subCommandArgs)
+					{
+						assertThat(subCommandArgs.get(number)).isEqualTo(1);
+					}
+
+					@Override
+					protected String commandName()
+					{
+						return "subcommand";
+					}
+				}).build());
+			}
+
+			@Override
+			protected void execute(ParsedArguments commandArgs)
+			{
+			}
+
+			@Override
+			protected String commandName()
+			{
+				return "command";
+			}
+		}).build();
+
+		commandWithSubCommand.parse("command", "subcommand", "-n", "1");
+
+		assertThat(commandWithSubCommand.usage("CommandWithSubCommand")).isEqualTo(expected("commandWithSubCommand"));
 	}
 
 	@Test

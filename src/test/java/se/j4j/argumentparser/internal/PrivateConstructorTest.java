@@ -1,8 +1,7 @@
-package se.j4j.argumentparser.coverage;
+package se.j4j.argumentparser.internal;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,21 +15,17 @@ import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
 import se.j4j.argumentparser.Limiters;
 import se.j4j.argumentparser.StringParsers;
-import se.j4j.argumentparser.StringParsers.Radix;
-import se.j4j.argumentparser.internal.Finalizers;
-import se.j4j.argumentparser.internal.Platform;
-import se.j4j.argumentparser.internal.StringsUtil;
 
 /**
  * The reasoning behind testing code that doesn't do anything is to achieve 100%
  * code coverage and to notice when the code
  * coverage drops. Otherwise one could always think, hey I don't have 100% code
- * coverage anymore but it's PROBABLY because
- * of my private constructors (or any other code that's not used but needed).
+ * coverage anymore but it's PROBABLY because of my private constructors
+ * (or any other code that's not used but preferred to have).
  * This makes it easy to spot untested methods without having to check that it
- * just was a private constructor etc.
+ * only was a private constructor etc.
  */
-public class TestForCodeCoverage
+public class PrivateConstructorTest
 {
 	/**
 	 * Detects if a utility class isn't final or if its no-args constructor
@@ -40,8 +35,8 @@ public class TestForCodeCoverage
 	public void callPrivateConstructorsForCodeCoverage() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			InvocationTargetException
 	{
-		Class<?>[] classesToConstruct = {ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class, Finalizers.class,
-				StringParsers.class, ArgumentExceptions.class, Describers.class};
+		Class<?>[] classesToConstruct = {ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class,
+				Finalizers.class, StringParsers.class, ArgumentExceptions.class, Describers.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{
@@ -53,15 +48,5 @@ public class TestForCodeCoverage
 			constructor.setAccessible(true);
 			assertNotNull(constructor.newInstance());
 		}
-	}
-
-	/**
-	 * The compiler injects the valueOf method into the byte code for enums
-	 * and the code coverage tool detects that
-	 */
-	@Test
-	public void testEnumsForCodeCoverage()
-	{
-		assertThat(Radix.valueOf(BINARY.toString())).isEqualTo(BINARY);
 	}
 }

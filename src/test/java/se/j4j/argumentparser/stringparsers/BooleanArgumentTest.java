@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 
-public class TestBooleanArguments
+public class BooleanArgumentTest
 {
 	@Test
 	public void testThatBooleanParsesTrueOk() throws ArgumentException

@@ -18,7 +18,7 @@ import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
 /**
  * @formatter:off
  */
-public class TestUsageTexts
+public class UsageTextTest
 {
 	@Test
 	public void testUsageWithRequiredArguments()

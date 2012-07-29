@@ -140,13 +140,12 @@ public final class Argument<T> extends ArgumentSettings
 	 * This is a shorthand method that should be used if only one {@link Argument} is expected as it
 	 * will result in an unnecessary amount of {@link CommandLineParser} instance creations.
 	 * If several arguments are expected use {@link CommandLineParser#forArguments(Argument...)}
-	 * instead. Especially if you're concerned about performance, want to support several
-	 * arguments or provide usable usage texts.
+	 * instead. Especially if you're concerned about performance or about usable usage texts.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the {@code actualArguments}
-	 * @throws ArgumentException if actualArguments isn't compatible with this
-	 *             argument
+	 * @throws ArgumentException if actualArguments isn't what this
+	 *             argument expects
 	 */
 	@Nullable
 	public T parse(@Nonnull String ... actualArguments) throws ArgumentException

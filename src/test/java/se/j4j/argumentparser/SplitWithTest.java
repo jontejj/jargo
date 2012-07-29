@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestSplitWith
+public class SplitWithTest
 {
 	@Test
 	public void testSplittingWithComma() throws ArgumentException

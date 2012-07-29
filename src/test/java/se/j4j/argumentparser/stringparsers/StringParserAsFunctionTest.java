@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class TestStringParserAsFunction
+public class StringParserAsFunctionTest
 {
 	@Test
 	public void testAsFunction()

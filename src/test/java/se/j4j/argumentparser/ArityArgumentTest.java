@@ -18,7 +18,7 @@ import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestArityArguments
+public class ArityArgumentTest
 {
 	@Test
 	public void testTwoParametersForNamedArgument() throws ArgumentException

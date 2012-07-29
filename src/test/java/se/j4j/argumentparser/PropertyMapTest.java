@@ -33,7 +33,7 @@ import se.j4j.argumentparser.StringParsers.KeyValueParser;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class TestPropertyMap
+public class PropertyMapTest
 {
 	@Test
 	public void testSeveralValues() throws ArgumentException

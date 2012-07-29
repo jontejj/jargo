@@ -10,7 +10,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
-public class TestBigIntegerArguments
+public class BigIntegerArgumentTest
 {
 	@Test
 	public void testValidInteger() throws ArgumentException

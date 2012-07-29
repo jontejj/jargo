@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 
-public class TestOptionalArguments
+public class OptionalArgumentTest
 {
 	@Test
 	public void testThatOptionalArgumentsDefaultsToFalse() throws ArgumentException

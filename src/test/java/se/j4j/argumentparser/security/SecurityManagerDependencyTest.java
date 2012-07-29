@@ -6,7 +6,7 @@ import java.security.Permission;
 import java.util.PropertyPermission;
 import java.util.Set;
 
-import se.j4j.argumentparser.concurrency.TestArgumentParserConcurrency;
+import se.j4j.argumentparser.concurrency.ConcurrencyTest;
 
 import com.google.common.collect.Sets;
 
@@ -48,7 +48,7 @@ public class SecurityManagerDependencyTest
 				throw new SecurityException("Permission: " + perm + " not granted");
 			}
 		});
-		TestArgumentParserConcurrency test = new TestArgumentParserConcurrency();
+		ConcurrencyTest test = new ConcurrencyTest();
 		test.test();
 	}
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Description;
 
-public class TestInvalidArgument
+public class InvalidArgumentTest
 {
 	@Test
 	public void testThatDescriptionForInvalidArgumentIsNotCalledWhenNotNeeded()
