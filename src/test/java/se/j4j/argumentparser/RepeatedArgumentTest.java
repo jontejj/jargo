@@ -13,8 +13,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
-
 import com.google.common.collect.ImmutableList;
 
 public class RepeatedArgumentTest
@@ -37,13 +35,13 @@ public class RepeatedArgumentTest
 		assertThat(numbers).isEqualTo(ImmutableList.of(of(5, 6), of(3, 4)));
 	}
 
-	@Test(expected = UnhandledRepeatedArgument.class)
+	@Test(expected = ArgumentException.class)
 	public void testUnhandledRepition() throws ArgumentException
 	{
 		integerArgument("-number").parse("-number", "5", "-number", "3");
 	}
 
-	@Test(expected = UnhandledRepeatedArgument.class)
+	@Test(expected = ArgumentException.class)
 	public void testUnhandledRepitionForArityArgument() throws ArgumentException
 	{
 		integerArgument("--numbers").arity(2).parse("--numbers", "5", "6", "--numbers", "3", "4");
@@ -67,13 +65,13 @@ public class RepeatedArgumentTest
 		assertThat(numberMap.get("number")).isEqualTo(expected);
 	}
 
-	@Test(expected = UnhandledRepeatedArgument.class)
+	@Test(expected = ArgumentException.class)
 	public void testRepeatedPropertyValuesWithoutHandling() throws ArgumentException
 	{
 		integerArgument("-N").asPropertyMap().parse("-Nnumber=1", "-Nnumber=2");
 	}
 
-	@Test(expected = UnhandledRepeatedArgument.class)
+	@Test(expected = ArgumentException.class)
 	public void testInvalidValuesShouldNotBeParsedIfRepeatedArgumentsAreNotAllowed() throws ArgumentException
 	{
 		stringArgument("-n").limitTo(foos()).parse("-n", "foo", "-n", "bar");

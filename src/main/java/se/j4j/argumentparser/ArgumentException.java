@@ -4,11 +4,14 @@ import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 
 import java.io.Serializable;
 
-public class ArgumentException extends Exception
+import javax.annotation.Nonnull;
+
+public abstract class ArgumentException extends Exception
 {
 	// TODO: to enable proper behavior when serialized these needs to
 	// be transient (or Serializable and the usage needs to be transferred as a string
 	private CommandLineParser originParser;
+	private String originArgumentName;
 
 	protected ArgumentException()
 	{
@@ -20,21 +23,45 @@ public class ArgumentException extends Exception
 		return this;
 	}
 
-	public String getUsage(String programName)
+	void originatedFromArgumentName(String argumentNameThatTriggeredMe)
+	{
+		originArgumentName = argumentNameThatTriggeredMe;
+	}
+
+	public final String getUsage(String programName)
 	{
 		if(originParser == null)
 			throw new IllegalStateException("No originParser set for ArgumentException. No usage available for " + programName);
 		return originParser.usage(programName);
 	}
 
-	public String getMessageAndUsage(String programName)
+	public final String getMessageAndUsage(@Nonnull String programName)
 	{
-		return getMessage() + NEWLINE + NEWLINE + getUsage(programName);
+		String message = getMessage(originArgumentName);
+		return message + NEWLINE + NEWLINE + getUsage(programName);
 	}
+
+	/**
+	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
+	 */
+	@Override
+	public final String getMessage()
+	{
+		return getMessage(originArgumentName);
+	}
+
+	/**
+	 * Returns why this exception occurred.
+	 * 
+	 * @param argumentNameOrcommandName if the argument that caused this exception to happen
+	 *            is part of a {@link Command} and is indexed then the command name used to trigger
+	 *            the command is given,
+	 *            otherwise the argument name that was used on the command line is used.
+	 */
+	protected abstract String getMessage(@Nonnull String argumentNameOrcommandName);
 
 	/**
 	 * For {@link Serializable}
 	 */
 	private static final long serialVersionUID = 1L;
-
 }

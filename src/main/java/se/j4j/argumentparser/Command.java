@@ -80,7 +80,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	/**
 	 * Called when this command should be executed.
 	 * 
-	 * @param parsedArguments a container with parsed values from the {@link #commandArguments()}
+	 * @param parsedArguments a container with parsed values for the {@link #commandArguments()}
 	 */
 	protected abstract void execute(@Nonnull ParsedArguments parsedArguments);
 

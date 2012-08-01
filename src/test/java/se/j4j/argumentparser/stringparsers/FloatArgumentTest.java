@@ -6,7 +6,6 @@ import static se.j4j.argumentparser.ArgumentFactory.floatArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class FloatArgumentTest
 {
@@ -19,13 +18,13 @@ public class FloatArgumentTest
 	}
 
 	@Test
-	public void testInvalidFloat() throws ArgumentException
+	public void testInvalidFloat()
 	{
 		try
 		{
 			floatArgument("-f").parse("-f", "1,a");
 		}
-		catch(InvalidArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessage()).isEqualTo("'1,a' is not a valid float (32-bit IEEE 754 floating point)");
 		}

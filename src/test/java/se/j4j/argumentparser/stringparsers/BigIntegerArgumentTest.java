@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class BigIntegerArgumentTest
 {
@@ -21,13 +20,13 @@ public class BigIntegerArgumentTest
 	}
 
 	@Test
-	public void testInvalidInteger() throws ArgumentException
+	public void testInvalidInteger()
 	{
 		try
 		{
 			bigIntegerArgument("-n").parse("-n", "1a");
 		}
-		catch(InvalidArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessage()).isEqualTo("'1a' is not a valid big-integer");
 		}

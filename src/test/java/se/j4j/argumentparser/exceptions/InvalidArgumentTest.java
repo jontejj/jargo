@@ -1,7 +1,9 @@
 package se.j4j.argumentparser.exceptions;
 
 import static junit.framework.Assert.fail;
+import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
+import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 
 import org.junit.Test;
 
@@ -26,6 +28,24 @@ public class InvalidArgumentTest
 	public void testThatInvalidArgumentDoesNotRunToStringWhenItIsNotNeeded()
 	{
 		forInvalidValue(new FailingToString(), "");
+	}
+
+	@Test
+	public void testThatToStringIsUsedByGetMessage()
+	{
+		assertThat(withMessage(new Object(){
+			@Override
+			public String toString()
+			{
+				return "foobar";
+			}
+		})).hasMessage("foobar");
+	}
+
+	@Test
+	public void testThatWithMessageDoesNotRunToStringWhenItIsNotNeeded()
+	{
+		withMessage(new FailingToString());
 	}
 
 	private static final class FailingToString

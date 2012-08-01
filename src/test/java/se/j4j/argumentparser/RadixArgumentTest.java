@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.Radix;
 import se.j4j.argumentparser.StringParsers.RadixiableParser;
@@ -135,7 +134,7 @@ public class RadixArgumentTest
 	}
 
 	@Test
-	public void testInvalidByteArguments() throws ArgumentException
+	public void testInvalidByteArguments()
 	{
 		List<Integer> invalidInput = Arrays.asList(Byte.MIN_VALUE - 1, Byte.MAX_VALUE + 1);
 		for(Integer input : invalidInput)
@@ -145,7 +144,7 @@ public class RadixArgumentTest
 				byteArgument("-b").parse("-b", input.toString());
 				fail("Invalid byte input not detected: " + input);
 			}
-			catch(InvalidArgument e)
+			catch(ArgumentException e)
 			{
 				assertThat(e.getMessageAndUsage("InvalidByte")).isEqualTo(expected("InvalidByte" + input));
 			}
@@ -156,7 +155,7 @@ public class RadixArgumentTest
 			byteArgument("-b").parse("-b", "NaN");
 			fail("Not a number not detected");
 		}
-		catch(InvalidArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessageAndUsage("NaNTest")).isEqualTo(expected("ByteNaN"));
 		}
@@ -203,7 +202,7 @@ public class RadixArgumentTest
 	}
 
 	@Test
-	public void testInvalidShortNumbers() throws ArgumentException
+	public void testInvalidShortNumbers()
 	{
 		List<Integer> invalidInput = Arrays.asList(Short.MIN_VALUE - 1, Short.MAX_VALUE + 1);
 		for(Integer input : invalidInput)
@@ -213,7 +212,7 @@ public class RadixArgumentTest
 				shortArgument("-b").parse("-b", input.toString());
 				fail("Invalid short input not detected: " + input);
 			}
-			catch(InvalidArgument expected)
+			catch(ArgumentException expected)
 			{
 
 			}
@@ -261,7 +260,7 @@ public class RadixArgumentTest
 	}
 
 	@Test
-	public void testInvalidIntegerNumbers() throws ArgumentException
+	public void testInvalidIntegerNumbers()
 	{
 		List<Long> invalidInput = Arrays.asList((long) Integer.MIN_VALUE - 1, (long) Integer.MAX_VALUE + 1);
 		for(Long input : invalidInput)
@@ -271,7 +270,7 @@ public class RadixArgumentTest
 				integerArgument("-b").parse("-b", input.toString());
 				fail("Invalid integer input not detected: " + input);
 			}
-			catch(InvalidArgument expected)
+			catch(ArgumentException expected)
 			{
 
 			}
@@ -369,7 +368,7 @@ public class RadixArgumentTest
 	}
 
 	@Test
-	public void testInvalidLongNumbers() throws ArgumentException
+	public void testInvalidLongNumbers()
 	{
 		List<BigInteger> invalidInput = Arrays.asList(valueOf(MIN_VALUE).subtract(ONE), valueOf(MAX_VALUE).add(ONE));
 		for(BigInteger input : invalidInput)
@@ -379,7 +378,7 @@ public class RadixArgumentTest
 				longArgument("-b").parse("-b", input.toString());
 				fail("Invalid long input not detected: " + input);
 			}
-			catch(InvalidArgument expected)
+			catch(ArgumentException expected)
 			{
 
 			}

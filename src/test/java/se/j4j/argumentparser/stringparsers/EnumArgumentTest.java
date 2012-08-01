@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class EnumArgumentTest
 {
@@ -62,13 +61,13 @@ public class EnumArgumentTest
 	}
 
 	@Test
-	public void testInvalidEnumArgument() throws ArgumentException
+	public void testInvalidEnumArgument()
 	{
 		try
 		{
 			enumArgument(Action.class).parse("break");
 		}
-		catch(InvalidArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessage()).isEqualTo("'break' is not a valid Option, Expecting one of [start | stop | restart]");
 		}

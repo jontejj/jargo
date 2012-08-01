@@ -15,6 +15,8 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
  * It allows you to subclass it and override individual methods
  * that you want to customize for an existing {@link StringParser}.
  * 
+ * TODO: show code example
+ * 
  * Most subclasses can just use {@link SimpleForwardingStringParser}.
  * 
  * Implementation Note: ForwardringStringParser also acts as a bridge for {@link InternalStringParser}s but
@@ -67,7 +69,7 @@ public abstract class ForwardingStringParser<T> extends InternalStringParser<T> 
 	T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
 	{
 		if(!arguments.hasNext())
-			throw forMissingParameter(argumentSettings, arguments.getCurrentArgumentName());
+			throw forMissingParameter(argumentSettings);
 		return parse(arguments.next());
 	}
 
@@ -109,6 +111,7 @@ public abstract class ForwardingStringParser<T> extends InternalStringParser<T> 
 		 */
 		SimpleForwardingStringParser()
 		{
+			// TODO: this smells, could this delegation business be moved into StringParserBridge?
 			this.delegate = this;
 		}
 

@@ -12,7 +12,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
@@ -115,7 +114,7 @@ public class CommandLineParserTest
 		assertThat(integerArgument().parse("42")).isEqualTo(42);
 	}
 
-	@Test(expected = InvalidArgument.class)
+	@Test(expected = ArgumentException.class)
 	public void testWrongArgumentForShorthandInvocation() throws ArgumentException
 	{
 		integerArgument().parse("a42");
