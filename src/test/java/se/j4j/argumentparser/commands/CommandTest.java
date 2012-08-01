@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
@@ -107,7 +106,7 @@ public class CommandTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage("Missing required arguments: [--author]");
+			assertThat(expected).hasMessage("Missing required arguments for commit: [--author]");
 		}
 	}
 
@@ -144,7 +143,7 @@ public class CommandTest
 			}
 			catch(ArgumentException expected)
 			{
-				assertThat(expected).hasMessage("Missing required arguments: [--author]");
+				assertThat(expected).hasMessage("Missing required arguments for commit: [--author]");
 			}
 		}
 	}
@@ -176,7 +175,6 @@ public class CommandTest
 
 	private static final class CommandWithIndexedArguments extends Command
 	{
-
 		@Override
 		protected List<Argument<?>> commandArguments()
 		{
@@ -192,21 +190,21 @@ public class CommandTest
 		@Override
 		protected void execute(ParsedArguments parsedArguments)
 		{
-			// TODO Auto-generated method stub
-			System.out.println(parsedArguments);
 		}
-
 	}
 
-	@Ignore
 	@Test
-	public void testCommandWithMissingIndexedArgument() throws ArgumentException
+	public void testCommandWithMissingIndexedArgument()
 	{
-		// TODO: "Missing second <integer> parameter for '1'" should be replaced with
-		// "Missing second <integer> parameter for aCommand"
 		Argument<List<String>> command = command(new CommandWithIndexedArguments()).arity(2).build();
-		System.out.println(CommandLineParser.forArguments(command).usage("sdas"));
-		CommandLineParser.forArguments(command).parse("aCommand", "1");
+		try
+		{
+			CommandLineParser.forArguments(command).parse("aCommand", "1");
+		}
+		catch(ArgumentException missingSecondParameterForIndexedArgument)
+		{
+			assertThat(missingSecondParameterForIndexedArgument).hasMessage("Missing second <integer> parameter for aCommand");
+		}
 	}
 
 	/**

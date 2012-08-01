@@ -11,9 +11,13 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.ForwardingStringParser;
+import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
 import se.j4j.argumentparser.StringParser;
+import se.j4j.argumentparser.StringParsers;
 
 public class CustomStringParserTest
 {
@@ -52,6 +56,42 @@ public class CustomStringParserTest
 		String usage = withParser(new InterningStringParser()).names("-f").usage("ForwardingStringParser");
 		assertThat(usage).contains("-f <interned_string>    <interned_string>: some string");
 		assertThat(usage).contains("Default: foo");
+	}
+
+	private static final class WateringParser extends SimpleForwardingStringParser<Integer>
+	{
+		WateringParser()
+		{
+			super(StringParsers.integerParser());
+		}
+
+		@Override
+		public Integer parse(String value) throws ArgumentException
+		{
+			waterPlants();
+			return super.parse(value);
+		}
+
+		private void waterPlants()
+		{
+			System.out.println("Watering plants");
+		}
+	}
+
+	@Test
+	public void stuff()
+	{
+		String[] args = {"-n", "1"};
+
+		Argument<Integer> waterCravingArgument = ArgumentFactory.withParser(new WateringParser()).names("-n").metaDescription("<foo>").build();
+		try
+		{
+			waterCravingArgument.parse(args);
+		}
+		catch(ArgumentException e)
+		{
+			System.out.println(e.getMessageAndUsage("GardenApplication"));
+		}
 	}
 
 	private static final class InterningStringParser extends ForwardingStringParser<String>

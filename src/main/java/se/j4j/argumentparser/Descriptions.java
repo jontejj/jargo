@@ -21,6 +21,16 @@ public final class Descriptions
 	}
 
 	/**
+	 * Uses the {@link #toString()} of {@code value} as a description
+	 * 
+	 * @param value the object to call {@link #toString()} on
+	 */
+	public static Description toString(@Nonnull Object value)
+	{
+		return new ToStringDescription(value);
+	}
+
+	/**
 	 * Returns an empty string as a description.
 	 */
 	public static final Description EMPTY_STRING = forString("");
@@ -38,6 +48,22 @@ public final class Descriptions
 		public String description()
 		{
 			return description;
+		}
+	}
+
+	private static final class ToStringDescription implements Description
+	{
+		private final Object value;
+
+		private ToStringDescription(Object value)
+		{
+			this.value = value;
+		}
+
+		@Override
+		public String description()
+		{
+			return value.toString();
 		}
 	}
 }

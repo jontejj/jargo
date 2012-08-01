@@ -5,11 +5,11 @@ import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static java.math.BigInteger.ZERO;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static se.j4j.argumentparser.ArgumentExceptions.asUnchecked;
 import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
-import static se.j4j.argumentparser.ArgumentExceptions.forLimit;
+import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
-import static se.j4j.argumentparser.ArgumentExceptions.forUnhandledRepeatedArgument;
-import static se.j4j.argumentparser.ArgumentExceptions.withDescription;
+import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.StringParsers.RadixiableParser.radixiableParser;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
@@ -231,13 +230,7 @@ public final class StringParsers
 				}
 				catch(final ArgumentException e)
 				{
-					throw withDescription(new Description(){
-						@Override
-						public String description()
-						{
-							return e.getMessage();
-						}
-					}, e);
+					throw asUnchecked(e);
 				}
 			}
 		};
@@ -494,7 +487,7 @@ public final class StringParsers
 			}
 			catch(NumberFormatException cause)
 			{
-				InvalidArgument e = forInvalidValue(value, "is not a valid big-integer");
+				ArgumentException e = forInvalidValue(value, "is not a valid big-integer");
 				e.initCause(cause);
 				throw e;
 			}
@@ -526,7 +519,7 @@ public final class StringParsers
 			}
 			catch(NumberFormatException cause)
 			{
-				InvalidArgument e = forInvalidValue(value, "is not a valid double (64-bit IEEE 754 floating point)");
+				ArgumentException e = forInvalidValue(value, "is not a valid double (64-bit IEEE 754 floating point)");
 				e.initCause(cause);
 				throw e;
 			}
@@ -564,7 +557,7 @@ public final class StringParsers
 			}
 			catch(NumberFormatException cause)
 			{
-				InvalidArgument e = forInvalidValue(value, "is not a valid float (32-bit IEEE 754 floating point)");
+				ArgumentException e = forInvalidValue(value, "is not a valid float (32-bit IEEE 754 floating point)");
 				e.initCause(cause);
 				throw e;
 			}
@@ -678,7 +671,7 @@ public final class StringParsers
 		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings) throws ArgumentException
 		{
 			if(!arguments.hasNext())
-				throw forMissingParameter(argumentSettings, arguments.getCurrentArgumentName());
+				throw forMissingParameter(argumentSettings);
 
 			String values = arguments.next();
 			List<T> result = new ArrayList<T>();
@@ -773,9 +766,10 @@ public final class StringParsers
 					T parsedValue = parser.parse(arguments, null, argumentSettings);
 					parsedArguments.add(parsedValue);
 				}
-				catch(MissingParameterException toFewParameters)
+				catch(MissingParameterException exception)
 				{
-					throw ArgumentExceptions.forMissingNthParameter(toFewParameters, i);
+					// Wrap exception to more clearly specify which parameter that is missing
+					throw forMissingNthParameter(exception.argumentWithMissingParameter, i);
 				}
 			}
 			return parsedArguments;
@@ -928,12 +922,12 @@ public final class StringParsers
 					if(oldValue != null && !argumentSettings.isAllowedToRepeat())
 						// TODO: the last occurrence wasn't necessarily propertyIdentifier it could
 						// be any propertyIdentifiers
-						throw forUnhandledRepeatedArgument(propertyIdentifier + key + " was found as a key several times in the input.");
+						throw forInvalidValue(propertyIdentifier + key, "was found as a key several times in the input.");
 
 					V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
 					Limit limit = valueLimiter.withinLimits(parsedValue);
 					if(limit != Limit.OK)
-						throw forLimit(limit);
+						throw withMessage(limit.reason());
 
 					map.put(parsedKey, parsedValue);
 					break;
@@ -1155,6 +1149,8 @@ public final class StringParsers
 			}
 		};
 
+		// TODO: add Radix.AUTO that works like Integer.decode
+
 		private int radix;
 		private String formattingIdentifier;
 
@@ -1193,7 +1189,7 @@ public final class StringParsers
 		 * @param value the value to parse
 		 * @param targetType is used to know where the sign of the result is
 		 */
-		public <T extends Number & Comparable<T>> T parse(String value, NumberType<T> targetType) throws InvalidArgument
+		public <T extends Number & Comparable<T>> T parse(String value, NumberType<T> targetType) throws ArgumentException
 		{
 			try
 			{
@@ -1206,7 +1202,7 @@ public final class StringParsers
 			catch(NumberFormatException nfe)
 			{
 				// TODO: specify which argument that failed
-				InvalidArgument ex = forInvalidValue(value, "is not a valid " + description() + " number.");
+				ArgumentException ex = forInvalidValue(value, "is not a valid " + description() + " number.");
 				ex.initCause(nfe);
 				throw ex;
 			}

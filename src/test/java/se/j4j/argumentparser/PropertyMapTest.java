@@ -24,9 +24,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
-import se.j4j.argumentparser.ArgumentExceptions.LimitException;
-import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.KeyValueParser;
@@ -83,7 +80,7 @@ public class PropertyMapTest
 		integerArgument().asPropertyMap().build();
 	}
 
-	@Test(expected = InvalidArgument.class)
+	@Test(expected = ArgumentException.class)
 	public void testInvalidationOfWrongSeparator() throws ArgumentException
 	{
 		integerArgument("-N").asPropertyMap().parse("-N3");
@@ -97,7 +94,7 @@ public class PropertyMapTest
 		assertThat(numberMap.get("key")).isEqualTo(3);
 	}
 
-	@Test(expected = LimitException.class)
+	@Test(expected = ArgumentException.class)
 	public void testLimitationOfPropertyValues() throws ArgumentException
 	{
 		Argument<Map<String, String>> fooArgument = stringArgument("-N").limitTo(foos()).asPropertyMap().build();
@@ -117,16 +114,16 @@ public class PropertyMapTest
 	}
 
 	@Test
-	public void testThatRepeatedPropertyKeysAreInvalidatedBeforeParsed() throws ArgumentException
+	public void testThatRepeatedPropertyKeysAreInvalidatedBeforeParsed()
 	{
 		try
 		{
 			integerArgument("-I").asPropertyMap().parse("-Ifoo=10", "-Ifoo=NotANumber");
 			fail("Repeated key wasn't invalidated");
 		}
-		catch(UnhandledRepeatedArgument expected)
+		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage("-Ifoo was found as a key several times in the input.");
+			assertThat(expected).hasMessage("'-Ifoo' was found as a key several times in the input.");
 		}
 	}
 

@@ -6,7 +6,6 @@ import static se.j4j.argumentparser.ArgumentFactory.charArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class CharArgumentTest
 {
@@ -19,13 +18,13 @@ public class CharArgumentTest
 	}
 
 	@Test
-	public void testInvalidLength() throws ArgumentException
+	public void testInvalidLength()
 	{
 		try
 		{
 			charArgument("-c").parse("-c", "abc");
 		}
-		catch(InvalidArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessage()).isEqualTo("'abc' is not a valid character");
 		}

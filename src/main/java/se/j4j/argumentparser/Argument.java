@@ -1,6 +1,6 @@
 package se.j4j.argumentparser;
 
-import static se.j4j.argumentparser.ArgumentExceptions.forLimit;
+import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 
 import java.util.List;
 
@@ -12,7 +12,6 @@ import javax.annotation.concurrent.Immutable;
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentBuilder.ListSupplier;
 import se.j4j.argumentparser.ArgumentBuilder.SupplierOfInstance;
-import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
@@ -290,11 +289,11 @@ public final class Argument<T> extends ArgumentSettings
 		return hideFromUsage;
 	}
 
-	void checkLimit(@Nullable final T value) throws LimitException
+	void checkLimit(@Nullable final T value) throws ArgumentException
 	{
 		Limit limit = limiter.withinLimits(value);
 		if(limit != Limit.OK)
-			throw forLimit(limit);
+			throw withMessage(limit.reason());
 	}
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
@@ -303,7 +302,7 @@ public final class Argument<T> extends ArgumentSettings
 		{
 			checkLimit(value);
 		}
-		catch(LimitException e)
+		catch(ArgumentException e)
 		{
 			throw new IllegalStateException("Invalid default value: " + e.getMessage(), e);
 		}

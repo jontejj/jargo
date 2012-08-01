@@ -11,9 +11,7 @@ import static se.j4j.argumentparser.utils.UsageTexts.expected;
 import org.fest.assertions.Fail;
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.UnhandledRepeatedArgument;
 
 /**
  * @formatter:off
@@ -52,14 +50,14 @@ public class UsageTextTest
 	}
 
 	@Test
-	public void testUsageWithUnallowedRepeationOfArgument() throws ArgumentException
+	public void testUsageWithUnallowedRepeationOfArgument()
 	{
 		try
 		{
 			stringArgument("-s").parse("-s", "foo", "-s", "bar");
 			fail("Didn't handle repeated argument by throwing");
 		}
-		catch(UnhandledRepeatedArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessageAndUsage("NonAllowedRepition")).isEqualTo(expected("unhandledRepition"));
 		}
@@ -187,14 +185,14 @@ public class UsageTextTest
 	}
 
 	@Test
-	public void testThatDescriptionsAreNotLazilyInitializedWhenNotNeeded() throws ArgumentException
+	public void testThatDescriptionsAreNotLazilyInitializedWhenNotNeeded()
 	{
 		try
 		{
 			integerArgument("-n").description(new FailingDescription()).parse("-n", "foo");
 			fail("foo should cause a throw as it's an invalid integer");
 		}
-		catch(InvalidArgument expected)
+		catch(ArgumentException expected)
 		{
 		}
 	}

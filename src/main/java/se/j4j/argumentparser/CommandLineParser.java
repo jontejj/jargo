@@ -36,7 +36,6 @@ import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.ArgumentExceptions.LimitException;
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
@@ -158,7 +157,7 @@ public final class CommandLineParser
 		return new Usage().withProgramName(programName);
 	}
 
-	CommandLineParser(@Nonnull final List<Argument<?>> argumentDefinitions, boolean isCommandParser)
+	CommandLineParser(@Nonnull List<Argument<?>> argumentDefinitions, boolean isCommandParser)
 	{
 		namedArguments = new NamedArguments(argumentDefinitions.size());
 		indexedArguments = newArrayListWithCapacity(argumentDefinitions.size());
@@ -182,7 +181,7 @@ public final class CommandLineParser
 					+ unnamedVariableArityArguments);
 	}
 
-	CommandLineParser(@Nonnull final List<Argument<?>> argumentDefinitions)
+	CommandLineParser(@Nonnull List<Argument<?>> argumentDefinitions)
 	{
 		this(argumentDefinitions, false);
 	}
@@ -223,7 +222,7 @@ public final class CommandLineParser
 	@Nonnull private final Set<Argument<?>> allArguments;
 
 	/**
-	 * Used by {@link Command} to indicate that this parser is part of another parser
+	 * Used by {@link Command} to indicate that this parser is part of a {@link Command}
 	 */
 	private final boolean isCommandParser;
 
@@ -325,6 +324,7 @@ public final class CommandLineParser
 
 	private void parseArguments(@Nonnull final ArgumentIterator actualArguments, @Nonnull final ParsedArgumentHolder holder) throws ArgumentException
 	{
+		actualArguments.markStartOfParse();
 		while(actualArguments.hasNext())
 		{
 			try
@@ -338,10 +338,11 @@ public final class CommandLineParser
 			}
 			catch(ArgumentException e)
 			{
-				e.originatedFrom(this);
-				throw e;
+				e.originatedFromArgumentName(actualArguments.getCurrentArgumentName());
+				throw e.originatedFrom(this);
 			}
 		}
+		actualArguments.markEndOfParse();
 	}
 
 	private <T> void parseArgument(@Nonnull final ArgumentIterator arguments, @Nonnull final ParsedArgumentHolder parsedArguments,
@@ -451,15 +452,23 @@ public final class CommandLineParser
 			definition = indexedArguments.get(holder.indexedArgumentsParsed);
 			arguments.previous();
 			// To give better error explanations we use the meta description for indexed arguments
-			arguments.setCurrentArgumentName(definition.metaDescriptionInRightColumn());
+			// TODO: also supply the meta description so MissingNthParameterException can count
+			// correctly
+			if(isCommandParser())
+			{
+				arguments.setCurrentArgumentName(arguments.usedCommandName());
+			}
+			else
+			{
+				arguments.setCurrentArgumentName(definition.metaDescriptionInRightColumn());
+			}
 			return definition;
 		}
 
-		// Command parsers exit here instead of throwing
-		if(isCommandParser)
+		if(isCommandParser())
 		{
-			// Rolling back here means that the next parser will receive the argument
-			// instead and maybe it can handle it better
+			// Rolling back here means that the next parser/command will receive the argument
+			// instead because maybe it can handle it
 			arguments.previous();
 			return null;
 		}
@@ -472,19 +481,24 @@ public final class CommandLineParser
 		throw forUnexpectedArgument(arguments);
 	}
 
+	private boolean isCommandParser()
+	{
+		return isCommandParser;
+	}
+
 	@Override
 	public String toString()
 	{
 		return usage("CommandLineParser#toString");
 	}
 
-	private <T> void limitArgument(@Nonnull Argument<T> arg, @Nonnull ParsedArgumentHolder holder) throws LimitException
+	private <T> void limitArgument(@Nonnull Argument<T> arg, @Nonnull ParsedArgumentHolder holder) throws ArgumentException
 	{
 		try
 		{
 			arg.checkLimit(holder.getValue(arg));
 		}
-		catch(LimitException e)
+		catch(ArgumentException e)
 		{
 			e.originatedFrom(this);
 			throw e;
@@ -589,7 +603,7 @@ public final class CommandLineParser
 
 		private void mainUsage(@Nonnull final String programName)
 		{
-			if(!isCommandParser)
+			if(!isCommandParser())
 			{
 				builder.append("Usage: " + programName);
 			}
@@ -666,6 +680,7 @@ public final class CommandLineParser
 			{
 				builder.append(" [Supports Multiple occurrences]");
 			}
+			// TODO: mention ignoreCase?
 		}
 
 		private <T> void valueExplanation(@Nonnull final Argument<T> arg)
@@ -829,6 +844,7 @@ public final class CommandLineParser
 	 */
 	static final class ArgumentIterator extends UnmodifiableIterator<String>
 	{
+		private static final int NONE = -1;
 		private final List<String> arguments;
 		private int currentArgumentIndex;
 
@@ -836,8 +852,11 @@ public final class CommandLineParser
 		 * Corresponds to one of the {@link Argument#names()} that has been given from the command
 		 * line.
 		 * This is updated as soon as the parsing of a new argument begins.
+		 * For indexed arguments this will be the meta description instead.
 		 */
 		private String currentArgumentName;
+
+		private int indexOfLastCommand = NONE;
 
 		/**
 		 * @param actualArguments a list of arguments, will be modified
@@ -845,6 +864,26 @@ public final class CommandLineParser
 		private ArgumentIterator(List<String> actualArguments)
 		{
 			arguments = actualArguments;
+		}
+
+		void markStartOfParse()
+		{
+			// The command has moved the index by 1 therefore the -1 to get the index of the
+			// commandName
+			indexOfLastCommand = currentArgumentIndex - 1;
+		}
+
+		void markEndOfParse()
+		{
+			indexOfLastCommand = NONE;
+		}
+
+		String usedCommandName()
+		{
+			// For indexed arguments in commands we return the used command name so that when
+			// multiple commands (or multiple command names) are used it's clear which command the
+			// offending argument is part of
+			return arguments.get(indexOfLastCommand);
 		}
 
 		private static ArgumentIterator forArguments(List<String> actualArguments)
@@ -876,30 +915,28 @@ public final class CommandLineParser
 			return arguments.get(--currentArgumentIndex);
 		}
 
-		public int nrOfRemainingArguments()
+		int nrOfRemainingArguments()
 		{
 			return arguments.size() - currentArgumentIndex;
 		}
 
-		public void setNextArgumentTo(String newNextArgumentString)
+		void setNextArgumentTo(String newNextArgumentString)
 		{
 			arguments.set(--currentArgumentIndex, newNextArgumentString);
 		}
 
-		public boolean hasPrevious()
+		boolean hasPrevious()
 		{
 			return currentArgumentIndex > 0;
 		}
 
-		public void setCurrentArgumentName(String argumentName)
+		void setCurrentArgumentName(String argumentName)
 		{
 			currentArgumentName = argumentName;
 		}
 
-		public String getCurrentArgumentName()
+		String getCurrentArgumentName()
 		{
-			// TODO: if it was an indexed argument then what should this name be?
-			// Meta description perhaps?
 			return currentArgumentName;
 		}
 

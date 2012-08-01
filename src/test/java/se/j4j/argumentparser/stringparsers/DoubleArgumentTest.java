@@ -6,7 +6,6 @@ import static se.j4j.argumentparser.ArgumentFactory.doubleArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
 
 public class DoubleArgumentTest
 {
@@ -19,13 +18,13 @@ public class DoubleArgumentTest
 	}
 
 	@Test
-	public void testInvalidDouble() throws ArgumentException
+	public void testInvalidDouble()
 	{
 		try
 		{
 			doubleArgument("-d").parse("-d", "1,a");
 		}
-		catch(InvalidArgument e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessage()).isEqualTo("'1,a' is not a valid double (64-bit IEEE 754 floating point)");
 		}

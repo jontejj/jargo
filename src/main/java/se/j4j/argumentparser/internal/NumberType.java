@@ -1,6 +1,6 @@
 package se.j4j.argumentparser.internal;
 
-import se.j4j.argumentparser.ArgumentExceptions.InvalidArgument;
+import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.StringParsers.Radix;
 
 /**
@@ -60,7 +60,7 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 	 * @throws InvalidArgument if the value is too big or in the wrong radix
 	 * </pre>
 	 */
-	public T parse(String value, Radix radix) throws InvalidArgument
+	public T parse(String value, Radix radix) throws ArgumentException
 	{
 		return radix.parse(value, this);
 	}

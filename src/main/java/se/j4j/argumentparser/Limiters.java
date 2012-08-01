@@ -172,7 +172,7 @@ public final class Limiters
 		@Override
 		public String descriptionOfValidValues()
 		{
-			return rangeToLimitValuesTo.toString();
+			return rangeToLimitValuesTo.lowerEndpoint() + " to " + rangeToLimitValuesTo.upperEndpoint();
 		}
 	}
 

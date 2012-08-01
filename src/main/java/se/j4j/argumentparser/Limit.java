@@ -67,6 +67,11 @@ public final class Limit
 		return reasonForNotBeingWithinLimits.description();
 	}
 
+	Description reason()
+	{
+		return reasonForNotBeingWithinLimits;
+	}
+
 	private Limit(Description reason)
 	{
 		this.reasonForNotBeingWithinLimits = reason;
