@@ -16,6 +16,9 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link ArgumentBuilder#splitWith(String)}
+ */
 public class SplitWithTest
 {
 	@Test

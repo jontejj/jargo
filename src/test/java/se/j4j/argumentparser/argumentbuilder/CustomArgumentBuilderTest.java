@@ -4,8 +4,12 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
 
+/**
+ * Tests for subclassing {@link ArgumentBuilder}
+ */
 public class CustomArgumentBuilderTest
 {
 	/**

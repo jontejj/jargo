@@ -25,9 +25,24 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.StringParser;
+import se.j4j.argumentparser.StringParsers;
 import se.j4j.argumentparser.internal.NumberType;
 
+/**
+ * <pre>
+ * Tests for
+ * {@link ArgumentFactory#byteArgument(String...)},
+ * {@link ArgumentFactory#shortArgument(String...)},
+ * {@link ArgumentFactory#integerArgument(String...)},
+ * {@link ArgumentFactory#longArgument(String...)}
+ * and
+ * {@link StringParsers#byteParser()},
+ * {@link StringParsers#shortParser()},
+ * {@link StringParsers#integerParser()},
+ * {@link StringParsers#longParser()}
+ */
 public class NumberArgumentTest
 {
 	@Test

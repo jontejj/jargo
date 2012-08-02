@@ -49,14 +49,6 @@ public final class Describers
 		return EnabledDescriber.INSTANCE;
 	}
 
-	/**
-	 * Describes {@link Argument}s by their first name.
-	 */
-	static Describer<Argument<?>> argumentDescriber()
-	{
-		return ArgumentDescriber.INSTANCE;
-	}
-
 	static <T> Describer<List<T>> forListValues(Describer<T> valueDescriber)
 	{
 		return new ListDescriber<T>(valueDescriber);
@@ -131,19 +123,6 @@ public final class Describers
 		public String describe(Boolean value)
 		{
 			return value ? "enabled" : "disabled";
-		}
-	}
-
-	private static final class ArgumentDescriber implements Describer<Argument<?>>
-	{
-		private static final Describer<Argument<?>> INSTANCE = new ArgumentDescriber();
-
-		@Override
-		public String describe(Argument<?> argument)
-		{
-			if(argument.isIndexed())
-				return argument.metaDescriptionInRightColumn();
-			return argument.names().get(0);
 		}
 	}
 

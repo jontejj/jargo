@@ -10,6 +10,9 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link ArgumentBuilder#required()}
+ */
 public class RequiredArgumentTest
 {
 	@Test

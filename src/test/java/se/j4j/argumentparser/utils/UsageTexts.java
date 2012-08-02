@@ -10,7 +10,6 @@ import com.google.common.io.Resources;
 
 public class UsageTexts
 {
-
 	/**
 	 * Loads a usage text (from resources) named /usage_texts/{@code textName}.txt
 	 * 

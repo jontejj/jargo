@@ -11,6 +11,9 @@ import se.j4j.argumentparser.ForwardingStringParser;
 import se.j4j.argumentparser.StringParser;
 import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ForwardingStringParser}
+ */
 public class ForwardingStringParserTest
 {
 	@Test

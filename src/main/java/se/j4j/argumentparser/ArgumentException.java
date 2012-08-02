@@ -1,10 +1,13 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkState;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
+
+import se.j4j.argumentparser.internal.Texts;
 
 public abstract class ArgumentException extends Exception
 {
@@ -28,10 +31,16 @@ public abstract class ArgumentException extends Exception
 		originArgumentName = argumentNameThatTriggeredMe;
 	}
 
+	public ArgumentException andCause(Throwable cause)
+	{
+		initCause(cause);
+		return this;
+	}
+
 	public final String getUsage(String programName)
 	{
-		if(originParser == null)
-			throw new IllegalStateException("No originParser set for ArgumentException. No usage available for " + programName);
+		checkState(originParser != null, Texts.NO_USAGE_AVAILABLE, programName);
+
 		return originParser.usage(programName);
 	}
 

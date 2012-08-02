@@ -15,11 +15,10 @@ import se.j4j.argumentparser.ArgumentException;
 public class RollYourOwnStringParserTest
 {
 	@Test
-	public void testHostPort() throws ArgumentException
+	public void testPort() throws ArgumentException
 	{
-		HostPort hostPort = withParser(new HostPortParser()).names("-target").parse("-target", "example.com:8080");
-		assertThat(hostPort.host).isEqualTo("example.com");
-		assertThat(hostPort.port).isEqualTo(8080);
+		Port port = withParser(new PortParser()).names("--port").parse("--port", "8080");
+		assertThat(port.port).isEqualTo(8080);
 	}
 
 	@Test

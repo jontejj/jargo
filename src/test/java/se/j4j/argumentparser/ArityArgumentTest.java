@@ -18,6 +18,9 @@ import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link ArgumentBuilder#arity(int)} and {@link ArgumentBuilder#variableArity()}
+ */
 public class ArityArgumentTest
 {
 	@Test

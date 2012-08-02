@@ -1,8 +1,5 @@
 package se.j4j.argumentparser;
 
-import static com.google.common.collect.Collections2.transform;
-import static se.j4j.argumentparser.Describers.argumentDescriber;
-import static se.j4j.argumentparser.Describers.asFunction;
 import static se.j4j.argumentparser.internal.StringsUtil.numberToPositionalString;
 
 import java.io.Serializable;
@@ -14,6 +11,7 @@ import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.internal.Texts;
 
 /**
  * Gives you static access for creating {@link ArgumentException}s.<br>
@@ -28,35 +26,6 @@ public final class ArgumentExceptions
 	// TODO , see usage for '-i' for proper values.
 
 	/**
-	 * <pre>
-	 * Can be used by {@link StringParser#parse(String)} implementations when
-	 * they consider their received {@link String} to be invalid
-	 * 
-	 * {@code ArgumentExceptions.forInvalidValue("Fourth of July", "is not my birthday")} would print
-	 * 'Fourth of July' is not my birthday
-	 * 
-	 * @param invalidValue the received value that is invalid
-	 * @param explanation explains why invalidValue is invalid
-	 * </pre>
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static ArgumentException forInvalidValue(final Object invalidValue, final String explanation)
-	{
-		return new InvalidArgument(Descriptions.forString(explanation), invalidValue);
-	}
-
-	/**
-	 * {@link Description} based version of {@link #forInvalidValue(Object, String)}
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static ArgumentException forInvalidValue(final Object invalidValue, final Description explanation)
-	{
-		return new InvalidArgument(explanation, invalidValue);
-	}
-
-	/**
 	 * The most simple version of {@link ArgumentException}s, it simply prints the result of
 	 * {@link #toString()} for {@code message} as the message.
 	 */
@@ -68,7 +37,7 @@ public final class ArgumentExceptions
 	}
 
 	/**
-	 * {@link Description} based version of {@link #withMessage(Description)}
+	 * {@link Description} based version of {@link #withMessage(Object)}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -114,9 +83,9 @@ public final class ArgumentExceptions
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static <T> ArgumentException forUnhandledRepeatedArgument(final Argument<T> unhandledArgument)
+	static ArgumentException forUnallowedRepetitionArgument(final String unhandledArgument)
 	{
-		return new SimpleArgumentException(Descriptions.forString("Non-allowed repetition of the argument " + unhandledArgument.names()));
+		return new SimpleArgumentException(Descriptions.format(Texts.UNALLOWED_REPETITION, unhandledArgument));
 	}
 
 	/**
@@ -172,29 +141,6 @@ public final class ArgumentExceptions
 		return new UnexpectedArgumentException(unexpectedArgument, previousArgument);
 	}
 
-	private static final class InvalidArgument extends ArgumentException
-	{
-		private final Description explanation;
-		private final Object invalidValue;
-
-		private InvalidArgument(final Description explanation, final Object invalidValue)
-		{
-			this.explanation = explanation;
-			this.invalidValue = invalidValue;
-		}
-
-		@Override
-		public String getMessage(String argumentNameOrcommandName)
-		{
-			return "'" + invalidValue + "' " + explanation.description();
-		}
-
-		/**
-		 * For {@link Serializable}
-		 */
-		private static final long serialVersionUID = 1L;
-	}
-
 	static final class MissingParameterException extends ArgumentException
 	{
 		final ArgumentSettings argumentWithMissingParameter;
@@ -208,7 +154,7 @@ public final class ArgumentExceptions
 		public String getMessage(String argumentNameOrcommandName)
 		{
 			String parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
-			return "Missing " + parameterDescription + " parameter for " + argumentNameOrcommandName;
+			return String.format(Texts.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
 		}
 
 		/**
@@ -232,8 +178,8 @@ public final class ArgumentExceptions
 		public String getMessage(String argumentNameOrcommandName)
 		{
 			String parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
-			return "Missing " + numberToPositionalString(missingIndex + 1) + " " + parameterDescription + " parameter for "
-					+ argumentNameOrcommandName;
+			return String.format(	Texts.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
+									argumentNameOrcommandName);
 		}
 
 		/**
@@ -254,10 +200,9 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
-			String descriptionOfMissingArguments = transform(missingArguments, asFunction(argumentDescriber())).toString();
 			if(argumentNameOrcommandName != null)
-				return "Missing required arguments for " + argumentNameOrcommandName + ": " + descriptionOfMissingArguments;
-			return "Missing required arguments: " + descriptionOfMissingArguments;
+				return String.format(Texts.MISSING_COMMAND_ARGUMENTS, argumentNameOrcommandName, missingArguments);
+			return String.format(Texts.MISSING_REQUIRED_ARGUMENTS, missingArguments);
 		}
 
 		/**

@@ -25,9 +25,14 @@ import org.junit.Test;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.KeyValueParser;
+import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link ArgumentBuilder#asPropertyMap()} and
+ * {@link ArgumentBuilder#asKeyValuesWithKeyParser(StringParser)}
+ */
 public class PropertyMapTest
 {
 	@Test
@@ -78,10 +83,18 @@ public class PropertyMapTest
 		integerArgument().asPropertyMap().build();
 	}
 
-	@Test(expected = ArgumentException.class)
-	public void testInvalidationOfWrongSeparator() throws ArgumentException
+	@Test
+	public void testInvalidationOfWrongSeparator()
 	{
-		integerArgument("-N").asPropertyMap().parse("-N3");
+		try
+		{
+			integerArgument("-N").asPropertyMap().parse("-N3");
+			fail("-N3 should be missing a =");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(Texts.MISSING_KEY_VALUE_SEPARATOR, "-N3", "="));
+		}
 	}
 
 	@Test

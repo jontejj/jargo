@@ -11,6 +11,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.StringParser;
+import se.j4j.argumentparser.StringParsers;
+
+/**
+ * Tests for {@link StringParsers#asFunction(StringParser)}
+ */
 public class StringParserAsFunctionTest
 {
 	@Test

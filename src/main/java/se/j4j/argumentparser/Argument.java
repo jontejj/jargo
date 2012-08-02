@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkState;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.internal.Finalizer;
+import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -136,10 +138,9 @@ public final class Argument<T> extends ArgumentSettings
 
 	/**
 	 * Parses command line arguments and returns the value of this argument.<br>
-	 * This is a shorthand method that should be used if only one {@link Argument} is expected as it
-	 * will result in an unnecessary amount of {@link CommandLineParser} instance creations.
+	 * This is a shorthand method that should be used if only one {@link Argument} is expected.
 	 * If several arguments are expected use {@link CommandLineParser#forArguments(Argument...)}
-	 * instead. Especially if you're concerned about performance or about usable usage texts.
+	 * instead.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the {@code actualArguments}
@@ -173,6 +174,7 @@ public final class Argument<T> extends ArgumentSettings
 		return parser().descriptionOfValidValues(this);
 	}
 
+	@Override
 	boolean isRequired()
 	{
 		return required;
@@ -234,12 +236,6 @@ public final class Argument<T> extends ArgumentSettings
 		return ignoreCase;
 	}
 
-	@Override
-	public String toString()
-	{
-		return commandLineParser().usage("");
-	}
-
 	@Nullable
 	String defaultValueDescription()
 	{
@@ -298,14 +294,8 @@ public final class Argument<T> extends ArgumentSettings
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
 	{
-		try
-		{
-			checkLimit(value);
-		}
-		catch(ArgumentException e)
-		{
-			throw new IllegalStateException("Invalid default value: " + e.getMessage(), e);
-		}
+		Limit limit = limiter.withinLimits(value);
+		checkState(limit == Limit.OK, Texts.INVALID_DEFAULT_VALUE, limit.reason());
 	}
 
 	void finalizeValue(@Nonnull ParsedArgumentHolder holder)

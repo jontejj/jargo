@@ -13,8 +13,8 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
 import static java.lang.Math.max;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingArguments;
+import static se.j4j.argumentparser.ArgumentExceptions.forUnallowedRepetitionArgument;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnexpectedArgument;
-import static se.j4j.argumentparser.ArgumentExceptions.forUnhandledRepeatedArgument;
 import static se.j4j.argumentparser.ArgumentFactory.command;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.internal.StringsUtil.spaces;
@@ -42,6 +42,7 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.OptionParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.CharacterTrie;
+import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -176,9 +177,7 @@ public final class CommandLineParser
 
 		// How would one know when the first argument considers itself satisfied?
 		Collection<Argument<?>> unnamedVariableArityArguments = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
-		if(unnamedVariableArityArguments.size() > 1)
-			throw new IllegalArgumentException("Several unnamed arguments are configured to receive a variable arity of parameters: "
-					+ unnamedVariableArityArguments);
+		checkArgument(unnamedVariableArityArguments.size() <= 1, Texts.SEVERAL_VARIABLE_ARITY_PARSERS, unnamedVariableArityArguments);
 	}
 
 	CommandLineParser(@Nonnull List<Argument<?>> argumentDefinitions)
@@ -244,8 +243,7 @@ public final class CommandLineParser
 			requiredArguments.add(definition);
 		}
 		boolean added = allArguments.add(definition);
-		if(!added)
-			throw new IllegalArgumentException(definition + " handles the same argument twice");
+		checkArgument(added, Texts.UNIQUE_ARGUMENT, definition);
 	}
 
 	private void addNamedArgumentDefinition(@Nonnull final String key, @Nonnull final Argument<?> definition)
@@ -273,29 +271,34 @@ public final class CommandLineParser
 		{
 			oldDefinition = namedArguments.put(key, definition);
 		}
-		if(oldDefinition != null)
-			throw new IllegalArgumentException(definition + " handles the same argument as: " + oldDefinition);
+		checkArgument(oldDefinition == null, Texts.NAME_COLLISION, key);
 	}
 
 	private void verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments()
 	{
+		// Also verify that required & indexed arguments have unique meta descriptions, otherwise
+		// the error texts becomes ambiguous
+		Set<String> metasForRequiredAndIndexedArguments = newHashSetWithExpectedSize(indexedArguments.size());
+
 		int indexOfLastRequiredIndexedArgument = 0;
 		int indexOfFirstOptionalIndexedArgument = Integer.MAX_VALUE;
 		for(int i = 0; i < indexedArguments.size(); i++)
 		{
-			if(indexedArguments.get(i).isRequired())
+			ArgumentSettings indexedArgument = indexedArguments.get(i);
+			if(indexedArgument.isRequired())
 			{
 				indexOfLastRequiredIndexedArgument = i;
+				String meta = indexedArgument.metaDescriptionInRightColumn();
+				boolean metaWasUnique = metasForRequiredAndIndexedArguments.add(meta);
+				checkArgument(metaWasUnique, Texts.UNIQUE_METAS, meta);
 			}
 			else
 			{
 				indexOfFirstOptionalIndexedArgument = i;
 			}
 		}
-
-		checkArgument(indexOfLastRequiredIndexedArgument <= indexOfFirstOptionalIndexedArgument, "Argument given at index "
-				+ indexOfFirstOptionalIndexedArgument + " is optional but argument at index " + indexOfLastRequiredIndexedArgument
-				+ " is required. Required arguments must be given before any optional arguments, at least when they are indexed (without names)");
+		checkArgument(	indexOfLastRequiredIndexedArgument <= indexOfFirstOptionalIndexedArgument, Texts.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
+						indexOfFirstOptionalIndexedArgument, indexOfLastRequiredIndexedArgument);
 	}
 
 	@Nonnull
@@ -352,7 +355,7 @@ public final class CommandLineParser
 
 		// TODO: maybe null was the result of a previous argument
 		if(oldValue != null && !definition.isAllowedToRepeat() && !definition.isPropertyMap())
-			throw forUnhandledRepeatedArgument(definition);
+			throw forUnallowedRepetitionArgument(arguments.current());
 
 		InternalStringParser<T> parser = definition.parser();
 
@@ -452,8 +455,6 @@ public final class CommandLineParser
 			definition = indexedArguments.get(holder.indexedArgumentsParsed);
 			arguments.previous();
 			// To give better error explanations we use the meta description for indexed arguments
-			// TODO: also supply the meta description so MissingNthParameterException can count
-			// correctly
 			if(isCommandParser())
 			{
 				arguments.setCurrentArgumentName(arguments.usedCommandName());
@@ -605,11 +606,11 @@ public final class CommandLineParser
 		{
 			if(!isCommandParser())
 			{
-				builder.append("Usage: " + programName);
+				builder.append(Texts.USAGE_HEADER + programName);
 			}
 			if(!argumentsToPrint.isEmpty())
 			{
-				builder.append(" [Options]");
+				builder.append(Texts.OPTIONS);
 				builder.append(NEWLINE);
 			}
 		}
@@ -674,11 +675,11 @@ public final class CommandLineParser
 		{
 			if(arg.isRequired())
 			{
-				builder.append(" [Required]");
+				builder.append(Texts.REQUIRED);
 			}
 			if(arg.isAllowedToRepeat())
 			{
-				builder.append(" [Supports Multiple occurrences]");
+				builder.append(Texts.ALLOWS_REPETITIONS);
 			}
 			// TODO: mention ignoreCase?
 		}
@@ -896,6 +897,11 @@ public final class CommandLineParser
 		static ArgumentIterator forSingleArgument(String argument)
 		{
 			return new ArgumentIterator(Arrays.asList(argument));
+		}
+
+		String current()
+		{
+			return arguments.get(currentArgumentIndex - 1);
 		}
 
 		@Override

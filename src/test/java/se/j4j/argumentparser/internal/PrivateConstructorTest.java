@@ -36,7 +36,7 @@ public class PrivateConstructorTest
 			InvocationTargetException
 	{
 		Class<?>[] classesToConstruct = {ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class,
-				Finalizers.class, StringParsers.class, ArgumentExceptions.class, Describers.class};
+				Finalizers.class, StringParsers.class, ArgumentExceptions.class, Describers.class, Texts.class};
 
 		for(Class<?> clazz : classesToConstruct)
 		{

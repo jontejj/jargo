@@ -6,7 +6,13 @@ import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ArgumentFactory#booleanArgument(String...)} and
+ * {@link StringParsers#booleanParser()}
+ */
 public class BooleanArgumentTest
 {
 	@Test

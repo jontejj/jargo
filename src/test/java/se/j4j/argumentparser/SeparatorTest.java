@@ -10,6 +10,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * Tests for {@link ArgumentBuilder#separator(String)}
+ */
 public class SeparatorTest
 {
 	@Test

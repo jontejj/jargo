@@ -6,10 +6,10 @@ import static java.math.BigInteger.ZERO;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static se.j4j.argumentparser.ArgumentExceptions.asUnchecked;
-import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
+import static se.j4j.argumentparser.Descriptions.format;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
 
@@ -31,6 +31,7 @@ import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.internal.NumberType;
+import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -210,7 +211,7 @@ public final class StringParsers
 	 * <pre>
 	 * Makes it possible to use the given {@code parser} as a Guava {@link Function}.
 	 * For example:{@code
-	 * List&lt;Integer&gt; result =  Lists.transform(Arrays.asList("1", "3", "2"), StringParsers.asFunction(StringParsers.integerParser()));
+	 * List<Integer> result =  Lists.transform(Arrays.asList("1", "3", "2"), StringParsers.asFunction(StringParsers.integerParser()));
 	 * }
 	 * 
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
@@ -353,8 +354,7 @@ public final class StringParsers
 		public Character parse(final String value) throws ArgumentException
 		{
 			if(value.length() != 1)
-				throw forInvalidValue(value, "is not a valid character");
-
+				throw withMessage(format(Texts.INVALID_CHAR, value));
 			return value.charAt(0);
 		}
 
@@ -397,7 +397,15 @@ public final class StringParsers
 			}
 			catch(IllegalArgumentException noEnumFound)
 			{
-				throw forInvalidValue(value, "is not a valid Option, Expecting one of " + descriptionOfValidValues());
+				throw withMessage(format(Texts.INVALID_ENUM_VALUE, value, new Object(){
+					@Override
+					public String toString()
+					{
+						// Lazily call this as it's going over all enum values and converting them
+						// to strings
+						return descriptionOfValidValues();
+					}
+				}));
 			}
 		}
 
@@ -490,11 +498,9 @@ public final class StringParsers
 			{
 				return new BigInteger(value);
 			}
-			catch(NumberFormatException cause)
+			catch(NumberFormatException nfe)
 			{
-				ArgumentException e = forInvalidValue(value, "is not a valid big-integer");
-				e.initCause(cause);
-				throw e;
+				throw withMessage(format(Texts.INVALID_BIG_INTEGER, value)).andCause(nfe);
 			}
 		}
 
@@ -522,11 +528,9 @@ public final class StringParsers
 			{
 				return Double.valueOf(value);
 			}
-			catch(NumberFormatException cause)
+			catch(NumberFormatException nfe)
 			{
-				ArgumentException e = forInvalidValue(value, "is not a valid double (64-bit IEEE 754 floating point)");
-				e.initCause(cause);
-				throw e;
+				throw withMessage(format(Texts.INVALID_DOUBLE, value)).andCause(nfe);
 			}
 		}
 
@@ -560,11 +564,9 @@ public final class StringParsers
 			{
 				return Float.valueOf(value);
 			}
-			catch(NumberFormatException cause)
+			catch(NumberFormatException nfe)
 			{
-				ArgumentException e = forInvalidValue(value, "is not a valid float (32-bit IEEE 754 floating point)");
-				e.initCause(cause);
-				throw e;
+				throw withMessage(format(Texts.INVALID_FLOAT, value)).andCause(nfe);
 			}
 		}
 
@@ -987,7 +989,7 @@ public final class StringParsers
 					int keyStartIndex = propertyIdentifier.length();
 					int keyEndIndex = keyValue.indexOf(separator, keyStartIndex);
 					if(keyEndIndex == -1)
-						throw forInvalidValue(keyValue, "Missing assignment operator(" + separator + ")");
+						throw withMessage(format(Texts.MISSING_KEY_VALUE_SEPARATOR, keyValue, separator));
 
 					String key = keyValue.substring(keyStartIndex, keyEndIndex);
 					K parsedKey = keyParser.parse(key);
@@ -1003,7 +1005,7 @@ public final class StringParsers
 					if(oldValue != null && !argumentSettings.isAllowedToRepeat())
 						// TODO: the last occurrence wasn't necessarily propertyIdentifier it could
 						// be any propertyIdentifiers
-						throw forInvalidValue(propertyIdentifier + key, "was found as a key several times in the input.");
+						throw withMessage(format(Texts.UNALLOWED_REPETITION_OF_KEY, propertyIdentifier, key));
 
 					V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
 					Limit limit = valueLimiter.withinLimits(parsedValue);

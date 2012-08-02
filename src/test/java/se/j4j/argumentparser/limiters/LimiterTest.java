@@ -4,63 +4,56 @@ import static com.google.common.collect.Collections2.filter;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
+import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.Limiters.asPredicate;
-import static se.j4j.argumentparser.Limiters.existingFiles;
 import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
-import java.io.File;
 import java.util.Collection;
 
-import org.fest.assertions.Fail;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
+import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.Description;
 import se.j4j.argumentparser.Limit;
 import se.j4j.argumentparser.Limiter;
+import se.j4j.argumentparser.stringparsers.custom.Port;
+import se.j4j.argumentparser.stringparsers.custom.PortParser;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Test for {@link Limiter} and {@link ArgumentBuilder#limitTo(Limiter)}
+ */
 public class LimiterTest
 {
 	@Test
-	public void testExistingFile()
+	public void testRangeLimiter() throws ArgumentException
 	{
-		Argument<File> file = fileArgument("--file").limitTo(existingFiles()).defaultValueDescription("Current working directory").build();
-
-		CommandLineParser parser = CommandLineParser.forArguments(file);
+		Argument<Integer> limitedNumber = integerArgument().limitTo(range(0, 4)).build();
 		try
 		{
-			parser.parse("--file", ".");
-		}
-		catch(ArgumentException e)
-		{
-			fail(". should be an existing file", e);
-		}
-		try
-		{
-			parser.parse("--file", "non_existing.file");
-			Fail.fail("non_existing.file should not exist");
+			limitedNumber.parse("5");
+			fail("5 shouldn't be valid since it's higher than 4");
 		}
 		catch(ArgumentException expected)
 		{
-			String usage = expected.getMessageAndUsage("OnlyAllowsExistingFiles");
-			assertThat(usage).contains("--file <path>    <path>: an existing file");
-			assertThat(expected.getMessage()).endsWith("non_existing.file isn't an existing file");
+			assertThat(expected.getMessageAndUsage("LimiterOutOfRange")).isEqualTo(expected("limiterOutOfRange"));
 		}
+		assertThat(limitedNumber.parse("4")).isEqualTo(4);
+
+		assertThat(integerArgument().limitTo(range(1, 3)).parse("2")).isEqualTo(2);
 	}
 
 	@Test(expected = ArgumentException.class)
 	public void testRepeatedWithLimiter() throws ArgumentException
 	{
-		stringArgument("-i", "--index").limitTo(foos()).repeated().parse("-i", "foo", "-i", "bar");
+		stringArgument("-i", "--index").limitTo(foos()).repeated().parse("-i", "foo", "--index", "bar");
 	}
 
 	@Test
@@ -81,25 +74,6 @@ public class LimiterTest
 	public void testSplittingAndLimiting() throws ArgumentException
 	{
 		stringArgument("-n").separator("=").limitTo(foos()).splitWith(",").parse("-n=foo,bar");
-	}
-
-	@Test
-	public void testRangeLimiter() throws ArgumentException
-	{
-		Argument<Integer> limitedNumber = integerArgument().limitTo(range(0, 4)).build();
-
-		try
-		{
-			limitedNumber.parse("5");
-			fail("5 shouldn't be valid since it's higher than 4");
-		}
-		catch(ArgumentException expected)
-		{
-			assertThat(expected.getMessageAndUsage("LimiterOutOfRange")).isEqualTo(expected("limiterOutOfRange"));
-		}
-		assertThat(limitedNumber.parse("4")).isEqualTo(4);
-
-		assertThat(integerArgument().limitTo(range(1, 3)).parse("2")).isEqualTo(2);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -149,21 +123,30 @@ public class LimiterTest
 		assertThat(profiler.limitationsMade).isEqualTo(2);
 	}
 
-	private static final class ProfilingLimiter<T> implements Limiter<T>
+	@Test
+	public void testThatRangeLimiterDoesNotCallToStringOnComparedObjectsInVain() throws ArgumentException
 	{
-		int limitationsMade;
-
-		@Override
-		public Limit withinLimits(T value)
+		Argument<Port> portArgument = withParser(new PortParser()).limitTo(range(Port.MIN, Port.MAX)).build();
+		try
 		{
-			limitationsMade++;
-			return Limit.OK;
+			portArgument.parse("-1");
+			fail("-1 shouldn't be valid since it's not within the range of valid port numbers");
 		}
-
-		@Override
-		public String descriptionOfValidValues()
+		catch(ArgumentException expected)
 		{
-			return "any value";
+			// Should happen because -1 isn't within the range, not because Port.toString has a
+			// fault
+			try
+			{
+				expected.getMessage();
+				fail("Nefarious behavior not detected");
+			}
+			catch(IllegalStateException expectNefariousBehavior)
+			{
+				// Should happen because Port.toString has a fault
+			}
 		}
+		// Also make sure the range accepts valid ports
+		assertThat(portArgument.parse("2")).isEqualTo(new Port(2));
 	}
 }

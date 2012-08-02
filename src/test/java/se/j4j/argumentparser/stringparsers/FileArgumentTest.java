@@ -8,7 +8,12 @@ import java.io.File;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ArgumentFactory#fileArgument(String...)} and {@link StringParsers#fileParser()}
+ */
 public class FileArgumentTest
 {
 	@Test

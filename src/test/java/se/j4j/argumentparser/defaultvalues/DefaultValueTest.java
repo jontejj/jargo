@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
+import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
@@ -26,6 +27,10 @@ import com.google.common.base.Supplier;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link ArgumentBuilder#defaultValue(Object)} and
+ * {@link ArgumentBuilder#defaultValueSupplier(Supplier)}
+ */
 public class DefaultValueTest
 {
 	@Test

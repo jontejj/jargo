@@ -2,19 +2,23 @@ package se.j4j.argumentparser.exceptions;
 
 import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.Description;
+import se.j4j.argumentparser.Descriptions;
 
-public class InvalidArgumentTest
+/**
+ * Tests for {@link ArgumentException}
+ */
+public class ArgumentExceptionTest
 {
 	@Test
-	public void testThatDescriptionForInvalidArgumentIsNotCalledWhenNotNeeded()
+	public void testThatDescriptionIsNotCalledWhenNotNeeded()
 	{
-		forInvalidValue("", new Description(){
+		withMessage(new Description(){
 			@Override
 			public String description()
 			{
@@ -25,9 +29,9 @@ public class InvalidArgumentTest
 	}
 
 	@Test
-	public void testThatInvalidArgumentDoesNotRunToStringWhenItIsNotNeeded()
+	public void testThatToStringIsNotRunWhenItIsNotNeeded()
 	{
-		forInvalidValue(new FailingToString(), "");
+		withMessage(Descriptions.format("%s", new FailingToString()));
 	}
 
 	@Test

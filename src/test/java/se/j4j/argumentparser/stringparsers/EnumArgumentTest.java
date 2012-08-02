@@ -1,6 +1,7 @@
 package se.j4j.argumentparser.stringparsers;
 
 import static java.util.Arrays.asList;
+import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.enumArgument;
 
@@ -9,7 +10,13 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ArgumentFactory#enumArgument(Class, String...)} and
+ * {@link StringParsers#enumParser(Class)}
+ */
 public class EnumArgumentTest
 {
 	enum Action
@@ -71,5 +78,38 @@ public class EnumArgumentTest
 		{
 			assertThat(e.getMessage()).isEqualTo("'break' is not a valid Option, Expecting one of [start | stop | restart]");
 		}
+	}
+
+	@Test
+	public void testThatValidEnumOptionsAreNotConstructedIfNotNeeded()
+	{
+		try
+		{
+			enumArgument(NefariousToString.class).parse("TWO");
+			fail("TWO should be an invalid enum value");
+		}
+		catch(ArgumentException invalidEnumValue)
+		{
+			try
+			{
+				invalidEnumValue.getMessage();
+				fail("Nefarious toString not detected");
+			}
+			catch(IllegalStateException expectingNefariousBehavior)
+			{
+
+			}
+		}
+	}
+
+	enum NefariousToString
+	{
+		ONE;
+
+		@Override
+		public String toString()
+		{
+			throw new IllegalStateException("Nefarious behavior not avoided");
+		};
 	}
 }

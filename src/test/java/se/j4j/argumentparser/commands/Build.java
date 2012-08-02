@@ -1,5 +1,6 @@
 package se.j4j.argumentparser.commands;
 
+import static org.fest.assertions.Assertions.assertThat;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
@@ -42,6 +43,9 @@ public class Build extends Command
 
 		void build()
 		{
+			// The clean command should be run before the build command, this verifies that commands
+			// are executed in the order they are given on the command line
+			assertThat(isClean()).isTrue();
 			built = true;
 		}
 

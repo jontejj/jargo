@@ -6,7 +6,13 @@ import static se.j4j.argumentparser.ArgumentFactory.doubleArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ArgumentFactory#doubleArgument(String...)} and
+ * {@link StringParsers#doubleParser()}
+ */
 public class DoubleArgumentTest
 {
 	@Test

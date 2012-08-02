@@ -2,7 +2,6 @@ package se.j4j.argumentparser;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
@@ -14,6 +13,9 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 
 /**
+ * Tests for {@link CommandLineParser#usage(String)}, {@link Argument#usage(String)} and
+ * {@link ArgumentBuilder#usage(String)}
+ * 
  * @formatter:off
  */
 public class UsageTextTest
@@ -114,7 +116,7 @@ public class UsageTextTest
 	{
 		try
 		{
-			throw forInvalidValue("Invalid", "Explanation");
+			throw ArgumentExceptions.withMessage("");
 		}
 		catch(ArgumentException e)
 		{
