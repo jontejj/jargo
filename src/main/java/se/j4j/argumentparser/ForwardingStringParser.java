@@ -1,13 +1,7 @@
 package se.j4j.argumentparser;
 
-import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
-
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-
-import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
-import se.j4j.argumentparser.StringParsers.InternalStringParser;
 
 /**
  * <pre>
@@ -15,18 +9,37 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
  * It allows you to subclass it and override individual methods
  * that you want to customize for an existing {@link StringParser}.
  * 
- * TODO: show code example
+ * For instance, a parser that's useful in a garden application could look like this:
+ * 
+ * {@code private static final class WateringParser extends SimpleForwardingStringParser<Integer>
+ * {
+ * 	WateringParser()
+ * 	{
+ * 		super(StringParsers.integerParser());
+ * 	}
+ * 
+ * 	public Integer parse(String value) throws ArgumentException
+ * 	{
+ * 		waterPlants();
+ * 		return super.parse(value);
+ * 	}
+ * 
+ * 	private void waterPlants()
+ * 	{
+ * 		System.out.println("Watering plants");
+ * 	}
+ * }
+ * }
+ * 
+ * This WateringParser can then be integrated with an argument via the {@link ArgumentFactory#withParser(StringParser)} method.
  * 
  * Most subclasses can just use {@link SimpleForwardingStringParser}.
- * 
- * Implementation Note: ForwardringStringParser also acts as a bridge for {@link InternalStringParser}s but
- * as InternalStringParser is package-private this detail should be seen as a implementation detail for now.
  * 
  * @param <T> the type the decorated {@link StringParser} handles
  * </pre>
  */
 @Immutable
-public abstract class ForwardingStringParser<T> extends InternalStringParser<T> implements StringParser<T>
+public abstract class ForwardingStringParser<T> implements StringParser<T>
 {
 	/**
 	 * A factory method that allow subclasses to switch delegate under their own terms,
@@ -63,34 +76,6 @@ public abstract class ForwardingStringParser<T> extends InternalStringParser<T> 
 		return delegate().metaDescription();
 	}
 
-	// Bridged InternalStringParser methods
-
-	@Override
-	T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
-	{
-		if(!arguments.hasNext())
-			throw forMissingParameter(argumentSettings);
-		return parse(arguments.next());
-	}
-
-	@Override
-	String descriptionOfValidValues(ArgumentSettings argumentSettings)
-	{
-		return descriptionOfValidValues();
-	}
-
-	@Override
-	String describeValue(T value, ArgumentSettings argumentSettings)
-	{
-		return String.valueOf(value);
-	}
-
-	@Override
-	String metaDescription(ArgumentSettings argumentSettings)
-	{
-		return metaDescription();
-	}
-
 	/**
 	 * A {@link ForwardingStringParser} that uses an already created {@link StringParser} as its
 	 * delegate.
@@ -104,15 +89,6 @@ public abstract class ForwardingStringParser<T> extends InternalStringParser<T> 
 		protected SimpleForwardingStringParser(@Nonnull final StringParser<T> delegate)
 		{
 			this.delegate = delegate;
-		}
-
-		/**
-		 * Use the subclass itself as the delegate, only used internally.
-		 */
-		SimpleForwardingStringParser()
-		{
-			// TODO: this smells, could this delegation business be moved into StringParserBridge?
-			this.delegate = this;
 		}
 
 		@Override

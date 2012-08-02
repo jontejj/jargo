@@ -207,7 +207,6 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
-			// TODO: as SplitterParser uses this maybe programNameOrcommandName should be printed
 			String parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
 			return "Missing " + parameterDescription + " parameter for " + argumentNameOrcommandName;
 		}

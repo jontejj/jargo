@@ -7,7 +7,7 @@ Usage: HelloWorld [Options]
                                                                        Default: 0
 --bool <boolean>                                                       <boolean>: true or false
                                                                        Default: false
---byte <byte>                                                          <byte>: -128 to 127 (decimal)
+--byte <byte>                                                          <byte>: -128 to 127
                                                                        Default: 0
 --char <character>                                                     <character>: any unicode character
                                                                        Default: the Null character
@@ -17,11 +17,11 @@ Usage: HelloWorld [Options]
                                                                        Default: 0.0
 --file <path>                                                          <path>: a file path
                                                                        Default: The current directory
---long <long>                                                          <long>: -9223372036854775808 to 9223372036854775807 (decimal)
+--long <long>                                                          <long>: -9223372036854775808 to 9223372036854775807
                                                                        Default: 0
---repeated <integer>                                                   <integer>: -2147483648 to 2147483647 (decimal)
+--repeated <integer>                                                   <integer>: -2147483648 to 2147483647
                                                                        Default: Empty list [Supports Multiple occurrences]
---short <short>                                                        <short>: -32768 to 32767 (decimal)
+--short <short>                                                        <short>: -32768 to 32767
                                                                        Default: 0
 --split=<float>,<float>,...                                            <float>: -3.4028235E38 to 3.4028235E38
                                                                        Default: Empty list
@@ -32,4 +32,4 @@ Usage: HelloWorld [Options]
 -l, --enable-logging                                                   Output debug information to standard out
                                                                        Default: disabled
 -p, --listen-port <integer>                                            The port to start the server on. [Required]
-                                                                       <integer>: -2147483648 to 2147483647 (decimal)
+                                                                       <integer>: -2147483648 to 2147483647

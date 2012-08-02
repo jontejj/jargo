@@ -8,9 +8,6 @@ import java.util.List;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
-import se.j4j.argumentparser.StringParsers.Radix;
-import se.j4j.argumentparser.internal.NumberType;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Range;
@@ -36,6 +33,9 @@ public final class Limiters
 		return new RangeLimiter<C>(Ranges.closed(start, end));
 	}
 
+	/**
+	 * Limits arguments to only point to existing {@link File}s.
+	 */
 	@Nonnull
 	@CheckReturnValue
 	public static Limiter<File> existingFiles()
@@ -85,9 +85,6 @@ public final class Limiters
 		return instance;
 	}
 
-	/**
-	 * Limits arguments to only point to existing {@link File}s.
-	 */
 	private static final class ExistingFile implements Limiter<File>
 	{
 		private static final Limiter<File> INSTANCE = new ExistingFile();
@@ -154,7 +151,7 @@ public final class Limiters
 
 	static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
 	{
-		final Range<C> rangeToLimitValuesTo;
+		private final Range<C> rangeToLimitValuesTo;
 
 		private RangeLimiter(final Range<C> rangeToLimitValuesTo)
 		{
@@ -173,38 +170,6 @@ public final class Limiters
 		public String descriptionOfValidValues()
 		{
 			return rangeToLimitValuesTo.lowerEndpoint() + " to " + rangeToLimitValuesTo.upperEndpoint();
-		}
-	}
-
-	static final class RangeLimiterForRadix<T extends Number & Comparable<T>> implements Limiter<T>
-	{
-		private final Range<T> range;
-		private final Radix radix;
-		private final NumberType<T> type;
-
-		RangeLimiterForRadix(final Range<T> range, final Radix radix, final NumberType<T> type)
-		{
-			this.range = range;
-			this.radix = radix;
-			this.type = type;
-		}
-
-		@Override
-		public Limit withinLimits(T value)
-		{
-			if(range.contains(value))
-				return Limit.OK;
-
-			String describedValue = type.toString(value, radix);
-			return Limit.notOk("'" + describedValue + "' is not in the range " + descriptionOfValidValues());
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			String minValue = type.toString(range.lowerEndpoint(), radix);
-			String maxValue = type.toString(range.upperEndpoint(), radix);
-			return minValue + " to " + maxValue + " (" + radix.description() + ")";
 		}
 	}
 

@@ -1,3 +1,3 @@
 Usage: SeparatorCombinedWithSplitter [Options]
--N=<integer>,<integer>,...    <integer>: -2147483648 to 2147483647 (decimal)
+-N=<integer>,<integer>,...    <integer>: -2147483648 to 2147483647
                               Default: Empty list

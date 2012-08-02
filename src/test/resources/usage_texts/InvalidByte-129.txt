@@ -1,5 +1,5 @@
-'-129' is not in the range -128 to 127 (decimal)
+'-129' is not in the range -128 to 127
 
 Usage: InvalidByte [Options]
--b <byte>    <byte>: -128 to 127 (decimal)
+-b <byte>    <byte>: -128 to 127
              Default: 0

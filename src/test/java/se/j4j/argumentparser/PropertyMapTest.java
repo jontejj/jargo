@@ -12,8 +12,6 @@ import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.lowerCaseParser;
-import static se.j4j.argumentparser.StringParsers.Radix.BINARY;
-import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
@@ -153,7 +151,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException invalidBar)
 		{
-			assertThat(invalidBar).hasMessage("'-1' is not in the range 0 to 10 (decimal)");
+			assertThat(invalidBar).hasMessage("'-1' is not in the range 0 to 10");
 		}
 	}
 
@@ -268,7 +266,7 @@ public class PropertyMapTest
 		defaults.put((byte) 0x0F, (byte) 0b1001);
 		defaults.put((byte) 0x0E, (byte) 0b0110);
 
-		String usage = byteArgument("-N").radix(BINARY).asKeyValuesWithKeyParser(byteParser(HEX)).separator(":").defaultValue(defaults).usage("");
+		String usage = byteArgument("-N").asKeyValuesWithKeyParser(byteParser()).separator(":").defaultValue(defaults).usage("");
 		assertThat(usage).isEqualTo(expected("defaultValuePropertyMap"));
 	}
 

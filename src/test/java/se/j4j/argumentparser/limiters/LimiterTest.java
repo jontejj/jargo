@@ -84,16 +84,22 @@ public class LimiterTest
 	}
 
 	@Test
-	public void testRangeLimiter()
+	public void testRangeLimiter() throws ArgumentException
 	{
+		Argument<Integer> limitedNumber = integerArgument().limitTo(range(0, 4)).build();
+
 		try
 		{
-			integerArgument().limitTo(range(1, 5)).parse("6");
+			limitedNumber.parse("5");
+			fail("5 shouldn't be valid since it's higher than 4");
 		}
-		catch(ArgumentException e)
+		catch(ArgumentException expected)
 		{
-			assertThat(e).hasMessage("'6' is not in the range 1 to 5 (decimal)");
+			assertThat(expected.getMessageAndUsage("LimiterOutOfRange")).isEqualTo(expected("limiterOutOfRange"));
 		}
+		assertThat(limitedNumber.parse("4")).isEqualTo(4);
+
+		assertThat(integerArgument().limitTo(range(1, 3)).parse("2")).isEqualTo(2);
 	}
 
 	@Test(expected = IllegalStateException.class)

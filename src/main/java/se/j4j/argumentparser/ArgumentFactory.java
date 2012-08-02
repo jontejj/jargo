@@ -1,17 +1,20 @@
 package se.j4j.argumentparser;
 
 import static com.google.common.collect.Lists.asList;
-import static se.j4j.argumentparser.ArgumentBuilder.RadixiableArgumentBuilder.radixiableArgument;
 import static se.j4j.argumentparser.Describers.booleanAsEnabledDisabled;
 import static se.j4j.argumentparser.Describers.characterDescriber;
 import static se.j4j.argumentparser.Describers.fileDescriber;
 import static se.j4j.argumentparser.StringParsers.bigIntegerParser;
 import static se.j4j.argumentparser.StringParsers.booleanParser;
+import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.charParser;
 import static se.j4j.argumentparser.StringParsers.doubleParser;
 import static se.j4j.argumentparser.StringParsers.enumParser;
 import static se.j4j.argumentparser.StringParsers.fileParser;
 import static se.j4j.argumentparser.StringParsers.floatParser;
+import static se.j4j.argumentparser.StringParsers.integerParser;
+import static se.j4j.argumentparser.StringParsers.longParser;
+import static se.j4j.argumentparser.StringParsers.shortParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 
 import java.io.File;
@@ -23,8 +26,6 @@ import javax.annotation.Nonnull;
 import se.j4j.argumentparser.ArgumentBuilder.CommandBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.OptionArgumentBuilder;
-import se.j4j.argumentparser.ArgumentBuilder.RadixiableArgumentBuilder;
-import se.j4j.argumentparser.internal.NumberType;
 
 /**
  * <pre>
@@ -55,30 +56,30 @@ public final class ArgumentFactory
 
 	@CheckReturnValue
 	@Nonnull
-	public static RadixiableArgumentBuilder<Integer> integerArgument(@Nonnull final String ... names)
+	public static DefaultArgumentBuilder<Integer> integerArgument(@Nonnull final String ... names)
 	{
-		return radixiableArgument(NumberType.INTEGER).names(names);
+		return withParser(integerParser()).names(names);
 	}
 
 	@CheckReturnValue
 	@Nonnull
-	public static RadixiableArgumentBuilder<Short> shortArgument(@Nonnull final String ... names)
+	public static DefaultArgumentBuilder<Short> shortArgument(@Nonnull final String ... names)
 	{
-		return radixiableArgument(NumberType.SHORT).names(names);
+		return withParser(shortParser()).names(names);
 	}
 
 	@CheckReturnValue
 	@Nonnull
-	public static RadixiableArgumentBuilder<Byte> byteArgument(@Nonnull final String ... names)
+	public static DefaultArgumentBuilder<Byte> byteArgument(@Nonnull final String ... names)
 	{
-		return radixiableArgument(NumberType.BYTE).names(names);
+		return withParser(byteParser()).names(names);
 	}
 
 	@CheckReturnValue
 	@Nonnull
-	public static RadixiableArgumentBuilder<Long> longArgument(@Nonnull final String ... names)
+	public static DefaultArgumentBuilder<Long> longArgument(@Nonnull final String ... names)
 	{
-		return radixiableArgument(NumberType.LONG).names(names);
+		return withParser(longParser()).names(names);
 	}
 
 	@CheckReturnValue

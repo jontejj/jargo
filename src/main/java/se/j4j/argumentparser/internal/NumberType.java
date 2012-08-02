@@ -1,15 +1,15 @@
 package se.j4j.argumentparser.internal;
 
+import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.StringParsers.Radix;
 
 /**
- * A class that exposes static fields, such as {@link Integer#SIZE}, for subclasses of
- * {@link Number} in an object oriented way
+ * A class that exposes static fields (and functions), such as {@link Integer#MAX_VALUE} and
+ * {@link Integer#decode(String)}, for subclasses of {@link Number} in an object oriented way
  * 
  * @param <T> the subclass of {@link Number}
  */
-public abstract class NumberType<T extends Number & Comparable<T>>
+public abstract class NumberType<T extends Number>
 {
 	// Only allow classes in this package to inherit
 	NumberType()
@@ -25,23 +25,6 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 
 	public abstract T maxValue();
 
-	public abstract T fromLong(Long value);
-
-	public abstract Long toLong(T value);
-
-	/**
-	 * @return Number of bits needed to represent {@code T}
-	 */
-	public abstract int bitSize();
-
-	/**
-	 * @return a mask where the sign for the type {@code T} is set and nothing else
-	 */
-	public long signBitMask()
-	{
-		return (long) 1 << (bitSize() - 1);
-	}
-
 	public abstract String name();
 
 	public final T defaultValue()
@@ -49,36 +32,35 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		return fromLong(0L);
 	}
 
+	public abstract T fromLong(Long value);
+
 	/**
 	 * <pre>
-	 * Converts {@code value} (assuming that it's in the given {@code radix}) into a
-	 * {@code T} value.
+	 * Converts {@code value} into a {@link Number} of the type {@code T}
 	 * 
 	 * For instance:
-	 * {@code Integer fortyTwo = NumberType.INTEGER.parse("42", Radix.DECIMAL);}
+	 * {@code Integer fortyTwo = NumberType.INTEGER.parse("42");}
 	 * 
-	 * @throws InvalidArgument if the value is too big or in the wrong radix
+	 * @throws NumberFormatException if the value isn't convertable to a number of type {@code T}
 	 * </pre>
 	 */
-	public T parse(String value, Radix radix) throws ArgumentException
+	public final T parse(String value) throws ArgumentException
 	{
-		return radix.parse(value, this);
-	}
+		try
+		{
+			Long result = Long.decode(value);
+			if(result.compareTo(minValue().longValue()) < 0 || result.compareTo(maxValue().longValue()) > 0)
+				throw forInvalidValue(value, "is not in the range " + minValue() + " to " + maxValue());
+			return fromLong(result);
+		}
+		catch(NumberFormatException nfe)
+		{
+			// TODO: specify which argument that failed
+			ArgumentException ex = forInvalidValue(value, "is not a valid number.");
+			ex.initCause(nfe);
+			throw ex;
+		}
 
-	public String toString(T value, Radix radix)
-	{
-		return radix.toString(value, this);
-	}
-
-	/**
-	 * @return true if {@code value} can be represented with this type without overflowing
-	 */
-	public boolean inRange(Long value)
-	{
-		long minValue = minValue().longValue();
-		long maxValue = maxValue().longValue();
-
-		return value.compareTo(minValue) >= 0 && value.compareTo(maxValue) <= 0;
 	}
 
 	@Override
@@ -105,18 +87,6 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		public Byte fromLong(Long value)
 		{
 			return value.byteValue();
-		}
-
-		@Override
-		public Long toLong(Byte value)
-		{
-			return value.longValue();
-		}
-
-		@Override
-		public int bitSize()
-		{
-			return Byte.SIZE;
 		}
 
 		@Override
@@ -147,18 +117,6 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		}
 
 		@Override
-		public Long toLong(Integer value)
-		{
-			return value.longValue();
-		}
-
-		@Override
-		public int bitSize()
-		{
-			return Integer.SIZE;
-		}
-
-		@Override
 		public String name()
 		{
 			return "integer";
@@ -183,18 +141,6 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		public Short fromLong(Long value)
 		{
 			return value.shortValue();
-		}
-
-		@Override
-		public Long toLong(Short value)
-		{
-			return value.longValue();
-		}
-
-		@Override
-		public int bitSize()
-		{
-			return Short.SIZE;
 		}
 
 		@Override
@@ -225,27 +171,9 @@ public abstract class NumberType<T extends Number & Comparable<T>>
 		}
 
 		@Override
-		public Long toLong(Long value)
-		{
-			return value;
-		}
-
-		@Override
-		public int bitSize()
-		{
-			return Long.SIZE;
-		}
-
-		@Override
 		public String name()
 		{
 			return "long";
-		}
-
-		@Override
-		public String toString(Long value, Radix radix)
-		{
-			return radix.toString(value);
 		}
 	}
 }

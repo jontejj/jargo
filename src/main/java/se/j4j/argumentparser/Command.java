@@ -102,8 +102,6 @@ public abstract class Command extends InternalStringParser<String> implements De
 	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings)
 			throws ArgumentException
 	{
-		// TODO: try/catch MissingNthParameterException and add commandName to the exception, only
-		// for indexed arguments?
 		ParsedArguments result = parser().parse(arguments);
 		execute(result);
 		return commandName(); // Can be used to check for the existence of this
