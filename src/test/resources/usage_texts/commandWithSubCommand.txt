@@ -2,7 +2,7 @@ Usage: CommandWithSubCommand [Options]
 command      [Options]
              subcommand     A subcommand with an argument
                              [Options]
-                             -n <integer>    <integer>: -2147483648 to 2147483647 (decimal)
+                             -n <integer>    <integer>: -2147483648 to 2147483647
                                              Default: 0
                              
              

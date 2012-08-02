@@ -1,5 +1,0 @@
-'F3' is not in the range 0 to 60 (hex)
-
-Usage: OutOfRangeInHex [Options]
- <integer>    <integer>: 0 to 60 (hex)
-              Default: 0

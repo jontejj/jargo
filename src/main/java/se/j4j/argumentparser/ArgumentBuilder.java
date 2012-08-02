@@ -25,24 +25,19 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
-import se.j4j.argumentparser.Limiters.RangeLimiter;
-import se.j4j.argumentparser.Limiters.RangeLimiterForRadix;
 import se.j4j.argumentparser.StringParsers.FixedArityParser;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.KeyValueParser;
-import se.j4j.argumentparser.StringParsers.Radix;
 import se.j4j.argumentparser.StringParsers.RepeatedArgumentParser;
 import se.j4j.argumentparser.StringParsers.StringParserBridge;
 import se.j4j.argumentparser.StringParsers.StringSplitterParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.Finalizer;
 import se.j4j.argumentparser.internal.Finalizers;
-import se.j4j.argumentparser.internal.NumberType;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.Range;
 
 /**
  * <pre>
@@ -161,23 +156,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	protected abstract StringParser<T> parser();
 
 	@Nonnull
-	final InternalStringParser<T> internalParser()
+	InternalStringParser<T> internalParser()
 	{
 		StringParser<T> parser = parser();
 		if(parser != InternalArgumentBuilder.NULL)
-			return bridgedParser(parser);
+			return new StringParserBridge<T>(parser);
 		return internalStringParser;
-	}
-
-	private static <T> InternalStringParser<T> bridgedParser(@Nonnull final StringParser<T> parser)
-	{
-		if(parser instanceof InternalStringParser)
-		{
-			@SuppressWarnings("unchecked")
-			InternalStringParser<T> internalParser = (InternalStringParser<T>) parser;
-			return internalParser;
-		}
-		return new StringParserBridge<T>(parser);
 	}
 
 	/**
@@ -691,56 +675,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	@NotThreadSafe
-	public static final class RadixiableArgumentBuilder<T extends Number & Comparable<T>> extends ArgumentBuilder<RadixiableArgumentBuilder<T>, T>
-	{
-		private Radix radix = Radix.DECIMAL;
-		private final NumberType<T> type;
-
-		private RadixiableArgumentBuilder(NumberType<T> type)
-		{
-			this.type = type;
-		}
-
-		static <T extends Number & Comparable<T>> RadixiableArgumentBuilder<T> radixiableArgument(NumberType<T> type)
-		{
-			return new RadixiableArgumentBuilder<T>(type);
-		}
-
-		/**
-		 * Use the given {@link Radix} when parsing/printing values.
-		 * Defaults to {@link Radix#DECIMAL}.<br>
-		 * <b>Note:</b> {@link Radix#BINARY}, {@link Radix#OCTAL} & {@link Radix#HEX} is parsed as
-		 * unsigned values as the sign doesn't really make much sense when such values are used.
-		 * 
-		 * @param aRadix the radix to parse/print values with
-		 * @return this builder
-		 */
-		public RadixiableArgumentBuilder<T> radix(@Nonnull final Radix aRadix)
-		{
-			radix = aRadix;
-			return this;
-		}
-
-		@Override
-		public RadixiableArgumentBuilder<T> limitTo(Limiter<T> aLimiter)
-		{
-			if(aLimiter instanceof RangeLimiter<?>)
-			{
-				// This helps the RangeLimiter with printing values in the correct radix
-				Range<T> range = ((RangeLimiter<T>) aLimiter).rangeToLimitValuesTo;
-				return super.limitTo(new RangeLimiterForRadix<T>(range, radix, type));
-			}
-			return super.limitTo(aLimiter);
-		}
-
-		@Override
-		protected StringParser<T> parser()
-		{
-			return StringParsers.RadixiableParser.radixiableParser(radix, type);
-		}
-	}
-
-	@NotThreadSafe
 	public static final class CommandBuilder extends InternalArgumentBuilder<CommandBuilder, String>
 	{
 		CommandBuilder(@Nonnull final Command command)
@@ -760,8 +694,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	private static class InternalArgumentBuilder<Builder extends InternalArgumentBuilder<Builder, T>, T> extends ArgumentBuilder<Builder, T>
 	{
-		static final StringParser<?> NULL = new ForwardingStringParser.SimpleForwardingStringParser<Object>(){
-		};
+		static final StringParser<?> NULL = new StringParserBridge<Object>(null);
 
 		InternalArgumentBuilder()
 		{
@@ -894,7 +827,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 
 		@Override
-		protected StringParser<Boolean> parser()
+		InternalStringParser<Boolean> internalParser()
 		{
 			return optionParser(defaultValueSupplier().get());
 		}
@@ -972,7 +905,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	{
 		private MapArgumentBuilder(@Nonnull final ArgumentBuilder<?, V> builder, StringParser<K> keyParser)
 		{
-			super(new KeyValueParser<K, V>(bridgedParser(keyParser), builder.internalParser(), builder.limiter));
+			super(new KeyValueParser<K, V>(keyParser, builder.internalParser(), builder.limiter));
 			copy(builder);
 
 			// TODO: should the state be verified just before the argument is built?

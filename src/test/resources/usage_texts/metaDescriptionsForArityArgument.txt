@@ -1,13 +1,13 @@
 Usage: Arity [Options]
 --bar <integer> <integer>           MetaDescShouldBeDisplayedTwoTimes
-                                    <integer>: -2147483648 to 2147483647 (decimal)
+                                    <integer>: -2147483648 to 2147483647
                                     Default: [0, 0]
 --foo <string> <string> <string>    MetaDescShouldBeDisplayedThreeTimes
                                     <string>: any string
                                     Default: [, , ]
 --zoo <integer> ...                 MetaDescShouldIndicateVariableAmount
-                                    <integer>: -2147483648 to 2147483647 (decimal)
+                                    <integer>: -2147483648 to 2147483647
                                     Default: Empty list
  <integer> ...                      MetaDescShouldIndicateVariableAmount
-                                    <integer>: -2147483648 to 2147483647 (decimal)
+                                    <integer>: -2147483648 to 2147483647
                                     Default: Empty list

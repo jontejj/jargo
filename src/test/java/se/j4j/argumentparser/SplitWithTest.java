@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class SplitWithTest
@@ -45,6 +46,20 @@ public class SplitWithTest
 		String usage = integerArgument("-N").separator("=").usage("SeparatorBetweenNameAndMeta");
 
 		assertThat(usage).isEqualTo(expected("separatorBetweenNameAndMeta"));
+	}
+
+	@Test
+	public void testThatMissingParameterForSplitArgumentLooksGoodInUsage() throws ArgumentException
+	{
+		try
+		{
+			integerArgument("--numbers", "-n").splitWith(",").parse("-n");
+		}
+		catch(MissingParameterException expected)
+		{
+			// As -n was given from the command line, that is what should be displayed to the user
+			assertThat(expected).hasMessage("Missing <integer> parameter for -n");
+		}
 	}
 
 	@Test

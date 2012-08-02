@@ -10,7 +10,6 @@ import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
-import static se.j4j.argumentparser.StringParsers.RadixiableParser.radixiableParser;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
 
@@ -31,18 +30,15 @@ import javax.annotation.concurrent.Immutable;
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
-import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
 import se.j4j.argumentparser.internal.NumberType;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.google.common.collect.UnmodifiableIterator;
-import com.google.common.primitives.UnsignedLongs;
 
 /**
  * Gives you static access to implementations of the {@link StringParser} interface.
@@ -121,54 +117,63 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Integer}s
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static StringParser<Integer> integerParser(Radix radix)
-	{
-		return radixiableParser(radix, NumberType.INTEGER);
-	}
-
-	/**
-	 * @return a parser that uses {@link Radix#DECIMAL} to parse {@link String}s into
-	 *         {@link Integer}s
+	 * Parses {@link String}s into {@link Integer}s.
+	 * Automatically tries to identify the radix using leading 0x for hex numbers,
+	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
+	 * given.
+	 * 
+	 * @see Integer#decode(String)
 	 */
 	@CheckReturnValue
 	@Nonnull
 	public static StringParser<Integer> integerParser()
 	{
-		return radixiableParser(Radix.DECIMAL, NumberType.INTEGER);
+		return NumberParser.INTEGER;
 	}
 
 	/**
-	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Byte}s
+	 * Parses {@link String}s into {@link Byte}s.
+	 * Automatically tries to identify the radix using leading 0x for hex numbers,
+	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
+	 * given.
+	 * 
+	 * @see Byte#decode(String)
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static StringParser<Byte> byteParser(Radix radix)
+	public static StringParser<Byte> byteParser()
 	{
-		return radixiableParser(radix, NumberType.BYTE);
+		return NumberParser.BYTE;
 	}
 
 	/**
-	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Short}s
+	 * Parses {@link String}s into {@link Short}s.
+	 * Automatically tries to identify the radix using leading 0x for hex numbers,
+	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
+	 * given.
+	 * 
+	 * @see Short#decode(String)
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static StringParser<Short> shortParser(Radix radix)
+	public static StringParser<Short> shortParser()
 	{
-		return radixiableParser(radix, NumberType.SHORT);
+		return NumberParser.SHORT;
 	}
 
 	/**
-	 * @return a parser that uses {@code radix} to parse {@link String}s into {@link Long}s
+	 * Parses {@link String}s into {@link Long}s.
+	 * Automatically tries to identify the radix using leading 0x for hex numbers,
+	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
+	 * given.
+	 * 
+	 * @see Long#decode(String)
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static StringParser<Long> longParser(Radix radix)
+	public static StringParser<Long> longParser()
 	{
-		return radixiableParser(radix, NumberType.LONG);
+		return NumberParser.LONG;
 	}
 
 	/**
@@ -238,7 +243,7 @@ public final class StringParsers
 
 	@CheckReturnValue
 	@Nonnull
-	static StringParser<Boolean> optionParser(final boolean defaultValue)
+	static InternalStringParser<Boolean> optionParser(final boolean defaultValue)
 	{
 		if(defaultValue)
 			return OptionParser.DEFAULT_TRUE;
@@ -424,7 +429,7 @@ public final class StringParsers
 	 * Inherits from InternalStringParser because implementing StringParser
 	 * would make it require a parameter which an Option doesn't.
 	 */
-	static final class OptionParser extends SimpleForwardingStringParser<Boolean>
+	static final class OptionParser extends InternalStringParser<Boolean>
 	{
 		private static final OptionParser DEFAULT_FALSE = new OptionParser(false);
 		private static final OptionParser DEFAULT_TRUE = new OptionParser(true);
@@ -582,6 +587,78 @@ public final class StringParsers
 		}
 	}
 
+	private static class NumberParser<T extends Number> implements StringParser<T>
+	{
+		private static final StringParser<Byte> BYTE = new NumberParser<Byte>(NumberType.BYTE);
+		private static final StringParser<Short> SHORT = new NumberParser<Short>(NumberType.SHORT);
+		private static final StringParser<Integer> INTEGER = new NumberParser<Integer>(NumberType.INTEGER);
+		private static final StringParser<Long> LONG = new NumberParser<Long>(NumberType.LONG);
+
+		private final NumberType<T> type;
+
+		private NumberParser(NumberType<T> type)
+		{
+			this.type = type;
+		}
+
+		@Override
+		public T parse(String argument) throws ArgumentException
+		{
+			return type.parse(argument);
+		}
+
+		@Override
+		public String descriptionOfValidValues()
+		{
+			return type.minValue() + " to " + type.maxValue();
+		}
+
+		@Override
+		public T defaultValue()
+		{
+			return type.defaultValue();
+		}
+
+		@Override
+		public String metaDescription()
+		{
+			return '<' + type.name() + '>';
+		}
+	}
+
+	/**
+	 * Makes the strings it parses into lower case with the {@link Locale#getDefault()} locale.
+	 * TODO: make the Locale settable
+	 */
+	private static final class LowerCaseStringParser implements StringParser<String>
+	{
+		private static final StringParser<String> INSTANCE = new LowerCaseStringParser();
+
+		@Override
+		public String parse(final String value)
+		{
+			return value.toLowerCase(Locale.getDefault());
+		}
+
+		@Override
+		public String descriptionOfValidValues()
+		{
+			return "any string";
+		}
+
+		@Override
+		public String defaultValue()
+		{
+			return "";
+		}
+
+		@Override
+		public String metaDescription()
+		{
+			return StringStringParser.INSTANCE.metaDescription();
+		}
+	}
+
 	/**
 	 * <pre>
 	 * Makes it possible to convert several (or zero) {@link String}s into a single {@code T} value.
@@ -630,11 +707,16 @@ public final class StringParsers
 		public abstract T defaultValue();
 
 		/**
+		 * @param argumentSettings can, for instance, be used to print
+		 *            {@link ArgumentSettings#separator()}s
 		 * @return {@code value} described, or null if no description is
 		 *         needed
 		 */
 		@Nullable
-		abstract String describeValue(@Nullable T value, ArgumentSettings argumentSettings);
+		String describeValue(@Nullable T value, ArgumentSettings argumentSettings)
+		{
+			return String.valueOf(value);
+		}
 
 		@Nonnull
 		abstract String metaDescription(ArgumentSettings argumentSettings);
@@ -647,49 +729,6 @@ public final class StringParsers
 		String metaDescriptionInRightColumn(ArgumentSettings argumentSettings)
 		{
 			return metaDescription(argumentSettings);
-		}
-	}
-
-	/**
-	 * Implements {@link ArgumentBuilder#splitWith(String)}.
-	 * 
-	 * @param <T> the type that's separated by the {@code valueSeparator}
-	 */
-	static final class StringSplitterParser<T> extends ListParser<T>
-	{
-		@Nonnull private final String valueSeparator;
-		@Nonnull private final Splitter splitter;
-
-		StringSplitterParser(@Nonnull final String valueSeparator, @Nonnull final InternalStringParser<T> parser)
-		{
-			super(parser);
-			this.valueSeparator = valueSeparator;
-			this.splitter = Splitter.on(valueSeparator).trimResults();
-		}
-
-		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings) throws ArgumentException
-		{
-			if(!arguments.hasNext())
-				throw forMissingParameter(argumentSettings);
-
-			String values = arguments.next();
-			List<T> result = new ArrayList<T>();
-
-			for(String value : splitter.split(values))
-			{
-				ArgumentIterator argument = ArgumentIterator.forSingleArgument(value);
-				T parsedValue = parser.parse(argument, null, argumentSettings);
-				result.add(parsedValue);
-			}
-			return result;
-		}
-
-		@Override
-		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
-		{
-			String metaDescriptionForValue = metaDescription(argumentSettings);
-			return metaDescriptionForValue + valueSeparator + metaDescriptionForValue + valueSeparator + "...";
 		}
 	}
 
@@ -826,6 +865,49 @@ public final class StringParsers
 	}
 
 	/**
+	 * Implements {@link ArgumentBuilder#splitWith(String)}.
+	 * 
+	 * @param <T> the type that's separated by the {@code valueSeparator}
+	 */
+	static final class StringSplitterParser<T> extends ListParser<T>
+	{
+		@Nonnull private final String valueSeparator;
+		@Nonnull private final Splitter splitter;
+
+		StringSplitterParser(@Nonnull final String valueSeparator, @Nonnull final InternalStringParser<T> parser)
+		{
+			super(parser);
+			this.valueSeparator = valueSeparator;
+			this.splitter = Splitter.on(valueSeparator).trimResults();
+		}
+
+		@Override
+		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings) throws ArgumentException
+		{
+			if(!arguments.hasNext())
+				throw forMissingParameter(argumentSettings);
+
+			String values = arguments.next();
+			List<T> result = new ArrayList<T>();
+
+			for(String value : splitter.split(values))
+			{
+				ArgumentIterator argument = ArgumentIterator.forSingleArgument(value);
+				T parsedValue = parser.parse(argument, null, argumentSettings);
+				result.add(parsedValue);
+			}
+			return result;
+		}
+
+		@Override
+		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
+		{
+			String metaDescriptionForValue = metaDescription(argumentSettings);
+			return metaDescriptionForValue + valueSeparator + metaDescriptionForValue + valueSeparator + "...";
+		}
+	}
+
+	/**
 	 * Implements {@link ArgumentBuilder#repeated()}.
 	 * 
 	 * @param <T> type of the repeated values (such as {@link Integer} for {@link IntegerParser}
@@ -865,10 +947,10 @@ public final class StringParsers
 	static final class KeyValueParser<K extends Comparable<K>, V> extends InternalStringParser<Map<K, V>>
 	{
 		@Nonnull private final InternalStringParser<V> valueParser;
-		@Nonnull private final InternalStringParser<K> keyParser;
+		@Nonnull private final StringParser<K> keyParser;
 		@Nonnull private final Limiter<V> valueLimiter;
 
-		KeyValueParser(@Nonnull InternalStringParser<K> keyParser, @Nonnull InternalStringParser<V> valueParser, @Nonnull Limiter<V> valueLimiter)
+		KeyValueParser(@Nonnull StringParser<K> keyParser, @Nonnull InternalStringParser<V> valueParser, @Nonnull Limiter<V> valueLimiter)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
@@ -908,8 +990,7 @@ public final class StringParsers
 						throw forInvalidValue(keyValue, "Missing assignment operator(" + separator + ")");
 
 					String key = keyValue.substring(keyStartIndex, keyEndIndex);
-					ArgumentIterator keyArgument = ArgumentIterator.forSingleArgument(key);
-					K parsedKey = keyParser.parse(keyArgument, null, argumentSettings);
+					K parsedKey = keyParser.parse(key);
 
 					// Remove "-Dkey=" from "-Dkey=value"
 					String value = keyValue.substring(keyEndIndex + separator.length());
@@ -939,9 +1020,9 @@ public final class StringParsers
 		@Override
 		public String descriptionOfValidValues(ArgumentSettings argumentSettings)
 		{
-			String keyMeta = '"' + keyParser.metaDescription(argumentSettings) + '"';
+			String keyMeta = '"' + keyParser.metaDescription() + '"';
 			String valueMeta = '"' + valueParser.metaDescription(argumentSettings) + '"';
-			String keyDescription = keyParser.descriptionOfValidValues(argumentSettings);
+			String keyDescription = keyParser.descriptionOfValidValues();
 			String valueDescription;
 			if(valueLimiter != Limiters.noLimits())
 			{
@@ -983,10 +1064,9 @@ public final class StringParsers
 				public String next()
 				{
 					K key = keyIterator.next();
-					String describedKey = keyParser.describeValue(key, argumentSettings);
 					String separator = argumentSettings.separator();
 					String describedValue = valueParser.describeValue(values.get(key), argumentSettings);
-					return describedKey + separator + describedValue;
+					return key + separator + describedValue;
 				}
 			});
 		}
@@ -994,330 +1074,73 @@ public final class StringParsers
 		@Override
 		String metaDescription(ArgumentSettings argumentSettings)
 		{
-			String keyMeta = keyParser.metaDescription(argumentSettings);
+			String keyMeta = keyParser.metaDescription();
 			String separator = argumentSettings.separator();
 			String valueMeta = valueParser.metaDescription(argumentSettings);
 			return keyMeta + separator + valueMeta;
 		}
 	}
 
-	/**
-	 * Inherits from ForwardingStringParser because it needs to print default values
-	 * ({@link RadixiableParser#describeValue(Number, ArgumentSettings)}) in the
-	 * configured radix.
-	 * 
-	 * @param <T> the type of {@link Number} to parse
-	 */
-	@VisibleForTesting
-	static final class RadixiableParser<T extends Number & Comparable<T>> extends SimpleForwardingStringParser<T>
+	static final class StringParserBridge<T> extends InternalStringParser<T> implements StringParser<T>
 	{
-		private final Radix radix;
-		private final NumberType<T> type;
+		final StringParser<T> stringParser;
 
-		private RadixiableParser(final Radix radix, final NumberType<T> type)
+		/**
+		 * A bridge between the {@link StringParser} & {@link InternalStringParser} interfaces.
+		 * 
+		 * @param parserToBridge the {@link StringParser} to expose as a
+		 *            {@link InternalStringParser}
+		 * @param <T> the type the bridged {@link StringParser} handles
+		 */
+		StringParserBridge(StringParser<T> parserToBridge)
 		{
-			this.radix = radix;
-			this.type = type;
+			stringParser = parserToBridge;
 		}
 
-		static <T extends Number & Comparable<T>> RadixiableParser<T> radixiableParser(final Radix radix, final NumberType<T> type)
+		// Bridged InternalStringParser methods
+
+		@Override
+		T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
 		{
-			return new RadixiableParser<T>(radix, type);
+			if(!arguments.hasNext())
+				throw forMissingParameter(argumentSettings);
+			return parse(arguments.next());
 		}
 
 		@Override
-		public T parse(final String value) throws ArgumentException
+		String descriptionOfValidValues(ArgumentSettings argumentSettings)
 		{
-			return type.parse(value, radix);
+			return descriptionOfValidValues();
+		}
+
+		@Override
+		String metaDescription(ArgumentSettings argumentSettings)
+		{
+			return metaDescription();
+		}
+
+		@Override
+		public T parse(String argument) throws ArgumentException
+		{
+			return stringParser.parse(argument);
 		}
 
 		@Override
 		public String descriptionOfValidValues()
 		{
-			return radix.descriptionOfValidValues(type);
-		}
-
-		String describeValue(T value)
-		{
-			return type.toString(value, radix);
-		}
-
-		@Override
-		String describeValue(T value, ArgumentSettings argumentSettings)
-		{
-			return describeValue(value);
+			return stringParser.descriptionOfValidValues();
 		}
 
 		@Override
 		public String metaDescription()
 		{
-			return "<" + type.name() + ">";
+			return stringParser.metaDescription();
 		}
 
 		@Override
 		public T defaultValue()
 		{
-			return type.defaultValue();
-		}
-	}
-
-	/**
-	 * Contains constants for the most common radix values used in Computer Science.
-	 * Used with {@link StringParsers#integerParser(Radix)} for example.
-	 */
-	public enum Radix
-	{
-		/**
-		 * Parses ones & zeros into a {@link Number}, treats values as unsigned when
-		 * parsing/printing them. Radix: 2
-		 */
-		BINARY(2, "")
-		{
-			@Override
-			public <T extends Number & Comparable<T>> String toString(T tValue, NumberType<T> type)
-			{
-				long value = type.toLong(tValue);
-				// return UnsignedLongs.toString(value, radix());
-				final int size = type.bitSize();
-				char[] binaryString = new char[size];
-				for(int bitPosition = 0; bitPosition < size; bitPosition++)
-				{
-
-					boolean bitIsSet = (value & (1L << bitPosition)) != 0L;
-					int index = size - 1 - bitPosition;
-					binaryString[index] = bitIsSet ? '1' : '0';
-				}
-				// TODO: handle leading zeros without parsing strings
-				String result = CharMatcher.is('0').trimLeadingFrom(new String(binaryString));
-				if(result.isEmpty())
-					return "0";
-				return result;
-			}
-
-			@Override
-			public String toString(Long value)
-			{
-				return toString(value, NumberType.LONG);
-			}
-		},
-		/**
-		 * Parses octals into {@link Number}s, treats the octals as unsigned when parsing/printing
-		 * them. Radix: 8
-		 */
-		OCTAL(8, "o"),
-		/**
-		 * The default radix, 10. Handles signed values as well.
-		 * Just like {@link Long#parseLong(String)} does.
-		 */
-		DECIMAL(10, "d")
-		{
-			@Override
-			public long parseLong(String value, NumberType<?> targetType)
-			{
-				return Long.parseLong(value, radix());
-			}
-
-			@Override
-			public String toString(Long value)
-			{
-				return Long.toString(value, radix());
-			}
-
-			@Override
-			public <T extends Number & Comparable<T>> String descriptionOfValidValues(NumberType<T> type)
-			{
-				String maxValue = type.toString(type.maxValue(), this);
-				String minValue = type.toString(type.minValue(), this);
-				return minValue + " to " + maxValue + " (" + description() + ")";
-			}
-		},
-		/**
-		 * Parses hex numbers, such as 0xFF into {@link Number}s, treats the hex numbers as unsigned
-		 * when parsing/printing them. The {@code 0x} part is optional but preferable
-		 * since it's more clear that the number is in HEX. Radix: 16
-		 */
-		HEX(16, "X")
-		{
-			@Override
-			protected long parseLong(String value, NumberType<?> targetType)
-			{
-				if(value.startsWith("0x"))
-				{
-					value = value.substring(2);
-				}
-				return super.parseLong(value, targetType);
-			}
-		};
-
-		// TODO: add Radix.AUTO that works like Integer.decode
-
-		private int radix;
-		private String formattingIdentifier;
-
-		Radix(int radix, String formattingIdentifier)
-		{
-			this.radix = radix;
-			this.formattingIdentifier = formattingIdentifier;
-		}
-
-		public int radix()
-		{
-			return radix;
-		}
-
-		/**
-		 * @return a {@link String#format(String, Object...)} identifier for this {@link Radix}
-		 */
-		public String formattingIdentifier()
-		{
-			return formattingIdentifier;
-		}
-
-		protected long parseLong(String value, NumberType<?> targetType)
-		{
-			long result = UnsignedLongs.parseUnsignedLong(value, radix());
-			return makeSigned(result, targetType);
-		}
-
-		/**
-		 * Parses {@code value}, in this radix, into a {@code T} value and takes
-		 * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4215269">
-		 * Bug ID: 4215269 Some Integer.toHexString(int) results cannot be
-		 * decoded back to an int
-		 * </a> into account.
-		 * 
-		 * @param value the value to parse
-		 * @param targetType is used to know where the sign of the result is
-		 */
-		public <T extends Number & Comparable<T>> T parse(String value, NumberType<T> targetType) throws ArgumentException
-		{
-			try
-			{
-				long result = parseLong(value, targetType);
-				if(!targetType.inRange(result))
-					throw forInvalidValue(value, "is not in the range " + descriptionOfValidValues(targetType));
-
-				return targetType.fromLong(result);
-			}
-			catch(NumberFormatException nfe)
-			{
-				// TODO: specify which argument that failed
-				ArgumentException ex = forInvalidValue(value, "is not a valid " + description() + " number.");
-				ex.initCause(nfe);
-				throw ex;
-			}
-		}
-
-		String description()
-		{
-			return toString().toLowerCase(Locale.ENGLISH);
-		}
-
-		private long makeSigned(long value, NumberType<?> targetType)
-		{
-			long signMask = targetType.signBitMask();
-			if(isSigned(value, signMask))
-			{
-				long valueBits = signMask - 1;
-				// Inverse all bits except the sign bit
-				return signMask | (valueBits ^ ~value);
-			}
-			return value;
-		}
-
-		private boolean isSigned(long value, long signMask)
-		{
-			return (value & signMask) > 0;
-		}
-
-		/**
-		 * Returns {@code value} as a string in this {@link Radix}
-		 * 
-		 * @param numberType used by {@link Radix#BINARY} to figure out the numeric value of
-		 *            {@code value}
-		 */
-		public <T extends Number & Comparable<T>> String toString(T value, NumberType<T> numberType)
-		{
-			// TODO: these toString methods should be package-private as this method doesn't support
-			// long
-			// TODO: Make Locale.ENGLISH settable
-			return String.format(Locale.ENGLISH, "%" + formattingIdentifier(), value);
-		}
-
-		public String toString(Long value)
-		{
-			/**
-			 * Long is unsupported by {@link String#format(String, Object...)} so here we turn to
-			 * Guava.
-			 */
-			// TODO: is it better to use java.text.NumberFormat?
-			return UnsignedLongs.toString(value, radix()).toUpperCase(Locale.ENGLISH);
-		}
-
-		/**
-		 * <pre>
-		 * Describes what values the given {@code type} allows in this {@link Radix}.
-		 * 
-		 * {@link #BINARY}, {@link #HEX} & {@link #OCTAL} describes their values as unsigned to
-		 * circumvent the peculiar behavior caused by <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4215269">
-		 * Bug ID: 4215269 Some Integer.toHexString(int) results cannot be decoded back to an int</a>.
-		 * 
-		 * @return a string describing allowed values for the given {@code type}
-		 * </pre>
-		 */
-		public <T extends Number & Comparable<T>> String descriptionOfValidValues(NumberType<T> type)
-		{
-			// For unsigned numbers -1 represents the maximum number and 0 the minimum
-			String maxValue = type.toString(type.fromLong(-1L), this);
-			String minValue = type.toString(type.fromLong(0L), this);
-
-			return minValue + " to " + maxValue + " (" + description() + ")";
-		}
-	}
-
-	/**
-	 * Makes the strings it parses into lower case with the {@link Locale#getDefault()} locale.
-	 * TODO: make the Locale settable
-	 */
-	private static final class LowerCaseStringParser implements StringParser<String>
-	{
-		private static final StringParser<String> INSTANCE = new LowerCaseStringParser();
-
-		@Override
-		public String parse(final String value)
-		{
-			return value.toLowerCase(Locale.getDefault());
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			return "any string";
-		}
-
-		@Override
-		public String defaultValue()
-		{
-			return "";
-		}
-
-		@Override
-		public String metaDescription()
-		{
-			return StringStringParser.INSTANCE.metaDescription();
-		}
-	}
-
-	static final class StringParserBridge<T> extends SimpleForwardingStringParser<T>
-	{
-		/**
-		 * A bridge between the {@link StringParser} & {@link InternalStringParser} interfaces.
-		 * 
-		 * @param <T> the type the bridged {@link StringParser} handles
-		 */
-		protected StringParserBridge(StringParser<T> parserToBridge)
-		{
-			super(parserToBridge);
+			return stringParser.defaultValue();
 		}
 	}
 }

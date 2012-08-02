@@ -9,7 +9,6 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
-import static se.j4j.argumentparser.StringParsers.Radix.HEX;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
@@ -176,13 +175,6 @@ public class DefaultValueTest
 		// description is used for each value but if there is no value there is nothing to describe
 		String usage = integerArgument("-n").defaultValueDescription("SomethingThatWillBeReplacedWithEmptyList").repeated().usage("DefaultEmptyList");
 		assertThat(usage).contains("Default: Empty list [Supports Multiple occurrences]");
-	}
-
-	@Test
-	public void testThatEachDefaultValueIsDescribedInCorrectRadix()
-	{
-		String usage = integerArgument("-n").defaultValue(0xF9).radix(HEX).arity(2).usage("F9PrintedTwoTimes");
-		assertThat(usage).isEqualTo(expected("defaultValuesDescribedByParser"));
 	}
 
 	@Test(expected = IllegalStateException.class)
