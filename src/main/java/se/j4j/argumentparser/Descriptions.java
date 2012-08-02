@@ -21,7 +21,15 @@ public final class Descriptions
 	}
 
 	/**
-	 * Uses the {@link #toString()} of {@code value} as a description
+	 * Lazily calls {@link String#format(String, Object...)}
+	 */
+	public static Description format(@Nonnull String formatTemplate, Object ... args)
+	{
+		return new FormatDescription(formatTemplate, args);
+	}
+
+	/**
+	 * Lazily calls the {@link #toString()} of {@code value} as a description
 	 * 
 	 * @param value the object to call {@link #toString()} on
 	 */
@@ -64,6 +72,24 @@ public final class Descriptions
 		public String description()
 		{
 			return value.toString();
+		}
+	}
+
+	private static final class FormatDescription implements Description
+	{
+		private final String formattingTemplate;
+		private final Object[] args;
+
+		private FormatDescription(String formattingTemplate, Object[] args)
+		{
+			this.formattingTemplate = formattingTemplate;
+			this.args = args;
+		}
+
+		@Override
+		public String description()
+		{
+			return String.format(formattingTemplate, args);
 		}
 	}
 }

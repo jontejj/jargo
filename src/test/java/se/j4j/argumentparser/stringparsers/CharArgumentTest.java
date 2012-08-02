@@ -6,7 +6,12 @@ import static se.j4j.argumentparser.ArgumentFactory.charArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ArgumentFactory#charArgument(String...)} and {@link StringParsers#charParser()}
+ */
 public class CharArgumentTest
 {
 	@Test

@@ -1,6 +1,7 @@
 package se.j4j.argumentparser;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
@@ -8,6 +9,7 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.internal.Texts;
 
 /**
  * <pre>
@@ -51,5 +53,22 @@ public class IndexedArgumentTest
 		Argument<String> string = stringArgument().required().build();
 
 		CommandLineParser.forArguments(integer, string);
+	}
+
+	@Test
+	public void testThatRequiredIndexedArgumentsHaveUniqueMetaDescriptions()
+	{
+		Argument<Integer> port = integerArgument().required().build();
+		Argument<Integer> number = integerArgument().required().build();
+
+		try
+		{
+			CommandLineParser.forArguments(port, number);
+			fail("Non-unique meta description not detected");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(Texts.UNIQUE_METAS, port.metaDescriptionInRightColumn()));
+		}
 	}
 }

@@ -1,12 +1,12 @@
 package se.j4j.argumentparser.stringparsers.custom;
 
-import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 
 import org.joda.time.DateTime;
 
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.StringParser;
 
 public class DateTimeParser implements StringParser<DateTime>
@@ -26,7 +26,7 @@ public class DateTimeParser implements StringParser<DateTime>
 		}
 		catch(IllegalArgumentException wrongDateFormat)
 		{
-			throw forInvalidValue(value, wrongDateFormat.getLocalizedMessage());
+			throw ArgumentExceptions.withMessage(wrongDateFormat.getLocalizedMessage());
 		}
 	}
 

@@ -1,4 +1,4 @@
-Non-allowed repetition of the argument [-s]
+Non-allowed repetition of the argument -s
 
 Usage: NonAllowedRepition [Options]
 -s <string>    <string>: any string

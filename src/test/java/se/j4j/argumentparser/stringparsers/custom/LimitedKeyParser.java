@@ -25,7 +25,7 @@ public class LimitedKeyParser extends SimpleForwardingStringParser<String>
 	{
 		String result = super.parse(value);
 		if(!validKeys.contains(result))
-			throw ArgumentExceptions.forInvalidValue(value, "didn't match any of: " + validKeys);
+			throw ArgumentExceptions.withMessage("'" + value + "' didn't match any of: " + validKeys);
 		return result;
 	}
 

@@ -8,7 +8,11 @@ import java.util.Collections;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
 
+/**
+ * Tests for {@link ArgumentFactory#optionArgument(String, String...)}
+ */
 public class OptionalArgumentTest
 {
 	@Test

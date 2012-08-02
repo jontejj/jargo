@@ -1,12 +1,11 @@
 package se.j4j.argumentparser;
 
-import static se.j4j.argumentparser.Describers.fileDescriber;
-
-import java.io.File;
 import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+
+import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
@@ -34,16 +33,6 @@ public final class Limiters
 	}
 
 	/**
-	 * Limits arguments to only point to existing {@link File}s.
-	 */
-	@Nonnull
-	@CheckReturnValue
-	public static Limiter<File> existingFiles()
-	{
-		return ExistingFile.INSTANCE;
-	}
-
-	/**
 	 * <pre>
 	 * Exposes a {@link Limiter} as a Guava {@link Predicate}.
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
@@ -64,8 +53,6 @@ public final class Limiters
 		};
 	}
 
-	// TODO: add regex limiter (maybe to ArgumentBuilder#limitWith instead, as a pre-limiter?)
-
 	@Nonnull
 	@CheckReturnValue
 	static <E> Limiter<List<E>> forListValues(@Nonnull Limiter<E> elementLimiter)
@@ -83,42 +70,6 @@ public final class Limiters
 		@SuppressWarnings("unchecked")
 		Limiter<T> instance = (Limiter<T>) NoLimits.INSTANCE;
 		return instance;
-	}
-
-	private static final class ExistingFile implements Limiter<File>
-	{
-		private static final Limiter<File> INSTANCE = new ExistingFile();
-
-		@Override
-		public Limit withinLimits(@Nonnull final File file)
-		{
-			if(file.exists())
-				return Limit.OK;
-
-			return Limit.notOk(new DescribeAsNonExistingFile(file));
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			return "an existing file";
-		}
-
-		private static final class DescribeAsNonExistingFile implements Description
-		{
-			private final File file;
-
-			private DescribeAsNonExistingFile(File file)
-			{
-				this.file = file;
-			}
-
-			@Override
-			public String description()
-			{
-				return fileDescriber().describe(file) + " isn't an existing file";
-			}
-		}
 	}
 
 	private static final class ListValueLimiter<E> implements Limiter<List<E>>
@@ -151,25 +102,25 @@ public final class Limiters
 
 	static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
 	{
-		private final Range<C> rangeToLimitValuesTo;
+		private final Range<C> range;
 
 		private RangeLimiter(final Range<C> rangeToLimitValuesTo)
 		{
-			this.rangeToLimitValuesTo = rangeToLimitValuesTo;
+			this.range = rangeToLimitValuesTo;
 		}
 
 		@Override
 		public Limit withinLimits(C value)
 		{
-			if(rangeToLimitValuesTo.contains(value))
+			if(range.contains(value))
 				return Limit.OK;
-			return Limit.notOk("'" + value + "' is not in the range " + descriptionOfValidValues());
+			return Limit.notOk(Descriptions.format(Texts.OUT_OF_RANGE, value, range.lowerEndpoint(), range.upperEndpoint()));
 		}
 
 		@Override
 		public String descriptionOfValidValues()
 		{
-			return rangeToLimitValuesTo.lowerEndpoint() + " to " + rangeToLimitValuesTo.upperEndpoint();
+			return range.lowerEndpoint() + " to " + range.upperEndpoint();
 		}
 	}
 

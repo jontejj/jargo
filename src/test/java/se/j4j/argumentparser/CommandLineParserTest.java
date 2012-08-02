@@ -10,11 +10,13 @@ import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Arrays;
 
+import org.fest.assertions.Fail;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.utils.ArgumentExpector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -42,6 +44,13 @@ public class CommandLineParserTest
 		expector.expectThat(greetingPhrase).receives("Hello").given("Hello");
 	}
 
+	@Test
+	public void testShorthandInvocation() throws ArgumentException
+	{
+		// For a single argument it's easier to call parse directly on the ArgumentBuilder
+		assertThat(integerArgument("-n").parse("-n", "42")).isEqualTo(42);
+	}
+
 	@Test(expected = UnexpectedArgumentException.class)
 	public void testUnhandledParameter() throws ArgumentException
 	{
@@ -66,23 +75,6 @@ public class CommandLineParserTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
-	public void testErrorHandlingForTwoParametersWithTheSameName()
-	{
-		Argument<Integer> number = integerArgument("--number").build();
-		CommandLineParser.forArguments(number, number);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
-	public void testErrorHandlingForTwoIndexedParametersWithTheSameDefinition()
-	{
-		Argument<Integer> numberOne = integerArgument().build();
-		// There wouldn't be a way to know which argument numberOne referenced
-		CommandLineParser.forArguments(numberOne, numberOne);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "Checks enforcement of the annotation")
 	public void testNullMetaDescription()
 	{
@@ -94,24 +86,6 @@ public class CommandLineParserTest
 	public void testEmptyMetaDescription()
 	{
 		integerArgument("-n").metaDescription("");
-	}
-
-	@Test
-	public void testToString() throws ArgumentException
-	{
-		assertThat(integerArgument().toString()).contains("<integer>: -2147483648 to 2147483647");
-
-		CommandLineParser parser = CommandLineParser.forArguments();
-		assertThat(parser.toString()).contains("CommandLineParser#toString");
-
-		assertThat(parser.parse().toString()).isEqualTo("{}");
-	}
-
-	@Test
-	public void testShorthandInvocation() throws ArgumentException
-	{
-		// For a single argument it's easier to call parse directly on the ArgumentBuilder
-		assertThat(integerArgument().parse("42")).isEqualTo(42);
 	}
 
 	@Test(expected = ArgumentException.class)
@@ -151,6 +125,32 @@ public class CommandLineParserTest
 		assertThat(parsedArguments.hashCode()).isEqualTo(parsedArgumentsTwo.hashCode());
 
 		assertThat(forArguments().parse()).isEqualTo(forArguments().parse());
+	}
+
+	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	public void testThatNameCollisionAmongTwoDifferentArgumentsIsDetected()
+	{
+		Argument<Integer> numberOne = integerArgument("-n", "-s").build();
+		Argument<Integer> numberTwo = integerArgument("-t", "-s").build();
+		try
+		{
+			CommandLineParser.forArguments(numberOne, numberTwo);
+			Fail.fail("Duplicate -s name not detected");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(Texts.NAME_COLLISION, "-s"));
+		}
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	public void testErrorHandlingForTwoIndexedParametersWithTheSameDefinition()
+	{
+		Argument<Integer> numberOne = integerArgument().build();
+		// There wouldn't be a way to know which argument numberOne referenced
+		CommandLineParser.forArguments(numberOne, numberOne);
 	}
 
 	/**

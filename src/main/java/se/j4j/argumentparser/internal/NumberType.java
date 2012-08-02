@@ -1,6 +1,7 @@
 package se.j4j.argumentparser.internal;
 
-import static se.j4j.argumentparser.ArgumentExceptions.forInvalidValue;
+import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
+import static se.j4j.argumentparser.Descriptions.format;
 import se.j4j.argumentparser.ArgumentException;
 
 /**
@@ -50,15 +51,12 @@ public abstract class NumberType<T extends Number>
 		{
 			Long result = Long.decode(value);
 			if(result.compareTo(minValue().longValue()) < 0 || result.compareTo(maxValue().longValue()) > 0)
-				throw forInvalidValue(value, "is not in the range " + minValue() + " to " + maxValue());
+				throw withMessage(format(Texts.OUT_OF_RANGE, value, minValue(), maxValue()));
 			return fromLong(result);
 		}
 		catch(NumberFormatException nfe)
 		{
-			// TODO: specify which argument that failed
-			ArgumentException ex = forInvalidValue(value, "is not a valid number.");
-			ex.initCause(nfe);
-			throw ex;
+			throw withMessage(format(Texts.INVALID_NUMBER, value)).andCause(nfe);
 		}
 
 	}

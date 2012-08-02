@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+/**
+ * Tests for {@link ArgumentBuilder#ignoreCase()}
+ */
 public class IgnoringCaseTest
 {
 	@Test

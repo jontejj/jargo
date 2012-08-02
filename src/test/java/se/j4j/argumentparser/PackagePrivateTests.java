@@ -1,6 +1,7 @@
 package se.j4j.argumentparser;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 
 import org.junit.Test;
@@ -16,6 +17,21 @@ import se.j4j.argumentparser.internal.NumberType;
  */
 public class PackagePrivateTests
 {
+	@Test
+	public void testArgumentToString()
+	{
+		assertThat(integerArgument().toString()).isEqualTo("<integer>");
+		assertThat(integerArgument("-n").toString()).isEqualTo("-n");
+	}
+
+	@Test
+	public void testCommandLineParserToString() throws ArgumentException
+	{
+		CommandLineParser parser = CommandLineParser.forArguments();
+		assertThat(parser.toString()).contains("CommandLineParser#toString");
+		assertThat(parser.parse().toString()).isEqualTo("{}");
+	}
+
 	@Test
 	public void testArgumentIteratorToString()
 	{

@@ -22,6 +22,9 @@ import se.j4j.argumentparser.commands.Build.BuildTarget;
 import se.j4j.argumentparser.commands.CommitCommand.Commit;
 import se.j4j.argumentparser.commands.CommitCommand.Repository;
 
+/**
+ * Tests for subclassing {@link Command}
+ */
 public class CommandTest
 {
 	/**
@@ -196,10 +199,11 @@ public class CommandTest
 	@Test
 	public void testCommandWithMissingIndexedArgument()
 	{
-		Argument<List<String>> command = command(new CommandWithIndexedArguments()).arity(2).build();
+		Argument<String> command = command(new CommandWithIndexedArguments()).build();
 		try
 		{
-			CommandLineParser.forArguments(command).parse("aCommand", "1");
+			command.parse("aCommand", "1");
+			fail("Indexed argument should require two parameters");
 		}
 		catch(ArgumentException missingSecondParameterForIndexedArgument)
 		{
@@ -207,62 +211,124 @@ public class CommandTest
 		}
 	}
 
-	/**
-	 * Tests that commands within commands works.
-	 */
 	@Test
-	public void testSubCommand() throws ArgumentException
+	public void testThatTheInnerMostCommandIsPrintedInErrorMessage()
 	{
-		Argument<String> commandWithSubCommand = command(new Command(){
-
+		Argument<String> superCommand = command(new Command(){
 			@Override
 			protected List<Argument<?>> commandArguments()
 			{
-				return Arrays.<Argument<?>>asList(command(new Command(){
-
-					private final Argument<Integer> number = integerArgument("-n").build();
-
-					@Override
-					public String description()
-					{
-						return "A subcommand with an argument";
-					}
-
-					@Override
-					protected List<Argument<?>> commandArguments()
-					{
-						return Arrays.<Argument<?>>asList(number);
-					}
-
-					@Override
-					protected void execute(ParsedArguments subCommandArgs)
-					{
-						assertThat(subCommandArgs.get(number)).isEqualTo(1);
-					}
-
-					@Override
-					protected String commandName()
-					{
-						return "subcommand";
-					}
-				}).build());
-			}
-
-			@Override
-			protected void execute(ParsedArguments commandArgs)
-			{
+				return Arrays.<Argument<?>>asList(command(new CommandWithIndexedArguments()).build());
 			}
 
 			@Override
 			protected String commandName()
 			{
-				return "command";
+				return "superCommand";
+			}
+
+			@Override
+			protected void execute(ParsedArguments parsedArguments)
+			{
 			}
 		}).build();
+		try
+		{
+			superCommand.parse("superCommand", "aCommand", "1");
+			fail("Indexed argument should require two parameters");
+		}
+		catch(ArgumentException missingSecondParameterForIndexedArgument)
+		{
+			assertThat(missingSecondParameterForIndexedArgument).hasMessage("Missing second <integer> parameter for aCommand");
+		}
+	}
+
+	private static final class CommandWithSubCommand extends Command
+	{
+		@Override
+		protected List<Argument<?>> commandArguments()
+		{
+			return Arrays.<Argument<?>>asList(command(new Command(){
+
+				private final Argument<Integer> number = integerArgument("-n").build();
+
+				@Override
+				public String description()
+				{
+					return "A subcommand with an argument";
+				}
+
+				@Override
+				protected List<Argument<?>> commandArguments()
+				{
+					return Arrays.<Argument<?>>asList(number);
+				}
+
+				@Override
+				protected void execute(ParsedArguments subCommandArgs)
+				{
+					assertThat(subCommandArgs.get(number)).isEqualTo(1);
+				}
+
+				@Override
+				protected String commandName()
+				{
+					return "subcommand";
+				}
+			}).build());
+		}
+
+		@Override
+		protected void execute(ParsedArguments commandArgs)
+		{
+		}
+
+		@Override
+		protected String commandName()
+		{
+			return "command";
+		}
+	}
+
+	/**
+	 * Tests that commands within commands works
+	 */
+	@Test
+	public void testSubCommand() throws ArgumentException
+	{
+		Argument<String> commandWithSubCommand = command(new CommandWithSubCommand()).build();
 
 		commandWithSubCommand.parse("command", "subcommand", "-n", "1");
 
 		assertThat(commandWithSubCommand.usage("CommandWithSubCommand")).isEqualTo(expected("commandWithSubCommand"));
+	}
+
+	/**
+	 * Tests several commands that each have their own indexed arguments
+	 */
+	@Test
+	public void testMultipleCommandEachWithIndexedArguments() throws ArgumentException
+	{
+		CommandLineParser parser = CommandLineParser.forCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
+																	new CommandWithThreeIndexedArguments());
+
+		parser.parse("one_arg", "1", "two_args", "1", "2", "three_args", "1", "2", "3");
+	}
+
+	@Test
+	public void testThatCorrectCommandIsMentionedInErrorMessage()
+	{
+		CommandLineParser parser = CommandLineParser.forCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
+																	new CommandWithThreeIndexedArguments());
+		try
+		{
+			// Switched order of two_args and three_args for extra test harness
+			parser.parse("one_arg", "1", "three_args", "1", "2", "3", "two_args", "1");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Missing second <integer> parameter for two_args");
+		}
 	}
 
 	@Test

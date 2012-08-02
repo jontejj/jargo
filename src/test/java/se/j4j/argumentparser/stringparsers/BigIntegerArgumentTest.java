@@ -8,7 +8,13 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.StringParsers;
 
+/**
+ * Tests for {@link ArgumentFactory#bigIntegerArgument(String...)} and
+ * {@link StringParsers#bigIntegerParser()}
+ */
 public class BigIntegerArgumentTest
 {
 	@Test

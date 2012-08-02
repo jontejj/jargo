@@ -3,30 +3,30 @@ package se.j4j.argumentparser.stringparsers.custom;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.StringParser;
 
-public class HostPortParser implements StringParser<HostPort>
+public class PortParser implements StringParser<Port>
 {
 	@Override
 	public String descriptionOfValidValues()
 	{
-		return "port:host";
+		return "a port number between 0 and " + Short.MAX_VALUE;
 	}
 
 	@Override
-	public HostPort defaultValue()
+	public Port defaultValue()
 	{
-		return HostPort.DEFAULT;
+		return Port.DEFAULT;
 	}
 
 	@Override
-	public HostPort parse(String argument) throws ArgumentException
+	public Port parse(String argument) throws ArgumentException
 	{
-		return HostPort.parse(argument);
+		return Port.parse(argument);
 	}
 
 	@Override
 	public String metaDescription()
 	{
-		return "<hostinformation>";
+		return "<port number>";
 	}
 
 }

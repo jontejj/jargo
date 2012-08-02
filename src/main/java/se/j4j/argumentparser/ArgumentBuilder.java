@@ -34,6 +34,7 @@ import se.j4j.argumentparser.StringParsers.StringSplitterParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.Finalizer;
 import se.j4j.argumentparser.internal.Finalizers;
+import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Supplier;
@@ -242,7 +243,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * Makes {@link CommandLineParser#parse(String...)} throw
-	 * {@link MissingRequiredArgumentException} if this argument isn't given
+	 * {@link MissingRequiredArgumentException} if this argument isn't given.
+	 * It's however preferred to use {@link #defaultValue(Object)} instead.
 	 * 
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #defaultValue(Object)} (or
@@ -251,10 +253,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE required()
 	{
-		if(defaultValueSupplier != null)
-			throw new IllegalStateException("Having a requried argument defaulting to some value (" + defaultValueSupplier.get()
-					+ ") makes no sense. Remove the call to ArgumentBuilder#defaultValueSupplier(...) to use a required argument.");
-
+		checkState(defaultValueSupplier == null, Texts.DEFAULT_VALUE_AND_REQUIRED);
 		required = true;
 		return self();
 	}
@@ -275,10 +274,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE defaultValue(@Nullable final T value)
 	{
-		if(required)
-			throw new IllegalStateException("Having a requried argument defaulting to some value(" + value
-					+ ") makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
-
+		checkState(!required, Texts.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = new SupplierOfInstance<T>(value);
 		return self();
 	}
@@ -298,16 +294,14 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Beta
 	public SELF_TYPE defaultValueSupplier(@Nonnull final Supplier<T> aDefaultValueSupplier)
 	{
-		if(required)
-			throw new IllegalStateException("Having a requried argument and a default value supplier makes no sense. Remove the call to ArgumentBuilder#required to use a default value.");
-
+		checkState(!required, Texts.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = aDefaultValueSupplier;
 		return self();
 	}
 
 	/**
 	 * Provides a way to give the usage texts a better explanation of a default
-	 * value than {@link Object#toString()} provides
+	 * value than {@link T#toString()} provides
 	 * 
 	 * @param aDescription the description
 	 * @return this builder
@@ -320,7 +314,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * Provides a way to give the usage texts a better explanation of a default
-	 * value than {@link Object#toString()} provides
+	 * value than {@link T#toString()} provides
 	 * 
 	 * @param describer a describer
 	 * @return this builder
@@ -357,7 +351,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE metaDescription(@Nonnull final String aMetaDescription)
 	{
-		checkArgument(!isNullOrEmpty(aMetaDescription), "a meta description can't be null/empty");
+		checkArgument(!isNullOrEmpty(aMetaDescription), Texts.INVALID_META_DESCRIPTION);
 		this.metaDescription = aMetaDescription;
 		return self();
 	}
@@ -390,7 +384,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Limits values parsed so that they conform to some specific rule.
-	 * For example {@link Limiters#existingFiles()} only allows existing files.
+	 * For example {@link Limiters#range(Comparable, Comparable)} only
+	 * allows values within a range.
 	 * </pre>
 	 * 
 	 * @param aLimiter a limiter
@@ -419,8 +414,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public final MapArgumentBuilder<String, T> asPropertyMap()
 	{
-		checkState(defaultValueSupplier == null, "The default value needs to be set after the asPropertyMap invocation.");
-		checkState(defaultValueDescriber == null, "The default value describer needs to be set after the asPropertyMap invocation.");
+		checkState(defaultValueSupplier == null, Texts.DEFAULT_VALUE_SET_IN_WRONG_ORDER, "asPropertyMap");
+		checkState(defaultValueDescriber == null, Texts.DEFAULT_VALUE_DESCRIBER_SET_IN_WRONG_ORDER, "asPropertyMap");
 		return new MapArgumentBuilder<String, T>(this, stringParser());
 	}
 
@@ -452,8 +447,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public final <Key extends Comparable<Key>> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(@Nonnull StringParser<Key> keyParser)
 	{
-		checkState(defaultValueSupplier == null, "The default value needs to be set after the asKeyValuesWithKeyParser invocation.");
-		checkState(defaultValueDescriber == null, "The default value describer needs to be set after the asKeyValuesWithKeyParser invocation.");
+		checkState(defaultValueSupplier == null, Texts.DEFAULT_VALUE_SET_IN_WRONG_ORDER, "asKeyValuesWithKeyParser");
+		checkState(defaultValueDescriber == null, Texts.DEFAULT_VALUE_DESCRIBER_SET_IN_WRONG_ORDER, "asKeyValuesWithKeyParser");
 		return new MapArgumentBuilder<Key, T>(this, keyParser);
 	}
 
@@ -521,8 +516,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
 	{
-		checkArgument(numberOfParameters > 1, "Arity requires at least 2 parameters (got %s)", numberOfParameters);
-
+		checkArgument(numberOfParameters > 1, Texts.TO_LITTLE_ARITY, numberOfParameters);
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
@@ -835,14 +829,14 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		@Override
 		public OptionArgumentBuilder names(Iterable<String> argumentNames)
 		{
-			checkArgument(!isEmpty(argumentNames), "An option requires at least one name, otherwise it wouldn't be useful.");
+			checkArgument(!isEmpty(argumentNames), Texts.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
 		@Override
 		public OptionArgumentBuilder names(String ... argumentNames)
 		{
-			checkArgument(argumentNames.length >= 1, "An option requires at least one name, otherwise it wouldn't be useful.");
+			checkArgument(argumentNames.length >= 1, Texts.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
@@ -909,12 +903,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			copy(builder);
 
 			// TODO: should the state be verified just before the argument is built?
-			if(names().isEmpty())
-				throw new IllegalStateException("No leading identifier (otherwise called names), for example -D, specified for property map. Call names(...) to provide it.");
-
+			checkState(names().size() > 0, Texts.NO_NAME_FOR_PROPERTY_MAP);
 			if(separator() != null)
 			{
-				checkState(!separator().isEmpty(), "In a key=value pair a separator of at least one character is required");
+				checkState(separator().length() > 0, Texts.EMPTY_SEPARATOR);
 			}
 			else
 			{
@@ -999,6 +991,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 		abstract boolean isAllowedToRepeat();
 
+		abstract boolean isRequired();
+
 		abstract boolean isIgnoringCase();
 
 		abstract boolean isPropertyMap();
@@ -1006,6 +1000,18 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		boolean isIndexed()
 		{
 			return names().isEmpty();
+		}
+
+		/**
+		 * Describes {@link Argument}s by their first name. If they are indexed and have no name the
+		 * meta description is used instead.
+		 */
+		@Override
+		public String toString()
+		{
+			if(isIndexed())
+				return metaDescriptionInRightColumn();
+			return names().get(0);
 		}
 	}
 
@@ -1035,7 +1041,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * Copied from {@link Suppliers#ofInstance(Object)} to enable instance of
-	 * check for fail-fast checking of default values
+	 * check for fail-fast checking of default values that have already been created
 	 */
 	static class SupplierOfInstance<T> implements Supplier<T>
 	{

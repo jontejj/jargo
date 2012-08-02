@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.junit.Test;
@@ -13,11 +12,11 @@ import org.junit.Test;
 import se.j4j.argumentparser.finalizers.AddBar;
 import se.j4j.argumentparser.finalizers.AddFoo;
 import se.j4j.argumentparser.internal.Finalizer;
-import se.j4j.argumentparser.internal.Finalizers;
 import se.j4j.argumentparser.limiters.FooLimiter;
 
-import com.google.common.collect.ImmutableList;
-
+/**
+ * Tests for {@link Finalizer}
+ */
 public class FinalizerTest
 {
 	@Test
@@ -60,14 +59,6 @@ public class FinalizerTest
 	}
 
 	@Test
-	public void testMultipleFinalizers() throws ArgumentException
-	{
-		Finalizer<String> compoundFinalizer = Finalizers.compound(ImmutableList.of(new AddFoo(), new AddBar()));
-
-		assertThat(stringArgument().finalizeWith(compoundFinalizer).parse("")).isEqualTo("foobar");
-	}
-
-	@Test
 	public void testThatDefaultValuesAreFinalized() throws ArgumentException
 	{
 		assertThat(stringArgument("-n").finalizeWith(new AddBar()).defaultValue("foo").parse()).isEqualTo("foobar");
@@ -84,11 +75,4 @@ public class FinalizerTest
 	{
 		stringArgument("-n").defaultValue("foo").finalizeWith(new AddBar()).limitTo(new FooLimiter()).build();
 	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testThatEmptyListOfFinalizersIsIllegal()
-	{
-		Finalizers.compound(new ArrayList<Finalizer<Object>>());
-	}
-
 }

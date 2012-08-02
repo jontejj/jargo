@@ -13,8 +13,13 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.internal.Texts;
+
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Tests for {@link ArgumentBuilder#repeated()}
+ */
 public class RepeatedArgumentTest
 {
 	@Test
@@ -69,6 +74,20 @@ public class RepeatedArgumentTest
 	public void testRepeatedPropertyValuesWithoutHandling() throws ArgumentException
 	{
 		integerArgument("-N").asPropertyMap().parse("-Nnumber=1", "-Nnumber=2");
+	}
+
+	@Test
+	public void testRepeatedValuesWithoutHandling()
+	{
+		try
+		{
+			integerArgument("--number", "-n").parse("--number", "1", "-n", "2");
+			fail("-n should have been detected as --number was given already");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(Texts.UNALLOWED_REPETITION, "-n"));
+		}
 	}
 
 	@Test(expected = ArgumentException.class)
