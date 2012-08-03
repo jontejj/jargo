@@ -9,6 +9,11 @@ import javax.annotation.Nonnull;
 
 import se.j4j.argumentparser.internal.Texts;
 
+/**
+ * Indicates that something went wrong in a {@link CommandLineParser}. The typical remedy action is
+ * to present {@link #getMessageAndUsage(String)} to the user so he is informed about what he did
+ * wrong.
+ */
 public abstract class ArgumentException extends Exception
 {
 	// TODO: to enable proper behavior when serialized these needs to
@@ -20,18 +25,11 @@ public abstract class ArgumentException extends Exception
 	{
 	}
 
-	ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
-	{
-		originParser = theParserThatTriggeredMe;
-		return this;
-	}
-
-	void originatedFromArgumentName(String argumentNameThatTriggeredMe)
-	{
-		originArgumentName = argumentNameThatTriggeredMe;
-	}
-
-	public ArgumentException andCause(Throwable cause)
+	/**
+	 * Alias for {@link #initCause(Throwable)}.<br>
+	 * Added simply because withMessage("Message").andCause(exception) flows better.
+	 */
+	public final ArgumentException andCause(Throwable cause)
 	{
 		initCause(cause);
 		return this;
@@ -68,6 +66,17 @@ public abstract class ArgumentException extends Exception
 	 *            otherwise the argument name that was used on the command line is used.
 	 */
 	protected abstract String getMessage(@Nonnull String argumentNameOrcommandName);
+
+	final ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
+	{
+		originParser = theParserThatTriggeredMe;
+		return this;
+	}
+
+	final void originatedFromArgumentName(String argumentNameThatTriggeredMe)
+	{
+		originArgumentName = argumentNameThatTriggeredMe;
+	}
 
 	/**
 	 * For {@link Serializable}

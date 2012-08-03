@@ -121,19 +121,19 @@ public abstract class Command extends InternalStringParser<String> implements De
 	}
 
 	@Override
-	String descriptionOfValidValues(ArgumentSettings argumentSettings)
+	final String descriptionOfValidValues(ArgumentSettings argumentSettings)
 	{
 		return parser().usage("");
 	}
 
 	@Override
-	String describeValue(String value, ArgumentSettings argumentSettings)
+	final String describeValue(String value, ArgumentSettings argumentSettings)
 	{
 		return value;
 	}
 
 	@Override
-	String metaDescription(ArgumentSettings argumentSettings)
+	final String metaDescription(ArgumentSettings argumentSettings)
 	{
 		return "";
 	}

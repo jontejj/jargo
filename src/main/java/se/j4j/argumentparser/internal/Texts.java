@@ -3,6 +3,9 @@ package se.j4j.argumentparser.internal;
 import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.CommandLineParser;
 
+/**
+ * Contains {@link String#format(String, Object...)} ready strings.
+ */
 public final class Texts
 {
 	private Texts()

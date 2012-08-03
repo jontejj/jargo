@@ -99,6 +99,7 @@ public final class CommandLineParser
 	 */
 	@CheckReturnValue
 	@Nonnull
+	// TODO: rename to withArguments?
 	public static CommandLineParser forArguments(@Nonnull final Argument<?> ... argumentDefinitions)
 	{
 		return new CommandLineParser(Arrays.asList(argumentDefinitions));

@@ -207,7 +207,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * @return this builder
 	 */
-	public SELF_TYPE ignoreCase()
+	public final SELF_TYPE ignoreCase()
 	{
 		ignoreCase = true;
 		return self();
@@ -223,7 +223,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param descriptionString
 	 * @return this builder
 	 */
-	public SELF_TYPE description(@Nonnull final String descriptionString)
+	public final SELF_TYPE description(@Nonnull final String descriptionString)
 	{
 		description = forString(descriptionString);
 		return self();
@@ -235,7 +235,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param aDescription
 	 * @return this builder
 	 */
-	public SELF_TYPE description(@Nonnull final Description aDescription)
+	public final SELF_TYPE description(@Nonnull final Description aDescription)
 	{
 		description = aDescription;
 		return self();
@@ -272,7 +272,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalStateException if {@link #required()} has been called,
 	 * because these two methods are mutually exclusive
 	 */
-	public SELF_TYPE defaultValue(@Nullable final T value)
+	public final SELF_TYPE defaultValue(@Nullable final T value)
 	{
 		checkState(!required, Texts.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = new SupplierOfInstance<T>(value);
@@ -292,7 +292,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * because these two methods are mutually exclusive
 	 */
 	@Beta
-	public SELF_TYPE defaultValueSupplier(@Nonnull final Supplier<T> aDefaultValueSupplier)
+	public final SELF_TYPE defaultValueSupplier(@Nonnull final Supplier<T> aDefaultValueSupplier)
 	{
 		checkState(!required, Texts.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = aDefaultValueSupplier;
@@ -306,7 +306,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param aDescription the description
 	 * @return this builder
 	 */
-	public SELF_TYPE defaultValueDescription(@Nonnull final String aDescription)
+	public final SELF_TYPE defaultValueDescription(@Nonnull final String aDescription)
 	{
 		this.defaultValueDescriber = withStaticString(aDescription);
 		return self();
@@ -319,7 +319,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param describer a describer
 	 * @return this builder
 	 */
-	public SELF_TYPE defaultValueDescription(@Nonnull final Describer<T> describer)
+	public final SELF_TYPE defaultValueDescription(@Nonnull final Describer<T> describer)
 	{
 		this.defaultValueDescriber = describer;
 		return self();
@@ -349,7 +349,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalArgumentException if aMetaDescription is empty or null
 	 * </pre>
 	 */
-	public SELF_TYPE metaDescription(@Nonnull final String aMetaDescription)
+	public final SELF_TYPE metaDescription(@Nonnull final String aMetaDescription)
 	{
 		checkArgument(!isNullOrEmpty(aMetaDescription), Texts.INVALID_META_DESCRIPTION);
 		this.metaDescription = aMetaDescription;
@@ -362,7 +362,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * @return this builder
 	 */
-	public SELF_TYPE hideFromUsage()
+	public final SELF_TYPE hideFromUsage()
 	{
 		this.hideFromUsage = true;
 		return self();
@@ -391,7 +391,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param aLimiter a limiter
 	 * @return this builder
 	 */
-	public SELF_TYPE limitTo(@Nonnull Limiter<T> aLimiter)
+	public final SELF_TYPE limitTo(@Nonnull Limiter<T> aLimiter)
 	{
 		limiter = aLimiter;
 		return self();
@@ -556,6 +556,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		return new RepeatedArgumentBuilder<T>(this);
 	}
 
+	// TODO: add <NextType> ArgumentBuilder<NextType> transformTo(Function<T, NextType>
+	// transformerFunction)
+	// That would apply transformerFunction to parsed values before returning from parse
+
 	@Override
 	public String toString()
 	{
@@ -601,19 +605,19 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param aFinalizer a finalizer
 	 * @return this builder
 	 */
-	SELF_TYPE finalizeWith(@Nonnull Finalizer<T> aFinalizer)
+	final SELF_TYPE finalizeWith(@Nonnull Finalizer<T> aFinalizer)
 	{
 		finalizer = Finalizers.compound(finalizer, aFinalizer);
 		return self();
 	}
 
-	SELF_TYPE allowRepeatedArguments()
+	final SELF_TYPE allowRepeatedArguments()
 	{
 		isAllowedToRepeat = true;
 		return self();
 	}
 
-	SELF_TYPE setAsPropertyMap()
+	final SELF_TYPE setAsPropertyMap()
 	{
 		isPropertyMap = true;
 		return self();
@@ -819,6 +823,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		{
 			defaultValue(false);
 		}
+
+		// TODO: if withAction(Action action) isn't added then maybe at least add it here?
 
 		@Override
 		InternalStringParser<Boolean> internalParser()

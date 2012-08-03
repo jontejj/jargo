@@ -43,7 +43,10 @@ public interface StringParser<T>
 	T defaultValue();
 
 	/**
-	 * The meta description is the text displayed surrounded by &lt; and &gt;
+	 * <pre>
+	 * The meta description is the text displayed after the argument names.
+	 * Typically surrounded by &lt; and &gt;
+	 * Sort of like the default value of {@link ArgumentBuilder#metaDescription(String)}.
 	 * 
 	 * @return a meta description that very briefly explains what value this parser expects
 	 */
