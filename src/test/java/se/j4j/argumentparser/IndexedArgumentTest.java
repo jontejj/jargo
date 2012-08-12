@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.internal.Texts;
+import se.j4j.argumentparser.utils.Explanation;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * <pre>
@@ -36,7 +38,7 @@ public class IndexedArgumentTest
 
 		Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
 
-		ParsedArguments arguments = CommandLineParser.forArguments(enableLogging, port, greetingPhrase).parse(args);
+		ParsedArguments arguments = CommandLineParser.withArguments(enableLogging, port, greetingPhrase).parse(args);
 
 		assertThat(arguments.get(enableLogging)).isTrue();
 		assertThat(arguments.get(port)).isEqualTo(8090);
@@ -44,6 +46,7 @@ public class IndexedArgumentTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatIndexedArgumentThatIsRequiredIsGivenFirstBeforeAnyOptionalIndexedArguments()
 	{
 		// string is required but the integer before it is optional,
@@ -52,10 +55,11 @@ public class IndexedArgumentTest
 		Argument<Integer> integer = integerArgument().build();
 		Argument<String> string = stringArgument().required().build();
 
-		CommandLineParser.forArguments(integer, string);
+		CommandLineParser.withArguments(integer, string);
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatRequiredIndexedArgumentsHaveUniqueMetaDescriptions()
 	{
 		Argument<Integer> port = integerArgument().required().build();
@@ -63,7 +67,7 @@ public class IndexedArgumentTest
 
 		try
 		{
-			CommandLineParser.forArguments(port, number);
+			CommandLineParser.withArguments(port, number);
 			fail("Non-unique meta description not detected");
 		}
 		catch(IllegalArgumentException expected)

@@ -90,10 +90,17 @@ public class RepeatedArgumentTest
 		}
 	}
 
-	@Test(expected = ArgumentException.class)
-	public void testInvalidValuesShouldNotBeParsedIfRepeatedArgumentsAreNotAllowed() throws ArgumentException
+	@Test
+	public void testInvalidValuesShouldNotBeParsedIfRepeatedArgumentsAreNotAllowed()
 	{
-		stringArgument("-n").limitTo(foos()).parse("-n", "foo", "-n", "bar");
+		try
+		{
+			stringArgument("-n").limitTo(foos()).defaultValue("foo").parse("-n", "foo", "-n", "bar");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(Texts.UNALLOWED_REPETITION, "-n"));
+		}
 	}
 
 	@Test

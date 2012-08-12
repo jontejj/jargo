@@ -52,7 +52,7 @@ public final class StringsUtil
 	 * Current performance characteristics:
 	 * n = length of {@code input}
 	 * m = average string length of the strings in {@code validOptions}
-	 * s = amount validOptions
+	 * s = amount of validOptions
 	 * 
 	 * complexity = n * m * s = O(n<sup>3</sup>)
 	 * 

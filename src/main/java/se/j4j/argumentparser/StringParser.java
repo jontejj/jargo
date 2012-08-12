@@ -26,6 +26,7 @@ public interface StringParser<T>
 	 *             {@link #descriptionOfValidValues()}
 	 */
 	@Nullable
+	// TODO: maybe this shouldn't throw a checked exception?
 	T parse(@Nonnull String argument) throws ArgumentException;
 
 	/**

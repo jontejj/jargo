@@ -9,6 +9,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.commands.Build;
 import se.j4j.argumentparser.internal.NumberType;
+import se.j4j.argumentparser.internal.PrivateConstructorTest;
 
 /**
  * Tests implementation details that has no meaning in the public API but can serve other purposes
@@ -27,7 +28,7 @@ public class PackagePrivateTests
 	@Test
 	public void testCommandLineParserToString() throws ArgumentException
 	{
-		CommandLineParser parser = CommandLineParser.forArguments();
+		CommandLineParser parser = CommandLineParser.withArguments();
 		assertThat(parser.toString()).contains("CommandLineParser#toString");
 		assertThat(parser.parse().toString()).isEqualTo("{}");
 	}
@@ -70,5 +71,11 @@ public class PackagePrivateTests
 		// Argument should fall back to StringParser#descriptionOfValidValues() instead when no
 		// limit is applied
 		Limiters.noLimits().descriptionOfValidValues();
+	}
+
+	@Test
+	public void testPackagePrivateConstructors() throws Exception
+	{
+		PrivateConstructorTest.callPrivateConstructors(CommandLineParser.ParserCache.class);
 	}
 }

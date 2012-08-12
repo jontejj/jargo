@@ -11,13 +11,10 @@ import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.Descriptions.format;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
-import static se.j4j.argumentparser.internal.StringsUtil.toLowerCase;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,14 +35,16 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.UnmodifiableIterator;
 
 /**
+ * <pre>
  * Gives you static access to implementations of the {@link StringParser} interface.
  * All methods return {@link Immutable} parsers.
- * Most methods here returns the same instance for every call.
- * If you want to customize one of these parsers you can use a {@link ForwardingStringParser}
+ * Most methods here even return the same instance for every call.
+ * If you want to customize one of these parsers you can use a {@link ForwardingStringParser}.
+ * </pre>
  */
 @Immutable
 public final class StringParsers
@@ -706,7 +705,7 @@ public final class StringParsers
 		 * otherwise return {@code null}
 		 */
 		@Nullable
-		public abstract T defaultValue();
+		abstract T defaultValue();
 
 		/**
 		 * @param argumentSettings can, for instance, be used to print
@@ -768,18 +767,7 @@ public final class StringParsers
 		@Override
 		String describeValue(List<T> value, ArgumentSettings argumentSettings)
 		{
-			if(value.isEmpty())
-				return "Empty list";
-
-			StringBuilder sb = new StringBuilder(value.size() * 10);
-			Iterator<T> values = value.iterator();
-			sb.append('[').append(parser.describeValue(values.next(), argumentSettings));
-			while(values.hasNext())
-			{
-				sb.append(", ").append(parser.describeValue(values.next(), argumentSettings));
-			}
-			sb.append(']');
-			return sb.toString();
+			return value.isEmpty() ? "Empty list" : value.toString();
 		}
 	}
 
@@ -810,7 +798,7 @@ public final class StringParsers
 				catch(MissingParameterException exception)
 				{
 					// Wrap exception to more clearly specify which parameter that is missing
-					throw forMissingNthParameter(exception.argumentWithMissingParameter, i);
+					throw forMissingNthParameter(exception.parameterDescription, i);
 				}
 			}
 			return parsedArguments;
@@ -841,6 +829,11 @@ public final class StringParsers
 	 */
 	static final class VariableArityParser<T> extends ListParser<T>
 	{
+		/**
+		 * A marker for a variable amount of parameters
+		 */
+		static final int VARIABLE_ARITY = -1;
+
 		VariableArityParser(final InternalStringParser<T> parser)
 		{
 			super(parser);
@@ -930,7 +923,7 @@ public final class StringParsers
 			List<T> listToStoreRepeatedValuesIn = previouslyCreatedList;
 			if(listToStoreRepeatedValuesIn == null)
 			{
-				listToStoreRepeatedValuesIn = new ArrayList<T>();
+				listToStoreRepeatedValuesIn = Lists.newArrayList();
 			}
 
 			listToStoreRepeatedValuesIn.add(parsedValue);
@@ -946,7 +939,7 @@ public final class StringParsers
 	 * @param <V> the type of values in the resulting map
 	 */
 	@VisibleForTesting
-	static final class KeyValueParser<K extends Comparable<K>, V> extends InternalStringParser<Map<K, V>>
+	static final class KeyValueParser<K, V> extends InternalStringParser<Map<K, V>>
 	{
 		@Nonnull private final InternalStringParser<V> valueParser;
 		@Nonnull private final StringParser<K> keyParser;
@@ -969,54 +962,46 @@ public final class StringParsers
 			}
 
 			String keyValue = arguments.next();
-			String separator = argumentSettings.separator();
+			String key = getKey(keyValue, argumentSettings);
+			K parsedKey = keyParser.parse(key);
+			V oldValue = map.get(parsedKey);
 
-			List<String> propertyIdentifiers = argumentSettings.names();
-			String argument = keyValue;
-			if(argumentSettings.isIgnoringCase())
-			{
-				propertyIdentifiers = toLowerCase(propertyIdentifiers);
-				// TODO: set Locale.ENGLISH on lowerCaseParser() as well
-				// TODO: document the usage of Locale.ENGLISH
-				argument = argument.toLowerCase(Locale.ENGLISH);
-			}
+			// TODO: what if null is an actual value then non-allowed repetitions won't be
+			// detected
+			if(oldValue != null && !argumentSettings.isAllowedToRepeat())
+				throw withMessage(format(Texts.UNALLOWED_REPETITION_OF_KEY, argumentSettings, key));
 
-			for(String propertyIdentifier : propertyIdentifiers)
-			{
-				if(argument.startsWith(propertyIdentifier))
-				{
-					// Fetch key and value from "-Dkey=value"
-					int keyStartIndex = propertyIdentifier.length();
-					int keyEndIndex = keyValue.indexOf(separator, keyStartIndex);
-					if(keyEndIndex == -1)
-						throw withMessage(format(Texts.MISSING_KEY_VALUE_SEPARATOR, keyValue, separator));
+			// Hide what we just did to the parser that handles the "value"
+			arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
+			V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
 
-					String key = keyValue.substring(keyStartIndex, keyEndIndex);
-					K parsedKey = keyParser.parse(key);
+			Limit limit = valueLimiter.withinLimits(parsedValue);
+			if(limit != Limit.OK)
+				throw withMessage(limit.reason());
 
-					// Remove "-Dkey=" from "-Dkey=value"
-					String value = keyValue.substring(keyEndIndex + separator.length());
-					// Hide what we just did to the parser that handles the "value"
-					arguments.setNextArgumentTo(value);
-
-					V oldValue = map.get(key);
-					// TODO: what if null is an actual value then unallowed repitions won't be
-					// detected
-					if(oldValue != null && !argumentSettings.isAllowedToRepeat())
-						// TODO: the last occurrence wasn't necessarily propertyIdentifier it could
-						// be any propertyIdentifiers
-						throw withMessage(format(Texts.UNALLOWED_REPETITION_OF_KEY, propertyIdentifier, key));
-
-					V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
-					Limit limit = valueLimiter.withinLimits(parsedValue);
-					if(limit != Limit.OK)
-						throw withMessage(limit.reason());
-
-					map.put(parsedKey, parsedValue);
-					break;
-				}
-			}
+			map.put(parsedKey, parsedValue);
 			return map;
+		}
+
+		/**
+		 * Fetch "key" from "key=value"
+		 */
+		private String getKey(String keyValue, ArgumentSettings argumentSettings) throws ArgumentException
+		{
+			String separator = argumentSettings.separator();
+			int keyEndIndex = keyValue.indexOf(separator);
+			if(keyEndIndex == -1)
+				throw withMessage(format(Texts.MISSING_KEY_VALUE_SEPARATOR, argumentSettings, keyValue, separator));
+
+			return keyValue.substring(0, keyEndIndex);
+		}
+
+		/**
+		 * Fetch "value" from "key=value"
+		 */
+		private String getValue(String key, String keyValue, ArgumentSettings argumentSettings)
+		{
+			return keyValue.substring(key.length() + argumentSettings.separator().length());
 		}
 
 		@Override
@@ -1048,29 +1033,9 @@ public final class StringParsers
 		String describeValue(final Map<K, V> values, final ArgumentSettings argumentSettings)
 		{
 			if(values.isEmpty())
-				return "empty map";
+				return "Empty map";
 
-			List<K> keys = new ArrayList<K>(values.keySet());
-			Collections.sort(keys);
-
-			final Iterator<K> keyIterator = keys.iterator();
-
-			return Joiner.on(NEWLINE).join(new UnmodifiableIterator<String>(){
-				@Override
-				public boolean hasNext()
-				{
-					return keyIterator.hasNext();
-				}
-
-				@Override
-				public String next()
-				{
-					K key = keyIterator.next();
-					String separator = argumentSettings.separator();
-					String describedValue = valueParser.describeValue(values.get(key), argumentSettings);
-					return key + separator + describedValue;
-				}
-			});
+			return Joiner.on(NEWLINE).withKeyValueSeparator(argumentSettings.separator()).join(values);
 		}
 
 		@Override
@@ -1098,8 +1063,6 @@ public final class StringParsers
 		{
 			stringParser = parserToBridge;
 		}
-
-		// Bridged InternalStringParser methods
 
 		@Override
 		T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
@@ -1143,6 +1106,12 @@ public final class StringParsers
 		public T defaultValue()
 		{
 			return stringParser.defaultValue();
+		}
+
+		@Override
+		public String toString()
+		{
+			return descriptionOfValidValues();
 		}
 	}
 }

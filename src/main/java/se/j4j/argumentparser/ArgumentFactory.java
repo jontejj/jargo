@@ -32,7 +32,7 @@ import se.j4j.argumentparser.ArgumentBuilder.OptionArgumentBuilder;
  * Used as a starting point to create {@link Argument} instances.
  * 
  * The produced arguments can either be passed to
- * {@link CommandLineParser#forArguments(Argument...)} to group several
+ * {@link CommandLineParser#withArguments(Argument...)} to group several
  * {@link Argument}s together or if only one argument should be
  * parsed {@link ArgumentBuilder#parse(String...)} can be called instead.
  * </pre>
@@ -124,11 +124,24 @@ public final class ArgumentFactory
 		return withParser(fileParser()).defaultValueDescription(fileDescriber()).names(names);
 	}
 
+	/**
+	 * <pre>
+	 * Creates an optional (flag) argument where the sole existence of the name on the command
+	 * line matters. This is the only place to have an {@link ArgumentBuilder#arity(int)} of zero.
+	 * 
+	 * The default value is printed with {@link Describers#booleanAsEnabledDisabled()}.
+	 * This can be changed with {@link ArgumentBuilder#defaultValueDescription(Describer)}.
+	 * 
+	 * @see Describers#booleanAsOnOff()
+	 * 
+	 * @param mandatoryName the first name that enables this option
+	 * @param optionalNames aliases that also enables this option
+	 * </pre>
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static OptionArgumentBuilder optionArgument(@Nonnull final String mandatoryName, @Nonnull final String ... optionalNames)
 	{
-		// TODO: booleanAsEnabledDisabled really be called here?
 		return new OptionArgumentBuilder().defaultValueDescription(booleanAsEnabledDisabled()).names(asList(mandatoryName, optionalNames));
 	}
 

@@ -5,7 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.CommandLineParser.forArguments;
+import static se.j4j.argumentparser.CommandLineParser.withArguments;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
 
 import java.util.Arrays;
@@ -13,11 +13,11 @@ import java.util.Arrays;
 import org.fest.assertions.Fail;
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.utils.ArgumentExpector;
+import se.j4j.argumentparser.utils.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class CommandLineParserTest
@@ -54,11 +54,11 @@ public class CommandLineParserTest
 	@Test(expected = UnexpectedArgumentException.class)
 	public void testUnhandledParameter() throws ArgumentException
 	{
-		CommandLineParser.forArguments().parse("Unhandled");
+		CommandLineParser.withArguments().parse("Unhandled");
 	}
 
 	@Test
-	public void testMissingParameterForArgument() throws ArgumentException
+	public void testMissingParameterForArgument()
 	{
 		Argument<Integer> numbers = integerArgument("--number", "-n").build();
 		try
@@ -66,7 +66,7 @@ public class CommandLineParserTest
 			numbers.parse("-n");
 			fail("-n parameter should be missing a parameter");
 		}
-		catch(MissingParameterException expected)
+		catch(ArgumentException expected)
 		{
 			// As -n was given on the command line that is the one that should appear in the
 			// exception message
@@ -101,9 +101,10 @@ public class CommandLineParserTest
 
 		Argument<Integer> number = integerArgument("--number").build();
 
-		ParsedArguments listResult = CommandLineParser.forArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args));
-		ParsedArguments arrayResult = CommandLineParser.forArguments(number).parse(args);
-		ParsedArguments iteratorResult = CommandLineParser.forArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args).listIterator());
+		ParsedArguments listResult = CommandLineParser.withArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args));
+		ParsedArguments arrayResult = CommandLineParser.withArguments(number).parse(args);
+		ParsedArguments iteratorResult = CommandLineParser.withArguments(Arrays.<Argument<?>>asList(number))
+				.parse(Arrays.asList(args).listIterator());
 
 		assertThat(listResult).isEqualTo(arrayResult);
 		assertThat(iteratorResult).isEqualTo(arrayResult);
@@ -114,7 +115,7 @@ public class CommandLineParserTest
 	{
 		Argument<Integer> number = integerArgument("--number").build();
 
-		CommandLineParser parser = CommandLineParser.forArguments(number);
+		CommandLineParser parser = CommandLineParser.withArguments(number);
 		ParsedArguments parsedArguments = parser.parse();
 
 		assertThat(parsedArguments).isNotEqualTo(null);
@@ -124,18 +125,18 @@ public class CommandLineParserTest
 
 		assertThat(parsedArguments.hashCode()).isEqualTo(parsedArgumentsTwo.hashCode());
 
-		assertThat(forArguments().parse()).isEqualTo(forArguments().parse());
+		assertThat(withArguments().parse()).isEqualTo(withArguments().parse());
 	}
 
 	@Test
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatNameCollisionAmongTwoDifferentArgumentsIsDetected()
 	{
 		Argument<Integer> numberOne = integerArgument("-n", "-s").build();
 		Argument<Integer> numberTwo = integerArgument("-t", "-s").build();
 		try
 		{
-			CommandLineParser.forArguments(numberOne, numberTwo);
+			CommandLineParser.withArguments(numberOne, numberTwo);
 			Fail.fail("Duplicate -s name not detected");
 		}
 		catch(IllegalArgumentException expected)
@@ -145,12 +146,28 @@ public class CommandLineParserTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testErrorHandlingForTwoIndexedParametersWithTheSameDefinition()
 	{
 		Argument<Integer> numberOne = integerArgument().build();
 		// There wouldn't be a way to know which argument numberOne referenced
-		CommandLineParser.forArguments(numberOne, numberOne);
+		CommandLineParser.withArguments(numberOne, numberOne);
+	}
+
+	@Test
+	public void testThatArgumentNotGivenIsIllegalArgument() throws ArgumentException
+	{
+		Argument<Integer> numberOne = integerArgument().build();
+		Argument<Integer> numberTwo = integerArgument().build();
+		try
+		{
+			CommandLineParser.withArguments(numberOne).parse().get(numberTwo);
+			fail("numberTwo should be illegal as only numberOne is handled");
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertThat(e).hasMessage(String.format(Texts.ILLEGAL_ARGUMENT, numberTwo));
+		}
 	}
 
 	/**

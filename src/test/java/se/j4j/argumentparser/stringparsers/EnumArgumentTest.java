@@ -12,6 +12,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.StringParsers;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Tests for {@link ArgumentFactory#enumArgument(Class, String...)} and
@@ -19,7 +20,7 @@ import se.j4j.argumentparser.StringParsers;
  */
 public class EnumArgumentTest
 {
-	enum Action
+	public enum Action
 	{
 		start,
 		stop,
@@ -61,6 +62,7 @@ public class EnumArgumentTest
 	static boolean staticEnumCodeHaveBeenRun = false;
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Only testing that static code hasn't run")
 	public void testThatEnumIsNotInitializedUntilParse()
 	{
 		enumArgument(ShouldNotInitialize.class, "-UselessParameter");

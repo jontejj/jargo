@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.j4j.argumentparser.utils.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class StringsUtilTest
@@ -43,7 +44,7 @@ public class StringsUtilTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatNoValidOptionsIsIllegal()
 	{
 		List<String> strings = asList();

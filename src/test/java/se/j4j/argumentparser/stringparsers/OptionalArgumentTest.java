@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentFactory;
+import se.j4j.argumentparser.internal.Texts;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Tests for {@link ArgumentFactory#optionArgument(String, String...)}
@@ -41,6 +43,20 @@ public class OptionalArgumentTest
 		assertThat(usage).contains("Default: enabled");
 
 		assertThat(optionArgument("--disable-logging").defaultValue(true).parse()).isTrue();
+	}
+
+	@Test
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "Checks enforcement of the annotation")
+	public void testThatNullIsNotAllowed()
+	{
+		try
+		{
+			optionArgument("--enable-logging").defaultValue(null);
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage(Texts.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)

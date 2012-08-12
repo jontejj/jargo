@@ -6,6 +6,7 @@ package se.j4j.argumentparser.stringparsers.custom;
 public class Port implements Comparable<Port>
 {
 	public final Integer port;
+	public int toStringCallCount = 0;
 
 	public Port(final int port)
 	{
@@ -46,7 +47,8 @@ public class Port implements Comparable<Port>
 	@Override
 	public String toString()
 	{
-		throw new IllegalStateException("Nefarious behavior not avoided");
+		toStringCallCount++;
+		return Integer.toString(port);
 	}
 
 }

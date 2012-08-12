@@ -2,4 +2,4 @@
 
 Usage: LimitedKeysAndLimitedValues [Options]
 -I<string>=<integer>    <string>=<integer>: where "<string>" is any of [foo, bar] and "<integer>" is 0 to 10
-                        Default: empty map
+                        Default: Empty map

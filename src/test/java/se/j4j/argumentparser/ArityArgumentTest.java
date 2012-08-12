@@ -13,9 +13,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.MissingNthParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.utils.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -31,7 +31,7 @@ public class ArityArgumentTest
 		Argument<List<Integer>> numbers = integerArgument("--numbers").arity(2).build();
 		Argument<List<String>> unhandledArguments = stringArgument().variableArity().build();
 
-		ParsedArguments parsed = CommandLineParser.forArguments(numbers, unhandledArguments).parse(args);
+		ParsedArguments parsed = CommandLineParser.withArguments(numbers, unhandledArguments).parse(args);
 
 		assertThat(parsed.get(numbers)).isEqualTo(Arrays.asList(5, 6));
 		assertThat(parsed.get(unhandledArguments)).isEqualTo(Arrays.asList("Rest", "Of", "Arguments"));
@@ -72,13 +72,13 @@ public class ArityArgumentTest
 	}
 
 	@Test
-	public void testThatErrorMessageForMissingParameterLooksGoodForFixedArityArguments() throws ArgumentException
+	public void testThatErrorMessageForMissingParameterLooksGoodForFixedArityArguments()
 	{
 		try
 		{
 			integerArgument("--numbers").arity(2).parse("--numbers", "5");
 		}
-		catch(MissingNthParameterException expected)
+		catch(ArgumentException expected)
 		{
 			assertThat(expected.getMessageAndUsage("MissingSecondParameter")).isEqualTo(expected("missingSecondParameter"));
 		}
@@ -91,7 +91,7 @@ public class ArityArgumentTest
 		Argument<List<Integer>> bar = integerArgument("--bar").arity(2).description("MetaDescShouldBeDisplayedTwoTimes").build();
 		Argument<List<Integer>> zoo = integerArgument("--zoo").variableArity().description("MetaDescShouldIndicateVariableAmount").build();
 		Argument<List<Integer>> boo = integerArgument().variableArity().description("MetaDescShouldIndicateVariableAmount").build();
-		String usage = CommandLineParser.forArguments(foo, bar, zoo, boo).usage("Arity");
+		String usage = CommandLineParser.withArguments(foo, bar, zoo, boo).usage("Arity");
 		assertThat(usage).isEqualTo(expected("metaDescriptionsForArityArgument"));
 	}
 
@@ -110,7 +110,7 @@ public class ArityArgumentTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatTwoUnnamedVariableArityArgumentsIsIllegal()
 	{
 		// This is illegal because the parser couldn't possibly know when the integerArgument ends
@@ -118,6 +118,6 @@ public class ArityArgumentTest
 		Argument<List<Integer>> numbers = integerArgument().variableArity().build();
 		Argument<List<String>> strings = stringArgument().variableArity().build();
 
-		CommandLineParser.forArguments(numbers, strings);
+		CommandLineParser.withArguments(numbers, strings);
 	}
 }

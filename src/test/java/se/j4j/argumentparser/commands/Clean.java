@@ -14,7 +14,7 @@ public class Clean extends Command
 	}
 
 	@Override
-	public String commandName()
+	protected String commandName()
 	{
 		return "clean";
 	}

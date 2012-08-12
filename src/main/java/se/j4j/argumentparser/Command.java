@@ -22,7 +22,7 @@ import com.google.common.base.Suppliers;
  * That is they execute a command and may support contextual arguments.
  * 
  * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}
- * or {@link CommandLineParser#forCommands(Command...)} if you have several commands. If you support several commands
+ * or {@link CommandLineParser#withCommands(Command...)} if you have several commands. If you support several commands
  * and a user enters several of them at the same time they will be executed in the order given by the user.
  * 
  * <b>Mutability note:</b> although a {@link Command}
@@ -36,6 +36,21 @@ import com.google.common.base.Suppliers;
 @Immutable
 public abstract class Command extends InternalStringParser<String> implements Description
 {
+	/**
+	 * The name that triggers this command. For several names override this with
+	 * {@link ArgumentBuilder#names(String...)}
+	 */
+	@Nonnull
+	@CheckReturnValue
+	protected abstract String commandName();
+
+	/**
+	 * Called when this command should be executed.
+	 * 
+	 * @param parsedArguments a container with parsed values for the {@link #commandArguments()}
+	 */
+	protected abstract void execute(@Nonnull ParsedArguments parsedArguments);
+
 	/**
 	 * <pre>
 	 * The arguments that is specific for this command.
@@ -55,16 +70,6 @@ public abstract class Command extends InternalStringParser<String> implements De
 	}
 
 	/**
-	 * At least one name should be used to trigger this Command.
-	 * For several names override this with {@link ArgumentBuilder#names(String...)}
-	 * 
-	 * @return the default name that this command uses
-	 */
-	@Nonnull
-	@CheckReturnValue
-	protected abstract String commandName();
-
-	/**
 	 * Override to provide a description to print in the usage text for this command.
 	 * This is essentially an alternative to {@link ArgumentBuilder#description(Description)}
 	 * 
@@ -77,25 +82,10 @@ public abstract class Command extends InternalStringParser<String> implements De
 		return "";
 	}
 
-	/**
-	 * Called when this command should be executed.
-	 * 
-	 * @param parsedArguments a container with parsed values for the {@link #commandArguments()}
-	 */
-	protected abstract void execute(@Nonnull ParsedArguments parsedArguments);
-
-	@Nonnull private final Supplier<CommandLineParser> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
-		@Override
-		public CommandLineParser get()
-		{
-			// TODO: if commandArguments().isEmpty then use cached instance
-			return new CommandLineParser(commandArguments(), true);
-		}
-	});
-
-	private CommandLineParser parser()
+	@Override
+	public String toString()
 	{
-		return commandArgumentParser.get();
+		return commandName();
 	}
 
 	@Override
@@ -108,14 +98,21 @@ public abstract class Command extends InternalStringParser<String> implements De
 								// command in the given input arguments
 	}
 
-	@Override
-	public String toString()
+	@Nonnull private final Supplier<CommandLineParser> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
+		@Override
+		public CommandLineParser get()
+		{
+			return CommandLineParser.createCommandParser(commandArguments());
+		}
+	});
+
+	private CommandLineParser parser()
 	{
-		return commandName();
+		return commandArgumentParser.get();
 	}
 
 	@Override
-	public final String defaultValue()
+	final String defaultValue()
 	{
 		return null;
 	}

@@ -38,7 +38,7 @@ public class CommandTest
 
 		BuildTarget target = new BuildTarget();
 
-		CommandLineParser.forCommands(new Build(target), new Clean(target)).parse(arguments);
+		CommandLineParser.withCommands(new Build(target), new Clean(target)).parse(arguments);
 
 		assertThat(target.isBuilt()).isTrue();
 		assertThat(target.isClean()).isTrue();
@@ -51,7 +51,7 @@ public class CommandTest
 		String[] commitArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
 
 		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo), new LogCommand(repo));
+		CommandLineParser parser = CommandLineParser.withCommands(new CommitCommand(repo), new LogCommand(repo));
 
 		// LogCommand
 		parser.parse(logArgs);
@@ -84,7 +84,7 @@ public class CommandTest
 	{
 		String[] combinedInvocation = {"log", "--limit", "30", "commit", "--author=jjonsson"};
 		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo), new LogCommand(repo));
+		CommandLineParser parser = CommandLineParser.withCommands(new CommitCommand(repo), new LogCommand(repo));
 
 		parser.parse(combinedInvocation);
 
@@ -119,7 +119,7 @@ public class CommandTest
 		String[] args = {"log", "-verbose", "commit"};
 		try
 		{
-			CommandLineParser.forArguments(COMMIT, LOG).parse(args);
+			CommandLineParser.withArguments(COMMIT, LOG).parse(args);
 			fail("-verbose should have been reported as an unhandled argument");
 		}
 		catch(ArgumentException expected)
@@ -158,7 +158,7 @@ public class CommandTest
 		String[] secondArgs = {"commit", "--author=nobody"};
 
 		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.forCommands(new CommitCommand(repo));
+		CommandLineParser parser = CommandLineParser.withCommands(new CommitCommand(repo));
 
 		parser.parse(firstArgs);
 		parser.parse(secondArgs);
@@ -171,7 +171,7 @@ public class CommandTest
 	public void testUsageForCommands()
 	{
 		BuildTarget target = new BuildTarget();
-		CommandLineParser parser = CommandLineParser.forCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
+		CommandLineParser parser = CommandLineParser.withCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
 		String usage = parser.usage("CommandUsage");
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
 	}
@@ -309,7 +309,7 @@ public class CommandTest
 	@Test
 	public void testMultipleCommandEachWithIndexedArguments() throws ArgumentException
 	{
-		CommandLineParser parser = CommandLineParser.forCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
+		CommandLineParser parser = CommandLineParser.withCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
 																	new CommandWithThreeIndexedArguments());
 
 		parser.parse("one_arg", "1", "two_args", "1", "2", "three_args", "1", "2", "3");
@@ -318,7 +318,7 @@ public class CommandTest
 	@Test
 	public void testThatCorrectCommandIsMentionedInErrorMessage()
 	{
-		CommandLineParser parser = CommandLineParser.forCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
+		CommandLineParser parser = CommandLineParser.withCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
 																	new CommandWithThreeIndexedArguments());
 		try
 		{

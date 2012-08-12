@@ -28,7 +28,7 @@ public class CommitCommand extends Command
 	}
 
 	@Override
-	public List<Argument<?>> commandArguments()
+	protected List<Argument<?>> commandArguments()
 	{
 		return ImmutableList.of(AMEND, AUTHOR, FILES);
 	}
@@ -40,7 +40,7 @@ public class CommitCommand extends Command
 	}
 
 	@Override
-	public String commandName()
+	protected String commandName()
 	{
 		return "commit";
 	}

@@ -13,6 +13,8 @@ import se.j4j.argumentparser.finalizers.AddBar;
 import se.j4j.argumentparser.finalizers.AddFoo;
 import se.j4j.argumentparser.internal.Finalizer;
 import se.j4j.argumentparser.limiters.FooLimiter;
+import se.j4j.argumentparser.utils.Explanation;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Tests for {@link Finalizer}
@@ -71,6 +73,7 @@ public class FinalizerTest
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatDefaultValueIsFinalizedBeforeLimitIsChecked()
 	{
 		stringArgument("-n").defaultValue("foo").finalizeWith(new AddBar()).limitTo(new FooLimiter()).build();

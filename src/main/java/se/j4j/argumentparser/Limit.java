@@ -14,7 +14,7 @@ public final class Limit
 	 * The singleton OK instance indicating that the value is within the
 	 * acceptable limits
 	 */
-	@Nonnull public static final Limit OK = new Limit(Descriptions.forString("OK"));
+	@Nonnull public static final Limit OK = new Limit(Descriptions.withString("OK"));
 
 	/**
 	 * <pre>
@@ -30,7 +30,7 @@ public final class Limit
 	@Nonnull
 	public static Limit notOk(@Nonnull String reason)
 	{
-		return new Limit(Descriptions.forString(reason));
+		return new Limit(Descriptions.withString(reason));
 	}
 
 	/**

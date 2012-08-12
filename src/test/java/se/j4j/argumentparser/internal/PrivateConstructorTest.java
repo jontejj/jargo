@@ -4,7 +4,6 @@ import static junit.framework.Assert.assertNotNull;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import org.junit.Test;
@@ -31,13 +30,8 @@ public class PrivateConstructorTest
 	 * Detects if a utility class isn't final or if its no-args constructor
 	 * isn't private. Also calls the constructor to get code coverage for it.
 	 */
-	@Test
-	public void callPrivateConstructorsForCodeCoverage() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			InvocationTargetException
+	public static void callPrivateConstructors(Class<?> ... classesToConstruct) throws Exception
 	{
-		Class<?>[] classesToConstruct = {ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class,
-				Finalizers.class, StringParsers.class, ArgumentExceptions.class, Describers.class, Texts.class};
-
 		for(Class<?> clazz : classesToConstruct)
 		{
 			assertThat(clazz.getModifiers() & Modifier.FINAL).as("Utility class " + clazz + " not final").isEqualTo(Modifier.FINAL);
@@ -48,5 +42,12 @@ public class PrivateConstructorTest
 			constructor.setAccessible(true);
 			assertNotNull(constructor.newInstance());
 		}
+	}
+
+	@Test
+	public void callForUtilityClasses() throws Exception
+	{
+		callPrivateConstructors(ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class, Finalizers.class,
+								StringParsers.class, ArgumentExceptions.class, Describers.class, Texts.class);
 	}
 }
