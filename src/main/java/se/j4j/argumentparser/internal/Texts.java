@@ -43,6 +43,8 @@ public final class Texts
 	/**
 	 * <pre>
 	 * Parameter %s = a list of all the arguments that is missing
+	 * 
+	 * For instance: "Missing required arguments: [-n, -a]
 	 */
 	public static final String MISSING_REQUIRED_ARGUMENTS = "Missing required arguments: %s";
 
@@ -104,10 +106,11 @@ public final class Texts
 	/**
 	 * <pre>
 	 * Parameters
-	 * 1st %s = the received value
-	 * 2nd %s = the expected separator
+	 * 1st %s = the property identifier (or argument name as it's usually called)
+	 * 2nd %s = the received value
+	 * 3rd %s = the expected separator
 	 */
-	public static final String MISSING_KEY_VALUE_SEPARATOR = "'%s' is missing an assignment operator(%s)";
+	public static final String MISSING_KEY_VALUE_SEPARATOR = "'%s%s' is missing an assignment operator(%s)";
 
 	// Error texts for programmatic errors
 
@@ -138,7 +141,7 @@ public final class Texts
 
 	/**
 	 * Parameter %s = a description of an argument that was passed twice to
-	 * {@link CommandLineParser#forArguments(se.j4j.argumentparser.Argument...)}
+	 * {@link CommandLineParser#withArguments(se.j4j.argumentparser.Argument...)}
 	 */
 	public static final String UNIQUE_ARGUMENT = "%s handles the same argument twice";
 
@@ -153,21 +156,24 @@ public final class Texts
 	public static final String TO_LITTLE_ARITY = "Arity requires at least 2 parameters (got %s)";
 
 	public static final String OPTIONS_REQUIRES_AT_LEAST_ONE_NAME = "An option requires at least one name, otherwise it wouldn't be useful.";
+	public static final String OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT = "Null is not allowed as a default value for an option argument. An option is either given or it's not. ";
 
 	public static final String NO_NAME_FOR_PROPERTY_MAP = "No leading identifier (otherwise called names), for example -D, specified for property map. Call names(...) to provide it.";
 
 	public static final String EMPTY_SEPARATOR = "In a key=value pair a separator of at least one character is required";
 
 	public static final String INVALID_META_DESCRIPTION = "a meta description can't be null/empty";
-	/**
-	 * Parameter %s = the default value
-	 */
-	public static final String DEFAULT_VALUE_AND_REQUIRED = "Having a requried argument and a default value makes no sense";
 
-	public static final String DEFAULT_VALUE_SET_IN_WRONG_ORDER = "The default value needs to be set after the %s invocation.";
-	public static final String DEFAULT_VALUE_DESCRIBER_SET_IN_WRONG_ORDER = "The default value describer needs to be set after the %s invocation.";
+	public static final String DEFAULT_VALUE_AND_REQUIRED = "Having a requried argument and a default value makes no sense";
+	public static final String INVALID_CALL_ORDER = "The %s needs to be set after the %s invocation.";
 	/**
 	 * Parameter %s = the program name that is requesting a usage text
 	 */
 	public static final String NO_USAGE_AVAILABLE = "No originParser set for ArgumentException. No usage available for %s";
+
+	/**
+	 * Parameter %s = the illegal argument that the {@link CommandLineParser} wasn't configured to
+	 * handle
+	 */
+	public static final String ILLEGAL_ARGUMENT = "%s was not found in this result at all. Did you perhaps forget to add it to withArguments(...)?";
 }

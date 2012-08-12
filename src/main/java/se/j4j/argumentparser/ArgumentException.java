@@ -18,7 +18,7 @@ public abstract class ArgumentException extends Exception
 {
 	// TODO: to enable proper behavior when serialized these needs to
 	// be transient (or Serializable and the usage needs to be transferred as a string
-	private CommandLineParser originParser;
+	private transient CommandLineParser originParser;
 	private String originArgumentName;
 
 	protected ArgumentException()
@@ -27,7 +27,7 @@ public abstract class ArgumentException extends Exception
 
 	/**
 	 * Alias for {@link #initCause(Throwable)}.<br>
-	 * Added simply because withMessage("Message").andCause(exception) flows better.
+	 * Added simply because {@code withMessage("Message").andCause(exception)} flows better.
 	 */
 	public final ArgumentException andCause(Throwable cause)
 	{

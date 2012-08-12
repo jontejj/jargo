@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
+import se.j4j.argumentparser.utils.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -37,7 +37,7 @@ public class SplitWithTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting an exception instead of a return")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatSplittingWithEmptyStringIsForbidden()
 	{
 		integerArgument("-n").splitWith("");
@@ -52,13 +52,13 @@ public class SplitWithTest
 	}
 
 	@Test
-	public void testThatMissingParameterForSplitArgumentLooksGoodInUsage() throws ArgumentException
+	public void testThatMissingParameterForSplitArgumentLooksGoodInUsage()
 	{
 		try
 		{
 			integerArgument("--numbers", "-n").splitWith(",").parse("-n");
 		}
-		catch(MissingParameterException expected)
+		catch(ArgumentException expected)
 		{
 			// As -n was given from the command line, that is what should be displayed to the user
 			assertThat(expected).hasMessage("Missing <integer> parameter for -n");

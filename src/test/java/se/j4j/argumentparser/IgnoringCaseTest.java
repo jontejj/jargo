@@ -31,4 +31,10 @@ public class IgnoringCaseTest
 		assertThat(numbers.get("small")).isEqualTo(1);
 		assertThat(numbers.get("big")).isEqualTo(5);
 	}
+
+	@Test(expected = ArgumentException.class)
+	public void testThatLowerCaseArgumentIsNotReturnedWhenNotIgnoringCase() throws ArgumentException
+	{
+		optionArgument("-help").parse("-Help");
+	}
 }

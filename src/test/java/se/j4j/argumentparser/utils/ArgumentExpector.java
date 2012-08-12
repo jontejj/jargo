@@ -62,7 +62,7 @@ public final class ArgumentExpector
 		public void given(String arguments) throws ArgumentException
 		{
 			actualArguments.addAll(Arrays.asList(arguments.split(" ")));
-			CommandLineParser parser = CommandLineParser.forArguments(arguments());
+			CommandLineParser parser = CommandLineParser.withArguments(arguments());
 			ParsedArguments parsedArguments = parser.parse(actualArguments);
 			for(Expectation<?> expectation : expectations)
 			{

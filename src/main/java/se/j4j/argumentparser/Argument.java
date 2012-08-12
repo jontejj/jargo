@@ -16,6 +16,7 @@ import se.j4j.argumentparser.ArgumentBuilder.SupplierOfInstance;
 import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
+import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.Finalizer;
 import se.j4j.argumentparser.internal.Texts;
 
@@ -55,6 +56,7 @@ public final class Argument<T> extends ArgumentSettings
 	private final boolean isPropertyMap;
 	private final boolean isAllowedToRepeat;
 	private final boolean hideFromUsage;
+	private final int parameterArity;
 
 	@Nonnull private final InternalStringParser<T> parser;
 
@@ -69,7 +71,7 @@ public final class Argument<T> extends ArgumentSettings
 		@Override
 		public CommandLineParser get()
 		{
-			return CommandLineParser.forArguments(Argument.this);
+			return CommandLineParser.withArguments(Argument.this);
 		}
 	});
 
@@ -86,7 +88,7 @@ public final class Argument<T> extends ArgumentSettings
 	 * </pre>
 	 * 
 	 * @return an Argument that can be given as input to
-	 *         {@link CommandLineParser#forArguments(Argument...)} and
+	 *         {@link CommandLineParser#withArguments(Argument...)} and
 	 *         {@link ParsedArguments#get(Argument)}
 	 */
 	Argument(@Nonnull final ArgumentBuilder<?, T> builder)
@@ -102,6 +104,7 @@ public final class Argument<T> extends ArgumentSettings
 		this.isAllowedToRepeat = builder.isAllowedToRepeat();
 		this.hideFromUsage = builder.isHiddenFromUsage();
 		this.metaDescription = builder.metaDescription();
+		this.parameterArity = builder.parameterArity();
 
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
@@ -120,7 +123,7 @@ public final class Argument<T> extends ArgumentSettings
 			};
 		}
 
-		// Fail-fast for invalid default values that's already created
+		// Fail-fast for invalid default values that already are created
 		if(defaultValue instanceof SupplierOfInstance<?>)
 		{
 			// Calling this makes sure that the default value is within the limits of any limiter
@@ -139,7 +142,7 @@ public final class Argument<T> extends ArgumentSettings
 	/**
 	 * Parses command line arguments and returns the value of this argument.<br>
 	 * This is a shorthand method that should be used if only one {@link Argument} is expected.
-	 * If several arguments are expected use {@link CommandLineParser#forArguments(Argument...)}
+	 * If several arguments are expected use {@link CommandLineParser#withArguments(Argument...)}
 	 * instead.
 	 * 
 	 * @param actualArguments the arguments from the command line
@@ -158,6 +161,18 @@ public final class Argument<T> extends ArgumentSettings
 	public String usage(@Nonnull String programName)
 	{
 		return commandLineParser().usage(programName);
+	}
+
+	/**
+	 * Describes {@link Argument}s by their first name. If they are indexed and have no name the
+	 * meta description is used instead.
+	 */
+	@Override
+	public String toString()
+	{
+		if(isIndexed())
+			return metaDescriptionInRightColumn();
+		return names().get(0);
 	}
 
 	@Nonnull
@@ -210,6 +225,18 @@ public final class Argument<T> extends ArgumentSettings
 	boolean isAllowedToRepeat()
 	{
 		return isAllowedToRepeat;
+	}
+
+	/**
+	 * {@link ArgumentFactory#optionArgument(String, String...)} returns 0<br>
+	 * {@link ArgumentBuilder#variableArity()} returns {@link VariableArityParser#VARIABLE_ARITY} <br>
+	 * {@link ArgumentBuilder#arity(int)} returns <code>numberOfParameters</code>
+	 * 
+	 * @return
+	 */
+	int parameterArity()
+	{
+		return parameterArity;
 	}
 
 	/**
@@ -280,6 +307,7 @@ public final class Argument<T> extends ArgumentSettings
 		return parser.metaDescriptionInRightColumn(this);
 	}
 
+	@Override
 	boolean isHiddenFromUsage()
 	{
 		return hideFromUsage;

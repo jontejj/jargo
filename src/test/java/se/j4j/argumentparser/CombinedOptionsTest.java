@@ -25,7 +25,7 @@ public class CombinedOptionsTest
 		Argument<Boolean> logging = optionArgument("-l").build();
 		Argument<Boolean> promiscousMode = optionArgument("-p").build();
 
-		ParsedArguments args = CommandLineParser.forArguments(logging, promiscousMode).parse("-pl");
+		ParsedArguments args = CommandLineParser.withArguments(logging, promiscousMode).parse("-pl");
 
 		assertThat(args.get(logging)).isTrue();
 		assertThat(args.get(promiscousMode)).isTrue();
@@ -37,7 +37,7 @@ public class CombinedOptionsTest
 		Argument<Boolean> logging = optionArgument("-l").build();
 		Argument<Integer> number = integerArgument("-n").build();
 
-		CommandLineParser.forArguments(logging, number).parse("-ln");
+		CommandLineParser.withArguments(logging, number).parse("-ln");
 	}
 
 	@Test(expected = UnexpectedArgumentException.class)
@@ -46,7 +46,7 @@ public class CombinedOptionsTest
 		Argument<Boolean> logging = optionArgument("-l").build();
 		Argument<Boolean> promiscousMode = optionArgument("-p").build();
 
-		CommandLineParser.forArguments(logging, promiscousMode).parse("-ppl");
+		CommandLineParser.withArguments(logging, promiscousMode).parse("-ppl");
 	}
 
 	@Test(expected = UnexpectedArgumentException.class)
@@ -88,7 +88,7 @@ public class CombinedOptionsTest
 			}
 		}).build();
 
-		ParsedArguments args = CommandLineParser.forArguments(programArgument, command).parse("test", "-lp", "1");
+		ParsedArguments args = CommandLineParser.withArguments(programArgument, command).parse("test", "-lp", "1");
 
 		// Also verify that the argument is parsed by it's rightful recipient
 		assertThat(args.get(programArgument)).isEqualTo(1);

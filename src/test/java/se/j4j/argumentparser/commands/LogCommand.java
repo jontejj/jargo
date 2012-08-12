@@ -23,7 +23,7 @@ public class LogCommand extends Command
 	}
 
 	@Override
-	public String commandName()
+	protected String commandName()
 	{
 		return "log";
 	}

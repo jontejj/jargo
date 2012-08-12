@@ -15,6 +15,8 @@ Usage: HelloWorld [Options]
                                                                        Default: Current time
 --double <double>                                                      <double>: -1.7976931348623157E308 to 1.7976931348623157E308
                                                                        Default: 0.0
+--enum <Action>                                                        <Action>: [start | stop | restart]
+                                                                       Default: null
 --file <path>                                                          <path>: a file path
                                                                        Default: The current directory
 --long <long>                                                          <long>: -9223372036854775808 to 9223372036854775807
@@ -27,8 +29,10 @@ Usage: HelloWorld [Options]
                                                                        Default: Empty list
 --string <string>                                                      <string>: any string
                                                                        Default: 
+--variableArity <integer> ...                                          <integer>: -2147483648 to 2147483647
+                                                                       Default: Empty list
 -B<string>=<boolean>                                                   <string>=<boolean>: where "<string>" is any string and "<boolean>" is true or false
-                                                                       Default: empty map
+                                                                       Default: Empty map
 -l, --enable-logging                                                   Output debug information to standard out
                                                                        Default: disabled
 -p, --listen-port <integer>                                            The port to start the server on. [Required]

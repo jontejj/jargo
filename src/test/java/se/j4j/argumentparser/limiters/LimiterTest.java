@@ -24,8 +24,11 @@ import se.j4j.argumentparser.Limit;
 import se.j4j.argumentparser.Limiter;
 import se.j4j.argumentparser.stringparsers.custom.Port;
 import se.j4j.argumentparser.stringparsers.custom.PortParser;
+import se.j4j.argumentparser.utils.Explanation;
 
 import com.google.common.collect.ImmutableList;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Test for {@link Limiter} and {@link ArgumentBuilder#limitTo(Limiter)}
@@ -47,7 +50,8 @@ public class LimiterTest
 		}
 		assertThat(limitedNumber.parse("4")).isEqualTo(4);
 
-		assertThat(integerArgument().limitTo(range(1, 3)).parse("2")).isEqualTo(2);
+		// TODO: how should an invalid default value be handled?
+		assertThat(integerArgument().limitTo(range(1, 3)).defaultValue(1).parse("2")).isEqualTo(2);
 	}
 
 	@Test(expected = ArgumentException.class)
@@ -77,6 +81,7 @@ public class LimiterTest
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatDefaultValuesAreLimited()
 	{
 		stringArgument("-n").limitTo(foos()).defaultValue("bar").build();
@@ -89,14 +94,16 @@ public class LimiterTest
 			@Override
 			public Limit withinLimits(Integer value)
 			{
-				return Limit.notOk(new Description(){
-					@Override
-					public String description()
-					{
-						fail("Description should not be called when it's not needed");
-						return "";
-					}
-				});
+				if(value.equals(1))
+					return Limit.notOk(new Description(){
+						@Override
+						public String description()
+						{
+							fail("Description should not be called when it's not needed");
+							return "";
+						}
+					});
+				return Limit.OK;
 			}
 
 			@Override
@@ -126,7 +133,8 @@ public class LimiterTest
 	@Test
 	public void testThatRangeLimiterDoesNotCallToStringOnComparedObjectsInVain() throws ArgumentException
 	{
-		Argument<Port> portArgument = withParser(new PortParser()).limitTo(range(Port.MIN, Port.MAX)).build();
+		Port min = new Port(1);
+		Argument<Port> portArgument = withParser(new PortParser()).limitTo(range(min, Port.MAX)).build();
 		try
 		{
 			portArgument.parse("-1");
@@ -134,17 +142,7 @@ public class LimiterTest
 		}
 		catch(ArgumentException expected)
 		{
-			// Should happen because -1 isn't within the range, not because Port.toString has a
-			// fault
-			try
-			{
-				expected.getMessage();
-				fail("Nefarious behavior not detected");
-			}
-			catch(IllegalStateException expectNefariousBehavior)
-			{
-				// Should happen because Port.toString has a fault
-			}
+			assertThat(min.toStringCallCount).isZero();
 		}
 		// Also make sure the range accepts valid ports
 		assertThat(portArgument.parse("2")).isEqualTo(new Port(2));

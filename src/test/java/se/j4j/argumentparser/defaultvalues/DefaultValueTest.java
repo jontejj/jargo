@@ -22,6 +22,8 @@ import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
+import se.j4j.argumentparser.Limiters;
+import se.j4j.argumentparser.utils.Explanation;
 
 import com.google.common.base.Supplier;
 
@@ -65,7 +67,17 @@ public class DefaultValueTest
 		stringArgument("-n").defaultValueSupplier(new BarSupplier()).limitTo(foos()).parse();
 	}
 
+	@Test
+	public void testThatDefaultValueSupplierIsNotUsedWhenArgumentIsGiven() throws ArgumentException
+	{
+		ProfilingSupplier profiler = new ProfilingSupplier();
+		int one = integerArgument().defaultValueSupplier(profiler).limitTo(Limiters.range(0, 10)).parse("1");
+		assertThat(one).isEqualTo(1);
+		assertThat(profiler.callsToGet).isZero();
+	}
+
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatInvalidDefaultValueInRepeatedArgumentIsInvalidatedDuringBuild()
 	{
 		// Throws because bar (which is given by BarSupplier) isn't foo
@@ -94,7 +106,7 @@ public class DefaultValueTest
 	}
 
 	@Test(expected = RuntimeException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "fail-fast during configuration phase")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatRequiredArgumentsCantHaveADefaultValueSupplier()
 	{
 		stringArgument("-n").required().defaultValueSupplier(new BarSupplier());
@@ -183,24 +195,28 @@ public class DefaultValueTest
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatSettingDefaultValueForValuesInAPropertyArgumentIsNotAllowed()
 	{
 		integerArgument("-n").defaultValue(1).asPropertyMap();
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatSettingDefaultValueDescriptionForValuesInAPropertyArgumentIsNotAllowed()
 	{
 		integerArgument("-n").defaultValueDescription("InvalidInvocation").asPropertyMap();
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatSettingDefaultValueForValuesInAKeyValueArgumentIsNotAllowed()
 	{
 		booleanArgument("-n").defaultValue(true).asKeyValuesWithKeyParser(integerParser());
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatSettingDefaultValueDescriptionForValuesInAKeyValueArgumentIsNotAllowed()
 	{
 		booleanArgument("-n").defaultValueDescription("InvalidInvocation").asKeyValuesWithKeyParser(integerParser());

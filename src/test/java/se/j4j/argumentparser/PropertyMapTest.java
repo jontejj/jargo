@@ -22,11 +22,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
-import se.j4j.argumentparser.StringParsers.KeyValueParser;
 import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
+import se.j4j.argumentparser.utils.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -55,7 +54,7 @@ public class PropertyMapTest
 		numberMap = integerArgument("-N", "-NS").asPropertyMap().parse("-None=1", "-NStwo=2");
 
 		assertThat(numberMap.get("one")).isEqualTo(1);
-		assertThat(numberMap.get("Stwo")).isEqualTo(2);
+		assertThat(numberMap.get("two")).isEqualTo(2);
 
 		numberMap = integerArgument("-N", "-D").asPropertyMap().parse("-Done=1", "-Ntwo=2");
 
@@ -69,7 +68,7 @@ public class PropertyMapTest
 		Argument<Map<String, Integer>> numberMap = integerArgument("-N").asPropertyMap().build();
 		Argument<Integer> number = integerArgument("-N").ignoreCase().build();
 
-		ParsedArguments parsed = CommandLineParser.forArguments(numberMap, number).parse("-None=1", "-Ntwo=2", "-N", "3");
+		ParsedArguments parsed = CommandLineParser.withArguments(numberMap, number).parse("-None=1", "-Ntwo=2", "-N", "3");
 
 		assertThat(parsed.get(numberMap).get("one")).isEqualTo(1);
 		assertThat(parsed.get(numberMap).get("two")).isEqualTo(2);
@@ -77,7 +76,7 @@ public class PropertyMapTest
 	}
 
 	@Test(expected = RuntimeException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Expecting fail-fast during construction")
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testPropertyMapWithoutLeadingIdentifier()
 	{
 		integerArgument().asPropertyMap().build();
@@ -93,7 +92,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.MISSING_KEY_VALUE_SEPARATOR, "-N3", "="));
+			assertThat(expected).hasMessage(String.format(Texts.MISSING_KEY_VALUE_SEPARATOR, "-N", "3", "="));
 		}
 	}
 
@@ -110,7 +109,7 @@ public class PropertyMapTest
 	{
 		Argument<Map<String, String>> fooArgument = stringArgument("-N").limitTo(foos()).asPropertyMap().build();
 
-		CommandLineParser parser = CommandLineParser.forArguments(fooArgument);
+		CommandLineParser parser = CommandLineParser.withArguments(fooArgument);
 		ParsedArguments parsed = parser.parse("-Nbar=foo");
 
 		assertThat(parsed.get(fooArgument).get("bar")).isEqualTo("foo");
@@ -144,7 +143,7 @@ public class PropertyMapTest
 		Argument<Map<String, Integer>> argument = integerArgument("-I").limitTo(range(0, 10))
 				.asKeyValuesWithKeyParser(new LimitedKeyParser("foo", "bar")).build();
 
-		CommandLineParser parser = CommandLineParser.forArguments(argument);
+		CommandLineParser parser = CommandLineParser.withArguments(argument);
 
 		try
 		{
@@ -191,6 +190,20 @@ public class PropertyMapTest
 	}
 
 	@Test
+	public void testInvalidationOfRepeatedValues()
+	{
+		try
+		{
+			integerArgument("-N").asKeyValuesWithKeyParser(integerParser()).parse("-N1=42", "-N1=43");
+			fail("-N keys should not be allowed to be repeated");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(Texts.UNALLOWED_REPETITION_OF_KEY, "-N", "1"));
+		}
+	}
+
+	@Test
 	public void testThatPropertyMapsAreUnmodifiable() throws ArgumentException
 	{
 		Map<String, Integer> numberMap = integerArgument("-N").asPropertyMap().parse("-None=1");
@@ -224,20 +237,6 @@ public class PropertyMapTest
 		catch(UnsupportedOperationException expected)
 		{
 		}
-	}
-
-	@Test
-	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "unreferenced in code path")
-	public void testThatKeyValueParserBehaveCivilizedWhenNoNamesMatchTheArgument() throws ArgumentException
-	{
-		// In all honesty, this is for code coverage:)
-		Argument<String> badArgument = stringArgument().build();
-		KeyValueParser<String, String> parser = new StringParsers.KeyValueParser<String, String>(null, null, Limiters.<String>noLimits());
-
-		ArgumentIterator arguments = ArgumentIterator.forSingleArgument("-Nfoo=bar");
-		Map<String, String> parsedResult = parser.parse(arguments, null, badArgument);
-
-		assertThat(parsedResult).isEmpty();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -276,8 +275,8 @@ public class PropertyMapTest
 	public void testDefaultValuesInUsageForPropertyMap()
 	{
 		Map<Byte, Byte> defaults = newLinkedHashMap();
-		defaults.put((byte) 0x0F, (byte) 0b1001);
-		defaults.put((byte) 0x0E, (byte) 0b0110);
+		defaults.put((byte) 3, (byte) 4);
+		defaults.put((byte) 1, (byte) 2);
 
 		String usage = byteArgument("-N").asKeyValuesWithKeyParser(byteParser()).separator(":").defaultValue(defaults).usage("");
 		assertThat(usage).isEqualTo(expected("defaultValuePropertyMap"));
@@ -291,6 +290,7 @@ public class PropertyMapTest
 	}
 
 	@Test(expected = IllegalStateException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatZeroCharacterSeparatorIsForbidden()
 	{
 		stringArgument("-N").separator("").asPropertyMap().build();

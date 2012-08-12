@@ -15,7 +15,7 @@ public final class Descriptions
 	 * Supplies an already created {@link String} as a {@link Description}.
 	 * Also useful for caching {@link Description}s that won't change.
 	 */
-	public static Description forString(@Nonnull String description)
+	public static Description withString(@Nonnull String description)
 	{
 		return new NonLazyDescription(description);
 	}
@@ -41,7 +41,7 @@ public final class Descriptions
 	/**
 	 * Returns an empty string as a description.
 	 */
-	public static final Description EMPTY_STRING = forString("");
+	public static final Description EMPTY_STRING = withString("");
 
 	private static final class NonLazyDescription implements Description
 	{
@@ -56,6 +56,12 @@ public final class Descriptions
 		public String description()
 		{
 			return description;
+		}
+
+		@Override
+		public String toString()
+		{
+			return description();
 		}
 	}
 
@@ -72,6 +78,12 @@ public final class Descriptions
 		public String description()
 		{
 			return value.toString();
+		}
+
+		@Override
+		public String toString()
+		{
+			return description();
 		}
 	}
 
@@ -90,6 +102,12 @@ public final class Descriptions
 		public String description()
 		{
 			return String.format(formattingTemplate, args);
+		}
+
+		@Override
+		public String toString()
+		{
+			return description();
 		}
 	}
 }

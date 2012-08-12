@@ -3,7 +3,7 @@ package se.j4j.argumentparser.api;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.CommandLineParser.forArguments;
+import static se.j4j.argumentparser.CommandLineParser.withArguments;
 import static se.j4j.argumentparser.Limiters.range;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class GreetingServer
 			.description("A greeting phrase to greet new connections with").build();
 
 	// Immutable and therefore also reusable parser
-	static final CommandLineParser parser = forArguments(GREETING_PHRASES, ENABLE_LOGGING, PORTS);
+	static final CommandLineParser parser = withArguments(GREETING_PHRASES, ENABLE_LOGGING, PORTS);
 
 	public static void main(String[] args)
 	{

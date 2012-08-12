@@ -2,6 +2,8 @@ package se.j4j.argumentparser;
 
 import static se.j4j.argumentparser.internal.StringsUtil.numberToPositionalString;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -31,7 +33,7 @@ public final class ArgumentExceptions
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static ArgumentException withMessage(final Object message)
+	public static ArgumentException withMessage(@Nonnull final Object message)
 	{
 		return new SimpleArgumentException(Descriptions.toString(message));
 	}
@@ -67,11 +69,9 @@ public final class ArgumentExceptions
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static MissingRequiredArgumentException forMissingArguments(final Collection<Argument<?>> missingArguments, final CommandLineParser parser)
+	static ArgumentException forMissingArguments(final Collection<Argument<?>> missingArguments, final CommandLineParser parser)
 	{
-		MissingRequiredArgumentException exception = new MissingRequiredArgumentException(missingArguments);
-		exception.originatedFrom(parser);
-		return exception;
+		return new MissingRequiredArgumentException(missingArguments).originatedFrom(parser);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public final class ArgumentExceptions
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static MissingParameterException forMissingParameter(ArgumentSettings argumentWithMissingParameter)
+	static ArgumentException forMissingParameter(ArgumentSettings argumentWithMissingParameter)
 	{
 		return new MissingParameterException(argumentWithMissingParameter);
 	}
@@ -109,14 +109,14 @@ public final class ArgumentExceptions
 	 * "-p 8080" is given<br>
 	 * Prints "Missing second &lt;Integer&gt; parameter for -p"
 	 * 
-	 * @param argumentWithMissingParameter the -p argument in this case
+	 * @param parameterDescription the &lt;Integer&gt; argument in this case
 	 * @param missingIndex 1 in this case
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static MissingNthParameterException forMissingNthParameter(ArgumentSettings argumentWithMissingParameter, int missingIndex)
+	static ArgumentException forMissingNthParameter(String parameterDescription, int missingIndex)
 	{
-		return new MissingNthParameterException(argumentWithMissingParameter, missingIndex);
+		return new MissingNthParameterException(parameterDescription, missingIndex);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public final class ArgumentExceptions
 	 *            further pinpoint where 3 is situated
 	 */
 	@Nonnull
-	static UnexpectedArgumentException forUnexpectedArgument(@Nonnull final ArgumentIterator arguments)
+	static ArgumentException forUnexpectedArgument(@Nonnull final ArgumentIterator arguments)
 	{
 		String unexpectedArgument = arguments.previous();
 		String previousArgument = null;
@@ -143,17 +143,16 @@ public final class ArgumentExceptions
 
 	static final class MissingParameterException extends ArgumentException
 	{
-		final ArgumentSettings argumentWithMissingParameter;
+		final String parameterDescription;
 
 		private MissingParameterException(ArgumentSettings argumentWithMissingParameter)
 		{
-			this.argumentWithMissingParameter = argumentWithMissingParameter;
+			this.parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
 		}
 
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
-			String parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
 			return String.format(Texts.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
 		}
 
@@ -163,21 +162,20 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
-	static final class MissingNthParameterException extends ArgumentException
+	private static final class MissingNthParameterException extends ArgumentException
 	{
-		private final ArgumentSettings argumentWithMissingParameter;
+		private final String parameterDescription;
 		private final int missingIndex;
 
-		private MissingNthParameterException(ArgumentSettings argumentWithMissingParameter, int missingIndex)
+		private MissingNthParameterException(String parameterDescription, int missingIndex)
 		{
-			this.argumentWithMissingParameter = argumentWithMissingParameter;
+			this.parameterDescription = parameterDescription;
 			this.missingIndex = missingIndex;
 		}
 
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
-			String parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
 			return String.format(	Texts.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
 									argumentNameOrcommandName);
 		}
@@ -188,13 +186,13 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
-	static final class MissingRequiredArgumentException extends ArgumentException
+	private static final class MissingRequiredArgumentException extends ArgumentException
 	{
-		private final Collection<Argument<?>> missingArguments;
+		private final String missingArguments;
 
 		private MissingRequiredArgumentException(final Collection<Argument<?>> missingArguments)
 		{
-			this.missingArguments = missingArguments;
+			this.missingArguments = missingArguments.toString();
 		}
 
 		@Override
@@ -239,9 +237,9 @@ public final class ArgumentExceptions
 		private static final long serialVersionUID = 1L;
 	}
 
-	static final class SimpleArgumentException extends ArgumentException
+	private static final class SimpleArgumentException extends ArgumentException
 	{
-		private final Description message;
+		private final transient Description message;
 
 		private SimpleArgumentException(final Description message)
 		{
@@ -252,6 +250,42 @@ public final class ArgumentExceptions
 		public String getMessage(String argumentNameOrcommandName)
 		{
 			return message.description();
+		}
+
+		private static final class SerializationProxy implements Serializable
+		{
+			/**
+			 * The detail message for this exception. Constructed lazily when serialized.
+			 * 
+			 * @serial
+			 */
+			private final String message;
+
+			private static final long serialVersionUID = 1L;
+
+			public SerializationProxy(SimpleArgumentException objectToSerialize)
+			{
+				message = objectToSerialize.message.description();
+			}
+
+			private Object readResolve()
+			{
+				return new SimpleArgumentException(Descriptions.withString(message));
+			}
+		}
+
+		Object writeReplace()
+		{
+			return new SerializationProxy(this);
+		}
+
+		/**
+		 * @param stream a stream that (wrongly so) tries to construct a SimpleArgumentException
+		 *            directly instead of going through the SerializationProxy
+		 */
+		private void readObject(ObjectInputStream stream) throws InvalidObjectException
+		{
+			throw new InvalidObjectException("Proxy required");
 		}
 
 		/**

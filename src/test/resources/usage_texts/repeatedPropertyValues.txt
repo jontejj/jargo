@@ -1,4 +1,4 @@
 Usage:  [Options]
 -N<string>=<integer>    Some measurement values [Supports Multiple occurrences]
                         <string>=<integer>: where "<string>" is any string and "<integer>" is -2147483648 to 2147483647
-                        Default: empty map
+                        Default: Empty map

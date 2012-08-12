@@ -76,6 +76,12 @@ public abstract class ForwardingStringParser<T> implements StringParser<T>
 		return delegate().metaDescription();
 	}
 
+	@Override
+	public String toString()
+	{
+		return descriptionOfValidValues();
+	}
+
 	/**
 	 * A {@link ForwardingStringParser} that uses an already created {@link StringParser} as its
 	 * delegate.

@@ -27,9 +27,39 @@ public final class Limiters
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static <C extends Comparable<C>> Limiter<C> range(C start, C end)
+	public static <C extends Comparable<C>> Limiter<C> range(@Nonnull C start, @Nonnull C end)
 	{
 		return new RangeLimiter<C>(Ranges.closed(start, end));
+	}
+
+	private static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
+	{
+		private final Range<C> range;
+
+		private RangeLimiter(final Range<C> rangeToLimitValuesTo)
+		{
+			this.range = rangeToLimitValuesTo;
+		}
+
+		@Override
+		public Limit withinLimits(C value)
+		{
+			if(range.contains(value))
+				return Limit.OK;
+			return Limit.notOk(Descriptions.format(Texts.OUT_OF_RANGE, value, range.lowerEndpoint(), range.upperEndpoint()));
+		}
+
+		@Override
+		public String descriptionOfValidValues()
+		{
+			return range.lowerEndpoint() + " to " + range.upperEndpoint();
+		}
+
+		@Override
+		public String toString()
+		{
+			return "RangeLimiter: " + descriptionOfValidValues();
+		}
 	}
 
 	/**
@@ -53,15 +83,17 @@ public final class Limiters
 		};
 	}
 
-	@Nonnull
-	@CheckReturnValue
-	static <E> Limiter<List<E>> forListValues(@Nonnull Limiter<E> elementLimiter)
-	{
-		if(elementLimiter == noLimits())
-			return noLimits();
-		return new ListValueLimiter<E>(elementLimiter);
-	}
+	// TODO: add public static <T> Limiter<T> forPredicate(final Predicate<T>
+	// predicateToExposeAsLimiter)
+	// or just use Predicate and use toString to print valid values,
+	// that would make it possible to remove Limit, Limiter & Limiters
 
+	/**
+	 * A <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">null object</a> {@link Limiter}
+	 * for parsed values that doesn't impose any limits
+	 * 
+	 * @param <T> the type of the parsed value
+	 */
 	@Nonnull
 	@CheckReturnValue
 	static <T> Limiter<T> noLimits()
@@ -70,6 +102,32 @@ public final class Limiters
 		@SuppressWarnings("unchecked")
 		Limiter<T> instance = (Limiter<T>) NoLimits.INSTANCE;
 		return instance;
+	}
+
+	private static final class NoLimits<T> implements Limiter<T>
+	{
+		private static final Limiter<?> INSTANCE = new NoLimits<Object>();
+
+		@Override
+		public Limit withinLimits(T value)
+		{
+			return Limit.OK;
+		}
+
+		@Override
+		public String descriptionOfValidValues()
+		{
+			throw new IllegalStateException("StringParser#descriptionOfValidValues() should be used instead");
+		}
+	}
+
+	@Nonnull
+	@CheckReturnValue
+	static <E> Limiter<List<E>> forListValues(@Nonnull Limiter<E> elementLimiter)
+	{
+		if(elementLimiter == noLimits())
+			return noLimits();
+		return new ListValueLimiter<E>(elementLimiter);
 	}
 
 	private static final class ListValueLimiter<E> implements Limiter<List<E>>
@@ -99,52 +157,4 @@ public final class Limiters
 			return elementLimiter.descriptionOfValidValues();
 		}
 	}
-
-	static final class RangeLimiter<C extends Comparable<C>> implements Limiter<C>
-	{
-		private final Range<C> range;
-
-		private RangeLimiter(final Range<C> rangeToLimitValuesTo)
-		{
-			this.range = rangeToLimitValuesTo;
-		}
-
-		@Override
-		public Limit withinLimits(C value)
-		{
-			if(range.contains(value))
-				return Limit.OK;
-			return Limit.notOk(Descriptions.format(Texts.OUT_OF_RANGE, value, range.lowerEndpoint(), range.upperEndpoint()));
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			return range.lowerEndpoint() + " to " + range.upperEndpoint();
-		}
-	}
-
-	/**
-	 * A null object {@link Limiter} for parsed values
-	 * that doesn't impose any limits
-	 * 
-	 * @param <T> the type of the parsed value
-	 */
-	private static final class NoLimits<T> implements Limiter<T>
-	{
-		private static final Limiter<?> INSTANCE = new NoLimits<Object>();
-
-		@Override
-		public Limit withinLimits(T value)
-		{
-			return Limit.OK;
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			throw new IllegalStateException("StringParser#descriptionOfValidValues() should be used instead");
-		}
-	}
-
 }

@@ -1,17 +1,23 @@
 package se.j4j.argumentparser;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.newIdentityHashMap;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
-import static com.google.common.collect.Sets.newLinkedHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
 import static java.lang.Math.max;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_NAMED;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_OF_VARIABLE_ARITY;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_REQUIRED;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_VISIBLE;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingArguments;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnallowedRepetitionArgument;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnexpectedArgument;
@@ -22,11 +28,11 @@ import static se.j4j.argumentparser.internal.StringsUtil.spaces;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.CheckReturnValue;
@@ -36,16 +42,12 @@ import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.ArgumentExceptions.MissingRequiredArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
-import se.j4j.argumentparser.StringParsers.OptionParser;
-import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.CharacterTrie;
 import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
@@ -66,7 +68,7 @@ import com.google.common.collect.UnmodifiableIterator;
  * 
  * try
  * {
- * 	ParsedArguments arguments = CommandLineParser.forArguments(greetingPhrase, enableLogging, port).parse(args);
+ * 	ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
  * 	assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
  * }
  * catch(ArgumentException exception)
@@ -99,18 +101,17 @@ public final class CommandLineParser
 	 */
 	@CheckReturnValue
 	@Nonnull
-	// TODO: rename to withArguments?
-	public static CommandLineParser forArguments(@Nonnull final Argument<?> ... argumentDefinitions)
+	public static CommandLineParser withArguments(@Nonnull final Argument<?> ... argumentDefinitions)
 	{
 		return new CommandLineParser(Arrays.asList(argumentDefinitions));
 	}
 
 	/**
-	 * @see #forArguments(Argument...)
+	 * @see #withArguments(Argument...)
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static CommandLineParser forArguments(@Nonnull final Iterable<Argument<?>> argumentDefinitions)
+	public static CommandLineParser withArguments(@Nonnull final Iterable<Argument<?>> argumentDefinitions)
 	{
 		return new CommandLineParser(copyOf(argumentDefinitions));
 	}
@@ -120,7 +121,7 @@ public final class CommandLineParser
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static CommandLineParser forCommands(@Nonnull final Command ... commands)
+	public static CommandLineParser withCommands(@Nonnull final Command ... commands)
 	{
 		List<Argument<?>> arguments = newArrayListWithCapacity(commands.length);
 		for(Command c : commands)
@@ -159,16 +160,37 @@ public final class CommandLineParser
 		return new Usage().withProgramName(programName);
 	}
 
+	/**
+	 * A list where arguments created without names is put
+	 */
+	@Nonnull private final List<Argument<?>> indexedArguments;
+
+	/**
+	 * A map containing short-named arguments, long-named arguments and named arguments that ignore
+	 * case
+	 */
+	@Nonnull private final NamedArguments namedArguments;
+
+	/**
+	 * Stores arguments that either has a special {@link ArgumentBuilder#separator()}, or is a
+	 * {@link ArgumentBuilder#asPropertyMap()}. Handles {@link ArgumentBuilder#ignoreCase()} as
+	 * well.
+	 */
+	@Nonnull private final SpecialArguments specialArguments;
+
+	@Nonnull private final Set<Argument<?>> allArguments;
+
+	/**
+	 * Used by {@link Command} to indicate that this parser is part of a {@link Command}
+	 */
+	private final boolean isCommandParser;
+
 	CommandLineParser(@Nonnull List<Argument<?>> argumentDefinitions, boolean isCommandParser)
 	{
 		namedArguments = new NamedArguments(argumentDefinitions.size());
+		specialArguments = new SpecialArguments();
 		indexedArguments = newArrayListWithCapacity(argumentDefinitions.size());
-		specialSeparatorArguments = CharacterTrie.newTrie();
-		ignoreCaseSpecialSeparatorArguments = CharacterTrie.newTrie();
-		requiredArguments = newLinkedHashSetWithExpectedSize(argumentDefinitions.size());
-		propertyMapArguments = CharacterTrie.newTrie();
-		ignoreCasePropertyMapArguments = CharacterTrie.newTrie();
-		allArguments = newHashSetWithExpectedSize(argumentDefinitions.size());
+		allArguments = newLinkedHashSetWithExpectedSize(argumentDefinitions.size());
 		this.isCommandParser = isCommandParser;
 		for(Argument<?> definition : argumentDefinitions)
 		{
@@ -186,46 +208,6 @@ public final class CommandLineParser
 		this(argumentDefinitions, false);
 	}
 
-	/**
-	 * A list where arguments created without names is put
-	 */
-	@Nonnull private final List<Argument<?>> indexedArguments;
-
-	/**
-	 * A map containing short-named arguments, long-named arguments and named arguments that ignore
-	 * case
-	 */
-	@Nonnull private final NamedArguments namedArguments;
-
-	/**
-	 * A map with arguments that has special {@link Argument#separator()}s
-	 */
-	@Nonnull private final CharacterTrie<Argument<?>> specialSeparatorArguments;
-
-	/**
-	 * A map with arguments that has special {@link Argument#separator()}s
-	 * and {@link Argument#isIgnoringCase()}
-	 */
-	@Nonnull private final CharacterTrie<Argument<?>> ignoreCaseSpecialSeparatorArguments;
-
-	@Nonnull private final CharacterTrie<Argument<?>> propertyMapArguments;
-
-	@Nonnull private final CharacterTrie<Argument<?>> ignoreCasePropertyMapArguments;
-
-	/**
-	 * If arguments are required, set by calling {@link Argument#required()} ,
-	 * and they aren't given on the command line, {@link MissingRequiredArgumentException} is
-	 * thrown when {@link #parse(String...)} is called.
-	 */
-	@Nonnull private final Set<Argument<?>> requiredArguments;
-
-	@Nonnull private final Set<Argument<?>> allArguments;
-
-	/**
-	 * Used by {@link Command} to indicate that this parser is part of a {@link Command}
-	 */
-	private final boolean isCommandParser;
-
 	private void addArgumentDefinition(@Nonnull final Argument<?> definition)
 	{
 		if(definition.isIndexed())
@@ -239,40 +221,27 @@ public final class CommandLineParser
 				addNamedArgumentDefinition(name, definition);
 			}
 		}
-		if(definition.isRequired())
-		{
-			requiredArguments.add(definition);
-		}
 		boolean added = allArguments.add(definition);
 		checkArgument(added, Texts.UNIQUE_ARGUMENT, definition);
 	}
 
-	private void addNamedArgumentDefinition(@Nonnull final String key, @Nonnull final Argument<?> definition)
+	private void addNamedArgumentDefinition(@Nonnull final String name, @Nonnull final Argument<?> definition)
 	{
 		Argument<?> oldDefinition = null;
 		String separator = definition.separator();
 		if(definition.isPropertyMap())
 		{
-			oldDefinition = propertyMapArguments.set(key, definition);
-			if(definition.isIgnoringCase())
-			{
-				// TODO: verify the usage of Locale.ENGLISH
-				ignoreCasePropertyMapArguments.set(key.toLowerCase(Locale.ENGLISH), definition);
-			}
+			oldDefinition = specialArguments.put(name, definition);
 		}
 		else if(separator != null)
 		{
-			oldDefinition = specialSeparatorArguments.set(key + separator, definition);
-			if(definition.isIgnoringCase())
-			{
-				ignoreCaseSpecialSeparatorArguments.set((key + separator).toLowerCase(Locale.ENGLISH), definition);
-			}
+			oldDefinition = specialArguments.put(name + separator, definition);
 		}
 		else
 		{
-			oldDefinition = namedArguments.put(key, definition);
+			oldDefinition = namedArguments.put(name, definition);
 		}
-		checkArgument(oldDefinition == null, Texts.NAME_COLLISION, key);
+		checkArgument(oldDefinition == null, Texts.NAME_COLLISION, name);
 	}
 
 	private void verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments()
@@ -311,12 +280,13 @@ public final class CommandLineParser
 	@Nonnull
 	ParsedArguments parse(@Nonnull ArgumentIterator arguments) throws ArgumentException
 	{
-		ParsedArgumentHolder holder = new ParsedArgumentHolder(requiredArguments);
+		ParsedArgumentHolder holder = new ParsedArgumentHolder(allArguments);
 
 		parseArguments(arguments, holder);
 
-		if(!holder.requiredArgumentsLeft.isEmpty())
-			throw forMissingArguments(holder.requiredArgumentsLeft, this);
+		Collection<Argument<?>> missingArguments = holder.requiredArgumentsLeft();
+		if(!missingArguments.isEmpty())
+			throw forMissingArguments(missingArguments, this);
 
 		for(Argument<?> arg : holder.parsedArguments.keySet())
 		{
@@ -384,52 +354,27 @@ public final class CommandLineParser
 		if(definition != null)
 			return definition;
 
-		String lowerCase = currentArgument.toLowerCase(Locale.ENGLISH);
-
-		// Property Maps
-		definition = propertyMapArguments.getLastMatch(currentArgument);
-		if(definition == null)
-		{
-			definition = ignoreCasePropertyMapArguments.getLastMatch(lowerCase);
-		}
-		if(definition != null)
-		{
-			arguments.previous();
-			return definition;
-		}
-
-		// Special separator arguments
-		CharSequence matchingKey;
-		definition = specialSeparatorArguments.getLastMatch(currentArgument);
-		if(definition != null)
-		{
-			matchingKey = specialSeparatorArguments.getMatchingKey(currentArgument);
-		}
-		else
-		{
-			definition = ignoreCaseSpecialSeparatorArguments.getLastMatch(lowerCase);
-			matchingKey = ignoreCaseSpecialSeparatorArguments.getMatchingKey(lowerCase);
-		}
-
-		if(definition != null)
+		// Property Maps & Special separator arguments
+		Map.Entry<CharSequence, Argument<?>> entry = specialArguments.get(currentArgument);
+		if(entry != null)
 		{
 			// Remove "--name=" from "--name=value"
-			String valueAfterSeparator = currentArgument.substring(matchingKey.length());
+			String valueAfterSeparator = currentArgument.substring(entry.getKey().length());
 			arguments.setNextArgumentTo(valueAfterSeparator);
-			return definition;
+			return entry.getValue();
 		}
 
 		// Batch of short-named optional arguments
 		// For instance, "-fs" was used instead of "-f -s"
 		if(currentArgument.startsWith("-") && currentArgument.length() > 1)
 		{
-			List<Character> optionCharacters = Lists.charactersOf(currentArgument.substring(1));
-			Set<Argument<?>> foundOptions = newLinkedHashSetWithExpectedSize(optionCharacters.size());
+			List<Character> givenCharacters = Lists.charactersOf(currentArgument.substring(1));
+			Set<Argument<?>> foundOptions = newLinkedHashSetWithExpectedSize(givenCharacters.size());
 			Argument<?> lastOption = null;
-			for(Character optionName : optionCharacters)
+			for(Character optionName : givenCharacters)
 			{
 				lastOption = namedArguments.get("-" + optionName);
-				if(lastOption == null || !(lastOption.parser() instanceof OptionParser) || !foundOptions.add(lastOption))
+				if(lastOption == null || lastOption.parameterArity() != 0 || !foundOptions.add(lastOption))
 				{
 					// Abort as soon we discover an unexpected character
 					break;
@@ -437,11 +382,14 @@ public final class CommandLineParser
 			}
 			// Only accept the argument if all characters could be matched and no duplicate
 			// characters were found
-			if(foundOptions.size() == optionCharacters.size())
+			if(foundOptions.size() == givenCharacters.size())
 			{
 				// The last option is handled with the return
 				foundOptions.remove(lastOption);
 
+				// A little ugly that this get method has side-effects but the alternative is to
+				// return a list of arguments to parse and as this should be a rare case it's not
+				// worth it
 				for(Argument<?> option : foundOptions)
 				{
 					parseArgument(arguments, holder, option);
@@ -455,7 +403,7 @@ public final class CommandLineParser
 		{
 			definition = indexedArguments.get(holder.indexedArgumentsParsed);
 			arguments.previous();
-			// To give better error explanations we use the meta description for indexed arguments
+			// This helps the error messages explain which of the indexed arguments that failed
 			if(isCommandParser())
 			{
 				arguments.setCurrentArgumentName(arguments.usedCommandName());
@@ -469,8 +417,8 @@ public final class CommandLineParser
 
 		if(isCommandParser())
 		{
-			// Rolling back here means that the next parser/command will receive the argument
-			// instead because maybe it can handle it
+			// Rolling back here means that parent parser/command will receive the argument
+			// instead, maybe it can handle it
 			arguments.previous();
 			return null;
 		}
@@ -519,7 +467,7 @@ public final class CommandLineParser
 
 		private final Joiner NAME_JOINER = Joiner.on(NAME_SEPARATOR);
 
-		private final List<Argument<?>> argumentsToPrint = newArrayListWithCapacity(allArguments.size());
+		private final Iterable<Argument<?>> argumentsToPrint = Iterables.filter(sortedArguments(), IS_VISIBLE);
 
 		/**
 		 * The builder to append usage texts to
@@ -539,12 +487,6 @@ public final class CommandLineParser
 
 		Usage()
 		{
-			for(Argument<?> arg : sortedArguments())
-				if(!arg.isHiddenFromUsage())
-				{
-					argumentsToPrint.add(arg);
-				}
-
 			indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 			builder = new StringBuilder(expectedUsageTextSize());
 		}
@@ -555,8 +497,8 @@ public final class CommandLineParser
 			Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
 			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, IS_NAMED));
 			// TODO: place commands last?
-			Collections.sort(sortedArgumentsByName, BY_FIRST_NAME);
-
+			// TODO: sort in a lexicographical way?
+			Collections.sort(sortedArgumentsByName);
 			return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
 		}
 
@@ -588,7 +530,7 @@ public final class CommandLineParser
 		private int expectedUsageTextSize()
 		{
 			// Two lines for each argument
-			return 2 * argumentsToPrint.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
+			return 2 * allArguments.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
 		}
 
 		@CheckReturnValue
@@ -609,7 +551,7 @@ public final class CommandLineParser
 			{
 				builder.append(Texts.USAGE_HEADER + programName);
 			}
-			if(!argumentsToPrint.isEmpty())
+			if(!isEmpty(argumentsToPrint))
 			{
 				builder.append(Texts.OPTIONS);
 				builder.append(NEWLINE);
@@ -693,16 +635,17 @@ public final class CommandLineParser
 			if(!description.isEmpty())
 			{
 				boolean isCommand = arg.parser() instanceof Command;
-				if(!isCommand)
+				if(isCommand)
 				{
-					String meta = arg.metaDescriptionInRightColumn();
-					builder.append(meta + ": ");
-				}
-				else
-				{
+					// For commands the validValues is a usage text itself for the command arguments
 					// +1 = indentation so that command options are tucked under the command
 					String spaces = spaces(indexOfDescriptionColumn + 1);
 					description = description.replace(NEWLINE, NEWLINE + spaces);
+				}
+				else
+				{
+					String meta = arg.metaDescriptionInRightColumn();
+					builder.append(meta + ": ");
 				}
 
 				builder.append(description);
@@ -749,15 +692,7 @@ public final class CommandLineParser
 		{
 			T value = holder.getValue(argumentToFetch);
 			if(value == null)
-			{
-				// TODO: if the argument wasn't given to the CommandLineParser it should'nt be able
-				// to modify here
-				T defaultValue = argumentToFetch.defaultValue();
-				holder.put(argumentToFetch, defaultValue);
-				// TODO: make this thread safe, this should always be run for arguments that isn't
-				// given
-				return defaultValue;
-			}
+				return argumentToFetch.defaultValue();
 
 			return value;
 		}
@@ -780,7 +715,7 @@ public final class CommandLineParser
 			if(this == obj)
 				return true;
 			if(!(obj instanceof ParsedArguments))
-				return false; // Final class so instance of is proper
+				return false;
 
 			ParsedArguments other = (ParsedArguments) obj;
 			return holder.isEqualTo(other.holder);
@@ -796,35 +731,35 @@ public final class CommandLineParser
 	static final class ParsedArgumentHolder
 	{
 		@Nonnull final Map<Argument<?>, Object> parsedArguments = newIdentityHashMap();
-		@Nonnull final Set<Argument<?>> requiredArgumentsLeft;
+		@Nonnull final Set<Argument<?>> allArguments;
 		/**
 		 * Keeps a running total of how many indexed arguments that have been parsed
 		 */
 		int indexedArgumentsParsed = 0;
 
-		ParsedArgumentHolder(Set<Argument<?>> requiredArguments)
+		ParsedArgumentHolder(Set<Argument<?>> arguments)
 		{
-			requiredArgumentsLeft = newLinkedHashSet(requiredArguments);
+			allArguments = arguments;
 		}
 
-		public <T> void put(@Nonnull final Argument<T> definition, @Nullable final T value)
+		<T> void put(@Nonnull final Argument<T> definition, @Nullable final T value)
 		{
-			if(definition.isRequired())
-			{
-				requiredArgumentsLeft.remove(definition);
-			}
-			if(definition.isIndexed() && !parsedArguments.containsKey(definition))
+			if(definition.isIndexed())
 			{
 				indexedArgumentsParsed++;
 			}
 			parsedArguments.put(definition, value);
 		}
 
-		public <T> T getValue(@Nonnull final Argument<T> definition)
+		<T> T getValue(@Nonnull final Argument<T> definition)
 		{
 			// Safe because put guarantees that the map is heterogeneous
 			@SuppressWarnings("unchecked")
 			T value = (T) parsedArguments.get(definition);
+			if(value == null)
+			{
+				checkArgument(allArguments.contains(definition), Texts.ILLEGAL_ARGUMENT, definition);
+			}
 			return value;
 		}
 
@@ -834,9 +769,14 @@ public final class CommandLineParser
 			return parsedArguments.toString();
 		}
 
-		public boolean isEqualTo(ParsedArgumentHolder other)
+		boolean isEqualTo(ParsedArgumentHolder other)
 		{
 			return parsedArguments.equals(other.parsedArguments);
+		}
+
+		Collection<Argument<?>> requiredArgumentsLeft()
+		{
+			return filter(allArguments, and(not(in(parsedArguments.keySet())), IS_REQUIRED));
 		}
 	}
 
@@ -958,19 +898,19 @@ public final class CommandLineParser
 	{
 		private final Map<String, Argument<?>> namedArguments;
 
-		public NamedArguments(int expectedSize)
+		NamedArguments(int expectedSize)
 		{
 			namedArguments = newHashMapWithExpectedSize(expectedSize);
 		}
 
-		public Argument<?> put(String name, Argument<?> definition)
+		Argument<?> put(String name, Argument<?> definition)
 		{
 			if(definition.isIgnoringCase())
 				return namedArguments.put(name.toLowerCase(Locale.ENGLISH), definition);
 			return namedArguments.put(name, definition);
 		}
 
-		public Argument<?> get(String name)
+		Argument<?> get(String name)
 		{
 			Argument<?> definition = namedArguments.get(name);
 			if(definition != null)
@@ -978,36 +918,59 @@ public final class CommandLineParser
 
 			String lowerCase = name.toLowerCase(Locale.ENGLISH);
 			definition = namedArguments.get(lowerCase);
-			return definition;
+			if(definition != null && definition.isIgnoringCase())
+				return definition;
+			return null;
 		}
 	}
 
-	// Predicates
+	private static final class SpecialArguments
+	{
+		private final CharacterTrie<Argument<?>> specialArguments;
 
-	private static final Predicate<ArgumentSettings> IS_NAMED = new Predicate<ArgumentSettings>(){
-		@Override
-		public boolean apply(ArgumentSettings input)
+		SpecialArguments()
 		{
-			return !input.isIndexed();
+			specialArguments = CharacterTrie.newTrie();
 		}
-	};
 
-	private static final Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = new Predicate<Argument<?>>(){
-		@Override
-		public boolean apply(Argument<?> input)
+		Argument<?> put(String name, Argument<?> definition)
 		{
-			return (input.parser() instanceof VariableArityParser);
+			// TODO: verify the usage of Locale.ENGLISH
+			if(definition.isIgnoringCase())
+				return specialArguments.put(name.toLowerCase(Locale.ENGLISH), definition);
+			return specialArguments.put(name, definition);
 		}
-	};
 
-	// Comparators
-
-	private static final Comparator<ArgumentSettings> BY_FIRST_NAME = new Comparator<ArgumentSettings>(){
-		@Override
-		public int compare(@Nonnull final ArgumentSettings one, @Nonnull final ArgumentSettings two)
+		Map.Entry<CharSequence, Argument<?>> get(String name)
 		{
-			String name = one.names().get(0);
-			return name.compareToIgnoreCase(two.names().get(0));
+			Entry<CharSequence, Argument<?>> entry = specialArguments.getLastMatchingEntry(name);
+			if(entry != null)
+				return entry;
+
+			String lowerCase = name.toLowerCase(Locale.ENGLISH);
+			entry = specialArguments.getLastMatchingEntry(lowerCase);
+			if(entry != null && entry.getValue().isIgnoringCase())
+				return entry;
+			return null;
 		}
-	};
+	}
+
+	static CommandLineParser createCommandParser(List<Argument<?>> commandArguments)
+	{
+		if(commandArguments.isEmpty())
+			return ParserCache.NO_ARG_COMMAND_PARSER;
+		return new CommandLineParser(commandArguments, true);
+	}
+
+	/**
+	 * Cache for commonly constructed parsers
+	 */
+	static final class ParserCache
+	{
+		private ParserCache()
+		{
+		}
+
+		static final CommandLineParser NO_ARG_COMMAND_PARSER = new CommandLineParser(Collections.<Argument<?>>emptyList(), true);
+	}
 }

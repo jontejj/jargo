@@ -69,14 +69,14 @@ public class UsageTextTest
 	public void testUsageForNoArguments()
 	{
 		// TODO: add possibility to add a description of the program as a whole
-		String usage = CommandLineParser.forArguments().usage("NoArguments");
+		String usage = CommandLineParser.withArguments().usage("NoArguments");
 		assertThat(usage).isEqualTo("Usage: NoArguments");
 	}
 
 	@Test
 	public void testUsageForNoVisibleArguments()
 	{
-		String usage = CommandLineParser.forArguments(integerArgument().hideFromUsage().build()).usage("NoVisibleArguments");
+		String usage = CommandLineParser.withArguments(integerArgument().hideFromUsage().build()).usage("NoVisibleArguments");
 		assertThat(usage).isEqualTo("Usage: NoVisibleArguments");
 	}
 
@@ -92,7 +92,7 @@ public class UsageTextTest
 	{
 		Argument<String> hiddenArgument = stringArgument("--hidden").hideFromUsage().build();
 		Argument<String> visibleArgument = stringArgument("--visible").build();
-		CommandLineParser parser = CommandLineParser.forArguments(hiddenArgument, visibleArgument);
+		CommandLineParser parser = CommandLineParser.withArguments(hiddenArgument, visibleArgument);
 		String usage = parser.usage("HiddenArgument");
 
 		assertThat(usage).isEqualTo(expected("hiddenArguments"));
@@ -140,7 +140,7 @@ public class UsageTextTest
 		Argument<String> indexThree = stringArgument().description("IndexThree").build();
 		Argument<String> namedOne = stringArgument("-S").build();
 		Argument<String> namedTwo = stringArgument("-T").build();
-		String usage = CommandLineParser.forArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage("SortingOfIndexedArguments");
+		String usage = CommandLineParser.withArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage("SortingOfIndexedArguments");
 
 		assertThat(usage).isEqualTo(expected("indexedArgumentsSortingOrder"));
 	}

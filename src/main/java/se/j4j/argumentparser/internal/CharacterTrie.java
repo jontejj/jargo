@@ -9,11 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
+
 /**
+ * Stores {@link CharSequence}s in a <a href="http://en.wikipedia.org/wiki/Trie">trie</a>
  * TODO: Move CharacterTrie into it's own project
  * 
  * @param <E> the type of values stored in the tree
  */
+@NotThreadSafe
 public final class CharacterTrie<E>
 {
 	private int size;
@@ -22,7 +28,7 @@ public final class CharacterTrie<E>
 	/**
 	 * An entry represents a node in the tree.
 	 */
-	private static final class Entry<E>
+	private static final class Entry<E> implements Map.Entry<CharSequence, E>
 	{
 		/**
 		 * The char the parent node will use to reference this child with
@@ -55,12 +61,29 @@ public final class CharacterTrie<E>
 			this.parent = parent;
 		}
 
-		/**
-		 * Set this entry as a value
-		 * 
-		 * @return old value, or null if no old value was set
-		 */
-		private E setValue(final E value)
+		@Override
+		public CharSequence getKey()
+		{
+			StringBuilder sb = new StringBuilder();
+			Entry<E> current = this;
+			while(!current.isRoot())
+			{
+				sb.append(current.index);
+				current = current.parent;
+			}
+			return sb.reverse().toString();
+		}
+
+		@Override
+		public E getValue()
+		{
+			if(!isValue)
+				throw new IllegalStateException(getKey() + " has no value associated with it");
+			return value;
+		}
+
+		@Override
+		public E setValue(final E value)
 		{
 			E oldValue = this.value;
 
@@ -68,6 +91,61 @@ public final class CharacterTrie<E>
 			this.value = value;
 
 			return oldValue;
+		}
+
+		/**
+		 * @return all the keys that have the same prefix as this entry,
+		 *         so for the root key all keys in the tree would be returned.
+		 */
+		public Set<CharSequence> keys()
+		{
+			Set<CharSequence> result = new HashSet<CharSequence>();
+			if(isValue)
+			{
+				result.add(this.getKey());
+			}
+			if(hasChildren())
+			{
+				for(Entry<E> child : children.values())
+				{
+					result.addAll(child.keys());
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * @return all the values in this node (recursively)
+		 */
+		public List<E> values()
+		{
+			List<E> result = new ArrayList<E>();
+			if(isValue)
+			{
+				result.add(this.value);
+			}
+			if(hasChildren())
+			{
+				for(Entry<E> child : children.values())
+				{
+					result.addAll(child.values());
+				}
+			}
+			return result;
+		}
+
+		@Override
+		public String toString()
+		{
+			return getKey() + " -> " + getValue();
+		}
+
+		public Map.Entry<CharSequence, E> getLastMatch(final CharSequence key)
+		{
+			Entry<E> child = findLastChild(key);
+			if(child.isValue)
+				return child;
+			return null;
 		}
 
 		/**
@@ -90,16 +168,12 @@ public final class CharacterTrie<E>
 
 		private boolean hasChildren()
 		{
-			if(children != null)
-				return children.size() > 0;
-			return false;
+			return children != null ? children.size() > 0 : false;
 		}
 
 		private Entry<E> getChild(final Character c)
 		{
-			if(children == null)
-				return null;
-			return children.get(c);
+			return children != null ? children.get(c) : null;
 		}
 
 		/**
@@ -168,18 +242,6 @@ public final class CharacterTrie<E>
 			children.remove(c);
 		}
 
-		private String keyName()
-		{
-			StringBuilder sb = new StringBuilder();
-			Entry<E> current = this;
-			while(!current.isRoot())
-			{
-				sb.append(current.index);
-				current = current.parent;
-			}
-			return sb.reverse().toString();
-		}
-
 		/**
 		 * Makes sure that a child that represents the given {@link childChar} is found in this
 		 * entry.
@@ -203,88 +265,9 @@ public final class CharacterTrie<E>
 			children.put(childChar, child);
 			return child;
 		}
-
-		/**
-		 * @return all the keys that have the same prefix as this entry,
-		 *         so for the root key all keys in the tree would be returned.
-		 */
-		public Set<String> keys()
-		{
-			Set<String> result = new HashSet<String>();
-			if(isValue)
-			{
-				result.add(this.keyName());
-			}
-			if(hasChildren())
-			{
-				for(Entry<E> child : children.values())
-				{
-					result.addAll(child.keys());
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * @return all the values in this node (recursively)
-		 */
-		public List<E> values()
-		{
-			List<E> result = new ArrayList<E>();
-			if(isValue)
-			{
-				result.add(this.value);
-			}
-			if(hasChildren())
-			{
-				for(Entry<E> child : children.values())
-				{
-					result.addAll(child.values());
-				}
-			}
-			return result;
-		}
-
-		@Override
-		public String toString()
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("{");
-			Set<String> keys = keys();
-			// Collections.sort(keys);
-			Iterator<String> keysIter = keys.iterator();
-			while(keysIter.hasNext())
-			{
-				String key = keysIter.next();
-				sb.append(key);
-				sb.append(" -> ");
-				sb.append(get(key));
-				if(keysIter.hasNext())
-				{
-					sb.append(", ");
-				}
-			}
-			sb.append("}");
-			return sb.toString();
-		}
-
-		public E getLastMatch(final CharSequence key)
-		{
-			Entry<E> child = findLastChild(key);
-			if(child.isValue)
-				return child.value;
-			return null;
-		}
-
-		public CharSequence getMatchingKey(CharSequence key)
-		{
-			Entry<E> child = findLastChild(key);
-			if(child.isValue)
-				return child.keyName();
-			return null;
-		}
 	}
 
+	@CheckReturnValue
 	public static <E> CharacterTrie<E> newTrie()
 	{
 		return new CharacterTrie<E>();
@@ -299,9 +282,10 @@ public final class CharacterTrie<E>
 	 * @param key
 	 * @return true if the given key can work as a key in a CharacterTrie
 	 */
-	public static boolean validKey(final CharSequence key)
+	@CheckReturnValue
+	public static boolean validKey(@Nonnull final CharSequence key)
 	{
-		return key != null && key.length() > 0;
+		return key != null;
 	}
 
 	/**
@@ -309,13 +293,12 @@ public final class CharacterTrie<E>
 	 * @param value the value
 	 * @return the old value associated with {@code key}, or null if no
 	 *         such association existed before
+	 * @throws NullPointerException if {@code key} is null
 	 */
-	public E set(final CharSequence key, final E value)
+	public E put(@Nonnull final CharSequence key, final E value)
 	{
-		if(key == null)
+		if(!validKey(key))
 			throw new IllegalArgumentException("As Null keys are errorprone they aren't supported in a CharacterTrie");
-		if(key.length() == 0)
-			throw new IllegalArgumentException("Empty keys aren't supported in a CharacterTrie as they are errorprone");
 
 		// Start at the root and search the tree for the entry to insert the
 		// final character into
@@ -335,6 +318,7 @@ public final class CharacterTrie<E>
 		return oldValue;
 	}
 
+	@CheckReturnValue
 	public int size()
 	{
 		return size;
@@ -344,7 +328,7 @@ public final class CharacterTrie<E>
 	 * @param key the key to delete from this tree
 	 * @return true if the key previously had a value in this tree
 	 */
-	public boolean delete(final CharSequence key)
+	public boolean remove(@Nonnull final CharSequence key)
 	{
 		// Start at the root and search the tree for the entry to delete
 		Entry<E> current = root;
@@ -386,7 +370,8 @@ public final class CharacterTrie<E>
 	 * @param key
 	 * @return true if the given key exists in the tree
 	 */
-	public boolean contains(final CharSequence key)
+	@CheckReturnValue
+	public boolean contains(@Nonnull final CharSequence key)
 	{
 		return root.get(key) != null;
 	}
@@ -396,7 +381,8 @@ public final class CharacterTrie<E>
 	 * @return the value stored for the given key, or null if no such value was
 	 *         found
 	 */
-	public E get(final CharSequence key)
+	@CheckReturnValue
+	public E get(@Nonnull final CharSequence key)
 	{
 		return root.get(key);
 	}
@@ -405,18 +391,10 @@ public final class CharacterTrie<E>
 	 * @param key
 	 * @return the entry that starts with the same characters as {@code key}
 	 */
-	public E getLastMatch(final CharSequence key)
+	@CheckReturnValue
+	public Map.Entry<CharSequence, E> getLastMatchingEntry(@Nonnull final CharSequence key)
 	{
 		return root.getLastMatch(key);
-	}
-
-	/**
-	 * @param key
-	 * @return a key that starts with the same characters as {@code key}
-	 */
-	public CharSequence getMatchingKey(final CharSequence key)
-	{
-		return root.getMatchingKey(key);
 	}
 
 	/**
@@ -432,7 +410,9 @@ public final class CharacterTrie<E>
 	/**
 	 * @return all the keys in this tree
 	 */
-	public Set<String> keys()
+	@CheckReturnValue
+	@Nonnull
+	public Set<CharSequence> keys()
 	{
 		return root.keys();
 	}
@@ -440,6 +420,8 @@ public final class CharacterTrie<E>
 	/**
 	 * @return all the values in this tree
 	 */
+	@CheckReturnValue
+	@Nonnull
 	public Collection<E> values()
 	{
 		return root.values();
@@ -450,6 +432,23 @@ public final class CharacterTrie<E>
 	{
 		if(root.children == null)
 			return "{}";
-		return root.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		Set<CharSequence> keys = keys();
+		// Collections.sort(keys);
+		Iterator<CharSequence> keysIter = keys.iterator();
+		while(keysIter.hasNext())
+		{
+			CharSequence key = keysIter.next();
+			sb.append(key);
+			sb.append(" -> ");
+			sb.append(get(key));
+			if(keysIter.hasNext())
+			{
+				sb.append(", ");
+			}
+		}
+		sb.append("}");
+		return sb.toString();
 	}
 }

@@ -8,6 +8,7 @@ import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
 import static se.j4j.argumentparser.ArgumentFactory.charArgument;
 import static se.j4j.argumentparser.ArgumentFactory.doubleArgument;
+import static se.j4j.argumentparser.ArgumentFactory.enumArgument;
 import static se.j4j.argumentparser.ArgumentFactory.fileArgument;
 import static se.j4j.argumentparser.ArgumentFactory.floatArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
@@ -36,11 +37,15 @@ import org.junit.Test;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.stringparsers.EnumArgumentTest.Action;
 import se.j4j.argumentparser.utils.UsageTexts;
+
+import com.google.common.base.Strings;
 
 public class ConcurrencyTest
 {
-	final Argument<Boolean> enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
+	final Argument<Boolean> enableLoggingArgument = optionArgument("-l", "--enable-logging").description("Output debug information to standard out")
+			.build();
 
 	final Argument<Integer> port = integerArgument("-p", "--listen-port").required().description("The port to start the server on.").build();
 
@@ -64,7 +69,7 @@ public class ConcurrencyTest
 
 	final Argument<Character> charArgument = charArgument("--char").build();
 
-	final Argument<Boolean> bool = booleanArgument("--bool").build();
+	final Argument<Boolean> boolArgument = booleanArgument("--bool").build();
 
 	final Argument<Map<String, Boolean>> propertyArgument = booleanArgument("-B").asPropertyMap().build();
 
@@ -74,10 +79,15 @@ public class ConcurrencyTest
 
 	final Argument<List<Float>> splittedArgument = floatArgument("--split").separator("=").splitWith(",").build();
 
+	final Argument<Action> enumArgument = enumArgument(Action.class, "--enum").build();
+
+	final Argument<List<Integer>> variableArityArgument = integerArgument("--variableArity").variableArity().build();
+
 	// The shared instance that the different threads will use
-	final CommandLineParser parser = CommandLineParser.forArguments(greetingPhrase, enableLogging, port, longArgument, bigInteger, date,
-																	doubleArgument, shortArgument, byteArgument, file, string, charArgument, bool,
-																	propertyArgument, arityArgument, repeatedArgument, splittedArgument);
+	final CommandLineParser parser = CommandLineParser.withArguments(	greetingPhrase, enableLoggingArgument, port, longArgument, bigInteger, date,
+																		doubleArgument, shortArgument, byteArgument, file, string, charArgument,
+																		boolArgument, propertyArgument, arityArgument, repeatedArgument,
+																		splittedArgument, enumArgument, variableArityArgument);
 
 	final String expectedUsageText = UsageTexts.expected("allFeaturesInUsage");
 
@@ -147,21 +157,29 @@ public class ConcurrencyTest
 			int portNumber = 8090 + offset;
 
 			DateTime time = DateTime.parse(new DateTime("2010-01-01").plusMillis(offset).toString());
+			char c = (char) (offset % Character.MAX_VALUE);
+			boolean bool = offset % 2 == 0;
+			String enableLogging = bool ? "-l " : "";
 			short shortNumber = (short) (1232 + offset);
 			byte byteNumber = (byte) (123 + offset);
 			long longNumber = 1234567890L + offset;
 			BigInteger bigNumber = BigInteger.valueOf(12312313212323L + offset);
 			double doubleNumber = 5.344343 + offset;
 			String str = "TjosanHejsan" + offset;
+			String action = Action.values()[offset % Action.values().length].toString();
 
 			Map<String, Boolean> propertyMap = new HashMap<String, Boolean>();
-			propertyMap.put("foo", true);
+			propertyMap.put("foo" + offset, true);
 			propertyMap.put("bar", false);
 
-			String inputArguments = "-l -p " + portNumber + " Hello --long " + longNumber + " --big " + bigNumber + " --date " + time + " --double "
-					+ doubleNumber + " --short " + shortNumber + " --byte " + byteNumber + " --file /Users/ --string " + str
-					+ " --char T --bool true -Bfoo=true -Bbar=false" + " --arity true false true false true false --repeated 1 --repeated " + offset
-					+ " --split=1.234," + (2.4343f + offset) + ",5.23232";
+			int amountOfVariableArity = offset % 10;
+			String variableArityIntegers = Strings.repeat(" " + portNumber, amountOfVariableArity);
+
+			String inputArguments = enableLogging + "-p " + portNumber + " Hello --long " + longNumber + " --big " + bigNumber + " --date " + time
+					+ " --double " + doubleNumber + " --short " + shortNumber + " --byte " + byteNumber + " --file /Users/ --string " + str
+					+ " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false"
+					+ " --arity true false true false true false --repeated 1 --repeated " + offset + " --split=1.234," + (2.4343f + offset)
+					+ ",5.23232" + " --enum " + action + " --variableArity" + variableArityIntegers;
 
 			try
 			{
@@ -177,7 +195,7 @@ public class ConcurrencyTest
 					// Let all threads assert at the same time
 					parseDone.await(10, TimeUnit.SECONDS);
 
-					checkThat(enableLogging).isEqualTo(true);
+					checkThat(enableLoggingArgument).isEqualTo(bool);
 					checkThat(port).isEqualTo(portNumber);
 					checkThat(greetingPhrase).isEqualTo("Hello");
 					checkThat(longArgument).isEqualTo(longNumber);
@@ -188,12 +206,14 @@ public class ConcurrencyTest
 					checkThat(byteArgument).isEqualTo(byteNumber);
 					checkThat(file).isEqualTo(new File("/Users/"));
 					checkThat(string).isEqualTo(str);
-					checkThat(charArgument).isEqualTo('T');
-					checkThat(bool).isEqualTo(true);
+					checkThat(charArgument).isEqualTo(c);
+					checkThat(boolArgument).isEqualTo(bool);
 					checkThat(arityArgument).isEqualTo(asList(true, false, true, false, true, false));
 					checkThat(repeatedArgument).isEqualTo(asList(1, offset));
 					checkThat(splittedArgument).isEqualTo(asList(1.234f, 2.4343f + offset, 5.23232f));
 					checkThat(propertyArgument).isEqualTo(propertyMap);
+					checkThat(enumArgument).isEqualTo(Action.valueOf(action));
+					assertThat(arguments.get(variableArityArgument)).hasSize(amountOfVariableArity);
 
 					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
 					{

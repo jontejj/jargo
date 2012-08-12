@@ -17,11 +17,14 @@ public final class Describers
 	}
 
 	/**
-	 * Always describes any value of type {@code T} with the given {@code description}
+	 * Always describes any value of type {@code T} with the given {@code constant}. For instance,
+	 * if you have implemented a time related parser and don't want different times
+	 * in the usage depending on when the usage is printed you could pass in "The current time",
+	 * then this describer would describe any time object with "The current time".
 	 */
-	public static <T> Describer<T> withStaticString(final String description)
+	public static <T> Describer<T> withConstantString(final String constant)
 	{
-		return new StaticStringDescriber<T>(description);
+		return new ConstantStringDescriber<T>(constant);
 	}
 
 	/**
@@ -49,9 +52,12 @@ public final class Describers
 		return EnabledDescriber.INSTANCE;
 	}
 
-	static <T> Describer<List<T>> forListValues(Describer<T> valueDescriber)
+	/**
+	 * Describes a boolean as on when true and off when false
+	 */
+	public static Describer<Boolean> booleanAsOnOff()
 	{
-		return new ListDescriber<T>(valueDescriber);
+		return OnOffDescriber.INSTANCE;
 	}
 
 	/**
@@ -73,6 +79,11 @@ public final class Describers
 				return describer.describe(input);
 			}
 		};
+	}
+
+	static <T> Describer<List<T>> forListValues(Describer<T> valueDescriber)
+	{
+		return new ListDescriber<T>(valueDescriber);
 	}
 
 	private static final class CharDescriber implements Describer<Character>
@@ -99,19 +110,19 @@ public final class Describers
 		}
 	}
 
-	private static final class StaticStringDescriber<T> implements Describer<T>
+	private static final class ConstantStringDescriber<T> implements Describer<T>
 	{
-		private final String description;
+		private final String constant;
 
-		private StaticStringDescriber(final String description)
+		private ConstantStringDescriber(final String constant)
 		{
-			this.description = description;
+			this.constant = constant;
 		}
 
 		@Override
 		public String describe(T value)
 		{
-			return description;
+			return constant;
 		}
 	}
 
@@ -123,6 +134,17 @@ public final class Describers
 		public String describe(Boolean value)
 		{
 			return value ? "enabled" : "disabled";
+		}
+	}
+
+	private static final class OnOffDescriber implements Describer<Boolean>
+	{
+		public static final Describer<Boolean> INSTANCE = new OnOffDescriber();
+
+		@Override
+		public String describe(Boolean value)
+		{
+			return value ? "on" : "off";
 		}
 	}
 
