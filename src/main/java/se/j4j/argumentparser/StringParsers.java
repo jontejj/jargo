@@ -60,7 +60,7 @@ public final class StringParsers
 	@Nonnull
 	public static StringParser<String> stringParser()
 	{
-		return StringStringParser.INSTANCE;
+		return StringStringParser.STRING;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class StringParsers
 	@Nonnull
 	public static StringParser<String> lowerCaseParser()
 	{
-		return LowerCaseStringParser.INSTANCE;
+		return StringStringParser.LOWER_CASE;
 	}
 
 	/**
@@ -250,18 +250,31 @@ public final class StringParsers
 		return OptionParser.DEFAULT_FALSE;
 	}
 
-	/**
-	 * Simple returns the strings it's given to parse
-	 */
-	private static final class StringStringParser implements StringParser<String>
+	private enum StringStringParser implements StringParser<String>
 	{
-		private static final StringParser<String> INSTANCE = new StringStringParser();
-
-		@Override
-		public String parse(final String value)
+		/**
+		 * Simple returns the strings it's given to parse
+		 */
+		STRING
 		{
-			return value;
-		}
+			@Override
+			public String parse(String value) throws ArgumentException
+			{
+				return value;
+			}
+		},
+		/**
+		 * Makes the strings it parses into lower case with the {@link Locale#getDefault()} locale.
+		 * TODO: make the Locale settable
+		 */
+		LOWER_CASE
+		{
+			@Override
+			public String parse(final String value)
+			{
+				return value.toLowerCase(Locale.getDefault());
+			}
+		};
 
 		@Override
 		public String descriptionOfValidValues()
@@ -624,39 +637,6 @@ public final class StringParsers
 		public String metaDescription()
 		{
 			return '<' + type.name() + '>';
-		}
-	}
-
-	/**
-	 * Makes the strings it parses into lower case with the {@link Locale#getDefault()} locale.
-	 * TODO: make the Locale settable
-	 */
-	private static final class LowerCaseStringParser implements StringParser<String>
-	{
-		private static final StringParser<String> INSTANCE = new LowerCaseStringParser();
-
-		@Override
-		public String parse(final String value)
-		{
-			return value.toLowerCase(Locale.getDefault());
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			return "any string";
-		}
-
-		@Override
-		public String defaultValue()
-		{
-			return "";
-		}
-
-		@Override
-		public String metaDescription()
-		{
-			return StringStringParser.INSTANCE.metaDescription();
 		}
 	}
 
