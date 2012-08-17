@@ -49,7 +49,8 @@ public class ConcurrencyTest
 
 	final Argument<Integer> port = integerArgument("-p", "--listen-port").required().description("The port to start the server on.").build();
 
-	final Argument<String> greetingPhrase = stringArgument().required().description("A greeting phrase to greet new connections with").build();
+	final Argument<String> greetingPhraseArgument = stringArgument().required().description("A greeting phrase to greet new connections with")
+			.build();
 
 	final Argument<Long> longArgument = longArgument("--long").build();
 
@@ -84,10 +85,11 @@ public class ConcurrencyTest
 	final Argument<List<Integer>> variableArityArgument = integerArgument("--variableArity").variableArity().build();
 
 	// The shared instance that the different threads will use
-	final CommandLineParser parser = CommandLineParser.withArguments(	greetingPhrase, enableLoggingArgument, port, longArgument, bigInteger, date,
-																		doubleArgument, shortArgument, byteArgument, file, string, charArgument,
-																		boolArgument, propertyArgument, arityArgument, repeatedArgument,
-																		splittedArgument, enumArgument, variableArityArgument);
+	final CommandLineParser parser = CommandLineParser.withArguments(	greetingPhraseArgument, enableLoggingArgument, port, longArgument,
+																		bigInteger,
+																		date, doubleArgument, shortArgument, byteArgument, file, string,
+																		charArgument, boolArgument, propertyArgument, arityArgument,
+																		repeatedArgument, splittedArgument, enumArgument, variableArityArgument);
 
 	final String expectedUsageText = UsageTexts.expected("allFeaturesInUsage");
 
@@ -156,6 +158,7 @@ public class ConcurrencyTest
 		{
 			int portNumber = 8090 + offset;
 
+			String greetingPhrase = "Hello" + offset;
 			DateTime time = DateTime.parse(new DateTime("2010-01-01").plusMillis(offset).toString());
 			char c = (char) (offset % Character.MAX_VALUE);
 			boolean bool = offset % 2 == 0;
@@ -165,7 +168,7 @@ public class ConcurrencyTest
 			long longNumber = 1234567890L + offset;
 			BigInteger bigNumber = BigInteger.valueOf(12312313212323L + offset);
 			double doubleNumber = 5.344343 + offset;
-			String str = "TjosanHejsan" + offset;
+			String str = "FooBar" + offset;
 			String action = Action.values()[offset % Action.values().length].toString();
 
 			Map<String, Boolean> propertyMap = new HashMap<String, Boolean>();
@@ -174,12 +177,14 @@ public class ConcurrencyTest
 
 			int amountOfVariableArity = offset % 10;
 			String variableArityIntegers = Strings.repeat(" " + portNumber, amountOfVariableArity);
+			List<Boolean> arityBooleans = asList(bool, bool, bool, bool, bool, bool);
+			String arityString = Strings.repeat(" " + bool, 6);
 
-			String inputArguments = enableLogging + "-p " + portNumber + " Hello --long " + longNumber + " --big " + bigNumber + " --date " + time
-					+ " --double " + doubleNumber + " --short " + shortNumber + " --byte " + byteNumber + " --file /Users/ --string " + str
-					+ " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false"
-					+ " --arity true false true false true false --repeated 1 --repeated " + offset + " --split=1.234," + (2.4343f + offset)
-					+ ",5.23232" + " --enum " + action + " --variableArity" + variableArityIntegers;
+			String inputArguments = enableLogging + "-p " + portNumber + " " + greetingPhrase + " --long " + longNumber + " --big " + bigNumber
+					+ " --date " + time + " --double " + doubleNumber + " --short " + shortNumber + " --byte " + byteNumber
+					+ " --file /Users/ --string " + str + " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false" + " --arity"
+					+ arityString + " --repeated 1 --repeated " + offset + " --split=1.234," + (2.4343f + offset) + ",5.23232" + " --enum " + action
+					+ " --variableArity" + variableArityIntegers;
 
 			try
 			{
@@ -197,7 +202,7 @@ public class ConcurrencyTest
 
 					checkThat(enableLoggingArgument).isEqualTo(bool);
 					checkThat(port).isEqualTo(portNumber);
-					checkThat(greetingPhrase).isEqualTo("Hello");
+					checkThat(greetingPhraseArgument).isEqualTo(greetingPhrase);
 					checkThat(longArgument).isEqualTo(longNumber);
 					checkThat(bigInteger).isEqualTo(bigNumber);
 					checkThat(date).isEqualTo(time);
@@ -208,7 +213,7 @@ public class ConcurrencyTest
 					checkThat(string).isEqualTo(str);
 					checkThat(charArgument).isEqualTo(c);
 					checkThat(boolArgument).isEqualTo(bool);
-					checkThat(arityArgument).isEqualTo(asList(true, false, true, false, true, false));
+					checkThat(arityArgument).isEqualTo(arityBooleans);
 					checkThat(repeatedArgument).isEqualTo(asList(1, offset));
 					checkThat(splittedArgument).isEqualTo(asList(1.234f, 2.4343f + offset, 5.23232f));
 					checkThat(propertyArgument).isEqualTo(propertyMap);
