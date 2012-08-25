@@ -45,7 +45,7 @@ public class IndexedArgumentTest
 		assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatIndexedArgumentThatIsRequiredIsGivenFirstBeforeAnyOptionalIndexedArguments()
 	{
@@ -54,8 +54,16 @@ public class IndexedArgumentTest
 		// and lastly indexed & optional arguments can be given
 		Argument<Integer> integer = integerArgument().build();
 		Argument<String> string = stringArgument().required().build();
-
-		CommandLineParser.withArguments(integer, string);
+		Argument<Integer> integerTwo = integerArgument().build();
+		try
+		{
+			CommandLineParser.withArguments(integer, string, integerTwo);
+			fail("string should have been forced to be placed before integer");
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertThat(e).hasMessage(String.format(Texts.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL, 0, 1));
+		}
 	}
 
 	@Test

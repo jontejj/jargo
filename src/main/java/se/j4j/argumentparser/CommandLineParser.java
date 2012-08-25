@@ -21,6 +21,7 @@ import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_VISIBLE;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingArguments;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnallowedRepetitionArgument;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnexpectedArgument;
+import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
 import static se.j4j.argumentparser.ArgumentFactory.command;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 import static se.j4j.argumentparser.internal.StringsUtil.spaces;
@@ -53,8 +54,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
 
 /**
- * Parses {@link Argument}s.
- * Starting point for the call chain:
+ * Manages multiple {@link Argument}s and/or {@link Command}s.
  * 
  * <pre>
  * {@code
@@ -69,7 +69,9 @@ import com.google.common.collect.UnmodifiableIterator;
  * try
  * {
  * 	ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
- * 	assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
+ * 	assertThat(arguments.get(enableLogging)).isTrue();
+ *        assertThat(arguments.get(port)).isEqualTo(8090);
+ *        assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
  * }
  * catch(ArgumentException exception)
  * {
@@ -82,13 +84,6 @@ import com.google.common.collect.UnmodifiableIterator;
  * If something goes wrong during the parsing (Missing required arguments, Unexpected arguments, Invalid values),
  * it will be described by the ArgumentException. Use {@link ArgumentException#getMessageAndUsage(String)} if you
  * want to explain what went wrong to the user.
- * 
- * @param argumentDefinitions {@link Argument}s produced with {@link ArgumentFactory} or
- * with your own disciples of {@link ArgumentBuilder}
- * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
- * and get {@link ParsedArguments} out of.
- * @throws IllegalArgumentException if two or more of the given arguments
- *             uses the same name (either short or long name)
  * </pre>
  */
 @Immutable
@@ -97,6 +92,12 @@ public final class CommandLineParser
 	/**
 	 * Creates a CommandLineParser with support for the given {@code argumentDefinitions}.
 	 * 
+	 * @param argumentDefinitions {@link Argument}s produced with {@link ArgumentFactory} or
+	 *            with your own disciples of {@link ArgumentBuilder}
+	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
+	 *         and get {@link ParsedArguments} out of.
+	 * @throws IllegalArgumentException if the given {@code argumentDefinitions} would create an
+	 *             erroneous CommandLineParser
 	 * @see CommandLineParser
 	 */
 	@CheckReturnValue
@@ -107,7 +108,7 @@ public final class CommandLineParser
 	}
 
 	/**
-	 * @see #withArguments(Argument...)
+	 * {@link Iterable} version of {@link #withArguments(Argument...)}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -160,6 +161,70 @@ public final class CommandLineParser
 		return new Usage().withProgramName(programName);
 	}
 
+	@Override
+	public String toString()
+	{
+		return usage("CommandLineParser#toString");
+	}
+
+	/**
+	 * Holds parsed arguments for a {@link CommandLineParser#parse(String...)} invocation.
+	 * Use {@link #get(Argument)} to fetch a parsed command line value.
+	 */
+	@Immutable
+	public static final class ParsedArguments
+	{
+		@Nonnull private final ParsedArgumentHolder holder;
+
+		private ParsedArguments(@Nonnull final ParsedArgumentHolder holder)
+		{
+			this.holder = holder;
+		}
+
+		/**
+		 * @param argumentToFetch
+		 * @return the parsed value for the given {@code argumentToFetch},
+		 *         if no value was given on the command line the {@link Argument#defaultValue()} is
+		 *         returned.
+		 */
+		@Nullable
+		@CheckReturnValue
+		public <T> T get(@Nonnull final Argument<T> argumentToFetch)
+		{
+			T value = holder.getValue(argumentToFetch);
+			if(value == null)
+				return argumentToFetch.defaultValue();
+
+			return value;
+		}
+
+		@Override
+		public String toString()
+		{
+			return holder.toString();
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return holder.parsedArguments.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(this == obj)
+				return true;
+			if(!(obj instanceof ParsedArguments))
+				return false;
+
+			ParsedArguments other = (ParsedArguments) obj;
+			return holder.isEqualTo(other.holder);
+		}
+	}
+
+	// End of public API
+
 	/**
 	 * A list where arguments created without names is put
 	 */
@@ -197,6 +262,7 @@ public final class CommandLineParser
 			addArgumentDefinition(definition);
 		}
 		verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments();
+		verifyUniqueMetasForRequiredAndIndexedArguments();
 
 		// How would one know when the first argument considers itself satisfied?
 		Collection<Argument<?>> unnamedVariableArityArguments = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
@@ -246,29 +312,34 @@ public final class CommandLineParser
 
 	private void verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments()
 	{
-		// Also verify that required & indexed arguments have unique meta descriptions, otherwise
-		// the error texts becomes ambiguous
-		Set<String> metasForRequiredAndIndexedArguments = newHashSetWithExpectedSize(indexedArguments.size());
-
-		int indexOfLastRequiredIndexedArgument = 0;
-		int indexOfFirstOptionalIndexedArgument = Integer.MAX_VALUE;
+		int lastRequiredIndexedArgument = 0;
+		int firstOptionalIndexedArgument = Integer.MAX_VALUE;
 		for(int i = 0; i < indexedArguments.size(); i++)
 		{
 			ArgumentSettings indexedArgument = indexedArguments.get(i);
 			if(indexedArgument.isRequired())
 			{
-				indexOfLastRequiredIndexedArgument = i;
-				String meta = indexedArgument.metaDescriptionInRightColumn();
-				boolean metaWasUnique = metasForRequiredAndIndexedArguments.add(meta);
-				checkArgument(metaWasUnique, Texts.UNIQUE_METAS, meta);
+				lastRequiredIndexedArgument = i;
 			}
-			else
+			else if(firstOptionalIndexedArgument == Integer.MAX_VALUE)
 			{
-				indexOfFirstOptionalIndexedArgument = i;
+				firstOptionalIndexedArgument = i;
 			}
 		}
-		checkArgument(	indexOfLastRequiredIndexedArgument <= indexOfFirstOptionalIndexedArgument, Texts.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
-						indexOfFirstOptionalIndexedArgument, indexOfLastRequiredIndexedArgument);
+		checkArgument(	lastRequiredIndexedArgument <= firstOptionalIndexedArgument, Texts.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
+						firstOptionalIndexedArgument, lastRequiredIndexedArgument);
+	}
+
+	private void verifyUniqueMetasForRequiredAndIndexedArguments()
+	{
+		// Otherwise the error texts becomes ambiguous
+		Set<String> metasForRequiredAndIndexedArguments = newHashSetWithExpectedSize(indexedArguments.size());
+		for(ArgumentSettings indexedArgument : filter(indexedArguments, IS_REQUIRED))
+		{
+			String meta = indexedArgument.metaDescriptionInRightColumn();
+			boolean metaWasUnique = metasForRequiredAndIndexedArguments.add(meta);
+			checkArgument(metaWasUnique, Texts.UNIQUE_METAS, meta);
+		}
 	}
 
 	@Nonnull
@@ -376,7 +447,7 @@ public final class CommandLineParser
 				lastOption = namedArguments.get("-" + optionName);
 				if(lastOption == null || lastOption.parameterArity() != 0 || !foundOptions.add(lastOption))
 				{
-					// Abort as soon we discover an unexpected character
+					// Abort as soon as an unexpected character is discovered
 					break;
 				}
 			}
@@ -417,7 +488,7 @@ public final class CommandLineParser
 
 		if(isCommandParser())
 		{
-			// Rolling back here means that parent parser/command will receive the argument
+			// Rolling back here means that the parent parser/command will receive the argument
 			// instead, maybe it can handle it
 			arguments.previous();
 			return null;
@@ -436,22 +507,19 @@ public final class CommandLineParser
 		return isCommandParser;
 	}
 
-	@Override
-	public String toString()
-	{
-		return usage("CommandLineParser#toString");
-	}
-
 	private <T> void limitArgument(@Nonnull Argument<T> arg, @Nonnull ParsedArgumentHolder holder) throws ArgumentException
 	{
 		try
 		{
 			arg.checkLimit(holder.getValue(arg));
 		}
+		catch(IllegalArgumentException e)
+		{
+			throw wrapException(e).originatedFrom(this);
+		}
 		catch(ArgumentException e)
 		{
-			e.originatedFrom(this);
-			throw e;
+			throw e.originatedFrom(this);
 		}
 	}
 
@@ -663,62 +731,6 @@ public final class CommandLineParser
 
 				builder.append(DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
 			}
-		}
-	}
-
-	/**
-	 * Holds parsed arguments for a {@link CommandLineParser#parse(String...)} invocation.
-	 * Use {@link #get(Argument)} to fetch a parsed command line value.
-	 */
-	@Immutable
-	public static final class ParsedArguments
-	{
-		@Nonnull private final ParsedArgumentHolder holder;
-
-		private ParsedArguments(@Nonnull final ParsedArgumentHolder holder)
-		{
-			this.holder = holder;
-		}
-
-		/**
-		 * @param argumentToFetch
-		 * @return the parsed value for the given {@code argumentToFetch},
-		 *         if no value was given on the command line the {@link Argument#defaultValue()} is
-		 *         returned.
-		 */
-		@Nullable
-		@CheckReturnValue
-		public <T> T get(@Nonnull final Argument<T> argumentToFetch)
-		{
-			T value = holder.getValue(argumentToFetch);
-			if(value == null)
-				return argumentToFetch.defaultValue();
-
-			return value;
-		}
-
-		@Override
-		public String toString()
-		{
-			return holder.toString();
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return holder.parsedArguments.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if(this == obj)
-				return true;
-			if(!(obj instanceof ParsedArguments))
-				return false;
-
-			ParsedArguments other = (ParsedArguments) obj;
-			return holder.isEqualTo(other.holder);
 		}
 	}
 

@@ -6,7 +6,6 @@ import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
-import se.j4j.argumentparser.Limiter;
 import se.j4j.argumentparser.StringParser;
 
 /**
@@ -28,7 +27,7 @@ public interface Finalizer<T>
 	/**
 	 * <b>Note:</b> this should not modify {@code value} in any way.
 	 * 
-	 * @param value the parsed value (not limited by any {@link Limiter} yet)
+	 * @param value the parsed value
 	 * @return the finalized value
 	 */
 	@CheckReturnValue

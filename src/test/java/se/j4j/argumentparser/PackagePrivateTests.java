@@ -53,24 +53,10 @@ public class PackagePrivateTests
 	}
 
 	@Test
-	public void testLimiterOkResponseToString()
-	{
-		assertThat(Limit.OK.toString()).isEqualTo("OK");
-	}
-
-	@Test
 	public void testThatOptionalArgumentDefaultsToTheGivenValue()
 	{
 		assertThat(optionParser(true).defaultValue()).isTrue();
 		assertThat(optionParser(false).defaultValue()).isFalse();
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void testThatNoLimitsCanNotPrintValidValues()
-	{
-		// Argument should fall back to StringParser#descriptionOfValidValues() instead when no
-		// limit is applied
-		Limiters.noLimits().descriptionOfValidValues();
 	}
 
 	@Test

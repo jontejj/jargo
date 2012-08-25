@@ -2,8 +2,6 @@ package se.j4j.argumentparser;
 
 import static se.j4j.argumentparser.internal.StringsUtil.numberToPositionalString;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -13,6 +11,7 @@ import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.Descriptions.SerializableDescription;
 import se.j4j.argumentparser.internal.Texts;
 
 /**
@@ -58,6 +57,18 @@ public final class ArgumentExceptions
 	static IllegalArgumentException asUnchecked(@Nonnull final ArgumentException cause)
 	{
 		return new UncheckedArgumentException(cause);
+	}
+
+	/**
+	 * Converts any {@link Throwable} into an {@link ArgumentException}.
+	 * Uses the detail message of {@code exceptionToWrap} as it's own detail message.
+	 * {@code exceptionToWrap} is also set as the cause of the created exception.
+	 */
+	@CheckReturnValue
+	@Nonnull
+	static ArgumentException wrapException(final Throwable exceptionToWrap)
+	{
+		return new WrappedArgumentException(exceptionToWrap);
 	}
 
 	/**
@@ -239,53 +250,17 @@ public final class ArgumentExceptions
 
 	private static final class SimpleArgumentException extends ArgumentException
 	{
-		private final transient Description message;
+		private final SerializableDescription message;
 
 		private SimpleArgumentException(final Description message)
 		{
-			this.message = message;
+			this.message = Descriptions.asSerializable(message);
 		}
 
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
 			return message.description();
-		}
-
-		private static final class SerializationProxy implements Serializable
-		{
-			/**
-			 * The detail message for this exception. Constructed lazily when serialized.
-			 * 
-			 * @serial
-			 */
-			private final String message;
-
-			private static final long serialVersionUID = 1L;
-
-			public SerializationProxy(SimpleArgumentException objectToSerialize)
-			{
-				message = objectToSerialize.message.description();
-			}
-
-			private Object readResolve()
-			{
-				return new SimpleArgumentException(Descriptions.withString(message));
-			}
-		}
-
-		Object writeReplace()
-		{
-			return new SerializationProxy(this);
-		}
-
-		/**
-		 * @param stream a stream that (wrongly so) tries to construct a SimpleArgumentException
-		 *            directly instead of going through the SerializationProxy
-		 */
-		private void readObject(ObjectInputStream stream) throws InvalidObjectException
-		{
-			throw new InvalidObjectException("Proxy required");
 		}
 
 		/**
@@ -308,6 +283,29 @@ public final class ArgumentExceptions
 		public String getMessage()
 		{
 			return cause.getMessage();
+		}
+
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
+	};
+
+	private static final class WrappedArgumentException extends ArgumentException
+	{
+		private final Throwable wrappedException;
+
+		WrappedArgumentException(final Throwable wrappedException)
+		{
+			this.wrappedException = wrappedException;
+			// TODO: verify cause
+			initCause(wrappedException);
+		}
+
+		@Override
+		protected String getMessage(String argumentNameOrcommandName)
+		{
+			return wrappedException.getMessage();
 		}
 
 		/**

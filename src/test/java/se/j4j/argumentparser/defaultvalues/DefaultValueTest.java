@@ -1,5 +1,6 @@
 package se.j4j.argumentparser.defaultvalues;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
@@ -22,10 +23,11 @@ import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
-import se.j4j.argumentparser.Limiters;
+import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.utils.Explanation;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.Ranges;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -60,28 +62,45 @@ public class DefaultValueTest
 		}).limitTo(foos()).parse();
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testThatInvalidDefaultValueSupplierValuesAreInvalidated() throws ArgumentException
 	{
-		// Throws because bar (which is given by BarSupplier) isn't foo
-		stringArgument("-n").defaultValueSupplier(new BarSupplier()).limitTo(foos()).parse();
+		try
+		{
+			// Throws because bar (which is given by BarSupplier) isn't foo
+			stringArgument("-n").defaultValueSupplier(new BarSupplier()).limitTo(foos()).parse();
+			fail("only foo should be allowed, not bar");
+		}
+		catch(IllegalStateException e)
+		{
+			assertThat(e).hasMessage(format(Texts.INVALID_DEFAULT_VALUE, format(Texts.UNALLOWED_VALUE, "bar", "foo")));
+		}
 	}
 
 	@Test
 	public void testThatDefaultValueSupplierIsNotUsedWhenArgumentIsGiven() throws ArgumentException
 	{
 		ProfilingSupplier profiler = new ProfilingSupplier();
-		int one = integerArgument().defaultValueSupplier(profiler).limitTo(Limiters.range(0, 10)).parse("1");
+		int one = integerArgument().defaultValueSupplier(profiler).limitTo(Ranges.closed(0, 10)).parse("1");
 		assertThat(one).isEqualTo(1);
 		assertThat(profiler.callsToGet).isZero();
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatInvalidDefaultValueInRepeatedArgumentIsInvalidatedDuringBuild()
 	{
-		// Throws because bar (which is given by BarSupplier) isn't foo
-		stringArgument("-n").defaultValue("bar").limitTo(foos()).repeated().build();
+		try
+		{
+			// Throws because bar (which is given by BarSupplier) isn't foo
+			stringArgument("-n").defaultValue("bar").limitTo(foos()).repeated().build();
+			fail("only foo should be allowed, not bar");
+		}
+		catch(IllegalStateException e)
+		{
+			assertThat(e).hasMessage(format(Texts.INVALID_DEFAULT_VALUE, format(Texts.UNALLOWED_VALUE, "bar", "foo")));
+			assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+		}
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

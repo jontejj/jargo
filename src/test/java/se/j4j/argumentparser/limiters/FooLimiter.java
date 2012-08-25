@@ -1,23 +1,22 @@
 package se.j4j.argumentparser.limiters;
 
-import se.j4j.argumentparser.Limit;
-import se.j4j.argumentparser.Limiter;
+import com.google.common.base.Predicate;
 
-public class FooLimiter implements Limiter<String>
+public class FooLimiter implements Predicate<String>
 {
-	public static Limiter<String> foos()
+	public static Predicate<String> foos()
 	{
 		return new FooLimiter();
 	}
 
 	@Override
-	public Limit withinLimits(String value)
+	public boolean apply(String value)
 	{
-		return "foo".equals(value) ? Limit.OK : Limit.notOk(value + " is not foo");
+		return "foo".equals(value);
 	}
 
 	@Override
-	public String descriptionOfValidValues()
+	public String toString()
 	{
 		return "foo";
 	}

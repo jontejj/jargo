@@ -49,15 +49,6 @@ public abstract class ArgumentException extends Exception
 	}
 
 	/**
-	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
-	 */
-	@Override
-	public final String getMessage()
-	{
-		return getMessage(originArgumentName);
-	}
-
-	/**
 	 * Returns why this exception occurred.
 	 * 
 	 * @param argumentNameOrcommandName if the argument that caused this exception to happen
@@ -66,6 +57,15 @@ public abstract class ArgumentException extends Exception
 	 *            otherwise the argument name that was used on the command line is used.
 	 */
 	protected abstract String getMessage(@Nonnull String argumentNameOrcommandName);
+
+	/**
+	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
+	 */
+	@Override
+	public final String getMessage()
+	{
+		return getMessage(originArgumentName);
+	}
 
 	final ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
 	{

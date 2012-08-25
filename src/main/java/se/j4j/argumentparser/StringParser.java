@@ -38,7 +38,8 @@ public interface StringParser<T>
 	String descriptionOfValidValues();
 
 	/**
-	 * Used when the {@link Argument} this parser is connected to wasn't given
+	 * Used when the {@link Argument} this parser is connected to wasn't given.
+	 * Used as a fall-back mechanism when {@link ArgumentBuilder#defaultValue(Object)} isn't used.
 	 */
 	@Nullable
 	T defaultValue();

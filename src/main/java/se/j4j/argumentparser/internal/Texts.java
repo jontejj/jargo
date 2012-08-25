@@ -69,6 +69,14 @@ public final class Texts
 	 */
 	public static final String UNALLOWED_REPETITION_OF_KEY = "'%s%s' was found as a key several times in the input.";
 
+	/**
+	 * <pre>
+	 * Parameters
+	 * 1st %s the unallowed value
+	 * 2nd %s description of valid values
+	 */
+	public static final String UNALLOWED_VALUE = "'%s' is not %s";
+
 	// StringParser errors
 
 	// TODO: specify which argument that failed

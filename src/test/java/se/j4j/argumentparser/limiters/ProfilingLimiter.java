@@ -1,22 +1,15 @@
 package se.j4j.argumentparser.limiters;
 
-import se.j4j.argumentparser.Limit;
-import se.j4j.argumentparser.Limiter;
+import com.google.common.base.Predicate;
 
-final class ProfilingLimiter<T> implements Limiter<T>
+final class ProfilingLimiter<T> implements Predicate<T>
 {
 	int limitationsMade;
 
 	@Override
-	public Limit withinLimits(T value)
+	public boolean apply(T value)
 	{
 		limitationsMade++;
-		return Limit.OK;
-	}
-
-	@Override
-	public String descriptionOfValidValues()
-	{
-		return "any value";
+		return true;
 	}
 }

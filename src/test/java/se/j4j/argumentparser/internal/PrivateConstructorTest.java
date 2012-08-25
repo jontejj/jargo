@@ -12,7 +12,6 @@ import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Describers;
 import se.j4j.argumentparser.Descriptions;
-import se.j4j.argumentparser.Limiters;
 import se.j4j.argumentparser.StringParsers;
 
 /**
@@ -47,7 +46,7 @@ public class PrivateConstructorTest
 	@Test
 	public void callForUtilityClasses() throws Exception
 	{
-		callPrivateConstructors(ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Limiters.class, Finalizers.class,
+		callPrivateConstructors(ArgumentFactory.class, Platform.class, StringsUtil.class, Descriptions.class, Predicates2.class, Finalizers.class,
 								StringParsers.class, ArgumentExceptions.class, Describers.class, Texts.class);
 	}
 }

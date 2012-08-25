@@ -4,7 +4,6 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CommandLineParser.withArguments;
-import static se.j4j.argumentparser.Limiters.range;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -20,6 +19,7 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.Charsets;
+import com.google.common.collect.Ranges;
 
 public class GreetingServer
 {
@@ -27,8 +27,8 @@ public class GreetingServer
 	static final Argument<Boolean> ENABLE_LOGGING = optionArgument("-l", "--enable-logging").description("Output debug information to standard out")
 			.build();
 
-	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(range(0, 65536)).defaultValue(10000).repeated()
-			.description("The port clients should connect to").metaDescription("port").build();
+	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(Ranges.closed(0, 65536)).defaultValue(10000)
+			.repeated().description("The port clients should connect to").metaDescription("port").build();
 
 	static final Argument<List<String>> GREETING_PHRASES = stringArgument().variableArity()
 			.description("A greeting phrase to greet new connections with").build();
