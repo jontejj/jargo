@@ -9,6 +9,7 @@ import static se.j4j.argumentparser.ArgumentExceptions.asUnchecked;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
+import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
 import static se.j4j.argumentparser.Descriptions.format;
 import static se.j4j.argumentparser.internal.Platform.NEWLINE;
 
@@ -34,6 +35,8 @@ import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -923,9 +926,9 @@ public final class StringParsers
 	{
 		@Nonnull private final InternalStringParser<V> valueParser;
 		@Nonnull private final StringParser<K> keyParser;
-		@Nonnull private final Limiter<V> valueLimiter;
+		@Nonnull private final Predicate<V> valueLimiter;
 
-		KeyValueParser(@Nonnull StringParser<K> keyParser, @Nonnull InternalStringParser<V> valueParser, @Nonnull Limiter<V> valueLimiter)
+		KeyValueParser(@Nonnull StringParser<K> keyParser, @Nonnull InternalStringParser<V> valueParser, @Nonnull Predicate<V> valueLimiter)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
@@ -954,10 +957,15 @@ public final class StringParsers
 			// Hide what we just did to the parser that handles the "value"
 			arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
 			V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
-
-			Limit limit = valueLimiter.withinLimits(parsedValue);
-			if(limit != Limit.OK)
-				throw withMessage(limit.reason());
+			try
+			{
+				if(!valueLimiter.apply(parsedValue))
+					throw withMessage(format(Texts.UNALLOWED_VALUE, parsedValue, valueLimiter));
+			}
+			catch(IllegalArgumentException e)
+			{
+				throw wrapException(e);
+			}
 
 			map.put(parsedKey, parsedValue);
 			return map;
@@ -991,9 +999,9 @@ public final class StringParsers
 			String valueMeta = '"' + valueParser.metaDescription(argumentSettings) + '"';
 			String keyDescription = keyParser.descriptionOfValidValues();
 			String valueDescription;
-			if(valueLimiter != Limiters.noLimits())
+			if(valueLimiter != Predicates.alwaysTrue())
 			{
-				valueDescription = valueLimiter.descriptionOfValidValues();
+				valueDescription = valueLimiter.toString();
 			}
 			else
 			{

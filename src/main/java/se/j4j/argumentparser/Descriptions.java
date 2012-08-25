@@ -1,5 +1,9 @@
 package se.j4j.argumentparser;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -36,6 +40,20 @@ public final class Descriptions
 	public static Description toString(@Nonnull Object value)
 	{
 		return new ToStringDescription(value);
+	}
+
+	/**
+	 * Creates an {@link IllegalArgumentException} where the {@link Description#description()} of
+	 * {@code message} is used as the detail message.
+	 */
+	public static IllegalArgumentException illegalArgument(Description message)
+	{
+		return new DescriptionException(message);
+	}
+
+	static SerializableDescription asSerializable(Description description)
+	{
+		return new SerializableDescription(description);
 	}
 
 	/**
@@ -109,5 +127,89 @@ public final class Descriptions
 		{
 			return description();
 		}
+	}
+
+	static final class SerializableDescription implements Serializable, Description
+	{
+		private final transient Description description;
+
+		private SerializableDescription(Description descriptionToSerialize)
+		{
+			description = descriptionToSerialize;
+		}
+
+		private static final class SerializationProxy implements Serializable
+		{
+			/**
+			 * The detail message for this description. Constructed lazily when serialized.
+			 * 
+			 * @serial
+			 */
+			private final String message;
+
+			private static final long serialVersionUID = 1L;
+
+			private SerializationProxy(Description descriptionToSerialize)
+			{
+				message = descriptionToSerialize.description();
+			}
+
+			private Object readResolve()
+			{
+				return new SerializableDescription(Descriptions.withString(message));
+			}
+		}
+
+		Object writeReplace()
+		{
+			return new SerializationProxy(this);
+		}
+
+		/**
+		 * @param stream a stream that (wrongly so) tries to construct a SerializableDescription
+		 *            directly instead of going through the SerializationProxy
+		 */
+		private void readObject(ObjectInputStream stream) throws InvalidObjectException
+		{
+			throw new InvalidObjectException("Proxy required");
+		}
+
+		@Override
+		public String description()
+		{
+			return description.description();
+		}
+
+		@Override
+		public String toString()
+		{
+			return description();
+		}
+
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
+	}
+
+	private static final class DescriptionException extends IllegalArgumentException
+	{
+		private final SerializableDescription message;
+
+		private DescriptionException(final Description message)
+		{
+			this.message = Descriptions.asSerializable(message);
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return message.description();
+		}
+
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
 	}
 }

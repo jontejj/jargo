@@ -8,7 +8,6 @@ import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.lowerCaseParser;
@@ -26,6 +25,10 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import se.j4j.argumentparser.utils.Explanation;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Ranges;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -140,7 +143,8 @@ public class PropertyMapTest
 	@Test
 	public void testLimitationOfPropertyMapKeysAndValues()
 	{
-		Argument<Map<String, Integer>> argument = integerArgument("-I").limitTo(range(0, 10))
+		Predicate<Integer> zeroToTen = Ranges.closed(0, 10);
+		Argument<Map<String, Integer>> argument = integerArgument("-I").limitTo(zeroToTen)
 				.asKeyValuesWithKeyParser(new LimitedKeyParser("foo", "bar")).build();
 
 		CommandLineParser parser = CommandLineParser.withArguments(argument);
@@ -163,7 +167,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException invalidBar)
 		{
-			assertThat(invalidBar).hasMessage("'-1' is not in the range 0 to 10");
+			assertThat(invalidBar).hasMessage(String.format(Texts.UNALLOWED_VALUE, -1, zeroToTen));
 		}
 	}
 
@@ -301,6 +305,13 @@ public class PropertyMapTest
 	{
 		String usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage("");
 		assertThat(usage).isEqualTo(expected("repeatedPropertyValues"));
+	}
+
+	@Test
+	public void testSeparatorInName() throws ArgumentException
+	{
+		Integer ten = integerArgument("-N;").separator(";").asPropertyMap().parse("-N;foo;10").get("foo");
+		assertThat(ten).isEqualTo(10);
 	}
 
 	@Test

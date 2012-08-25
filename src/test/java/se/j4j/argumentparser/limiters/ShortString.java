@@ -1,20 +1,17 @@
 package se.j4j.argumentparser.limiters;
 
-import se.j4j.argumentparser.Limit;
-import se.j4j.argumentparser.Limiter;
+import com.google.common.base.Predicate;
 
-public class ShortString implements Limiter<String>
+public class ShortString implements Predicate<String>
 {
 	@Override
-	public Limit withinLimits(final String value)
+	public boolean apply(final String value)
 	{
-		if(value.length() < 10)
-			return Limit.OK;
-		return Limit.notOk(value + " is longer than 10 characters");
+		return value.length() < 10;
 	}
 
 	@Override
-	public String descriptionOfValidValues()
+	public String toString()
 	{
 		return "a string of max 10 characters";
 	}

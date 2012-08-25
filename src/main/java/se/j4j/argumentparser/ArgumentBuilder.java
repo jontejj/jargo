@@ -12,6 +12,7 @@ import static se.j4j.argumentparser.Descriptions.withString;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.argumentparser.StringParsers.VariableArityParser.VARIABLE_ARITY;
+import static se.j4j.argumentparser.internal.Predicates2.forEach;
 
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,15 @@ import se.j4j.argumentparser.internal.Texts;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.Ranges;
 
 /**
  * <pre>
  * Responsible for building {@link Argument} instances.
- * Example builders can be created by {@link ArgumentFactory}.
+ * Example builders can be created through the {@link ArgumentFactory}.
  * 
  * <b>Note:</b>The code examples assumes that all methods in {@link ArgumentFactory} have been statically imported.
  * 
@@ -79,7 +82,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nullable private Supplier<T> defaultValueSupplier = null;
 	@Nullable private Describer<T> defaultValueDescriber = null;
 	@Nonnull private Finalizer<T> finalizer = Finalizers.noFinalizer();
-	@Nonnull private Limiter<T> limiter = Limiters.noLimits();
+	@Nonnull private Predicate<T> limiter = Predicates.alwaysTrue();
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
@@ -106,6 +109,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *         {@link CommandLineParser#withArguments(Argument...)} <br>
 	 *         When the parsing is done the parsed value for this
 	 *         argument can be fetched with {@link ParsedArguments#get(Argument)}.
+	 * @throws IllegalStateException if it's not possible to construct an {@link Argument} with the
+	 *             current settings
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -167,20 +172,21 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * <b>Note</b>: As commands sometimes gets long and hard to understand it's
-	 * recommended to also support long named arguments for the sake of
-	 * readability.
+	 * Specifies the argument names that triggers the argument being built. As commands sometimes
+	 * gets long and hard to understand it's recommended to also support long named arguments,
+	 * making the commands even longer but more readable instead <br>
+	 * <b>Note</b>: If you choice to use multiple {@link #required()} indexed arguments all of them
+	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages better
+	 * can point out erroneous arguments
 	 * 
 	 * @param argumentNames <ul>
 	 *            <li>"-o" for a short named option/argument</li>
 	 *            <li>"--option-name" for a long named option/argument</li>
 	 *            <li>"-o", "--option-name" to give the user both choices</li>
-	 *            <li>zero elements: the argument must be given at the same position on the command
-	 *            line as it is given to {@link CommandLineParser#withArguments(Argument...)} (not
-	 *            counting named arguments) which is <b>discouraged</b> because it makes your
-	 *            program arguments harder to read and makes your program less maintainable and
-	 *            harder to keep backwards compatible with old scripts as you can't change the order
-	 *            of the arguments without changing those scripts.</li>
+	 *            <li>zero elements: makes this an indexed argument, meaning that the argument must
+	 *            be given at the same position on the command line as it is given to
+	 *            {@link CommandLineParser#withArguments(Argument...)} (not counting named
+	 *            arguments).</li>
 	 *            </ul>
 	 * @return this builder
 	 */
@@ -203,8 +209,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * If used {@link CommandLineParser#parse(String...)} ignores the case of
-	 * the argument names set by {@link ArgumentBuilder#names(String...)}
+	 * Ignores the case of the argument names set by {@link ArgumentBuilder#names(String...)}
 	 * 
 	 * @return this builder
 	 */
@@ -221,7 +226,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * Provides a description of what this argument does/means
 	 * 
-	 * @param descriptionString
+	 * @param descriptionString the description to use
 	 * @return this builder
 	 */
 	public final SELF_TYPE description(@Nonnull final String descriptionString)
@@ -288,6 +293,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * Sets a supplier that can supply default values in the absence of this argument
 	 * 
+	 * Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
+	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
+	 * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.
+	 * 
 	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
 	 * 
 	 * Wrap your supplier with {@link Suppliers#memoize(Supplier)} if you want to cache created values.
@@ -320,8 +329,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * Provides a way to give the usage texts a better explanation of a default
-	 * value than {@link T#toString()} provides
+	 * {@link Describer} version of {@link #defaultValueDescription(String)}
 	 * 
 	 * @param describer a describer
 	 * @return this builder
@@ -392,14 +400,25 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Limits values parsed so that they conform to some specific rule.
-	 * For example {@link Limiters#range(Comparable, Comparable)} only
-	 * allows values within a range.
+	 * Only values for which {@link Predicate#apply(Object)} returns true, will be accepted.
+	 * Other values will cause an {@link ArgumentException}.
+	 * For example {@link Ranges#closed(Comparable, Comparable)} only allows values within a range.
+	 * 
+	 * To override the default error message that is generated with {@link Texts#UNALLOWED_VALUE}
+	 * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail
+	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage(String)}
+	 * 
+	 * <b>Note:</b>{@link Predicate#toString()} will replace {@link StringParser#descriptionOfValidValues()} in the usage
+	 * <b>Note:</b>The validity of {@link StringParser#defaultValue()} isn't checked until
+	 * it's actually needed when {@link ParsedArguments#get(Argument)} is called. This is so
+	 * because {@link StringParser#defaultValue()} could take an arbitrary long time.
 	 * </pre>
 	 * 
 	 * @param aLimiter a limiter
 	 * @return this builder
 	 */
-	public final SELF_TYPE limitTo(@Nonnull Limiter<T> aLimiter)
+	@Beta
+	public final SELF_TYPE limitTo(@Nonnull Predicate<T> aLimiter)
 	{
 		limiter = aLimiter;
 		return self();
@@ -657,7 +676,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nullable final Supplier<T> defaultValueSupplier(){ return defaultValueSupplier; }
 
 	@Nonnull final Finalizer<T> finalizer(){ return finalizer; }
-	@Nonnull final Limiter<T> limiter(){ return limiter; }
+	@Nonnull final Predicate<T> limiter(){ return limiter; }
 
 	/**
 	 * @formatter.on
@@ -733,7 +752,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			finalizeWith(Finalizers.forListValues(builder.finalizer));
 			finalizeWith(Finalizers.<T>unmodifiableListFinalizer());
 
-			limitTo(Limiters.forListValues(builder.limiter));
+			limitTo(forEach(builder.limiter));
 			if(builder.defaultValueSupplier != null)
 			{
 				defaultValueSupplier(new ListSupplier<T>(builder.defaultValueSupplier, nrOfElementsInDefaultValue));
@@ -937,8 +956,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 				separator("=");
 			}
 
-			// TODO: should names be checked so that they don't contain separator?
-
 			finalizeWith(Finalizers.<K, V>forMapValues(builder.finalizer));
 			finalizeWith(Finalizers.<K, V>unmodifiableMapFinalizer());
 
@@ -1025,6 +1042,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 		abstract boolean isHiddenFromUsage();
 
+		abstract int parameterArity();
+
 		boolean isIndexed()
 		{
 			return names().isEmpty();
@@ -1063,9 +1082,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			}
 		};
 
-		static final Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = new Predicate<Argument<?>>(){
+		static final Predicate<ArgumentSettings> IS_OF_VARIABLE_ARITY = new Predicate<ArgumentSettings>(){
 			@Override
-			public boolean apply(Argument<?> input)
+			public boolean apply(ArgumentSettings input)
 			{
 				return input.parameterArity() == VARIABLE_ARITY;
 			}

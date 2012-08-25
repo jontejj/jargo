@@ -45,7 +45,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	protected abstract String commandName();
 
 	/**
-	 * Called when this command should be executed.
+	 * Called when this command is encountered on the command line
 	 * 
 	 * @param parsedArguments a container with parsed values for the {@link #commandArguments()}
 	 */
@@ -92,8 +92,8 @@ public abstract class Command extends InternalStringParser<String> implements De
 	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings)
 			throws ArgumentException
 	{
-		ParsedArguments result = parser().parse(arguments);
-		execute(result);
+		ParsedArguments commandArguments = parser().parse(arguments);
+		execute(commandArguments);
 		return commandName(); // Can be used to check for the existence of this
 								// command in the given input arguments
 	}

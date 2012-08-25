@@ -1,7 +1,7 @@
 package se.j4j.argumentparser;
 
-import static com.google.common.base.Preconditions.checkState;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
+import static se.j4j.argumentparser.Descriptions.format;
 
 import java.util.List;
 
@@ -20,6 +20,8 @@ import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.Finalizer;
 import se.j4j.argumentparser.internal.Texts;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
@@ -53,19 +55,13 @@ public final class Argument<T> extends ArgumentSettings
 
 	private final boolean required;
 	private final boolean ignoreCase;
-	private final boolean isPropertyMap;
 	private final boolean isAllowedToRepeat;
 	private final boolean hideFromUsage;
-	private final int parameterArity;
 
 	@Nonnull private final InternalStringParser<T> parser;
-
 	@Nonnull private final Supplier<T> defaultValue;
-
 	@Nullable private final Describer<T> defaultValueDescriber;
-
-	@Nonnull private final Finalizer<T> finalizer;
-	@Nonnull private final Limiter<T> limiter;
+	@Nonnull private final Predicate<T> limiter;
 
 	@Nonnull private final Supplier<CommandLineParser> commandLineParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
 		@Override
@@ -74,6 +70,11 @@ public final class Argument<T> extends ArgumentSettings
 			return CommandLineParser.withArguments(Argument.this);
 		}
 	});
+
+	// Internal bookkeeping
+	@Nonnull private final Finalizer<T> finalizer;
+	private final int parameterArity;
+	private final boolean isPropertyMap;
 
 	private CommandLineParser commandLineParser()
 	{
@@ -183,8 +184,8 @@ public final class Argument<T> extends ArgumentSettings
 
 	String descriptionOfValidValues()
 	{
-		if(limiter != Limiters.noLimits())
-			return limiter.descriptionOfValidValues();
+		if(limiter != Predicates.alwaysTrue())
+			return limiter.toString();
 
 		return parser().descriptionOfValidValues(this);
 	}
@@ -234,15 +235,15 @@ public final class Argument<T> extends ArgumentSettings
 	 * 
 	 * @return
 	 */
+	@Override
 	int parameterArity()
 	{
 		return parameterArity;
 	}
 
 	/**
-	 * @return the default value for this argument, defaults to
-	 *         {@link InternalStringParser#defaultValue()}.
-	 *         Set by {@link ArgumentBuilder#defaultValue(Object)} or
+	 * @return the default value for this argument, defaults to {@link StringParser#defaultValue()}.
+	 *         Could also be set by {@link ArgumentBuilder#defaultValue(Object)} or
 	 *         {@link ArgumentBuilder#defaultValueSupplier(Supplier)}
 	 */
 	@Nullable
@@ -315,15 +316,24 @@ public final class Argument<T> extends ArgumentSettings
 
 	void checkLimit(@Nullable final T value) throws ArgumentException
 	{
-		Limit limit = limiter.withinLimits(value);
-		if(limit != Limit.OK)
-			throw withMessage(limit.reason());
+		if(!limiter.apply(value))
+			throw withMessage(format(Texts.UNALLOWED_VALUE, value, limiter));
 	}
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
 	{
-		Limit limit = limiter.withinLimits(value);
-		checkState(limit == Limit.OK, Texts.INVALID_DEFAULT_VALUE, limit.reason());
+		try
+		{
+			if(!limiter.apply(value))
+			{
+				String unallowedValue = String.format(Texts.UNALLOWED_VALUE, value, limiter.toString());
+				throw new IllegalStateException(String.format(Texts.INVALID_DEFAULT_VALUE, unallowedValue));
+			}
+		}
+		catch(IllegalArgumentException invalidDefaultValue)
+		{
+			throw new IllegalStateException(String.format(Texts.INVALID_DEFAULT_VALUE, invalidDefaultValue.getMessage()), invalidDefaultValue);
+		}
 	}
 
 	void finalizeValue(@Nonnull ParsedArgumentHolder holder)

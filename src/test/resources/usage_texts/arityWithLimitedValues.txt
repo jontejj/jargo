@@ -1,4 +1,4 @@
-bar is not foo
+'bar' is not foo
 
 Usage: OnlyAllowsFoo [Options]
 -f, --foos <string> <string>    <string>: foo [Required]

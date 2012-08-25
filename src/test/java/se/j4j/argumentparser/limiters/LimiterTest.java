@@ -1,32 +1,23 @@
 package se.j4j.argumentparser.limiters;
 
-import static com.google.common.collect.Collections2.filter;
-import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
-import static se.j4j.argumentparser.Limiters.asPredicate;
-import static se.j4j.argumentparser.Limiters.range;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 import static se.j4j.argumentparser.utils.UsageTexts.expected;
-
-import java.util.Collection;
 
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.Description;
-import se.j4j.argumentparser.Limit;
-import se.j4j.argumentparser.Limiter;
 import se.j4j.argumentparser.stringparsers.custom.Port;
 import se.j4j.argumentparser.stringparsers.custom.PortParser;
 import se.j4j.argumentparser.utils.Explanation;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ranges;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -38,7 +29,7 @@ public class LimiterTest
 	@Test
 	public void testRangeLimiter() throws ArgumentException
 	{
-		Argument<Integer> limitedNumber = integerArgument().limitTo(range(0, 4)).build();
+		Argument<Integer> limitedNumber = integerArgument().limitTo(Ranges.closed(0, 4)).build();
 		try
 		{
 			limitedNumber.parse("5");
@@ -50,8 +41,7 @@ public class LimiterTest
 		}
 		assertThat(limitedNumber.parse("4")).isEqualTo(4);
 
-		// TODO: how should an invalid default value be handled?
-		assertThat(integerArgument().limitTo(range(1, 3)).defaultValue(1).parse("2")).isEqualTo(2);
+		assertThat(integerArgument().limitTo(Ranges.closed(1, 3)).defaultValue(1).parse("2")).isEqualTo(2);
 	}
 
 	@Test(expected = ArgumentException.class)
@@ -87,41 +77,6 @@ public class LimiterTest
 		stringArgument("-n").limitTo(foos()).defaultValue("bar").build();
 	}
 
-	@Test(expected = ArgumentException.class)
-	public void testThatLimitersAreDescribable() throws ArgumentException
-	{
-		integerArgument("-n").limitTo(new Limiter<Integer>(){
-			@Override
-			public Limit withinLimits(Integer value)
-			{
-				if(value.equals(1))
-					return Limit.notOk(new Description(){
-						@Override
-						public String description()
-						{
-							fail("Description should not be called when it's not needed");
-							return "";
-						}
-					});
-				return Limit.OK;
-			}
-
-			@Override
-			public String descriptionOfValidValues()
-			{
-				return "Not used";
-			}
-		}).parse("-n", "1");
-	}
-
-	@Test
-	public void testThatLimitersCanBeUsedAsPredicates()
-	{
-		Collection<Integer> filteredNumbers = filter(asList(10, 20, 30), asPredicate(range(15, 60)));
-		// FilteredCollection in Guava doesn't implement equals
-		assertThat(ImmutableList.copyOf(filteredNumbers)).isEqualTo(asList(20, 30));
-	}
-
 	@Test
 	public void testThatLimiterIsNotCalledTooOften() throws ArgumentException
 	{
@@ -134,7 +89,7 @@ public class LimiterTest
 	public void testThatRangeLimiterDoesNotCallToStringOnComparedObjectsInVain() throws ArgumentException
 	{
 		Port min = new Port(1);
-		Argument<Port> portArgument = withParser(new PortParser()).limitTo(range(min, Port.MAX)).build();
+		Argument<Port> portArgument = withParser(new PortParser()).limitTo(Ranges.closed(min, Port.MAX)).build();
 		try
 		{
 			portArgument.parse("-1");
