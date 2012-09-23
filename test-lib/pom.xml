@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>projects</artifactId>
+        <groupId>se.j4j</groupId>
+        <version>1</version>
+        <relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>test-lib</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Test library</name>
+    <description>Reusable classes to use from other tests.</description>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${version.guava}</version>
+        </dependency>
+        <dependency>
+               <groupId>junit</groupId>
+               <artifactId>junit</artifactId>
+               <version>${version.junit}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>${version.fest.assert}</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,13 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>se.j4j</groupId>
+    <artifactId>projects</artifactId>
+    <version>1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>rfc-downloader</artifactId>
+  <name>Recursive RFC Downloader</name>
+  <description>Takes RFC numbers as arguments, downloads these rfcs, puts them in their own directories and then it also downloads RFC's that they reference and puts them together with the origin RFC </description>
+  <packaging>jar</packaging>
+</project>
