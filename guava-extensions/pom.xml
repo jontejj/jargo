@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>projects</artifactId>
+        <groupId>se.j4j</groupId>
+        <version>1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>guava-extensions</artifactId>
+    <version>${version.guava.extensions}</version>
+    <name>Guava extensions</name>
+    <description>Adds implementation of guava interfaces such as Function, Supplier, Predicate</description>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${version.guava}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.j4j</groupId>
+            <artifactId>strings</artifactId>
+            <version>${version.strings}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.j4j</groupId>
+            <artifactId>test-lib</artifactId>
+            <version>${version.testlib}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
