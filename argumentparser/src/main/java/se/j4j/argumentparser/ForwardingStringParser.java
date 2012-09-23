@@ -11,32 +11,35 @@ import javax.annotation.concurrent.Immutable;
  * 
  * For instance, a parser that's useful in a garden application could look like this:
  * 
- * {@code private static final class WateringParser extends SimpleForwardingStringParser<Integer>
+ * <pre class="prettyprint">
+ * <code class="language-java">
+ * private static final class WateringParser extends SimpleForwardingStringParser<Integer>
  * {
- * 	WateringParser()
- * 	{
- * 		super(StringParsers.integerParser());
- * 	}
+ *   WateringParser()
+ *   {
+ *     super(StringParsers.integerParser());
+ *   }
  * 
- * 	public Integer parse(String value) throws ArgumentException
- * 	{
- * 		waterPlants();
- * 		return super.parse(value);
- * 	}
+ *   public Integer parse(String value) throws ArgumentException
+ *   {
+ *     waterPlants();
+ *     return super.parse(value);
+ *   }
  * 
- * 	private void waterPlants()
- * 	{
- * 		System.out.println("Watering plants");
- * 	}
+ *   private void waterPlants()
+ *   {
+ *     System.out.println("Watering plants");
+ *   }
  * }
- * }
+ * </code>
+ * </pre>
  * 
- * This WateringParser can then be integrated with an argument via the {@link ArgumentFactory#withParser(StringParser)} method.
- * 
+ * This WateringParser can then be integrated with an argument via
+ * {@link ArgumentFactory#withParser(StringParser)}.
  * Most subclasses can just use {@link SimpleForwardingStringParser}.
  * 
  * @param <T> the type the decorated {@link StringParser} handles
- * </pre>
+ *            </pre>
  */
 @Immutable
 public abstract class ForwardingStringParser<T> implements StringParser<T>

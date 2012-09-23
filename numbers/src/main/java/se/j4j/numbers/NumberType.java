@@ -2,6 +2,9 @@ package se.j4j.numbers;
 
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.Descriptions.illegalArgument;
+
+import java.util.List;
+
 import se.j4j.texts.Texts;
 
 import com.google.common.collect.ImmutableList;

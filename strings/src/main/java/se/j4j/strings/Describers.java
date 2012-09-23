@@ -152,28 +152,33 @@ public final class Describers
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
-	 * Map<String, Integer> defaults = newLinkedHashMap();
+	 * Map&lt;String, Integer&gt; defaults = newLinkedHashMap();
 	 * defaults.put("population", 42);
 	 * defaults.put("hello", 1);
 	 * 
-	 * Map<String, String> descriptions = newLinkedHashMap();
+	 * Map&lt;String, String&gt; descriptions = newLinkedHashMap();
 	 * descriptions.put("population", "The number of citizens in the world");
 	 * descriptions.put("hello", "The number of times to say hello");
-	 * Describer<Map<String, Integer>> d = mapDescriber(descriptions);
+	 * Describer&lt;Map&lt;String, Integer&gt;&gt; d = mapDescriber(descriptions);
 	 * 
 	 * String describedMap = d.describe(defaults);
 	 * </code>
+	 * </pre>
 	 * 
 	 * would return:
+	 * 
+	 * <pre>
+	 * <code>
 	 * population=42
 	 * 	The number of citizens in the world
 	 * hello=1
 	 * 	The number of times to say hello
+	 * </code>
 	 * </pre>
 	 * 
 	 * You could even implement a
 	 * {@code addProperty(String key, int defaultValue, String description)} method to enforce the
-	 * use of descriptions.
+	 * use of descriptions at compile-time.
 	 */
 	@Nonnull
 	@CheckReturnValue

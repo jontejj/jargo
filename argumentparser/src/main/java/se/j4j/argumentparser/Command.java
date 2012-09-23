@@ -30,12 +30,51 @@ import com.google.common.base.Suppliers;
  * If you support several commands and a user enters several of them at the same
  * time they will be executed in the order given to {@link CommandLineParser#parse(String...)}.
  * 
- * <b>Mutability note:</b> although a {@link Command}
- * should be {@link Immutable} the objects it handles doesn't have to be.
- * So repeated invocations of execute is allowed to yield different results
- * or to affect external state.
+ * <b>Mutability note:</b> although a {@link Command} should be {@link Immutable}
+ * the objects it handles doesn't have to be. So repeated invocations of execute
+ * is allowed to yield different results or to affect external state.
+ * </pre>
  * 
- * TODO: show code example
+ * Example subclass:
+ * 
+ * <pre class="prettyprint">
+ * <code class="language-java">
+ * public class BuildCommand extends Command
+ * {
+ *   private static final Argument&lt;File&gt; PATH = fileArgument().description("the directory to build").build();
+ * 
+ *   protected List&lt;Argument&lt;?&gt;&gt; commandArguments()
+ *   {
+ *     List&lt;Argument&lt;?&gt;&gt; arguments = Lists.newArrayList();
+ *     arguments.add(PATH);
+ *     return arguments;
+ *   }
+ * 
+ *   public String commandName()
+ *   {
+ *     return "build";
+ *   }
+ * 
+ *   public String description()
+ *   {
+ *     return "Builds a target";
+ *   }
+ * 
+ *   protected void execute(ParsedArguments parsedArguments)
+ *   {
+ *     File pathToBuild = parsedArguments.get(PATH);
+ *     //Build pathToBuild here
+ *   }
+ * }
+ * </code>
+ * </pre>
+ * 
+ * And the glue needed to integrate the BuildCommand with a {@link CommandLineParser}:
+ * 
+ * <pre class="prettyprint">
+ * <code class="language-java">
+ * CommandLineParser.withCommands(new BuildCommand()).parse("build", "some_directory_that_needs_building");
+ * </code>
  * </pre>
  */
 @Immutable

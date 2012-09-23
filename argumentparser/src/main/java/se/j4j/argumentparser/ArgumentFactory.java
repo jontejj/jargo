@@ -45,10 +45,15 @@ public final class ArgumentFactory
 	{
 	}
 
-	// TODO: add helpArgument(), a command with an optional argument that specifies a specific
-	// argument one needs help with. names("-h", "--help", "?", "help")
+	// TODO: add CommandLineParser#andHelp(), a command with an optional argument that specifies a
+	// specific argument one needs help with. names("-h", "--help", "?", "help")
 	// program help build, should print the usage for the build argument/command
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#booleanParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Boolean> booleanArgument(final String ... names)
@@ -56,6 +61,11 @@ public final class ArgumentFactory
 		return withParser(booleanParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#integerParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Integer> integerArgument(final String ... names)
@@ -63,6 +73,11 @@ public final class ArgumentFactory
 		return withParser(integerParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#shortParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Short> shortArgument(final String ... names)
@@ -70,6 +85,11 @@ public final class ArgumentFactory
 		return withParser(shortParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#byteParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Byte> byteArgument(final String ... names)
@@ -77,6 +97,11 @@ public final class ArgumentFactory
 		return withParser(byteParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#longParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Long> longArgument(final String ... names)
@@ -84,6 +109,11 @@ public final class ArgumentFactory
 		return withParser(longParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#bigIntegerParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<BigInteger> bigIntegerArgument(final String ... names)
@@ -91,6 +121,13 @@ public final class ArgumentFactory
 		return withParser(bigIntegerParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#charParser()}.<br>
+	 * Describes default {@link Character}s with {@link Describers#characterDescriber()} in the
+	 * usage.
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Character> charArgument(final String ... names)
@@ -98,6 +135,11 @@ public final class ArgumentFactory
 		return withParser(charParser()).defaultValueDescriber(characterDescriber()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#doubleParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Double> doubleArgument(final String ... names)
@@ -105,6 +147,11 @@ public final class ArgumentFactory
 		return withParser(doubleParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#floatParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<Float> floatArgument(final String ... names)
@@ -112,6 +159,11 @@ public final class ArgumentFactory
 		return withParser(floatParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#stringParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<String> stringArgument(final String ... names)
@@ -119,6 +171,12 @@ public final class ArgumentFactory
 		return withParser(stringParser()).names(names);
 	}
 
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#fileParser()}.<br>
+	 * Describes default {@link File}s with {@link Describers#fileDescriber()} in the usage.
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static DefaultArgumentBuilder<File> fileArgument(final String ... names)
@@ -128,7 +186,7 @@ public final class ArgumentFactory
 
 	/**
 	 * <pre>
-	 * Creates an optional (flag) argument where the sole existence of the name on the command
+	 * Creates an optional (flag) {@link Argument} where the sole existence of the name on the command
 	 * line matters. This is the only place to have an {@link ArgumentBuilder#arity(int)} of zero.
 	 * 
 	 * The default value is printed with {@link Describers#booleanAsEnabledDisabled()}.
@@ -147,6 +205,19 @@ public final class ArgumentFactory
 		return new OptionArgumentBuilder().defaultValueDescriber(booleanAsEnabledDisabled()).names(asList(mandatoryName, optionalNames));
 	}
 
+	/**
+	 * <pre>
+	 * Creates an {@link Argument} that uses an {@link StringParsers#enumParser(Class)} to parse
+	 * arguments.
+	 * 
+	 * If you end up with a big switch statement for your enum consider using {@link Command}s
+	 * instead.
+	 * 
+	 * </pre>
+	 * 
+	 * @param enumToHandle the {@link Enum} to retrieve enum values from
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static <T extends Enum<T>> DefaultArgumentBuilder<T> enumArgument(final Class<T> enumToHandle, final String ... names)
@@ -154,6 +225,15 @@ public final class ArgumentFactory
 		return withParser(enumParser(enumToHandle)).names(names);
 	}
 
+	/**
+	 * <pre>
+	 * Creates an {@link Argument} for {@code command}.
+	 * 
+	 * Should only be used if you mix {@link Argument}s that aren't {@link Command}s
+	 * with {@link Command}s as {@link CommandLineParser#withCommands(Command...)}
+	 * is preferred if you only support {@link Command}s.
+	 * </pre>
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static CommandBuilder command(final Command command)
@@ -161,6 +241,10 @@ public final class ArgumentFactory
 		return new CommandBuilder(command).names(command.commandName()).description(command);
 	}
 
+	/**
+	 * Used to create {@link Argument} instances with a custom {@link StringParser}.
+	 * A custom {@link StringParser} is one which isn't available through {@link StringParsers}
+	 */
 	@CheckReturnValue
 	@Nonnull
 	public static <T> DefaultArgumentBuilder<T> withParser(final StringParser<T> parser)

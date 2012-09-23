@@ -59,31 +59,32 @@ import com.google.common.collect.UnmodifiableIterator;
 /**
  * Manages multiple {@link Argument}s and/or {@link Command}s.
  * 
- * <pre>
- * {@code
+ * <pre class="prettyprint">
+ * <code class="language-java">
  * import static se.j4j.argumentparser.ArgumentFactory.*;
  * ...
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
  * 
- * Argument<Boolean> enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
- * Argument<Integer> port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").build();
- * Argument<String> greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
+ * Argument&lt;Boolean&gt; enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
+ * Argument&lt;Integer&gt; port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").build();
+ * Argument&lt;String&gt; greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
  * 
  * try
  * {
- * 	ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
- * 	assertThat(arguments.get(enableLogging)).isTrue();
- *        assertThat(arguments.get(port)).isEqualTo(8090);
- *        assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
+ *   ParsedArguments parsedValues = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
+ *   assertThat(parsedValues.get(enableLogging)).isTrue();
+ *   assertThat(parsedValues.get(port)).isEqualTo(8090);
+ *   assertThat(parsedValues.get(greetingPhrase)).isEqualTo("Hello");
  * }
  * catch(ArgumentException exception)
  * {
- * 	System.out.println(exception.getMessageAndUsage("YourProgramName"));
- * 	System.exit(1);
+ *   System.out.println(exception.getMessageAndUsage("YourProgramName"));
+ *   System.exit(1);
  * }
+ * </code>
+ * </pre>
  * 
- * }
- * 
+ * <pre>
  * If something goes wrong during the parsing (Missing required arguments, Unexpected arguments, Invalid values),
  * it will be described by the ArgumentException. Use {@link ArgumentException#getMessageAndUsage(String)} if you
  * want to explain what went wrong to the user.
