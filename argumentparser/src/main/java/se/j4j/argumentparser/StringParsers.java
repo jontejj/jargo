@@ -162,7 +162,9 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that passes the strings to {@link File#File(String)}
+	 * Returns parser that creates {@link File}s using {@link File#File(String)} for input strings.<br>
+	 * {@link StringParser#defaultValue()} returns a {@link File} representing the current working
+	 * directory.
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -244,6 +246,18 @@ public final class StringParsers
 	}
 
 	/**
+	 * <pre>
+	 * Returns a {@link StringParser} that uses {@link Enum#valueOf(Class, String)} to
+	 * {@link StringParser#parse(String)} input strings.
+	 * 
+	 * <b>Case sensitivity note:</b> First a direct match with the input value in upper case is
+	 * made, if that fails a direct match without converting the case is made,
+	 * if that also fails an {@link ArgumentException} is thrown. This order of execution is
+	 * based on the fact that users typically don't upper case their input while
+	 * java naming guidelines recommends upper case for enum constants.
+	 * TODO: insert link to java naming guidelines
+	 * </pre>
+	 * 
 	 * @param enumToHandle the {@link Class} literal for the {@link Enum} to parse strings into
 	 * @return a {@link StringParser} that parse strings into enum values of the type {@code T}
 	 */
@@ -268,21 +282,29 @@ public final class StringParsers
 		{
 			try
 			{
-				// TODO: add possibility to convert strings to
-				// upper case before finding the enum value
-				return Enum.valueOf(enumType, value);
+				return Enum.valueOf(enumType, value.toUpperCase(Locale.ENGLISH));
 			}
-			catch(IllegalArgumentException noEnumFound)
+			catch(IllegalArgumentException noEnumFoundWithUpperCase)
 			{
-				throw withMessage(format(Texts.INVALID_ENUM_VALUE, value, new Object(){
-					@Override
-					public String toString()
-					{
-						// Lazily call this as it's going over all enum values and converting them
-						// to strings
-						return descriptionOfValidValues();
-					}
-				})).andCause(noEnumFound);
+				try
+				{
+					// Try an exact match just in case an enum value doesn't follow java naming
+					// guidelines
+					return Enum.valueOf(enumType, value);
+				}
+				catch(IllegalArgumentException noEnumFoundWithExactMatch)
+				{
+					throw withMessage(format(Texts.INVALID_ENUM_VALUE, value, new Object(){
+						@Override
+						public String toString()
+						{
+							// Lazily call this as it's going over all enum values and converting
+							// them
+							// to strings
+							return descriptionOfValidValues();
+						}
+					})).andCause(noEnumFoundWithExactMatch);
+				}
 			}
 		}
 
@@ -565,16 +587,20 @@ public final class StringParsers
 	/**
 	 * <pre>
 	 * Makes it possible to use the given {@code parser} as a Guava {@link Function}.
-	 * For example:{@code
-	 * List<Integer> result =  Lists.transform(Arrays.asList("1", "3", "2"), StringParsers.asFunction(StringParsers.integerParser()));
-	 * }
+	 * For example:
+	 * </pre>
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * List&lt;Integer&gt; result =  Lists.transform(asList("1", "3", "2"), asFunction(integerParser()));
+	 * </code>
+	 * </pre>
 	 * 
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
 	 * 
 	 * @param parser the parser to expose as a {@link Function}
-	 * @return {@code parser} exposed in a {@link Function} that
-	 * throws {@link IllegalArgumentException} when given faulty values.
-	 * </pre>
+	 * @return {@code parser} exposed in a {@link Function} that throws
+	 *         {@link IllegalArgumentException} when given faulty values.
 	 */
 	@Nonnull
 	@CheckReturnValue

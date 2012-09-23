@@ -18,8 +18,8 @@ public final class Serializer
 
 	/**
 	 * Serializes {@code objectToSerialize} and reads the serialized bytes into an object again.
-	 * Requires that {@link #readReplace()} isn't overridden to return a type not castable to
-	 * {@code T}, for default implementations of {@link Serializable} this is true.
+	 * Requires that readReplace() isn't overridden to return a type not castable to {@code T}, for
+	 * default implementations of {@link Serializable} this is true.
 	 */
 	public static <T extends Serializable> T clone(T objectToSerialize)
 	{

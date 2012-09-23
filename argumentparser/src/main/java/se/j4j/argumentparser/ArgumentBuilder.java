@@ -324,11 +324,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * Sets a supplier that can supply default values in the absence of this argument
 	 * 
-	 * Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
+	 * <b>Note:</b> Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
 	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
 	 * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.
 	 * 
-	 * <b>Note:</b>May be removed in the future if Guava is removed as a dependency
+	 * <b>Note:</b> May be removed in the future if Guava is removed as a dependency
 	 * 
 	 * Wrap your supplier with {@link Suppliers#memoize(Supplier)} if you want to cache created values.
 	 * 
@@ -475,8 +475,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalStateException if a {@link #defaultValueDescriber(Describer)} or
 	 *             {@link #defaultValue(Object)} has been set as they have no place in a property
 	 *             map.
-	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than
-	 * {@link String}s
+	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}s
+	 * </pre>
 	 */
 	@CheckReturnValue
 	public final MapArgumentBuilder<String, T> asPropertyMap()
@@ -495,16 +495,19 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * "value" is decoded by the {@link StringParser} previously passed to the constructor.
 	 * 
 	 * For example:
-	 * {@code
-	 * Map<Integer, Integer> numberMap = ArgumentFactory.integerArgument("-N")
+	 * </pre>
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * Map&lt;Integer, Integer&gt; numberMap = ArgumentFactory.integerArgument("-N")
 	 * 						.asKeyValuesWithKeyParser(StringParsers.integerParser())
 	 * 						.parse("-N1=5", "-N2=10");
 	 * assertThat(numberMap.get(1)).isEqualTo(5);
-	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * For this to work correctly it's paramount that {@code Key} implements a
 	 * proper {@link Object#hashCode()} because it's going to be used a key in a {@link Map}.
-	 * </pre>
 	 * 
 	 * @return a new (more specific) builder
 	 * @throws IllegalStateException if a {@link #defaultValueDescriber(Describer)} or
@@ -539,20 +542,20 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * <pre>
 	 * Useful for handling a variable amount of parameters in the end of a
-	 * command.
-	 * Uses this argument to parse values but assumes that all the following
+	 * command. Uses this argument to parse values but assumes that all the following
 	 * parameters are of the same type, integer in the following example:
-	 * {@code
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
 	 * String[] threeArgs = {"--numbers", "1", "2", "3"};
-	 * List<Integer> numbers = integerArgument("--numbers").variableArity().parse(threeArgs);
+	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(threeArgs);
 	 * assertThat(numbers).isEqualTo(asList(1, 2, 3));
 	 * 
 	 * String[] twoArgs = {"--numbers", "1", "2"};
-	 * List<Integer> numbers = integerArgument("--numbers").variableArity().parse(twoArgs);
+	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(twoArgs);
 	 * assertThat(numbers).isEqualTo(asList(1, 2));
-	 * }
+	 * </code>
 	 * </pre>
 	 * 
 	 * @return a new (more specific) builder
@@ -566,19 +569,25 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	/**
 	 * <pre>
 	 * Uses this argument to parse values but assumes that {@code numberOfParameters} of the
-	 * following parameters are of the same type,integer in the following example:
-	 * {@code
+	 * following parameters are of the same type.
+	 * 
+	 * {@link Integer} in the following example:
+	 * </pre>
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
 	 * String[] args = {"--numbers", "1", "2"};
-	 * List<Integer> numbers = integerArgument("--numbers").arity(2).parse(args);
+	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").arity(2).parse(args);
 	 * assertThat(numbers).isEqualTo(asList(1, 2));
-	 * }
+	 * </code>
+	 * </pre>
+	 * 
 	 * <b>Note:</b>If the argument isn't {@link #required()} the default value
 	 * will be a list that contains {@code numberOfParameters} elements
 	 * of {@link StringParser#defaultValue()}, in the above example that would be two zeros.
 	 * If this isn't wanted use {@link #defaultValue(Object)} to override it.
 	 * 
 	 * @return a new (more specific) builder
-	 * </pre>
 	 */
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
@@ -591,29 +600,37 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * <pre>
 	 * Makes it possible to enter several values for the same argument. Such as this:
 	 * 
-	 * TODO: make all code examples prettified:)
-	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * String[] arguments = {"--number", "1", "--number", "2"};
 	 * List&lt;Integer&gt; numbers = integerArgument("--number").repeated().parse(arguments);
-	 * assertThat(numbers).isEqualTo(Arrays.asList(1, 2));
+	 * assertThat(numbers).isEqualTo(asList(1, 2));
 	 * </code>
 	 * </pre>
 	 * 
 	 * If you want to combine {@link #repeated()} with a specific {@link #arity(int)} then call
-	 * {@link #arity(int)} before calling this. {@code String[] arguments = "--numbers", "1", "2",
-	 * "--numbers", "3", "4"};
-	 * List<List<Integer>> numberLists =
+	 * {@link #arity(int)} before calling {@link #repeated()}:
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * String[] arguments = "--numbers", "1", "2", "--numbers", "3", "4"};
+	 * List&lt;List&lt;Integer&gt;&gt; numberLists =
 	 * integerArgument("--numbers").arity(2).repeated().parse(arguments);
 	 * assertThat(numberLists).isEqualTo(asList(asList(1, 2), asList(3, 4)));
-	 * }
-	 * For repeated values in a property map such as this: {@code String[] arguments =
-	 * "-Nnumber=1", "-Nnumber=2"};
-	 * Map<String, List<Integer>> numberMap =
-	 * integerArgument("-N").repeated().asPropertyMap().parse(arguments);
-	 * assertThat(numberMap.get("number")).isEqualTo(Arrays.asList(1, 2));
-	 * } {@link #repeated()} should be called before {@link #asPropertyMap()}.
+	 * </code>
+	 * </pre>
+	 * 
+	 * For repeated values in a property map such as this:
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * String[] arguments = "-Nnumber=1", "-Nnumber=2"};
+	 * Map&lt;String, List&lt;Integer&gt;&gt; numberMap = integerArgument("-N").repeated().asPropertyMap().parse(arguments);
+	 * assertThat(numberMap.get("number")).isEqualTo(asList(1, 2));
+	 * </code>
+	 * </pre>
+	 * 
+	 * {@link #repeated()} should be called before {@link #asPropertyMap()}.
 	 * For arguments without a name use {@link #variableArity()} instead.
 	 * 
 	 * @return a new (more specific) builder
@@ -772,7 +789,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		{
 			super(command);
 		}
-		// description, hideFromUsage, ignoreCase, metaDescription
+		// Allows: description, hideFromUsage, ignoreCase, metaDescription, repeated
 
 		// TODO: these shouldn't be available for commands...
 		// limitTo, defaultValue, defaultValueSupplier, defaultValueDescription,

@@ -27,6 +27,13 @@ public class EnumArgumentTest
 		restart
 	}
 
+	public enum UpperCase
+	{
+		START,
+		STOP,
+		RESTART
+	}
+
 	@Test
 	public void testEnumArgument() throws ArgumentException
 	{
@@ -47,6 +54,20 @@ public class EnumArgumentTest
 		String usageText = enumArgument(Action.class).usage("");
 		assertThat(usageText).contains("<Action>: [start | stop | restart]");
 		assertThat(usageText).contains("Default: null");
+	}
+
+	@Test(expected = ArgumentException.class)
+	public void testThatEnumArgumentOnlyMatchesExactMatchOrUpperCase() throws ArgumentException
+	{
+		Action action = enumArgument(Action.class).parse("STOP");
+		assertThat(action).isEqualTo(Action.stop);
+	}
+
+	@Test
+	public void testThatEnumArgumentTriesUpperCase() throws ArgumentException
+	{
+		UpperCase upperCase = enumArgument(UpperCase.class).parse("stop");
+		assertThat(upperCase).isEqualTo(UpperCase.STOP);
 	}
 
 	enum ShouldNotInitialize
