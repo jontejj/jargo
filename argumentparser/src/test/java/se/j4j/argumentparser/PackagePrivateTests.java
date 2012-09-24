@@ -11,12 +11,12 @@ import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.CommandLineParser.ParserCache;
 import se.j4j.argumentparser.StringParsers.StringStringParser;
 import se.j4j.argumentparser.commands.Build;
+import se.j4j.argumentparser.internal.Texts;
 import se.j4j.numbers.NumberType;
 import se.j4j.strings.Describers;
 import se.j4j.strings.Descriptions;
 import se.j4j.strings.StringsUtil;
 import se.j4j.testlib.EnumTester;
-import se.j4j.texts.Texts;
 
 /**
  * Tests implementation details that has no meaning in the public API but can serve other purposes
@@ -76,7 +76,7 @@ public class PackagePrivateTests
 	public void testConstructorsForUtilityClasses() throws Exception
 	{
 		testUtilityClassDesign(	ArgumentFactory.class, StringsUtil.class, Descriptions.class, StringParsers.class, ArgumentExceptions.class,
-								Describers.class, Texts.class, ParserCache.class);
+								Describers.class, Texts.class, ParserCache.class, Texts.class);
 	}
 
 	@Test

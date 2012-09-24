@@ -23,7 +23,6 @@ import org.junit.Test;
 import se.j4j.strings.Describers.BooleanDescribers;
 import se.j4j.testlib.ResourceLoader;
 import se.j4j.testlib.UtilityClassTester;
-import se.j4j.texts.Texts;
 
 /**
  * Tests for {@link Describers}
@@ -119,7 +118,7 @@ public class DescribersTest
 		}
 		catch(NullPointerException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.UNDESCRIBED_KEY, "population"));
+			assertThat(expected).hasMessage("Undescribed key: population");
 		}
 	}
 

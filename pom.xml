@@ -24,7 +24,6 @@
         <version.numbers>0.0.1-SNAPSHOT</version.numbers>
         <version.strings>0.0.1-SNAPSHOT</version.strings>
 		<version.testlib>0.0.1-SNAPSHOT</version.testlib>
-		<version.texts>0.0.1-SNAPSHOT</version.texts>
 	</properties>
 	<modules>
     	<module>argumentparser</module>
@@ -34,7 +33,6 @@
         <module>rfc-downloader</module>
     	<module>strings</module>
     	<module>test-lib</module>
-    	<module>texts</module>
 	</modules>
 	<build>
 	   <plugins>

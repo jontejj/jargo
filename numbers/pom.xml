@@ -17,10 +17,5 @@
             <artifactId>strings</artifactId>
             <version>${version.strings}</version>
         </dependency>
-        <dependency>
-            <groupId>se.j4j</groupId>
-            <artifactId>texts</artifactId>
-            <version>${version.texts}</version>
-        </dependency>
     </dependencies>
 </project>

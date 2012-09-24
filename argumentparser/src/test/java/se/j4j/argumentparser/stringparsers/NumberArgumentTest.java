@@ -5,7 +5,7 @@ import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.byteArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 import static se.j4j.numbers.NumberType.INTEGER;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 

@@ -47,8 +47,9 @@ import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.OptionParser;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UsageTexts;
 import se.j4j.collections.CharacterTrie;
-import se.j4j.texts.Texts;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
@@ -283,7 +284,7 @@ public final class CommandLineParser
 
 		// How would one know when the first argument considers itself satisfied?
 		Collection<Argument<?>> indexedVariableArityArguments = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
-		checkArgument(indexedVariableArityArguments.size() <= 1, Texts.SEVERAL_VARIABLE_ARITY_PARSERS, indexedVariableArityArguments);
+		checkArgument(indexedVariableArityArguments.size() <= 1, ProgrammaticErrors.SEVERAL_VARIABLE_ARITY_PARSERS, indexedVariableArityArguments);
 	}
 
 	CommandLineParser(List<Argument<?>> argumentDefinitions)
@@ -305,7 +306,7 @@ public final class CommandLineParser
 			}
 		}
 		boolean added = allArguments.add(definition);
-		checkArgument(added, Texts.UNIQUE_ARGUMENT, definition);
+		checkArgument(added, ProgrammaticErrors.UNIQUE_ARGUMENT, definition);
 	}
 
 	private void addNamedArgumentDefinition(final String name, final Argument<?> definition)
@@ -324,7 +325,7 @@ public final class CommandLineParser
 		{
 			oldDefinition = namedArguments.put(name, definition);
 		}
-		checkArgument(oldDefinition == null, Texts.NAME_COLLISION, name);
+		checkArgument(oldDefinition == null, ProgrammaticErrors.NAME_COLLISION, name);
 	}
 
 	private void verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments()
@@ -343,7 +344,7 @@ public final class CommandLineParser
 				firstOptionalIndexedArgument = i;
 			}
 		}
-		checkArgument(	lastRequiredIndexedArgument <= firstOptionalIndexedArgument, Texts.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
+		checkArgument(	lastRequiredIndexedArgument <= firstOptionalIndexedArgument, ProgrammaticErrors.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
 						firstOptionalIndexedArgument, lastRequiredIndexedArgument);
 	}
 
@@ -355,7 +356,7 @@ public final class CommandLineParser
 		{
 			String meta = indexedArgument.metaDescriptionInRightColumn();
 			boolean metaWasUnique = metasForRequiredAndIndexedArguments.add(meta);
-			checkArgument(metaWasUnique, Texts.UNIQUE_METAS, meta);
+			checkArgument(metaWasUnique, ProgrammaticErrors.UNIQUE_METAS, meta);
 		}
 	}
 
@@ -543,7 +544,7 @@ public final class CommandLineParser
 		private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
 		private static final int SPACES_BETWEEN_COLUMNS = 4;
 
-		private final Joiner NAME_JOINER = Joiner.on(Texts.NAME_SEPARATOR);
+		private final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
 
 		private final Iterable<Argument<?>> argumentsToPrint = Iterables.filter(sortedArguments(), IS_VISIBLE);
 
@@ -598,7 +599,7 @@ public final class CommandLineParser
 			{
 				namesLength += name.length();
 			}
-			int separatorLength = max(0, Texts.NAME_SEPARATOR.length() * (argument.names().size() - 1));
+			int separatorLength = max(0, UsageTexts.NAME_SEPARATOR.length() * (argument.names().size() - 1));
 
 			int metaLength = argument.metaDescriptionInLeftColumn().length();
 
@@ -627,11 +628,11 @@ public final class CommandLineParser
 		{
 			if(!isCommandParser())
 			{
-				builder.append(Texts.USAGE_HEADER + programName);
+				builder.append(UsageTexts.USAGE_HEADER + programName);
 			}
 			if(!isEmpty(argumentsToPrint))
 			{
-				builder.append(Texts.OPTIONS);
+				builder.append(UsageTexts.OPTIONS);
 				builder.append(NEWLINE);
 			}
 		}
@@ -696,11 +697,11 @@ public final class CommandLineParser
 		{
 			if(arg.isRequired())
 			{
-				builder.append(Texts.REQUIRED);
+				builder.append(UsageTexts.REQUIRED);
 			}
 			if(arg.isAllowedToRepeat())
 			{
-				builder.append(Texts.ALLOWS_REPETITIONS);
+				builder.append(UsageTexts.ALLOWS_REPETITIONS);
 			}
 			// TODO: mention ignoreCase?
 		}
@@ -736,10 +737,10 @@ public final class CommandLineParser
 			if(descriptionOfDefaultValue != null)
 			{
 				newlineWithIndentation();
-				String spaces = spaces(indexOfDescriptionColumn + Texts.DEFAULT_VALUE_START.length());
+				String spaces = spaces(indexOfDescriptionColumn + UsageTexts.DEFAULT_VALUE_START.length());
 				descriptionOfDefaultValue = descriptionOfDefaultValue.replace(NEWLINE, NEWLINE + spaces);
 
-				builder.append(Texts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
+				builder.append(UsageTexts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
 			}
 		}
 	}
@@ -783,7 +784,7 @@ public final class CommandLineParser
 			T value = (T) parsedArguments.get(definition);
 			if(value == null)
 			{
-				checkArgument(allArguments.contains(definition), Texts.ILLEGAL_ARGUMENT, definition);
+				checkArgument(allArguments.contains(definition), ProgrammaticErrors.ILLEGAL_ARGUMENT, definition);
 			}
 			return value;
 		}

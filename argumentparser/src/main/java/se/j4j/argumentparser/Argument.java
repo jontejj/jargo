@@ -15,10 +15,11 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.guavaextensions.Suppliers2;
 import se.j4j.strings.Describer;
 import se.j4j.strings.Description;
-import se.j4j.texts.Texts;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -28,13 +29,10 @@ import com.google.common.base.Suppliers;
 
 /**
  * <pre>
- * An {@link Argument} instance is the fundamental building block that glues all
- * functionality in this package together.
+ * Represents a supported {@link Argument} for a command line invocation.
  * 
- * Usual {@link Argument}s are created with the static methods in {@link ArgumentFactory} and then
+ * {@link Argument}s are created with the static methods in {@link ArgumentFactory} or with a custom {@link ArgumentBuilder} and then
  * used by the {@link CommandLineParser} to parse strings (typically from the command line).
- * 
- * TODO: document each property of an argument here
  * 
  * TODO: add readFromConsole(), should required arguments be handled by this always?
  * 			think about Multiple Occurrences (ask Do you want to enter one more value for [-s] (y/N):
@@ -316,7 +314,7 @@ public final class Argument<T> extends ArgumentSettings
 	void checkLimit(@Nullable final T value) throws ArgumentException
 	{
 		if(!limiter.apply(value))
-			throw withMessage(format(Texts.UNALLOWED_VALUE, value, limiter));
+			throw withMessage(format(UserErrors.UNALLOWED_VALUE, value, limiter));
 	}
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
@@ -325,13 +323,14 @@ public final class Argument<T> extends ArgumentSettings
 		{
 			if(!limiter.apply(value))
 			{
-				String unallowedValue = String.format(Texts.UNALLOWED_VALUE, value, limiter.toString());
-				throw new IllegalStateException(String.format(Texts.INVALID_DEFAULT_VALUE, unallowedValue));
+				String unallowedValue = String.format(UserErrors.UNALLOWED_VALUE, value, limiter.toString());
+				throw new IllegalStateException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, unallowedValue));
 			}
 		}
 		catch(IllegalArgumentException invalidDefaultValue)
 		{
-			throw new IllegalStateException(String.format(Texts.INVALID_DEFAULT_VALUE, invalidDefaultValue.getMessage()), invalidDefaultValue);
+			throw new IllegalStateException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, invalidDefaultValue.getMessage()),
+					invalidDefaultValue);
 		}
 	}
 

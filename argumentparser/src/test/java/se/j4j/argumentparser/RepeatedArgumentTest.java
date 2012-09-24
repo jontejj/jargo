@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.texts.Texts;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 
 import com.google.common.collect.ImmutableList;
 
@@ -86,7 +86,7 @@ public class RepeatedArgumentTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.UNALLOWED_REPETITION, "-n"));
+			assertThat(expected).hasMessage(String.format(UserErrors.UNALLOWED_REPETITION, "-n"));
 		}
 	}
 
@@ -99,7 +99,7 @@ public class RepeatedArgumentTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.UNALLOWED_REPETITION, "-n"));
+			assertThat(expected).hasMessage(String.format(UserErrors.UNALLOWED_REPETITION, "-n"));
 		}
 	}
 

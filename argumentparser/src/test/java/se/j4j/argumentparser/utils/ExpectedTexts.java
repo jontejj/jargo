@@ -2,7 +2,7 @@ package se.j4j.argumentparser.utils;
 
 import se.j4j.testlib.ResourceLoader;
 
-public class UsageTexts
+public class ExpectedTexts
 {
 	/**
 	 * Loads a usage text (from resources) named /usage_texts/{@code textName}.txt

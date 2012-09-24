@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentFactory;
-import se.j4j.texts.Texts;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -55,7 +55,7 @@ public class OptionalArgumentTest
 		}
 		catch(NullPointerException expected)
 		{
-			assertThat(expected).hasMessage(Texts.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
+			assertThat(expected).hasMessage(ProgrammaticErrors.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
 		}
 	}
 

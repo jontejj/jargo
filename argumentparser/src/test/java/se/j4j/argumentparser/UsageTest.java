@@ -5,7 +5,7 @@ import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import org.fest.assertions.Fail;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import se.j4j.strings.Description;
  * 
  * @formatter:off
  */
-public class UsageTextTest
+public class UsageTest
 {
 	@Test
 	public void testUsageWithRequiredArguments()
