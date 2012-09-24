@@ -349,7 +349,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * because these two methods are mutually exclusive
 	 */
 	@Beta
-	public final SELF_TYPE defaultValueSupplier(final Supplier<T> aDefaultValueSupplier)
+	public SELF_TYPE defaultValueSupplier(final Supplier<T> aDefaultValueSupplier)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = aDefaultValueSupplier;
@@ -365,7 +365,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @return this builder
 	 * @see Describers#withConstantString(String)
 	 */
-	public final SELF_TYPE defaultValueDescription(final String aDescription)
+	public SELF_TYPE defaultValueDescription(final String aDescription)
 	{
 		this.defaultValueDescriber = Describers.withConstantString(aDescription);
 		return myself;
@@ -377,7 +377,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param describer a describer
 	 * @return this builder
 	 */
-	public final SELF_TYPE defaultValueDescriber(final Describer<T> describer)
+	public SELF_TYPE defaultValueDescriber(final Describer<T> describer)
 	{
 		this.defaultValueDescriber = describer;
 		return myself;
@@ -464,7 +464,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @return this builder
 	 */
 	@Beta
-	public final SELF_TYPE limitTo(Predicate<T> aLimiter)
+	public SELF_TYPE limitTo(Predicate<T> aLimiter)
 	{
 		limiter = aLimiter;
 		return myself;
@@ -790,24 +790,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
-	/**
-	 * Builder for {@link Command}s. Created with {@link ArgumentFactory#command(Command)}.
-	 */
-	@NotThreadSafe
-	public static final class CommandBuilder extends InternalArgumentBuilder<CommandBuilder, String>
-	{
-		CommandBuilder(final Command command)
-		{
-			super(command);
-		}
-		// Allows: description, hideFromUsage, ignoreCase, metaDescription, repeated
-
-		// TODO: these shouldn't be available for commands...
-		// limitTo, defaultValue, defaultValueSupplier, defaultValueDescription,
-		// required, splitWith, arity, variableArity
-
-	}
-
 	// Non-Interesting builders below, most declarations under here handles
 	// (by deprecating) invalid invariants between different argument properties
 
@@ -833,6 +815,81 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		protected StringParser<T> parser()
 		{
 			return (StringParser<T>) MARKER;
+		}
+	}
+
+	/**
+	 * Builder for {@link Command}s. Created with {@link ArgumentFactory#command(Command)}.
+	 */
+	@NotThreadSafe
+	public static final class CommandBuilder extends InternalArgumentBuilder<CommandBuilder, String>
+	{
+		CommandBuilder(final Command command)
+		{
+			super(command);
+		}
+
+		@Deprecated
+		@Override
+		public CommandBuilder required()
+		{
+			throw new IllegalStateException("Commands can't be required");
+		}
+
+		@Deprecated
+		@Override
+		public CommandBuilder defaultValue(String defaultValue)
+		{
+			throw new IllegalStateException("Commands can't have default values");
+		}
+
+		@Deprecated
+		@Override
+		public CommandBuilder defaultValueSupplier(Supplier<String> defaultValueSupplier)
+		{
+			throw new IllegalStateException("Commands can't have default values");
+		}
+
+		@Deprecated
+		@Override
+		public CommandBuilder defaultValueDescription(String defaultValueDescription)
+		{
+			throw new IllegalStateException("Commands can't have default values, so no description can be useful");
+		}
+
+		@Deprecated
+		@Override
+		public CommandBuilder defaultValueDescriber(Describer<String> defaultValueDescriber)
+		{
+			throw new IllegalStateException("Commands can't have default values, so no description can be useful");
+		}
+
+		@Deprecated
+		@Override
+		public CommandBuilder limitTo(Predicate<String> limiter)
+		{
+			throw new IllegalStateException("Commands can't be limited");
+		}
+
+		@Deprecated
+		@Override
+		public SplitterArgumentBuilder<String> splitWith(String valueSeparator)
+		{
+			throw new IllegalStateException("Commands can't be splitted");
+		}
+
+		@Deprecated
+		@Override
+		public ArityArgumentBuilder<String> arity(int arity)
+		{
+			throw new IllegalStateException("Commands can't have an arity, as they have no parameters");
+		}
+
+		@Deprecated
+		@Override
+		public ArityArgumentBuilder<String> variableArity()
+		{
+			throw new IllegalStateException("Commands can't have an arity, as they have no parameters");
 		}
 	}
 
@@ -962,8 +1019,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			setParameterArity(OptionParser.NO_ARGUMENTS);
 		}
 
-		// TODO: if withAction(Action action) isn't added then maybe at least add it here?
-
 		@Override
 		InternalStringParser<Boolean> internalParser()
 		{
@@ -991,8 +1046,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			return super.names(argumentNames);
 		}
 
-		// TODO: as these are starting to get out of hand, maybe introduce
-		// BasicArgumentBuilder without any advanced stuff
 		/**
 		 * @deprecated an optional flag can't be required
 		 */

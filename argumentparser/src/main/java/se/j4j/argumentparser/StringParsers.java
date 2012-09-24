@@ -754,6 +754,7 @@ public final class StringParsers
 		@Override
 		String metaDescription(ArgumentSettings argumentSettings)
 		{
+			// Options don't have parameters so there's no parameter to explain
 			return "";
 		}
 	}
