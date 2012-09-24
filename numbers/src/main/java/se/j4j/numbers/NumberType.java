@@ -5,8 +5,6 @@ import static se.j4j.strings.Descriptions.illegalArgument;
 
 import java.util.List;
 
-import se.j4j.texts.Texts;
-
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -46,6 +44,20 @@ public abstract class NumberType<T extends Number>
 	 * Returns an ordered (by data size) {@link List} of {@link NumberType}s.
 	 */
 	public static final ImmutableList<NumberType<?>> TYPES = ImmutableList.<NumberType<?>>of(BYTE, SHORT, INTEGER, LONG);
+
+	/**
+	 * <pre>
+	 * Parameters
+	 * 1st %s = the received value
+	 * 2nd %s = the minimum allowed value
+	 * 3rd %s = the maximum allowed value
+	 */
+	private static final String OUT_OF_RANGE = "'%s' is not in the range %s to %s";
+
+	/**
+	 * Parameter %s = the value that isn't a number
+	 */
+	private static final String INVALID_NUMBER = "'%s' is not a valid number.";
 
 	/**
 	 * @return the static {@code MIN_VALUE} field of {@code T}
@@ -94,12 +106,12 @@ public abstract class NumberType<T extends Number>
 			Long result = Long.decode(value);
 
 			if(result.compareTo(minValue().longValue()) < 0 || result.compareTo(maxValue().longValue()) > 0)
-				throw illegalArgument(format(Texts.OUT_OF_RANGE, value, minValue(), maxValue()));
+				throw illegalArgument(format(OUT_OF_RANGE, value, minValue(), maxValue()));
 			return fromLong(result);
 		}
 		catch(NumberFormatException nfe)
 		{
-			throw illegalArgument(format(Texts.INVALID_NUMBER, value), nfe);
+			throw illegalArgument(format(INVALID_NUMBER, value), nfe);
 		}
 
 	}

@@ -35,12 +35,13 @@ import se.j4j.argumentparser.StringParsers.RepeatedArgumentParser;
 import se.j4j.argumentparser.StringParsers.StringParserBridge;
 import se.j4j.argumentparser.StringParsers.StringSplitterParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
+import se.j4j.argumentparser.internal.Texts;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.guavaextensions.Functions2;
 import se.j4j.guavaextensions.Suppliers2;
 import se.j4j.strings.Describer;
 import se.j4j.strings.Describers;
 import se.j4j.strings.Description;
-import se.j4j.texts.Texts;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
@@ -147,18 +148,29 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
+	 * <pre>
 	 * Parses command line arguments and returns the value of the argument built
-	 * by {@link #build()}.<br>
-	 * <br>
+	 * by {@link #build()}.
+	 * </pre>
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * String[] args = {"--listen-port", "8090"};
+	 * 
+	 * int port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").parse(args);
+	 * assertThat(port).isEqualTo(8090);
+	 * </code>
+	 * </pre>
+	 * 
 	 * This is a shorthand method that should be used if only one {@link Argument} is expected as it
-	 * will throw if unexpected arguments are
-	 * encountered. If several arguments are expected use
+	 * will throw if unexpected arguments are encountered. If several arguments are expected use
 	 * {@link CommandLineParser#withArguments(Argument...)} instead.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the {@code actualArguments}
 	 * @throws ArgumentException if actualArguments isn't compatible with this
 	 *             argument
+	 *             </pre>
 	 */
 	@Nullable
 	public final T parse(String ... actualArguments) throws ArgumentException
@@ -294,7 +306,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE required()
 	{
-		checkState(defaultValueSupplier == null, Texts.DEFAULT_VALUE_AND_REQUIRED);
+		checkState(defaultValueSupplier == null, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		required = true;
 		return myself;
 	}
@@ -315,7 +327,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE defaultValue(@Nullable final T value)
 	{
-		checkState(!required, Texts.DEFAULT_VALUE_AND_REQUIRED);
+		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = Suppliers.ofInstance(value);
 		return myself;
 	}
@@ -339,7 +351,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Beta
 	public final SELF_TYPE defaultValueSupplier(final Supplier<T> aDefaultValueSupplier)
 	{
-		checkState(!required, Texts.DEFAULT_VALUE_AND_REQUIRED);
+		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = aDefaultValueSupplier;
 		return myself;
 	}
@@ -397,7 +409,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public final SELF_TYPE metaDescription(final String aMetaDescription)
 	{
-		checkArgument(!isNullOrEmpty(aMetaDescription), Texts.INVALID_META_DESCRIPTION);
+		checkArgument(!isNullOrEmpty(aMetaDescription), ProgrammaticErrors.INVALID_META_DESCRIPTION);
 		this.metaDescription = aMetaDescription;
 		return myself;
 	}
@@ -475,14 +487,14 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalStateException if a {@link #defaultValueDescriber(Describer)} or
 	 *             {@link #defaultValue(Object)} has been set as they have no place in a property
 	 *             map.
-	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}s
+	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}
 	 * </pre>
 	 */
 	@CheckReturnValue
 	public final MapArgumentBuilder<String, T> asPropertyMap()
 	{
-		checkState(defaultValueSupplier == null, Texts.INVALID_CALL_ORDER, "defaultValue", "asPropertyMap");
-		checkState(defaultValueDescriber == null, Texts.INVALID_CALL_ORDER, "defaultValueDescriber", "asPropertyMap");
+		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asPropertyMap");
+		checkState(defaultValueDescriber == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValueDescriber", "asPropertyMap");
 		return new MapArgumentBuilder<String, T>(this, stringParser());
 	}
 
@@ -517,8 +529,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public final <Key> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(StringParser<Key> keyParser)
 	{
-		checkState(defaultValueSupplier == null, Texts.INVALID_CALL_ORDER, "defaultValue", "asKeyValuesWithKeyParser");
-		checkState(defaultValueDescriber == null, Texts.INVALID_CALL_ORDER, "defaultValueDescriber", "asKeyValuesWithKeyParser");
+		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asKeyValuesWithKeyParser");
+		checkState(defaultValueDescriber == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValueDescriber", "asKeyValuesWithKeyParser");
 		return new MapArgumentBuilder<Key, T>(this, keyParser);
 	}
 
@@ -576,8 +588,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
-	 * String[] args = {"--numbers", "1", "2"};
-	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").arity(2).parse(args);
+	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").arity(2).parse("--numbers", "1", "2");
 	 * assertThat(numbers).isEqualTo(asList(1, 2));
 	 * </code>
 	 * </pre>
@@ -592,7 +603,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
 	{
-		checkArgument(numberOfParameters > 1, Texts.TO_SMALL_ARITY, numberOfParameters);
+		checkArgument(numberOfParameters > 1, ProgrammaticErrors.TO_SMALL_ARITY, numberOfParameters);
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
@@ -962,21 +973,21 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		@Override
 		public OptionArgumentBuilder defaultValue(Boolean value)
 		{
-			checkNotNull(value, Texts.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
+			checkNotNull(value, ProgrammaticErrors.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
 			return super.defaultValue(value);
 		}
 
 		@Override
 		public OptionArgumentBuilder names(Iterable<String> argumentNames)
 		{
-			checkArgument(!isEmpty(argumentNames), Texts.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
+			checkArgument(!isEmpty(argumentNames), ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
 		@Override
 		public OptionArgumentBuilder names(String ... argumentNames)
 		{
-			checkArgument(argumentNames.length >= 1, Texts.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
+			checkArgument(argumentNames.length >= 1, ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
@@ -1047,10 +1058,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			copy(builder);
 
 			// TODO: should the state be verified just before the argument is built?
-			checkState(names().size() > 0, Texts.NO_NAME_FOR_PROPERTY_MAP);
+			checkState(names().size() > 0, ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
 			if(separator() != null)
 			{
-				checkState(separator().length() > 0, Texts.EMPTY_SEPARATOR);
+				checkState(separator().length() > 0, ProgrammaticErrors.EMPTY_SEPARATOR);
 			}
 			else
 			{

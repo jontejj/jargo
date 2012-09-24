@@ -28,8 +28,8 @@ import javax.annotation.concurrent.Immutable;
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.numbers.NumberType;
-import se.j4j.texts.Texts;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -222,7 +222,7 @@ public final class StringParsers
 		public Character parse(final String value) throws ArgumentException
 		{
 			if(value.length() != 1)
-				throw withMessage(format(Texts.INVALID_CHAR, value));
+				throw withMessage(format(UserErrors.INVALID_CHAR, value));
 			return value.charAt(0);
 		}
 
@@ -294,7 +294,7 @@ public final class StringParsers
 				}
 				catch(IllegalArgumentException noEnumFoundWithExactMatch)
 				{
-					throw withMessage(format(Texts.INVALID_ENUM_VALUE, value, new Object(){
+					throw withMessage(format(UserErrors.INVALID_ENUM_VALUE, value, new Object(){
 						@Override
 						public String toString()
 						{
@@ -469,7 +469,7 @@ public final class StringParsers
 			}
 			catch(NumberFormatException nfe)
 			{
-				throw withMessage(format(Texts.INVALID_DOUBLE, value)).andCause(nfe);
+				throw withMessage(format(UserErrors.INVALID_DOUBLE, value)).andCause(nfe);
 			}
 		}
 
@@ -515,7 +515,7 @@ public final class StringParsers
 			}
 			catch(NumberFormatException nfe)
 			{
-				throw withMessage(format(Texts.INVALID_FLOAT, value)).andCause(nfe);
+				throw withMessage(format(UserErrors.INVALID_FLOAT, value)).andCause(nfe);
 			}
 		}
 
@@ -567,7 +567,7 @@ public final class StringParsers
 			}
 			catch(NumberFormatException nfe)
 			{
-				throw withMessage(format(Texts.INVALID_BIG_INTEGER, value)).andCause(nfe);
+				throw withMessage(format(UserErrors.INVALID_BIG_INTEGER, value)).andCause(nfe);
 			}
 		}
 
@@ -999,7 +999,7 @@ public final class StringParsers
 			// TODO: what if null is an actual value then non-allowed repetitions won't be
 			// detected
 			if(oldValue != null && !argumentSettings.isAllowedToRepeat())
-				throw withMessage(format(Texts.UNALLOWED_REPETITION_OF_KEY, argumentSettings, key));
+				throw withMessage(format(UserErrors.UNALLOWED_REPETITION_OF_KEY, argumentSettings, key));
 
 			// Hide what we just did to the parser that handles the "value"
 			arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
@@ -1007,7 +1007,7 @@ public final class StringParsers
 			try
 			{
 				if(!valueLimiter.apply(parsedValue))
-					throw withMessage(format(Texts.UNALLOWED_VALUE, parsedValue, valueLimiter));
+					throw withMessage(format(UserErrors.UNALLOWED_VALUE, parsedValue, valueLimiter));
 			}
 			catch(IllegalArgumentException e)
 			{
@@ -1026,7 +1026,7 @@ public final class StringParsers
 			String separator = argumentSettings.separator();
 			int keyEndIndex = keyValue.indexOf(separator);
 			if(keyEndIndex == -1)
-				throw withMessage(format(Texts.MISSING_KEY_VALUE_SEPARATOR, argumentSettings, keyValue, separator));
+				throw withMessage(format(UserErrors.MISSING_KEY_VALUE_SEPARATOR, argumentSettings, keyValue, separator));
 
 			return keyValue.substring(0, keyEndIndex);
 		}

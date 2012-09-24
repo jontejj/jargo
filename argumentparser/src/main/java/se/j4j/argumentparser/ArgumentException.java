@@ -5,7 +5,7 @@ import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.Serializable;
 
-import se.j4j.texts.Texts;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 
 /**
  * Indicates that something went wrong in a {@link CommandLineParser}. The typical remedy action is
@@ -40,7 +40,7 @@ public abstract class ArgumentException extends Exception
 	 */
 	public final String getUsage(String programName)
 	{
-		checkState(originParser != null, Texts.NO_USAGE_AVAILABLE, programName);
+		checkState(originParser != null, ProgrammaticErrors.NO_USAGE_AVAILABLE, programName);
 
 		return originParser.usage(programName);
 	}

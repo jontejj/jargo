@@ -11,7 +11,7 @@ import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,11 +21,12 @@ import org.junit.Test;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
 import se.j4j.argumentparser.StringParser;
 import se.j4j.testlib.Explanation;
-import se.j4j.texts.Texts;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Ranges;
@@ -74,7 +75,7 @@ public class DefaultValueTest
 		}
 		catch(IllegalStateException e)
 		{
-			assertThat(e).hasMessage(format(Texts.INVALID_DEFAULT_VALUE, format(Texts.UNALLOWED_VALUE, "bar", "foo")));
+			assertThat(e).hasMessage(format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, format(UserErrors.UNALLOWED_VALUE, "bar", "foo")));
 		}
 	}
 
@@ -99,7 +100,7 @@ public class DefaultValueTest
 		}
 		catch(IllegalStateException e)
 		{
-			assertThat(e).hasMessage(format(Texts.INVALID_DEFAULT_VALUE, format(Texts.UNALLOWED_VALUE, "bar", "foo")));
+			assertThat(e).hasMessage(format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, format(UserErrors.UNALLOWED_VALUE, "bar", "foo")));
 			assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
 		}
 	}

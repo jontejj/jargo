@@ -38,7 +38,7 @@ import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.stringparsers.EnumArgumentTest.Action;
-import se.j4j.argumentparser.utils.UsageTexts;
+import se.j4j.argumentparser.utils.ExpectedTexts;
 
 import com.google.common.base.Strings;
 
@@ -91,7 +91,7 @@ public class ConcurrencyTest
 																		charArgument, boolArgument, propertyArgument, arityArgument,
 																		repeatedArgument, splittedArgument, enumArgument, variableArityArgument);
 
-	final String expectedUsageText = UsageTexts.expected("allFeaturesInUsage");
+	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");
 
 	// Amount of test harness
 	private static final int ITERATION_COUNT = 300;

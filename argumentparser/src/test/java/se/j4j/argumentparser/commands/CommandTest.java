@@ -5,7 +5,7 @@ import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.command;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.io.File;
 import java.util.Arrays;

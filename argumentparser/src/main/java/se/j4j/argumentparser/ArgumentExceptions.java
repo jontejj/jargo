@@ -11,10 +11,10 @@ import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.strings.Description;
 import se.j4j.strings.Descriptions;
 import se.j4j.strings.Descriptions.SerializableDescription;
-import se.j4j.texts.Texts;
 
 /**
  * Gives you static access for creating {@link ArgumentException}s.<br>
@@ -165,8 +165,8 @@ public final class ArgumentExceptions
 		public String getMessage(String argumentNameOrcommandName)
 		{
 			if(isCausedByCommand(argumentNameOrcommandName))
-				return String.format(Texts.MISSING_COMMAND_ARGUMENTS, argumentNameOrcommandName, missingArguments);
-			return String.format(Texts.MISSING_REQUIRED_ARGUMENTS, missingArguments);
+				return String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, argumentNameOrcommandName, missingArguments);
+			return String.format(UserErrors.MISSING_REQUIRED_ARGUMENTS, missingArguments);
 		}
 
 		private boolean isCausedByCommand(@Nullable String argumentNameOrcommandName)
@@ -191,7 +191,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	static ArgumentException forUnallowedRepetitionArgument(final String unhandledArgument)
 	{
-		return new SimpleArgumentException(Descriptions.format(Texts.UNALLOWED_REPETITION, unhandledArgument));
+		return new SimpleArgumentException(Descriptions.format(UserErrors.UNALLOWED_REPETITION, unhandledArgument));
 	}
 
 	/**
@@ -221,7 +221,7 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
-			return String.format(Texts.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
+			return String.format(UserErrors.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
 		}
 
 		String parameterDescription()
@@ -265,7 +265,7 @@ public final class ArgumentExceptions
 		@Override
 		public String getMessage(String argumentNameOrcommandName)
 		{
-			return String.format(	Texts.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
+			return String.format(	UserErrors.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
 									argumentNameOrcommandName);
 		}
 

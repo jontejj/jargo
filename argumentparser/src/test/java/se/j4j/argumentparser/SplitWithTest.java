@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.util.ArrayList;
 import java.util.HashMap;

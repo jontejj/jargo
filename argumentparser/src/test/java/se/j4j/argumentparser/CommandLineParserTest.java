@@ -6,7 +6,7 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CommandLineParser.withArguments;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
 
@@ -15,9 +15,9 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.argumentparser.utils.ArgumentExpector;
 import se.j4j.testlib.Explanation;
-import se.j4j.texts.Texts;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class CommandLineParserTest
@@ -141,7 +141,7 @@ public class CommandLineParserTest
 		}
 		catch(IllegalArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.NAME_COLLISION, "-s"));
+			assertThat(expected).hasMessage(String.format(ProgrammaticErrors.NAME_COLLISION, "-s"));
 		}
 	}
 
@@ -166,7 +166,7 @@ public class CommandLineParserTest
 		}
 		catch(IllegalArgumentException e)
 		{
-			assertThat(e).hasMessage(String.format(Texts.ILLEGAL_ARGUMENT, numberTwo));
+			assertThat(e).hasMessage(String.format(ProgrammaticErrors.ILLEGAL_ARGUMENT, numberTwo));
 		}
 	}
 

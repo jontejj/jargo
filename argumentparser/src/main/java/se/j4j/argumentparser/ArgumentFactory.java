@@ -33,10 +33,10 @@ import se.j4j.strings.Describers;
  * <pre>
  * Used as a starting point to create {@link Argument} instances.
  * 
- * The produced arguments can either be passed to
+ * The produced arguments can be passed to
  * {@link CommandLineParser#withArguments(Argument...)} to group several
- * {@link Argument}s together or if only one argument should be
- * parsed {@link ArgumentBuilder#parse(String...)} can be called instead.
+ * {@link Argument}s together. If only one argument should be
+ * parsed {@link ArgumentBuilder#parse(String...)} can be used instead.
  * </pre>
  */
 public final class ArgumentFactory

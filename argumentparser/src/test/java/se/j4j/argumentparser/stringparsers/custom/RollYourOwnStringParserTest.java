@@ -3,7 +3,7 @@ package se.j4j.argumentparser.stringparsers.custom;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.stringparsers.custom.DateTimeParser.dateArgument;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.util.Set;
 

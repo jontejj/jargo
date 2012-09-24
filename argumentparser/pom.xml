@@ -19,6 +19,7 @@
 	        <artifactId>maven-javadoc-plugin</artifactId>
 	        <version>2.8.1</version>
 	        <configuration>
+	          <!-- Put prettify in the javadoc for nice code examples -->
 	          <javadocDirectory>${basedir}/src/main/javadoc/</javadocDirectory>
 	          <docfilessubdirs>true</docfilessubdirs>
 	          <header><![CDATA[
@@ -42,6 +43,8 @@
             <version>${version.jodatime}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>se.j4j</groupId>
             <artifactId>collections</artifactId>
@@ -67,11 +70,6 @@
             <artifactId>test-lib</artifactId>
             <version>${version.testlib}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>se.j4j</groupId>
-            <artifactId>texts</artifactId>
-            <version>${version.texts}</version>
         </dependency>
 	</dependencies>
 </project>

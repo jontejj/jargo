@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
-import se.j4j.texts.Texts;
-
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -209,7 +207,7 @@ public final class Describers
 				result.append("=");
 				result.append(entry.getValue());
 				String descriptionForEntry = descriptions.get(key);
-				checkNotNull(descriptionForEntry, Texts.UNDESCRIBED_KEY, key);
+				checkNotNull(descriptionForEntry, "Undescribed key: %s", key);
 				result.append(NEWLINE).append(" ").append(descriptionForEntry).append(NEWLINE);
 			}
 			return result.toString();

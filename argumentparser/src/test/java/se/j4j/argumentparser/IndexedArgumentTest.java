@@ -9,8 +9,8 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import org.junit.Test;
 
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.testlib.Explanation;
-import se.j4j.texts.Texts;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -62,7 +62,7 @@ public class IndexedArgumentTest
 		}
 		catch(IllegalArgumentException e)
 		{
-			assertThat(e).hasMessage(String.format(Texts.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL, 0, 1));
+			assertThat(e).hasMessage(String.format(ProgrammaticErrors.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL, 0, 1));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class IndexedArgumentTest
 		}
 		catch(IllegalArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.UNIQUE_METAS, port.metaDescriptionInRightColumn()));
+			assertThat(expected).hasMessage(String.format(ProgrammaticErrors.UNIQUE_METAS, port.metaDescriptionInRightColumn()));
 		}
 	}
 }

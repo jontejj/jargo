@@ -12,7 +12,7 @@ import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.lowerCaseParser;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
-import static se.j4j.argumentparser.utils.UsageTexts.expected;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,9 +21,9 @@ import java.util.Map;
 import org.junit.Test;
 
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import se.j4j.testlib.Explanation;
-import se.j4j.texts.Texts;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Ranges;
@@ -94,7 +94,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.MISSING_KEY_VALUE_SEPARATOR, "-N", "3", "="));
+			assertThat(expected).hasMessage(String.format(UserErrors.MISSING_KEY_VALUE_SEPARATOR, "-N", "3", "="));
 		}
 	}
 
@@ -135,7 +135,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage("'-Ifoo' was found as a key several times in the input.");
+			assertThat(expected).hasMessage("'-Ifoo' was found as a key several times in the input");
 		}
 	}
 
@@ -166,7 +166,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException invalidBar)
 		{
-			assertThat(invalidBar).hasMessage(String.format(Texts.UNALLOWED_VALUE, -1, zeroToTen));
+			assertThat(invalidBar).hasMessage(String.format(UserErrors.UNALLOWED_VALUE, -1, zeroToTen));
 		}
 	}
 
@@ -202,7 +202,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(Texts.UNALLOWED_REPETITION_OF_KEY, "-N", "1"));
+			assertThat(expected).hasMessage(String.format(UserErrors.UNALLOWED_REPETITION_OF_KEY, "-N", "1"));
 		}
 	}
 
