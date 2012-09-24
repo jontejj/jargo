@@ -575,7 +575,6 @@ public final class CommandLineParser
 			Iterable<Argument<?>> indexedWithoutVariableArity = filter(indexedArguments, not(IS_OF_VARIABLE_ARITY));
 			Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
 			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, IS_NAMED));
-			// TODO: place commands last?
 			// TODO: sort in a lexicographical way?
 			Collections.sort(sortedArgumentsByName);
 			return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
@@ -703,7 +702,6 @@ public final class CommandLineParser
 			{
 				builder.append(UsageTexts.ALLOWS_REPETITIONS);
 			}
-			// TODO: mention ignoreCase?
 		}
 
 		private <T> void valueExplanation(final Argument<T> arg)
