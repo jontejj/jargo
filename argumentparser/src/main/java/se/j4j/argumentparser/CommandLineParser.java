@@ -390,9 +390,10 @@ public final class CommandLineParser
 		actualArguments.markStartOfParse();
 		while(actualArguments.hasNext())
 		{
+			Argument<?> definition = null;
 			try
 			{
-				Argument<?> definition = getDefinitionForCurrentArgument(actualArguments, holder);
+				definition = getDefinitionForCurrentArgument(actualArguments, holder);
 				if(definition == null)
 				{
 					break;
@@ -402,6 +403,7 @@ public final class CommandLineParser
 			catch(ArgumentException e)
 			{
 				e.originatedFromArgumentName(actualArguments.getCurrentArgumentName());
+				e.originatedFrom(definition);
 				throw e.originatedFrom(this);
 			}
 		}
@@ -530,11 +532,11 @@ public final class CommandLineParser
 		}
 		catch(IllegalArgumentException e)
 		{
-			throw wrapException(e).originatedFrom(this);
+			throw wrapException(e).originatedFrom(this).originatedFromArgumentName(arg.toString()).originatedFrom(arg);
 		}
 		catch(ArgumentException e)
 		{
-			throw e.originatedFrom(this);
+			throw e.originatedFrom(this).originatedFrom(arg);
 		}
 	}
 

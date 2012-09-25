@@ -1,4 +1,4 @@
-'5' is not [0‥4]
+'5' is not [0‥4]. See usage for <integer> for proper values.
 
 Usage: LimiterOutOfRange [Options]
  <integer>    <integer>: [0‥4]

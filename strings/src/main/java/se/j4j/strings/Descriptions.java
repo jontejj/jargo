@@ -19,7 +19,7 @@ public final class Descriptions
 	/**
 	 * Returns an empty string as a description.
 	 */
-	@Nonnull public static final Description EMPTY_STRING = withString("");
+	@Nonnull public static final SerializableDescription EMPTY_STRING = asSerializable(withString(""));
 
 	/**
 	 * Supplies an already created {@link String} as a {@link Description}.
