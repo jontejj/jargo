@@ -1012,7 +1012,7 @@ public final class StringParsers
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw wrapException(e);
+				throw wrapException(e).originatedFrom(argumentSettings);
 			}
 
 			map.put(parsedKey, parsedValue);

@@ -57,7 +57,7 @@ public abstract class NumberType<T extends Number>
 	/**
 	 * Parameter %s = the value that isn't a number
 	 */
-	private static final String INVALID_NUMBER = "'%s' is not a valid number.";
+	private static final String INVALID_NUMBER = "'%s' is not a valid number";
 
 	/**
 	 * @return the static {@code MIN_VALUE} field of {@code T}

@@ -2,6 +2,7 @@ package se.j4j.argumentparser.internal;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder;
+import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
@@ -30,6 +31,18 @@ public final class Texts
 		 */
 		public static final String NAME_SEPARATOR = ", ";
 		public static final String DEFAULT_VALUE_START = "Default: ";
+
+		/**
+		 * <pre>
+		 * Parameter %s = the argument name to refer to in the usage
+		 * 
+		 * For instance: ". See usage for --author for proper values."
+		 * 
+		 * Used by {@link ArgumentException#getMessageAndUsage(String)} to guide
+		 * the user to the correct argument from an error message.
+		 * </pre>
+		 */
+		public static final String USAGE_REFERENCE = ". See usage for %s for proper values.";
 	}
 
 	/**
@@ -37,8 +50,6 @@ public final class Texts
 	 */
 	public static final class UserErrors
 	{
-		// TODO: specify which argument that failed
-
 		/**
 		 * <pre>
 		 * Parameters

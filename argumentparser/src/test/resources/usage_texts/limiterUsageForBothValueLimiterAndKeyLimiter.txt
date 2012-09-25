@@ -1,4 +1,4 @@
-'zoo' didn't match any of: [foo, bar]
+'zoo' didn't match any of: [foo, bar]. See usage for -I for proper values.
 
 Usage: LimitedKeysAndLimitedValues [Options]
 -I<string>=<integer>    <string>=<integer>: where "<string>" is any of [foo, bar] and "<integer>" is [0‥10]

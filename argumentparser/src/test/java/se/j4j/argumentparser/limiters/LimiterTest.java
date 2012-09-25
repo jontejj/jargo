@@ -55,7 +55,7 @@ public class LimiterTest
 		catch(ArgumentException expected)
 		{
 			// This message is from ListPredicate that throws IllegalArgumentException so
-			// this verifies that the wrapped exceptions's message is used.
+			// this verifies that the message of the wrapped exception is used.
 			assertThat(expected).hasMessage("'bar' is not foo");
 		}
 	}

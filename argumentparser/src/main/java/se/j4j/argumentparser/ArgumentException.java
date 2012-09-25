@@ -1,11 +1,15 @@
 package se.j4j.argumentparser;
 
 import static com.google.common.base.Preconditions.checkState;
+import static se.j4j.strings.Descriptions.asSerializable;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.Serializable;
 
+import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.strings.Descriptions;
+import se.j4j.strings.Descriptions.SerializableDescription;
 
 /**
  * Indicates that something went wrong in a {@link CommandLineParser}. The typical remedy action is
@@ -17,7 +21,8 @@ public abstract class ArgumentException extends Exception
 	// TODO: to enable proper behavior when serialized these needs to
 	// be transient (or Serializable and the usage needs to be transferred as a string
 	private transient CommandLineParser originParser;
-	private String originArgumentName;
+	private String usedArgumentName;
+	private SerializableDescription usageArgumentName = Descriptions.EMPTY_STRING;
 
 	protected ArgumentException()
 	{
@@ -51,7 +56,7 @@ public abstract class ArgumentException extends Exception
 	 */
 	public final String getMessageAndUsage(String programName)
 	{
-		String message = getMessage(originArgumentName);
+		String message = getMessage(usedArgumentName, true);
 		return message + NEWLINE + NEWLINE + getUsage(programName);
 	}
 
@@ -62,16 +67,17 @@ public abstract class ArgumentException extends Exception
 	 *            is part of a {@link Command} and is indexed then the command name used to trigger
 	 *            the command is given,
 	 *            otherwise the argument name that was used on the command line is used.
+	 * @param willBePrintedInUsage true if the error message will be printed together with the usage
 	 */
-	protected abstract String getMessage(String argumentNameOrCommandName);
+	protected abstract String getMessage(String argumentNameOrCommandName, boolean willBePrintedInUsage);
 
 	/**
-	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
+	 * Marked as final as the {@link #getMessage(String, boolean)} should be implemented instead
 	 */
 	@Override
 	public final String getMessage()
 	{
-		return getMessage(originArgumentName);
+		return getMessage(usedArgumentName, false);
 	}
 
 	final ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
@@ -80,9 +86,21 @@ public abstract class ArgumentException extends Exception
 		return this;
 	}
 
-	final void originatedFromArgumentName(String argumentNameThatTriggeredMe)
+	final ArgumentException originatedFromArgumentName(String argumentNameThatTriggeredMe)
 	{
-		originArgumentName = argumentNameThatTriggeredMe;
+		usedArgumentName = argumentNameThatTriggeredMe;
+		return this;
+	}
+
+	final ArgumentException originatedFrom(final ArgumentSettings argument)
+	{
+		usageArgumentName = asSerializable(Descriptions.toString(argument));
+		return this;
+	}
+
+	String getUsageArgumentName()
+	{
+		return usageArgumentName.description();
 	}
 
 	/**

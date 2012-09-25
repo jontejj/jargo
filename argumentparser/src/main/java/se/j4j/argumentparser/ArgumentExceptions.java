@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.internal.Texts.UsageTexts;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.strings.Description;
 import se.j4j.strings.Descriptions;
@@ -25,8 +26,6 @@ public final class ArgumentExceptions
 	private ArgumentExceptions()
 	{
 	}
-
-	// TODO , see usage for '-i' for proper values.
 
 	/**
 	 * The most simple version of {@link ArgumentException}s, it simply prints the result of
@@ -59,9 +58,10 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
 		{
-			return message.description();
+			String usageReference = willBePrintedInUsage ? String.format(UsageTexts.USAGE_REFERENCE, getUsageArgumentName()) : "";
+			return message.description() + usageReference;
 		}
 
 		/**
@@ -127,9 +127,10 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		protected String getMessage(String argumentNameOrcommandName)
+		protected String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
 		{
-			return wrappedException.getMessage();
+			String usageReference = willBePrintedInUsage ? String.format(UsageTexts.USAGE_REFERENCE, getUsageArgumentName()) : "";
+			return wrappedException.getMessage() + usageReference;
 		}
 
 		/**
@@ -162,7 +163,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
 		{
 			if(isCausedByCommand(argumentNameOrcommandName))
 				return String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, argumentNameOrcommandName, missingArguments);
@@ -219,7 +220,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
 		{
 			return String.format(UserErrors.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
 		}
@@ -263,7 +264,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
 		{
 			return String.format(	UserErrors.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
 									argumentNameOrcommandName);
@@ -309,7 +310,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
 		{
 			String message = "Unexpected argument: " + unexpectedArgument;
 			if(previousArgument != null)
