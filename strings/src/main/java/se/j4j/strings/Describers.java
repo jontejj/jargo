@@ -56,6 +56,36 @@ public final class Describers
 	}
 
 	/**
+	 * Calls {@link String#valueOf(Object)} for input values.
+	 * As this goes against the very purpose of the {@link Describer} interface
+	 * it may seem odd but this {@link Describer} works really well as a null object,
+	 * it can also act as a functor for calling toString.
+	 */
+	@Nonnull
+	@CheckReturnValue
+	public static <T> Describer<T> toStringDescriber()
+	{
+		@SuppressWarnings("unchecked")
+		Describer<T> toStringDescriber = (Describer<T>) ToStringDescriber.INSTANCE;
+		return toStringDescriber;
+	}
+
+	private static final class ToStringDescriber<T> implements Describer<T>
+	{
+		private static final Describer<Object> INSTANCE = new ToStringDescriber<Object>();
+
+		private ToStringDescriber()
+		{
+		}
+
+		@Override
+		public String describe(T value)
+		{
+			return String.valueOf(value);
+		}
+	}
+
+	/**
 	 * Describes {@link Character}s by printing explanations for unprintable characters.
 	 */
 	@Nonnull

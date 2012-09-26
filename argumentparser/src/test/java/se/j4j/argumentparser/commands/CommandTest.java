@@ -14,6 +14,7 @@ import java.util.List;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
+import se.j4j.argumentparser.ArgumentBuilder.CommandBuilder;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
@@ -21,6 +22,10 @@ import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.commands.Build.BuildTarget;
 import se.j4j.argumentparser.commands.CommitCommand.Commit;
 import se.j4j.argumentparser.commands.CommitCommand.Repository;
+import se.j4j.strings.Describers;
+
+import com.google.common.base.Predicates;
+import com.google.common.base.Suppliers;
 
 /**
  * Tests for subclassing {@link Command}
@@ -386,6 +391,86 @@ public class CommandTest
 		{
 			fail("Description should only be called if usage is printed");
 			return "Unreachable description";
+		}
+	}
+
+	// This is what's tested
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testThatInvalidArgumentPropertiesOnCommandIsDeprecated()
+	{
+		CommandBuilder builder = command(new Build());
+		try
+		{
+			builder.arity(2);
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.defaultValue("");
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.defaultValueDescriber(Describers.<String>toStringDescriber());
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.defaultValueSupplier(Suppliers.ofInstance(""));
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.defaultValueDescription("");
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.limitTo(Predicates.<String>alwaysFalse());
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.required();
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.splitWith("-");
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
+		}
+		try
+		{
+			builder.variableArity();
+			fail("method should throw as it's deprecated");
+		}
+		catch(IllegalStateException expected)
+		{
 		}
 	}
 }

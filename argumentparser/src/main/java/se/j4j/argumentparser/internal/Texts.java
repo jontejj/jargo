@@ -22,6 +22,10 @@ public final class Texts
 	 */
 	public static final class UsageTexts
 	{
+		private UsageTexts()
+		{
+		}
+
 		public static final String USAGE_HEADER = "Usage: ";
 		public static final String ALLOWS_REPETITIONS = " [Supports Multiple occurrences]";
 		public static final String REQUIRED = " [Required]";
@@ -50,6 +54,10 @@ public final class Texts
 	 */
 	public static final class UserErrors
 	{
+		private UserErrors()
+		{
+		}
+
 		/**
 		 * <pre>
 		 * Parameters
@@ -188,6 +196,10 @@ public final class Texts
 	 */
 	public static final class ProgrammaticErrors
 	{
+		private ProgrammaticErrors()
+		{
+		}
+
 		/**
 		 * Parameter %s = the non-unique meta description
 		 */
