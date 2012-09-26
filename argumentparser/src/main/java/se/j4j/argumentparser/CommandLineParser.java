@@ -21,9 +21,10 @@ import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_REQUIRED
 import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_VISIBLE;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingArguments;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnallowedRepetitionArgument;
-import static se.j4j.argumentparser.ArgumentExceptions.forUnexpectedArgument;
+import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
 import static se.j4j.argumentparser.ArgumentFactory.command;
+import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 import static se.j4j.strings.StringsUtil.spaces;
 
@@ -49,12 +50,15 @@ import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.OptionParser;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.argumentparser.internal.Texts.UsageTexts;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.collections.CharacterTrie;
+import se.j4j.strings.StringsUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
 
 /**
@@ -511,12 +515,35 @@ public final class CommandLineParser
 			return null;
 		}
 
-		// TODO: suggest alternative options/parameters based on the
-		// faulty characters' distance (keyboard wise (consider dvorak))
-		// Ask Did you mean and provide y/n (Also give the option to remember this misspelling)
+		guessAndSuggestIfCloseMatch(currentArgument, holder);
 
 		// We're out of order, tell the user what we didn't like
-		throw forUnexpectedArgument(arguments);
+		throw ArgumentExceptions.forUnexpectedArgument(arguments);
+	}
+
+	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArgumentHolder holder) throws ArgumentException
+	{
+		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments.size());
+		for(ArgumentSettings argument : allArguments)
+		{
+			if(!holder.parsedArguments.containsKey(argument))
+			{
+				for(String name : argument.names())
+				{
+					validArguments.add(name);
+				}
+			}
+		}
+
+		if(!validArguments.isEmpty())
+		{
+			String bestMatch = StringsUtil.closestMatch(currentArgument, validArguments);
+			int distance = StringsUtil.levenshteinDistance(currentArgument, bestMatch);
+			// TODO: verify that 4 is reasonable
+			// TODO: modify argumentIterator and print the whole invocation as it's suggested
+			if(distance < 4)
+				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, bestMatch));
+		}
 	}
 
 	private boolean isCommandParser()
