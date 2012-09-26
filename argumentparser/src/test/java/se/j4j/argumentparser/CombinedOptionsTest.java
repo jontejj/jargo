@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 /**
@@ -31,7 +30,7 @@ public class CombinedOptionsTest
 		assertThat(args.get(promiscousMode)).isTrue();
 	}
 
-	@Test(expected = UnexpectedArgumentException.class)
+	@Test(expected = ArgumentException.class)
 	public void testSeveralOptionsInOneArgumentWithOneNonOptionArgument() throws ArgumentException
 	{
 		Argument<Boolean> logging = optionArgument("-l").build();
@@ -40,7 +39,7 @@ public class CombinedOptionsTest
 		CommandLineParser.withArguments(logging, number).parse("-ln");
 	}
 
-	@Test(expected = UnexpectedArgumentException.class)
+	@Test(expected = ArgumentException.class)
 	public void testSeveralOptionsInOneArgumentWithOneDuplicate() throws ArgumentException
 	{
 		Argument<Boolean> logging = optionArgument("-l").build();
@@ -49,13 +48,13 @@ public class CombinedOptionsTest
 		CommandLineParser.withArguments(logging, promiscousMode).parse("-ppl");
 	}
 
-	@Test(expected = UnexpectedArgumentException.class)
+	@Test(expected = ArgumentException.class)
 	public void testSeveralOptionsInOneArgumentWithOneUnknownCharacter() throws ArgumentException
 	{
 		optionArgument("-l").parse("-pl");
 	}
 
-	@Test(expected = UnexpectedArgumentException.class)
+	@Test(expected = ArgumentException.class)
 	public void testThatOnlyAHyphenDoesNotMatchAnyOptions() throws ArgumentException
 	{
 		optionArgument("-l").parse("-");

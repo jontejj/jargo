@@ -16,6 +16,7 @@ import org.junit.Test;
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.argumentparser.utils.ArgumentExpector;
 import se.j4j.testlib.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -92,6 +93,20 @@ public class CommandLineParserTest
 	public void testWrongArgumentForShorthandInvocation() throws ArgumentException
 	{
 		integerArgument().parse("a42");
+	}
+
+	@Test
+	public void testThatCloseMatchIsSuggestedForTypos()
+	{
+		try
+		{
+			integerArgument("-n", "--number").parse("-number");
+			fail("-number should have to be --number");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-number", "--number"));
+		}
 	}
 
 	@Test

@@ -114,7 +114,7 @@ public class CommandTest
 	}
 
 	@Test
-	public void testThatUnhandledVerboseArgumentIsCaught()
+	public void testThatUnhandledArgumentIsCaught()
 	{
 		String[] args = {"log", "-verbose", "commit"};
 		try

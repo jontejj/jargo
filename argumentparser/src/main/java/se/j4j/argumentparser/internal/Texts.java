@@ -53,13 +53,26 @@ public final class Texts
 		/**
 		 * <pre>
 		 * Parameters
+		 * 1st %s = an unknown argument
+		 * 2nd %s = the closest match for the unknown argument from the valid arguments
+		 * 
+		 * For instance: "Didn't expect stats, did you mean status?"
+		 * 
+		 * Used by {@link CommandLineParser#parse(String...)}.
+		 * </pre>
+		 */
+		public static final String SUGGESTION = "Didn't expect %s, did you mean %s?";
+
+		/**
+		 * <pre>
+		 * Parameters
 		 * 1st %s = positional string specifying which of the parameters that is the first that is missing
 		 * 2nd %s = meta description for the parameter
 		 * 3rd %s = argument name that is expecting the parameter
 		 * 
 		 * For instance: "Missing second &lt;integer&gt; parameter for -n"
 		 * 
-		 * Used by {@link ArgumentBuilder#arity(int)}
+		 * Used by {@link ArgumentBuilder#arity(int)}.
 		 * </pre>
 		 */
 		public static final String MISSING_NTH_PARAMETER = "Missing %s %s parameter for %s";
@@ -83,7 +96,7 @@ public final class Texts
 		 * 
 		 * For instance: "Missing required arguments: [-n, -a]
 		 * 
-		 * Used by {@link ArgumentBuilder#required()}
+		 * Used by {@link ArgumentBuilder#required()}.
 		 * </pre>
 		 */
 		public static final String MISSING_REQUIRED_ARGUMENTS = "Missing required arguments: %s";
@@ -96,7 +109,7 @@ public final class Texts
 		 * 
 		 * For instance: "Missing required arguments for commit: [--author]"
 		 * 
-		 * Used by {@link Command}s that's missing {@link ArgumentBuilder#required()} {@link Argument}s
+		 * Used by {@link Command}s that's missing {@link ArgumentBuilder#required()} {@link Argument}s.
 		 * </pre>
 		 */
 		public static final String MISSING_COMMAND_ARGUMENTS = "Missing required arguments for %s: %s";
@@ -121,7 +134,7 @@ public final class Texts
 		 * 
 		 * For instance: "'-Dsystem.property.name' was found as a key several times in the input"
 		 * 
-		 * Used by {@link ArgumentBuilder#asPropertyMap()}
+		 * Used by {@link ArgumentBuilder#asPropertyMap()}.
 		 * </pre>
 		 */
 		public static final String UNALLOWED_REPETITION_OF_KEY = "'%s%s' was found as a key several times in the input";
@@ -164,7 +177,7 @@ public final class Texts
 		 * 
 		 * For instance: "'-Dsystem.property.name-property_value' is missing an assignment operator (=)"
 		 * 
-		 * Used by {@link ArgumentBuilder#asPropertyMap()}
+		 * Used by {@link ArgumentBuilder#asPropertyMap()}.
 		 * </pre>
 		 */
 		public static final String MISSING_KEY_VALUE_SEPARATOR = "'%s%s' is missing an assignment operator(%s)";
@@ -234,8 +247,7 @@ public final class Texts
 
 		/**
 		 * Parameter %s = the illegal argument that the {@link CommandLineParser} wasn't configured
-		 * to
-		 * handle
+		 * to handle
 		 */
 		public static final String ILLEGAL_ARGUMENT = "%s was not found in this result at all. Did you perhaps forget to add it to withArguments(...)?";
 	}
