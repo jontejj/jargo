@@ -32,7 +32,13 @@ public class Functions2Test
 	@Test
 	public void testRepeatThreeTimes()
 	{
-		assertThat(Functions2.repeat(ADD_ONE, 2).apply(2)).isEqualTo(4);
+		assertThat(Functions2.repeat(ADD_ONE, 2).apply(0)).isEqualTo(2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testThatNegativeRepitionsIsIllegal()
+	{
+		Functions2.repeat(ADD_ONE, -1);
 	}
 
 	@Test

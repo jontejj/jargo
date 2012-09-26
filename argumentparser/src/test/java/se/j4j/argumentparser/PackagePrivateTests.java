@@ -12,6 +12,9 @@ import se.j4j.argumentparser.CommandLineParser.ParserCache;
 import se.j4j.argumentparser.StringParsers.StringStringParser;
 import se.j4j.argumentparser.commands.Build;
 import se.j4j.argumentparser.internal.Texts;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UsageTexts;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.numbers.NumberType;
 import se.j4j.strings.Describers;
 import se.j4j.strings.Descriptions;
@@ -73,10 +76,11 @@ public class PackagePrivateTests
 	}
 
 	@Test
-	public void testConstructorsForUtilityClasses() throws Exception
+	public void testConstructorsForUtilityClasses()
 	{
 		testUtilityClassDesign(	ArgumentFactory.class, StringsUtil.class, Descriptions.class, StringParsers.class, ArgumentExceptions.class,
-								Describers.class, Texts.class, ParserCache.class, Texts.class);
+								Describers.class, Texts.class, ParserCache.class, Texts.class, UserErrors.class, UsageTexts.class,
+								ProgrammaticErrors.class);
 	}
 
 	@Test

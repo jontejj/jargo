@@ -163,7 +163,15 @@ public final class Functions2
 	}
 
 	/**
-	 * Runs {@code function} {@code times} times
+	 * Runs {@code function} {@code times} times.
+	 * The result of the first call is passed to the next apply in the chain and so on.
+	 * For instance:
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * assertThat(Functions2.repeat(ADD_ONE, 2).apply(0)).isEqualTo(2);
+	 * </code>
+	 * </pre>
 	 */
 	@Nonnull
 	public static <T> Function<T, T> repeat(Function<T, T> function, long times)

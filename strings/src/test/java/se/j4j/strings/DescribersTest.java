@@ -39,6 +39,18 @@ public class DescribersTest
 	}
 
 	@Test
+	public void testThatToStringDescriberWorksForNulls()
+	{
+		assertThat(Describers.toStringDescriber().describe(null)).isEqualTo("null");
+	}
+
+	@Test
+	public void testThatToStringDescriberCallsToString()
+	{
+		assertThat(Describers.toStringDescriber().describe(42)).isEqualTo("42");
+	}
+
+	@Test
 	public void testCharacterDescriber()
 	{
 		assertThat(characterDescriber().describe(null)).isEqualTo("null");

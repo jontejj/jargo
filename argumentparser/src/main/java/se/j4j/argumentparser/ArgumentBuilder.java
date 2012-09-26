@@ -829,67 +829,94 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			super(command);
 		}
 
+		/**
+		 * @deprecated Commands shouldn't be required
+		 */
 		@Deprecated
 		@Override
 		public CommandBuilder required()
 		{
-			throw new IllegalStateException("Commands can't be required");
+			throw new IllegalStateException("");
 		}
 
+		/**
+		 * @deprecated Commands shouldn't have default values
+		 */
 		@Deprecated
 		@Override
 		public CommandBuilder defaultValue(String defaultValue)
 		{
-			throw new IllegalStateException("Commands can't have default values");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated Commands shouldn't have default values
+		 */
 		@Deprecated
 		@Override
 		public CommandBuilder defaultValueSupplier(Supplier<String> defaultValueSupplier)
 		{
-			throw new IllegalStateException("Commands can't have default values");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated Commands can't have default values, so no description can be useful
+		 */
 		@Deprecated
 		@Override
 		public CommandBuilder defaultValueDescription(String defaultValueDescription)
 		{
-			throw new IllegalStateException("Commands can't have default values, so no description can be useful");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated Commands can't have default values, so no description can be useful
+		 */
 		@Deprecated
 		@Override
 		public CommandBuilder defaultValueDescriber(Describer<String> defaultValueDescriber)
 		{
-			throw new IllegalStateException("Commands can't have default values, so no description can be useful");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated Commands can't be limited
+		 */
 		@Deprecated
 		@Override
 		public CommandBuilder limitTo(Predicate<String> limiter)
 		{
-			throw new IllegalStateException("Commands can't be limited");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated Commands can't be splitted
+		 */
 		@Deprecated
 		@Override
 		public SplitterArgumentBuilder<String> splitWith(String valueSeparator)
 		{
-			throw new IllegalStateException("Commands can't be splitted");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated override {@link Command#commandArguments()} instead.
+		 */
 		@Deprecated
 		@Override
 		public ArityArgumentBuilder<String> arity(int arity)
 		{
-			throw new IllegalStateException("Commands can't have an arity, as they have no parameters");
+			throw new IllegalStateException();
 		}
 
+		/**
+		 * @deprecated override {@link Command#commandArguments()} instead.
+		 */
 		@Deprecated
 		@Override
 		public ArityArgumentBuilder<String> variableArity()
 		{
-			throw new IllegalStateException("Commands can't have an arity, as they have no parameters");
+			throw new IllegalStateException();
 		}
 	}
 
