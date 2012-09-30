@@ -254,8 +254,8 @@ public final class StringParsers
 	 * made, if that fails a direct match without converting the case is made,
 	 * if that also fails an {@link ArgumentException} is thrown. This order of execution is
 	 * based on the fact that users typically don't upper case their input while
-	 * java naming guidelines recommends upper case for enum constants.
-	 * TODO: insert link to java naming guidelines
+	 * <nobr><a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a>
+	 * recommends upper case for enum constants.</nobr>
 	 * </pre>
 	 * 
 	 * @param enumToHandle the {@link Class} literal for the {@link Enum} to parse strings into
@@ -313,9 +313,9 @@ public final class StringParsers
 		{
 			E[] enumValues = enumType.getEnumConstants();
 			StringBuilder values = new StringBuilder(enumValues.length * AVERAGE_ENUM_NAME_LENGTH);
-			values.append('[');
+			values.append('{');
 			Joiner.on(" | ").appendTo(values, enumValues);
-			values.append(']');
+			values.append('}');
 			return values.toString();
 		}
 

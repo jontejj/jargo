@@ -1,5 +1,7 @@
 package se.j4j.strings;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -97,6 +99,7 @@ public final class Descriptions
 	@CheckReturnValue
 	public static Description toString(Object value)
 	{
+		checkNotNull(value);
 		return new ToStringDescription(value);
 	}
 

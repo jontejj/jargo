@@ -1,4 +1,4 @@
-Missing <integer> parameter for -n
+Missing <integer> parameter for -n. See usage for --number for proper values.
 
 Usage: MissingParameterTest [Options]
 --number, -n <integer>    <integer>: -2147483648 to 2147483647

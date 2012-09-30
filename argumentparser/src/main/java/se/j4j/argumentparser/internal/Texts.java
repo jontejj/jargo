@@ -1,5 +1,7 @@
 package se.j4j.argumentparser.internal;
 
+import static se.j4j.strings.StringsUtil.NEWLINE;
+import static se.j4j.strings.StringsUtil.TAB;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
@@ -62,14 +64,15 @@ public final class Texts
 		 * <pre>
 		 * Parameters
 		 * 1st %s = an unknown argument
-		 * 2nd %s = the closest match for the unknown argument from the valid arguments
+		 * 2nd %s = the closest matches for the unknown argument from the valid arguments
 		 * 
-		 * For instance: "Didn't expect stats, did you mean status?"
+		 * For instance: "Didn't expect stats, did you mean one of these?
+		 * 			status"
 		 * 
 		 * Used by {@link CommandLineParser#parse(String...)}.
 		 * </pre>
 		 */
-		public static final String SUGGESTION = "Didn't expect %s, did you mean %s?";
+		public static final String SUGGESTION = "Didn't expect %s, did you mean one of these?" + NEWLINE + TAB + "%s";
 
 		/**
 		 * <pre>
@@ -169,7 +172,7 @@ public final class Texts
 		 * 1st %s = the received value
 		 * 2nd %s = a list of the acceptable enum values
 		 * 
-		 * For instance: "'break' is not a valid Option, Expecting one of [start | stop | restart]"
+		 * For instance: "'break' is not a valid Option, Expecting one of {start | stop | restart}"
 		 * 
 		 * Used by {@link ArgumentFactory#enumArgument(Class, String...)}.
 		 * </pre>

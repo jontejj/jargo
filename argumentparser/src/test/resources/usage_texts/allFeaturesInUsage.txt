@@ -15,7 +15,7 @@ Usage: HelloWorld [Options]
                                                                        Default: Current time
 --double <double>                                                      <double>: -1.7976931348623157E308 to 1.7976931348623157E308
                                                                        Default: 0.0
---enum <Action>                                                        <Action>: [start | stop | restart]
+--enum <Action>                                                        <Action>: {start | stop | restart}
                                                                        Default: null
 --file <path>                                                          <path>: a file path
                                                                        Default: The current directory

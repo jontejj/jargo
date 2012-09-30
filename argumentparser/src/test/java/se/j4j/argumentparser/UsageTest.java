@@ -71,7 +71,7 @@ public class UsageTest
 	{
 		// TODO: add possibility to add a description of the program as a whole
 		// Introduce ProgramInformation class on top of String
-		// ProgramInformation.name("NoArguments").description("What NoArguments does").printOneLiner()
+		// ProgramInformation.name("NoArguments").description("What NoArguments does").includeOneLinerInUsage()
 		String usage = CommandLineParser.withArguments().usage("NoArguments");
 		assertThat(usage).isEqualTo("Usage: NoArguments");
 	}
@@ -115,6 +115,21 @@ public class UsageTest
 	}
 
 	@Test
+	public void testArgumentNameSuggestions()
+	{
+		try
+		{
+			CommandLineParser.withArguments(integerArgument("--name").build(), integerArgument("--number").build(),
+											integerArgument("--nothing").build()).parse("--namr");
+			fail("--namr should not be a valid argument");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected.getMessageAndUsage("ArgumentNameSuggestions")).isEqualTo(expected("argumentNameSuggestions"));
+		}
+	}
+
+	@Test
 	public void testThatUsageOnArgumentExceptionThrowsWhenNoUsageIsAvailable()
 	{
 		try
@@ -125,8 +140,8 @@ public class UsageTest
 		{
 			try
 			{
-				e.getUsage("ProgramName");
-				fail("getUsage should throw when not enough information is available to produce a sane usage text");
+				e.getMessageAndUsage("ProgramName");
+				fail("getMessageAndUsage should throw when not enough information is available to produce a sane usage text");
 			}
 			catch(IllegalStateException illegalState)
 			{

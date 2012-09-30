@@ -6,8 +6,11 @@ import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.Serializable;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UsageTexts;
 import se.j4j.strings.Descriptions;
 import se.j4j.strings.Descriptions.SerializableDescription;
 
@@ -16,13 +19,14 @@ import se.j4j.strings.Descriptions.SerializableDescription;
  * to present {@link #getMessageAndUsage(String)} to the user so he is informed about what he did
  * wrong.
  */
+@NotThreadSafe
 public abstract class ArgumentException extends Exception
 {
 	// TODO: to enable proper behavior when serialized these needs to
 	// be transient (or Serializable and the usage needs to be transferred as a string
 	private transient CommandLineParser originParser;
-	private String usedArgumentName;
-	private SerializableDescription usageArgumentName = Descriptions.EMPTY_STRING;
+	private String usedArgumentName = null;
+	private SerializableDescription usageReference = Descriptions.EMPTY_STRING;
 
 	protected ArgumentException()
 	{
@@ -40,44 +44,42 @@ public abstract class ArgumentException extends Exception
 
 	/**
 	 * Returns a usage string explaining how to use the {@link CommandLineParser} that caused this
-	 * exception. To also get the error message detailing the erroneous argument use
-	 * {@link #getMessageAndUsage(String)} instead.
-	 */
-	public final String getUsage(String programName)
-	{
-		checkState(originParser != null, ProgrammaticErrors.NO_USAGE_AVAILABLE, programName);
-
-		return originParser.usage(programName);
-	}
-
-	/**
-	 * Returns a usage string explaining how to use the {@link CommandLineParser} that caused this
 	 * exception, prepended with an error message detailing the erroneous argument.
 	 */
 	public final String getMessageAndUsage(String programName)
 	{
-		String message = getMessage(usedArgumentName, true);
-		return message + NEWLINE + NEWLINE + getUsage(programName);
+		String message = getMessage(usedArgumentName);
+		return message + usageReference() + NEWLINE + NEWLINE + getUsage(programName);
 	}
 
 	/**
 	 * Returns why this exception occurred.
 	 * 
-	 * @param argumentNameOrCommandName if the argument that caused this exception to happen
-	 *            is part of a {@link Command} and is indexed then the command name used to trigger
-	 *            the command is given,
-	 *            otherwise the argument name that was used on the command line is used.
-	 * @param willBePrintedInUsage true if the error message will be printed together with the usage
+	 * @param referenceName the argument name that was used on the command line.
+	 *            If indexed the {@link ArgumentBuilder#metaDescription(String)} is given.
+	 *            Furthermore if the argument is both indexed and part of a {@link Command} the
+	 *            command name used to trigger the command is given. Alas never null.
 	 */
-	protected abstract String getMessage(String argumentNameOrCommandName, boolean willBePrintedInUsage);
+	protected abstract String getMessage(String referenceName);
 
 	/**
-	 * Marked as final as the {@link #getMessage(String, boolean)} should be implemented instead
+	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
 	 */
 	@Override
 	public final String getMessage()
 	{
-		return getMessage(usedArgumentName, false);
+		return getMessage(usedArgumentName);
+	}
+
+	/**
+	 * Returns a usage string explaining how to use the {@link CommandLineParser} that caused this
+	 * exception.
+	 */
+	private String getUsage(String programName)
+	{
+		checkState(originParser != null, ProgrammaticErrors.NO_USAGE_AVAILABLE, programName);
+
+		return originParser.usage(programName);
 	}
 
 	final ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
@@ -94,13 +96,20 @@ public abstract class ArgumentException extends Exception
 
 	final ArgumentException originatedFrom(final ArgumentSettings argument)
 	{
-		usageArgumentName = asSerializable(Descriptions.toString(argument));
+		usageReference = asSerializable(Descriptions.toString(argument));
 		return this;
 	}
 
-	String getUsageArgumentName()
+	private String usageReference()
 	{
-		return usageArgumentName.description();
+		if(hasUsageReference())
+			return String.format(UsageTexts.USAGE_REFERENCE, usageReference);
+		return "";
+	}
+
+	private boolean hasUsageReference()
+	{
+		return usageReference != Descriptions.EMPTY_STRING;
 	}
 
 	/**

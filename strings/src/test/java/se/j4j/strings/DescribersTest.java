@@ -71,8 +71,17 @@ public class DescribersTest
 		Describer<Integer> valueDescriber = Describers.withConstantString("42");
 		Describer<List<Integer>> listDescriber = Describers.listDescriber(valueDescriber);
 
-		assertThat(listDescriber.describe(Arrays.asList(1, 2, 3))).isEqualTo("[42, 42, 42]");
+		assertThat(listDescriber.describe(Arrays.asList(1, 2, 3))).isEqualTo("42, 42, 42");
 		assertThat(listDescriber.describe(Collections.<Integer>emptyList())).isEqualTo("Empty list");
+	}
+
+	@Test
+	public void testThatListDescriberSeparatesValuesWithValueSeparator()
+	{
+		Describer<Integer> valueDescriber = Describers.withConstantString("42");
+		Describer<List<Integer>> listDescriber = Describers.listDescriber(valueDescriber, "-");
+
+		assertThat(listDescriber.describe(Arrays.asList(1, 2, 3))).isEqualTo("42-42-42");
 	}
 
 	@Test

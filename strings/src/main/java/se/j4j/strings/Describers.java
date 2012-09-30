@@ -17,6 +17,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 
+// TODO: remove dependency to Guava from strings
 /**
  * Gives you static access to implementations of the {@link Describer} interface.
  */
@@ -301,16 +302,31 @@ public final class Describers
 	public static <T> Describer<List<T>> listDescriber(Describer<T> valueDescriber)
 	{
 		checkNotNull(valueDescriber);
-		return new ListDescriber<T>(valueDescriber);
+		return new ListDescriber<T>(valueDescriber, ", ");
+	}
+
+	/**
+	 * Describes values in lists with {@code valueDescriber} and separates values with
+	 * {@code valueSeperator}.
+	 * Lists with {@link List#size()} = zero is described with the string "Empty List".
+	 */
+	@Nonnull
+	@CheckReturnValue
+	public static <T> Describer<List<T>> listDescriber(Describer<T> valueDescriber, String valueSeparator)
+	{
+		checkNotNull(valueDescriber);
+		return new ListDescriber<T>(valueDescriber, valueSeparator);
 	}
 
 	private static final class ListDescriber<T> implements Describer<List<T>>
 	{
 		private final Describer<T> valueDescriber;
+		private final String valueSeparator;
 
-		ListDescriber(Describer<T> valueDescriber)
+		ListDescriber(Describer<T> valueDescriber, String valueSeparator)
 		{
 			this.valueDescriber = valueDescriber;
+			this.valueSeparator = valueSeparator;
 		}
 
 		@Override
@@ -324,12 +340,11 @@ public final class Describers
 
 			StringBuilder sb = new StringBuilder(value.size() * firstValue.length());
 
-			sb.append('[').append(firstValue);
+			sb.append(firstValue);
 			while(values.hasNext())
 			{
-				sb.append(", ").append(valueDescriber.describe(values.next()));
+				sb.append(valueSeparator).append(valueDescriber.describe(values.next()));
 			}
-			sb.append(']');
 			return sb.toString();
 		}
 	}

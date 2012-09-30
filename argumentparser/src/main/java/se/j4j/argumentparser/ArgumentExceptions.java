@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
-import se.j4j.argumentparser.internal.Texts.UsageTexts;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.strings.Description;
 import se.j4j.strings.Descriptions;
@@ -58,10 +57,9 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
+		public String getMessage(String argumentNameOrcommandName)
 		{
-			String usageReference = willBePrintedInUsage ? String.format(UsageTexts.USAGE_REFERENCE, getUsageArgumentName()) : "";
-			return message.description() + usageReference;
+			return message.description();
 		}
 
 		/**
@@ -127,10 +125,9 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		protected String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
+		protected String getMessage(String argumentNameOrcommandName)
 		{
-			String usageReference = willBePrintedInUsage ? String.format(UsageTexts.USAGE_REFERENCE, getUsageArgumentName()) : "";
-			return wrappedException.getMessage() + usageReference;
+			return wrappedException.getMessage();
 		}
 
 		/**
@@ -163,7 +160,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
+		public String getMessage(String argumentNameOrcommandName)
 		{
 			if(isCausedByCommand(argumentNameOrcommandName))
 				return String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, argumentNameOrcommandName, missingArguments);
@@ -220,7 +217,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
+		public String getMessage(String argumentNameOrcommandName)
 		{
 			return String.format(UserErrors.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
 		}
@@ -264,10 +261,10 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
+		public String getMessage(String argumentNameOrCommandName)
 		{
 			return String.format(	UserErrors.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
-									argumentNameOrcommandName);
+									argumentNameOrCommandName);
 		}
 
 		/**
@@ -310,7 +307,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName, boolean willBePrintedInUsage)
+		public String getMessage(String argumentNameOrcommandName)
 		{
 			String message = "Unexpected argument: " + unexpectedArgument;
 			if(previousArgument != null)

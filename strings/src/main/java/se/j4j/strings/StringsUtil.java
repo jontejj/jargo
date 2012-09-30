@@ -1,17 +1,20 @@
 package se.j4j.strings;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Iterables.isEmpty;
-import static com.google.common.primitives.Ints.min;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 
 /**
  * Utilities for working with {@link String}s
@@ -26,6 +29,7 @@ public final class StringsUtil
 	 * A suitable string to represent newlines on this specific platform
 	 */
 	@Nonnull public static final String NEWLINE = System.getProperty("line.separator");
+	@Nonnull public static final char TAB = '\t';
 
 	/**
 	 * @param nrOfSpaces number of spaces to put in the created string
@@ -98,65 +102,122 @@ public final class StringsUtil
 	}
 
 	/**
+	 * <pre>
+	 * Returns a sorted {@link List} where the first entry is the {@link String} in {@code validOptions} that's closest in terms of
+	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to {@code input}.
+	 * 
+	 * For example when given "stats" as input and "status", "staging",
+	 * "stage" as validOptions, and 4 as maximumDistance, "status", "stage", "staging" is returned.
+	 * 
+	 * </pre>
+	 */
+	@Nonnull
+	@CheckReturnValue
+	public static List<String> closestMatches(final String input, final Iterable<String> validOptions, int maximumDistance)
+	{
+		if(isEmpty(validOptions))
+			return Collections.emptyList();
+
+		List<CloseMatch> closeMatches = Lists.newArrayList();
+		for(String validOption : validOptions)
+		{
+			int distance = levenshteinDistance(input, validOption);
+			if(distance <= maximumDistance)
+			{
+				closeMatches.add(new CloseMatch(validOption, distance));
+			}
+		}
+		Collections.sort(closeMatches);
+		return Lists.transform(closeMatches, CloseMatch.GET_VALUE);
+	}
+
+	private static final class CloseMatch implements Comparable<CloseMatch>
+	{
+		private final int measuredDistance;
+		private final String value;
+
+		private CloseMatch(String validOption, int distance)
+		{
+			measuredDistance = distance;
+			value = validOption;
+		}
+
+		@Override
+		public int compareTo(CloseMatch o)
+		{
+			return measuredDistance - o.measuredDistance;
+		}
+
+		private static final Function<CloseMatch, String> GET_VALUE = new Function<CloseMatch, String>(){
+			@Override
+			public String apply(CloseMatch input)
+			{
+				return input.value;
+			}
+		};
+	}
+
+	/**
 	 * Returns the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein
-	 * distance</a> between {@code one} and {@code two}.
+	 * distance</a> between {@code left} and {@code right}.
 	 * 
 	 * @see #closestMatch(String, Iterable)
 	 */
-	public static int levenshteinDistance(final String one, final String two)
+	public static int levenshteinDistance(final String left, final String right)
 	{
-		int m = one.codePointCount(0, one.length());
-		int n = two.codePointCount(0, two.length());
+		checkNotNull(left);
+		checkNotNull(right);
 
-		if(m == 0)
-			return n;
-		else if(n == 0)
-			return m;
+		// a "cleaner" version of the org.apache.commons-lang algorithm which in turn was inspired
+		// by http://www.merriampark.com/ldjava.htm
+		int leftLength = left.length();
+		int rightLength = right.length();
 
-		// for all i and j, d[i,j] will hold the Levenshtein distance between
-		// the first i characters of s and the first j characters of t;
-		// note that d has (m+1)x(n+1) values
-		int[][] distances = new int[m + 1][n + 1];
-		for(int i = 0; i <= m; i++)
+		if(leftLength == 0)
+			return rightLength;
+		else if(rightLength == 0)
+			return leftLength;
+
+		int previousDistances[] = new int[leftLength + 1]; // 'previous' cost array, horizontally
+		int distances[] = new int[leftLength + 1]; // cost array, horizontally
+
+		int leftIndex;
+		int rightIndex;
+
+		char rightChar;
+
+		for(leftIndex = 0; leftIndex <= leftLength; leftIndex++)
 		{
-			// the distance of any first string to an empty second string
-			distances[i][0] = i;
+			previousDistances[leftIndex] = leftIndex;
 		}
-		for(int i = 0; i <= n; i++)
-		{
-			// the distance of any second string to an empty first string
-			distances[0][i] = i;
-		}
 
-		for(int j = 1; j < n; j++)
+		for(rightIndex = 1; rightIndex <= rightLength; rightIndex++)
 		{
-			for(int i = 1; i < m; i++)
+			rightChar = right.charAt(rightIndex - 1);
+			distances[0] = rightIndex;
+
+			for(leftIndex = 1; leftIndex <= leftLength; leftIndex++)
 			{
-				/*
-				 * TODO: add support for case-insensitive comparisons
-				 * int currentCharFromOne = Character.toUpperCase(one.codePointAt(i - 1));
-				 * int currentCharFromTwo = Character.toUpperCase(two.codePointAt(j - 1));
-				 * if(currentCharFromOne == currentCharFromTwo)
-				 * {
-				 * }
-				 */
-
-				if(one.codePointAt(i - 1) == two.codePointAt(j - 1))
+				int insertionCost = distances[leftIndex - 1] + 1;
+				int editCost = previousDistances[leftIndex] + 1;
+				int deletionCost = previousDistances[leftIndex - 1];
+				if(left.charAt(leftIndex - 1) != rightChar)
 				{
-					// no operation required
-					distances[i][j] = distances[i - 1][j - 1];
+					deletionCost++;
 				}
-				else
-				{
-					int deletion = distances[i - 1][j] + 1;
-					int insertion = distances[i][j - 1] + 1;
-					int substitution = distances[i - 1][j - 1] + 1;
 
-					distances[i][j] = min(deletion, insertion, substitution);
-				}
+				distances[leftIndex] = Ints.min(insertionCost, editCost, deletionCost);
 			}
+
+			// Swap current distance counts to 'previous row' distance counts
+			int[] temp = previousDistances;
+			previousDistances = distances;
+			distances = temp;
 		}
-		return distances[m - 1][n - 1];
+
+		// our last action in the above loop was to switch distances and previousDistances, so
+		// previousDistances now actually has the most recent cost counts
+		return previousDistances[leftLength];
 	}
 
 	/**
