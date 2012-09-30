@@ -5,6 +5,8 @@ import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.booleanArgument;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
+import static se.j4j.argumentparser.ArgumentFactory.withParser;
+import static se.j4j.argumentparser.StringParsers.stringParser;
 
 import org.junit.Test;
 
@@ -81,6 +83,39 @@ public class IndexedArgumentTest
 		catch(IllegalArgumentException expected)
 		{
 			assertThat(expected).hasMessage(String.format(ProgrammaticErrors.UNIQUE_METAS, port.metaDescriptionInRightColumn()));
+		}
+	}
+
+	@Test
+	public void testThatMetaDescriptionIsGivenForIndexedArgumentInExceptions()
+	{
+		try
+		{
+			withParser(new ForwardingStringParser.SimpleForwardingStringParser<String>(stringParser()){
+				@Override
+				public String parse(String value) throws ArgumentException
+				{
+					throw new UsedArgumentAsMessageException();
+				}
+			}).parse("");
+			fail("exception should have been thrown from parse");
+		}
+		catch(ArgumentException expected)
+		{
+			// As indexed argument doesn't have names their
+			// meta description is the best string the exception has to offer
+			assertThat(expected.getMessage()).isEqualTo("<string>");
+		}
+	}
+
+	private static final class UsedArgumentAsMessageException extends ArgumentException
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected String getMessage(String referenceName)
+		{
+			return referenceName;
 		}
 	}
 }

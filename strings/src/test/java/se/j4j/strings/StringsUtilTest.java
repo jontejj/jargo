@@ -3,10 +3,13 @@ package se.j4j.strings;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.strings.StringsUtil.closestMatch;
+import static se.j4j.strings.StringsUtil.closestMatches;
 import static se.j4j.strings.StringsUtil.numberToPositionalString;
 import static se.j4j.strings.StringsUtil.spaces;
 import static se.j4j.strings.StringsUtil.toLowerCase;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -24,7 +27,21 @@ public class StringsUtilTest
 	}
 
 	@Test
-	public void testFuzzyMatching()
+	public void testLevenshteinDistance()
+	{
+		assertThat(StringsUtil.levenshteinDistance("", "")).isZero();
+		assertThat(StringsUtil.levenshteinDistance("", "a")).isEqualTo(1);
+		assertThat(StringsUtil.levenshteinDistance("aaapppp", "")).isEqualTo(7);
+		assertThat(StringsUtil.levenshteinDistance("frog", "fog")).isEqualTo(1);
+		assertThat(StringsUtil.levenshteinDistance("fly", "ant")).isEqualTo(3);
+		assertThat(StringsUtil.levenshteinDistance("elephant", "hippo")).isEqualTo(7);
+		assertThat(StringsUtil.levenshteinDistance("hippo", "elephant")).isEqualTo(7);
+		assertThat(StringsUtil.levenshteinDistance("hippo", "zzzzzzzz")).isEqualTo(8);
+		assertThat(StringsUtil.levenshteinDistance("hello", "hallo")).isEqualTo(1);
+	}
+
+	@Test
+	public void testClosestMatch()
 	{
 		List<String> strings = asList("logging", "help", "status");
 		assertThat(closestMatch("stats", strings)).isEqualTo("status");
@@ -50,6 +67,15 @@ public class StringsUtilTest
 	{
 		List<String> strings = asList();
 		closestMatch("", strings);
+	}
+
+	@Test
+	public void testSortedListOfCloseMatches()
+	{
+		List<String> strings = asList("stageasds", "state", "status");
+		assertThat(closestMatches("statos", strings, 3)).isEqualTo(Arrays.asList("status", "state"));
+
+		assertThat(closestMatches("foo", Collections.<String>emptyList(), 5)).isEmpty();
 	}
 
 	@Test

@@ -26,6 +26,7 @@ import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
 import static se.j4j.argumentparser.ArgumentFactory.command;
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.StringsUtil.NEWLINE;
+import static se.j4j.strings.StringsUtil.TAB;
 import static se.j4j.strings.StringsUtil.spaces;
 
 import java.util.Arrays;
@@ -407,7 +408,10 @@ public final class CommandLineParser
 			catch(ArgumentException e)
 			{
 				e.originatedFromArgumentName(actualArguments.getCurrentArgumentName());
-				e.originatedFrom(definition);
+				if(definition != null)
+				{
+					e.originatedFrom(definition);
+				}
 				throw e.originatedFrom(this);
 			}
 		}
@@ -526,7 +530,7 @@ public final class CommandLineParser
 		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments.size());
 		for(ArgumentSettings argument : allArguments)
 		{
-			if(!holder.parsedArguments.containsKey(argument))
+			if(!holder.parsedArguments.containsKey(argument) || argument.isAllowedToRepeat())
 			{
 				for(String name : argument.names())
 				{
@@ -537,14 +541,14 @@ public final class CommandLineParser
 
 		if(!validArguments.isEmpty())
 		{
-			String bestMatch = StringsUtil.closestMatch(currentArgument, validArguments);
-			int distance = StringsUtil.levenshteinDistance(currentArgument, bestMatch);
 			// TODO: verify that 4 is reasonable
-			// TODO: modify argumentIterator and print the whole invocation as it's suggested
-			if(distance < 4)
-				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, bestMatch));
+			List<String> suggestions = StringsUtil.closestMatches(currentArgument, validArguments, 4);
+			if(!suggestions.isEmpty())
+				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, NEW_LINE_AND_TAB.join(suggestions)));
 		}
 	}
+
+	private static final Joiner NEW_LINE_AND_TAB = Joiner.on(NEWLINE + TAB);
 
 	private boolean isCommandParser()
 	{

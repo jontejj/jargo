@@ -52,7 +52,7 @@ public class EnumArgumentTest
 	public void testEnumArgumentUsage()
 	{
 		String usageText = enumArgument(Action.class).usage("");
-		assertThat(usageText).contains("<Action>: [start | stop | restart]");
+		assertThat(usageText).contains("<Action>: {start | stop | restart}");
 		assertThat(usageText).contains("Default: null");
 	}
 
@@ -99,7 +99,7 @@ public class EnumArgumentTest
 		}
 		catch(ArgumentException e)
 		{
-			assertThat(e.getMessage()).isEqualTo("'break' is not a valid Option, Expecting one of [start | stop | restart]");
+			assertThat(e.getMessage()).isEqualTo("'break' is not a valid Option, Expecting one of {start | stop | restart}");
 		}
 	}
 

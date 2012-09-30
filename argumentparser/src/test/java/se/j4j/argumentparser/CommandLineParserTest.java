@@ -7,10 +7,15 @@ import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.CommandLineParser.withArguments;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
+import static se.j4j.strings.StringsUtil.NEWLINE;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.fest.assertions.Fail;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
@@ -19,6 +24,11 @@ import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.argumentparser.utils.ArgumentExpector;
 import se.j4j.testlib.Explanation;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.io.Files;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class CommandLineParserTest
@@ -199,6 +209,22 @@ public class CommandLineParserTest
 	}
 
 	/**
-	 * TODO: add support for @/path/to/arguments
+	 * TODO: Supporting @/path/to/arguments style arguments has the obvious
+	 * limitation that arguments starting with @ and that don't want the
+	 * argument to be parsed as a filename can't be accepted,
+	 * can quotes be used to circumvent this?
 	 */
+	@Ignore
+	@Test
+	public void testReadingArgumentsFromFile() throws IOException, ArgumentException
+	{
+		File tempFile = File.createTempFile("_testReadingArgumentsFromFile", ".arguments");
+		tempFile.deleteOnExit();
+
+		Files.write(Joiner.on(NEWLINE).join("hello", "world"), tempFile, Charsets.UTF_8);
+
+		List<String> parsed = stringArgument().variableArity().parse("@" + tempFile.getPath());
+
+		assertThat(parsed).isEqualTo(Arrays.asList("hello", "world"));
+	}
 }
