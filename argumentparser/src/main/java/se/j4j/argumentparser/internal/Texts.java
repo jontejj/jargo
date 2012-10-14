@@ -5,10 +5,10 @@ import static se.j4j.strings.StringsUtil.TAB;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentException;
-import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.argumentparser.StringParser;
+import se.j4j.argumentparser.StringParsers;
 
 /**
  * Contains {@link String#format(String, Object...)} ready strings.
@@ -29,9 +29,11 @@ public final class Texts
 		}
 
 		public static final String USAGE_HEADER = "Usage: ";
+		public static final String ARGUMENT_INDICATOR = " [Arguments]";
+		public static final String ARGUMENT_HEADER = "Arguments:";
+
 		public static final String ALLOWS_REPETITIONS = " [Supports Multiple occurrences]";
 		public static final String REQUIRED = " [Required]";
-		public static final String OPTIONS = " [Options]";
 		/**
 		 * The characters that, for arguments with several names, separates the different names
 		 */
@@ -118,7 +120,7 @@ public final class Texts
 		 * 1st %s = the name of the command that is missing arguments
 		 * 2nd %s = a list of all the arguments that the command is missing
 		 * 
-		 * For instance: "Missing required arguments for commit: [--author]"
+		 * For instance: "Missing required parameters for commit: [--author]"
 		 * 
 		 * Used by {@link Command}s that's missing {@link ArgumentBuilder#required()} {@link Argument}s.
 		 * </pre>
@@ -145,7 +147,8 @@ public final class Texts
 		 * 
 		 * For instance: "'-Dsystem.property.name' was found as a key several times in the input"
 		 * 
-		 * Used by {@link ArgumentBuilder#asPropertyMap()}.
+		 * Used by {@link ArgumentBuilder#asPropertyMap()} when {@link ArgumentBuilder#repeated()}
+		 * hasn't been specified but the user repeats the property anyways.
 		 * </pre>
 		 */
 		public static final String UNALLOWED_REPETITION_OF_KEY = "'%s%s' was found as a key several times in the input";
@@ -174,7 +177,7 @@ public final class Texts
 		 * 
 		 * For instance: "'break' is not a valid Option, Expecting one of {start | stop | restart}"
 		 * 
-		 * Used by {@link ArgumentFactory#enumArgument(Class, String...)}.
+		 * Used by {@link StringParsers#enumParser(Class)}
 		 * </pre>
 		 */
 		public static final String INVALID_ENUM_VALUE = "'%s' is not a valid Option, Expecting one of %s";
@@ -251,7 +254,7 @@ public final class Texts
 
 		public static final String EMPTY_SEPARATOR = "In a key=value pair a separator of at least one character is required";
 
-		public static final String INVALID_META_DESCRIPTION = "a meta description can't be null/empty";
+		public static final String INVALID_META_DESCRIPTION = "a meta description can't be empty";
 
 		public static final String DEFAULT_VALUE_AND_REQUIRED = "Having a requried argument and a default value makes no sense";
 		public static final String INVALID_CALL_ORDER = "The %s needs to be set after the %s invocation";

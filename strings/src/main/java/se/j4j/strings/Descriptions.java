@@ -2,8 +2,6 @@ package se.j4j.strings;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import javax.annotation.CheckReturnValue;
@@ -31,6 +29,7 @@ public final class Descriptions
 	@CheckReturnValue
 	public static Description withString(String description)
 	{
+		checkNotNull(description);
 		return new NonLazyDescription(description);
 	}
 
@@ -63,6 +62,8 @@ public final class Descriptions
 	@CheckReturnValue
 	public static Description format(String formatTemplate, Object ... args)
 	{
+		checkNotNull(formatTemplate);
+		checkNotNull(args);
 		return new FormatDescription(formatTemplate, args);
 	}
 
@@ -71,7 +72,7 @@ public final class Descriptions
 		private final String formattingTemplate;
 		private final Object[] args;
 
-		private FormatDescription(String formattingTemplate, Object[] args)
+		private FormatDescription(String formattingTemplate, Object ... args)
 		{
 			this.formattingTemplate = formattingTemplate;
 			this.args = args;
@@ -133,6 +134,7 @@ public final class Descriptions
 	@CheckReturnValue
 	public static IllegalArgumentException illegalArgument(Description message)
 	{
+		checkNotNull(message);
 		return new DescriptionException(message);
 	}
 
@@ -144,6 +146,8 @@ public final class Descriptions
 	@CheckReturnValue
 	public static IllegalArgumentException illegalArgument(Description message, Throwable cause)
 	{
+		checkNotNull(message);
+		checkNotNull(cause);
 		return new DescriptionException(message, cause);
 	}
 
@@ -181,6 +185,7 @@ public final class Descriptions
 	@CheckReturnValue
 	public static SerializableDescription asSerializable(Description description)
 	{
+		checkNotNull(description);
 		return new SerializableDescription(description);
 	}
 
@@ -221,16 +226,6 @@ public final class Descriptions
 		Object writeReplace()
 		{
 			return new SerializationProxy(this);
-		}
-
-		/**
-		 * @param stream a stream that (wrongly so) tries to construct a SerializableDescription
-		 *            directly instead of going through the SerializationProxy
-		 */
-		private void readObject(ObjectInputStream stream) throws InvalidObjectException
-		{
-			// TODO: read Effective Java, Second Ed., Item 78. and test this
-			throw new InvalidObjectException("Proxy required");
 		}
 
 		@Override

@@ -283,14 +283,7 @@ public final class Argument<T> extends ArgumentSettings
 
 		if(!isPropertyMap())
 		{
-			if(separator == null)
-			{
-				meta = " " + meta;
-			}
-			else
-			{
-				meta = separator + meta;
-			}
+			meta = separator + meta;
 		}
 		return meta;
 	}

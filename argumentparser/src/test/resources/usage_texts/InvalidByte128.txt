@@ -1,5 +1,7 @@
 '128' is not in the range -128 to 127. See usage for -b for proper values.
 
-Usage: InvalidByte [Options]
+Usage: InvalidByte [Arguments]
+
+Arguments:
 -b <byte>    <byte>: -128 to 127
              Default: 0

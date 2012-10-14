@@ -64,7 +64,7 @@ public class ConcurrencyTest
 
 	final Argument<Byte> byteArgument = byteArgument("--byte").build();
 
-	final Argument<File> file = fileArgument("--file").defaultValueDescription("The current directory").build();
+	final Argument<File> fileArgument = fileArgument("--file").defaultValueDescription("The current directory").build();
 
 	final Argument<String> string = stringArgument("--string").build();
 
@@ -87,7 +87,7 @@ public class ConcurrencyTest
 	// The shared instance that the different threads will use
 	final CommandLineParser parser = CommandLineParser.withArguments(	greetingPhraseArgument, enableLoggingArgument, port, longArgument,
 																		bigInteger,
-																		date, doubleArgument, shortArgument, byteArgument, file, string,
+																		date, doubleArgument, shortArgument, byteArgument, fileArgument, string,
 																		charArgument, boolArgument, propertyArgument, arityArgument,
 																		repeatedArgument, splittedArgument, enumArgument, variableArityArgument);
 
@@ -105,6 +105,7 @@ public class ConcurrencyTest
 	 * Used by other threads to report failure
 	 */
 	private final AtomicReference<Throwable> failure = new AtomicReference<Throwable>(null);
+
 	private final CountDownLatch activeWorkers = new CountDownLatch(nrOfConcurrentRunners);
 	private final CyclicBarrier startup = new CyclicBarrier(nrOfConcurrentRunners);
 	private final CyclicBarrier parseDone = new CyclicBarrier(nrOfConcurrentRunners);
@@ -177,10 +178,13 @@ public class ConcurrencyTest
 			List<Boolean> arityBooleans = asList(bool, bool, bool, bool, bool, bool);
 			String arityString = Strings.repeat(" " + bool, 6);
 
+			String filename = "user_" + offset;
+			File file = new File(filename);
+
 			String inputArguments = enableLogging + "-p " + portNumber + " " + greetingPhrase + " --long " + longNumber + " --big " + bigNumber
-					+ " --date " + time + " --double " + doubleNumber + " --short " + shortNumber + " --byte " + byteNumber
-					+ " --file /Users/ --string " + str + " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false" + " --arity"
-					+ arityString + " --repeated 1 --repeated " + offset + " --split=1.234," + (2.4343f + offset) + ",5.23232" + " --enum " + action
+					+ " --date " + time + " --double " + doubleNumber + " --short " + shortNumber + " --byte " + byteNumber + " --file " + filename
+					+ " --string " + str + " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false" + " --arity" + arityString
+					+ " --repeated 1 --repeated " + offset + " --split=1.234," + (2.4343f + offset) + ",5.23232" + " --enum " + action
 					+ " --variableArity" + variableArityIntegers;
 
 			try
@@ -197,24 +201,24 @@ public class ConcurrencyTest
 					// Let all threads assert at the same time
 					parseDone.await(10, TimeUnit.SECONDS);
 
-					checkThat(enableLoggingArgument).isEqualTo(bool);
-					checkThat(port).isEqualTo(portNumber);
-					checkThat(greetingPhraseArgument).isEqualTo(greetingPhrase);
-					checkThat(longArgument).isEqualTo(longNumber);
-					checkThat(bigInteger).isEqualTo(bigNumber);
-					checkThat(date).isEqualTo(time);
-					checkThat(doubleArgument).isEqualTo(doubleNumber);
-					checkThat(shortArgument).isEqualTo(shortNumber);
-					checkThat(byteArgument).isEqualTo(byteNumber);
-					checkThat(file).isEqualTo(new File("/Users/"));
-					checkThat(string).isEqualTo(str);
-					checkThat(charArgument).isEqualTo(c);
-					checkThat(boolArgument).isEqualTo(bool);
-					checkThat(arityArgument).isEqualTo(arityBooleans);
-					checkThat(repeatedArgument).isEqualTo(asList(1, offset));
-					checkThat(splittedArgument).isEqualTo(asList(1.234f, 2.4343f + offset, 5.23232f));
-					checkThat(propertyArgument).isEqualTo(propertyMap);
-					checkThat(enumArgument).isEqualTo(Action.valueOf(action));
+					checkThat(enableLoggingArgument).received(bool);
+					checkThat(port).received(portNumber);
+					checkThat(greetingPhraseArgument).received(greetingPhrase);
+					checkThat(longArgument).received(longNumber);
+					checkThat(bigInteger).received(bigNumber);
+					checkThat(date).received(time);
+					checkThat(doubleArgument).received(doubleNumber);
+					checkThat(shortArgument).received(shortNumber);
+					checkThat(byteArgument).received(byteNumber);
+					checkThat(fileArgument).received(file);
+					checkThat(string).received(str);
+					checkThat(charArgument).received(c);
+					checkThat(boolArgument).received(bool);
+					checkThat(arityArgument).received(arityBooleans);
+					checkThat(repeatedArgument).received(asList(1, offset));
+					checkThat(splittedArgument).received(asList(1.234f, 2.4343f + offset, 5.23232f));
+					checkThat(propertyArgument).received(propertyMap);
+					checkThat(enumArgument).received(Action.valueOf(action));
 					assertThat(arguments.get(variableArityArgument)).hasSize(amountOfVariableArity);
 
 					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
@@ -253,7 +257,7 @@ public class ConcurrencyTest
 				arg = argument;
 			}
 
-			public void isEqualTo(final T expectation)
+			public void received(final T expectation)
 			{
 				final T parsedValue = arguments.get(arg);
 				Description description = new Description(){

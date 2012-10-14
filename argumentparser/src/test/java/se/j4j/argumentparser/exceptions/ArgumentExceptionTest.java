@@ -6,7 +6,6 @@ import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
@@ -55,8 +54,6 @@ public class ArgumentExceptionTest
 		})).hasMessage("foobar");
 	}
 
-	// TODO: test serialization of exceptions etc.
-	@Ignore("The usage needs to be saved before serialization will work")
 	@Test
 	public void testThatUsageIsAvailableAfterSerialization()
 	{
@@ -73,6 +70,23 @@ public class ArgumentExceptionTest
 			String usageBeforeSerialization = expected.getMessageAndUsage("SerializationTest");
 			ArgumentException revivedException = Serializer.clone(expected);
 			assertThat(revivedException.getMessageAndUsage("SerializationTest")).isEqualTo(usageBeforeSerialization);
+		}
+	}
+
+	@Test
+	public void testThatDifferentProgramNamesWorksAfterSerialization()
+	{
+		Argument<Integer> number = integerArgument("-n").build();
+		try
+		{
+			CommandLineParser.withArguments(number).parse("-n");
+			fail("-n argument should require an integer parameter");
+		}
+		catch(ArgumentException expected)
+		{
+			ArgumentException revivedException = Serializer.clone(expected);
+			assertThat(revivedException.getMessageAndUsage("SerializationTestOne")).contains("SerializationTestOne");
+			assertThat(revivedException.getMessageAndUsage("SerializationTestTwo")).contains("SerializationTestTwo");
 		}
 	}
 

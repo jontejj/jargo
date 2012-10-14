@@ -7,6 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 public class EnumTesterTest
 {
 	@Test
@@ -112,5 +115,11 @@ public class EnumTesterTest
 		String packageName = getClass().getPackage().getName() + "." + subPackageName;
 		// Yeah, here we fool the type system
 		return (Class<InvalidEnum>) Class.forName(packageName + className);
+	}
+
+	@Test
+	public void testNullContracts()
+	{
+		new NullPointerTester().testStaticMethods(EnumTester.class, Visibility.PACKAGE);
 	}
 }

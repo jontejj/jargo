@@ -1,4 +1,6 @@
-Usage: SortingOfIndexedArguments [Options]
+Usage: SortingOfIndexedArguments [Arguments]
+
+Arguments:
  <string>      IndexOne
                <string>: any string
                Default: 

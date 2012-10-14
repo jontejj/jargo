@@ -1,7 +1,9 @@
-Usage: CommandWithSubCommand [Options]
-command      [Options]
+Usage: CommandWithSubCommand [Arguments]
+
+Arguments:
+command     Arguments:
              subcommand     A subcommand with an argument
-                             [Options]
+                            Arguments:
                              -n <integer>    <integer>: -2147483648 to 2147483647
                                              Default: 0
                              

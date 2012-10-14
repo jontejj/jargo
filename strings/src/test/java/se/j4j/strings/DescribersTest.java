@@ -24,6 +24,9 @@ import se.j4j.strings.Describers.BooleanDescribers;
 import se.j4j.testlib.ResourceLoader;
 import se.j4j.testlib.UtilityClassTester;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 /**
  * Tests for {@link Describers}
  */
@@ -152,6 +155,7 @@ public class DescribersTest
 	@Test
 	public void testUtilityClassDesign()
 	{
+		new NullPointerTester().testStaticMethods(Describers.class, Visibility.PACKAGE);
 		UtilityClassTester.testUtilityClassDesign(Describers.class);
 	}
 }

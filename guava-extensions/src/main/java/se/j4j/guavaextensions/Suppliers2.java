@@ -1,5 +1,6 @@
 package se.j4j.guavaextensions;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public final class Suppliers2
 	 */
 	public static <T> Supplier<List<T>> ofRepeatedElements(Supplier<T> elementSupplier, int elementsToSupply)
 	{
+		checkNotNull(elementSupplier);
 		return new ListSupplier<T>(elementSupplier, elementsToSupply);
 	}
 

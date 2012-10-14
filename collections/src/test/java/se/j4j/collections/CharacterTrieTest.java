@@ -2,11 +2,12 @@ package se.j4j.collections;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.j4j.collections.CharacterTrie.newTrie;
 
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 
 public class CharacterTrieTest
 {
@@ -77,12 +78,6 @@ public class CharacterTrieTest
 		assertThat(tree.getLastMatchingEntry("")).isNull();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testNullKey()
-	{
-		newTrie().put(null, "");
-	}
-
 	@Test
 	public void testToStringOnEntry()
 	{
@@ -105,5 +100,13 @@ public class CharacterTrieTest
 
 		// Removing fooos should remove the left-over fooo node as it no longer has any children
 		assertThat(trie.remove("fooos")).isTrue();
+	}
+
+	@Test
+	public void testNullContracts()
+	{
+		NullPointerTester npeTester = new NullPointerTester();
+		npeTester.testStaticMethods(CharacterTrie.class, Visibility.PACKAGE);
+		npeTester.testInstanceMethods(CharacterTrie.newTrie(), Visibility.PACKAGE);
 	}
 }

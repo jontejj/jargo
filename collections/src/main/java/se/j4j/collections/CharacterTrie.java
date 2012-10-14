@@ -287,10 +287,10 @@ public final class CharacterTrie<E>
 	 *         such association existed before
 	 * @throws NullPointerException if {@code key} is null
 	 */
-	public E put(final CharSequence key, final E value)
+	public E put(final CharSequence key, @Nullable final E value)
 	{
 		if(key == null)
-			throw new IllegalArgumentException("Null key given, CharacterTrie does not support null keys as they are error-prone");
+			throw new UnsupportedOperationException("Null key given, CharacterTrie does not support null keys as they are error-prone");
 
 		// Start at the root and search the tree for the entry to insert the
 		// final character into

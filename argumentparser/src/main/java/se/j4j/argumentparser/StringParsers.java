@@ -1,15 +1,16 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static java.math.BigInteger.ZERO;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static se.j4j.argumentparser.ArgumentExceptions.asUnchecked;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
+import static se.j4j.strings.Describers.listDescriber;
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 
@@ -30,6 +31,8 @@ import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.numbers.NumberType;
+import se.j4j.strings.Describer;
+import se.j4j.strings.Describers;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -38,6 +41,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -80,7 +84,7 @@ public final class StringParsers
 	enum StringStringParser implements StringParser<String>
 	{
 		/**
-		 * Simple returns the strings it's given to parse
+		 * Simply returns the strings it's given to parse
 		 */
 		STRING
 		{
@@ -265,6 +269,7 @@ public final class StringParsers
 	@Nonnull
 	public static <T extends Enum<T>> StringParser<T> enumParser(final Class<T> enumToHandle)
 	{
+		checkNotNull(enumToHandle);
 		return new EnumParser<T>(enumToHandle);
 	}
 
@@ -299,8 +304,7 @@ public final class StringParsers
 						public String toString()
 						{
 							// Lazily call this as it's going over all enum values and converting
-							// them
-							// to strings
+							// them to strings
 							return descriptionOfValidValues();
 						}
 					})).andCause(noEnumFoundWithExactMatch);
@@ -476,6 +480,7 @@ public final class StringParsers
 		@Override
 		public String descriptionOfValidValues()
 		{
+			// TODO: use NumberFormat.getInstance(locale).format(-Double.MIN_VALUE);
 			return -Double.MAX_VALUE + " to " + Double.MAX_VALUE;
 		}
 
@@ -607,6 +612,7 @@ public final class StringParsers
 	@Beta
 	public static <T> Function<String, T> asFunction(final StringParser<T> parser)
 	{
+		checkNotNull(parser);
 		return new Function<String, T>(){
 			@Override
 			public T apply(String input)
@@ -635,10 +641,9 @@ public final class StringParsers
 	 * @param <T> the type this parser parses strings into
 	 * </pre>
 	 */
-	// @Immutable
+	@Immutable
 	abstract static class InternalStringParser<T>
 	{
-
 		/**
 		 * @param arguments the arguments given from the command line where
 		 *            {@link ArgumentIterator#next()} points to the parameter
@@ -795,10 +800,13 @@ public final class StringParsers
 			return emptyList();
 		}
 
+		// TODO: make static, <Object>?
+		private final Describer<List<T>> describer = listDescriber(Describers.<T>toStringDescriber());
+
 		@Override
 		String describeValue(List<T> value, ArgumentSettings argumentSettings)
 		{
-			return value.isEmpty() ? "Empty list" : value.toString();
+			return describer.describe(value);
 		}
 	}
 
@@ -975,12 +983,28 @@ public final class StringParsers
 		@Nonnull private final InternalStringParser<V> valueParser;
 		@Nonnull private final StringParser<K> keyParser;
 		@Nonnull private final Predicate<V> valueLimiter;
+		@Nonnull private final Supplier<Map<K, V>> defaultValueSupplier;
 
-		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<V> valueLimiter)
+		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<V> valueLimiter,
+				@Nullable Supplier<Map<K, V>> defaultValueSupplier)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
 			this.valueLimiter = valueLimiter;
+			if(defaultValueSupplier == null)
+			{
+				this.defaultValueSupplier = new Supplier<Map<K, V>>(){
+					@Override
+					public Map<K, V> get()
+					{
+						return Maps.newLinkedHashMap();
+					}
+				};
+			}
+			else
+			{
+				this.defaultValueSupplier = defaultValueSupplier;
+			}
 		}
 
 		@Override
@@ -989,7 +1013,7 @@ public final class StringParsers
 			Map<K, V> map = previousMap;
 			if(map == null)
 			{
-				map = Maps.newLinkedHashMap();
+				map = Maps.newLinkedHashMap(defaultValue());
 			}
 
 			String keyValue = arguments.next();
@@ -997,14 +1021,10 @@ public final class StringParsers
 			K parsedKey = keyParser.parse(key);
 			V oldValue = map.get(parsedKey);
 
-			// TODO: what if null is an actual value then non-allowed repetitions won't be
-			// detected
-			if(oldValue != null && !argumentSettings.isAllowedToRepeat())
-				throw withMessage(format(UserErrors.UNALLOWED_REPETITION_OF_KEY, argumentSettings, key));
-
 			// Hide what we just did to the parser that handles the "value"
 			arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
 			V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
+
 			try
 			{
 				if(!valueLimiter.apply(parsedValue))
@@ -1062,7 +1082,7 @@ public final class StringParsers
 		@Override
 		public Map<K, V> defaultValue()
 		{
-			return emptyMap();
+			return defaultValueSupplier.get();
 		}
 
 		@Override

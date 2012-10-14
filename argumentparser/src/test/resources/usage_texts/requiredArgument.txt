@@ -1,2 +1,0 @@
-Usage: RequiredArgumentDescription [Options]
--s <string>    <string>: any string [Required]

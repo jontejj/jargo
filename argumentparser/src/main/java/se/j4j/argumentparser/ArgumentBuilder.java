@@ -3,7 +3,6 @@ package se.j4j.argumentparser;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Iterables.isEmpty;
 import static java.util.Collections.emptyList;
@@ -35,8 +34,8 @@ import se.j4j.argumentparser.StringParsers.RepeatedArgumentParser;
 import se.j4j.argumentparser.StringParsers.StringParserBridge;
 import se.j4j.argumentparser.StringParsers.StringSplitterParser;
 import se.j4j.argumentparser.StringParsers.VariableArityParser;
-import se.j4j.argumentparser.internal.Texts;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.guavaextensions.Functions2;
 import se.j4j.guavaextensions.Suppliers2;
 import se.j4j.strings.Describer;
@@ -46,6 +45,7 @@ import se.j4j.strings.Description;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
+import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
@@ -74,11 +74,12 @@ import com.google.common.collect.Ranges;
 @NotThreadSafe
 public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T>, T>
 {
+	static final String DEFAULT_SEPARATOR = " ";
 	// ArgumentSetting variables, think about #copy() when adding new ones
 	@Nonnull private List<String> names = emptyList();
 	@Nonnull private Description description = EMPTY_STRING;
 	private boolean required = false;
-	@Nullable private String separator = null;
+	private String separator = DEFAULT_SEPARATOR;
 	private boolean ignoreCase = false;
 	private boolean isPropertyMap = false;
 	private boolean isAllowedToRepeat = false;
@@ -109,7 +110,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * descriptions</li>
 	 * <li>doesn't have any {@link #limitTo(Predicate)} set</li>
 	 * </ul>
-	 * Typically called implicitly by subclasses.
+	 * Typically invoked implicitly by subclasses.
 	 */
 	protected ArgumentBuilder()
 	{
@@ -141,8 +142,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	@CheckReturnValue
 	@Nonnull
-	@OverridingMethodsMustInvokeSuper
-	public Argument<T> build()
+	public final Argument<T> build()
 	{
 		return new Argument<T>(this);
 	}
@@ -286,7 +286,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public final SELF_TYPE description(final Description aDescription)
 	{
-		description = aDescription;
+		description = checkNotNull(aDescription);
 		return myself;
 	}
 
@@ -313,7 +313,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	/**
 	 * <pre>
-	 * Sets a default value to use for this argument.
+	 * Sets a default value to use for this argument. Overrides {@link StringParser#defaultValue()} which is used by default.
 	 * Returned by {@link ParsedArguments#get(Argument)} when no argument was given.
 	 * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.
 	 * 
@@ -352,7 +352,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	public SELF_TYPE defaultValueSupplier(final Supplier<T> aDefaultValueSupplier)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
-		defaultValueSupplier = aDefaultValueSupplier;
+		defaultValueSupplier = checkNotNull(aDefaultValueSupplier);
 		return myself;
 	}
 
@@ -379,7 +379,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE defaultValueDescriber(final Describer<T> describer)
 	{
-		this.defaultValueDescriber = describer;
+		this.defaultValueDescriber = checkNotNull(describer);
 		return myself;
 	}
 
@@ -389,11 +389,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * that describes the type of data they expect. For instance, if you're writing a music player,
 	 * a user of your application would (most probably) rather see:
 	 * 
-	 * --track-nr <track nr>    The track number to play (using {@code  metaDescription("<track nr>") })
+	 * --track-nr &lt;track nr&gt;    The track number to play (using {@code  metaDescription("<track nr>") })
 	 * 
 	 * instead of
 	 * 
-	 * --track-nr <integer>     The track number to play (the default provided by {@link StringParser#metaDescription()})
+	 * --track-nr &lt;integer&gt;     The track number to play (the default provided by {@link StringParser#metaDescription()})
 	 * 
 	 * So when using general data type parsers such as {@link StringParsers#integerParser()} you're better of if
 	 * you provide a meta description that explains what the {@code integer} represents in the context of this argument.
@@ -409,7 +409,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public final SELF_TYPE metaDescription(final String aMetaDescription)
 	{
-		checkArgument(!isNullOrEmpty(aMetaDescription), ProgrammaticErrors.INVALID_META_DESCRIPTION);
+		checkArgument(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
 		this.metaDescription = aMetaDescription;
 		return myself;
 	}
@@ -436,7 +436,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	public SELF_TYPE separator(final String aSeparator)
 	{
-		separator = aSeparator;
+		separator = checkNotNull(aSeparator);
 		return myself;
 	}
 
@@ -447,7 +447,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * Other values will cause an {@link ArgumentException}.
 	 * For example {@link Ranges#closed(Comparable, Comparable)} only allows values within a range.
 	 * 
-	 * To override the default error message that is generated with {@link Texts#UNALLOWED_VALUE}
+	 * To override the default error message that is generated with {@link UserErrors#UNALLOWED_VALUE}
 	 * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail
 	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage(String)}.
 	 * When this is needed it's generally recommended to write a parser of its own instead.
@@ -466,17 +466,20 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Beta
 	public SELF_TYPE limitTo(Predicate<T> aLimiter)
 	{
-		limiter = aLimiter;
+		limiter = checkNotNull(aLimiter);
 		return myself;
 	}
 
 	/**
 	 * <pre>
-	 * Makes this argument handle properties like arguments:
+	 * Makes this argument handle "property like" arguments:
 	 * -Dproperty_name=value
-	 * where "-D" is the string supplied to {@link #names(String...)},
+	 * where
+	 * "-D" is the string supplied to {@link #names(String...)},
+	 * "property_name" is the {@link String} key in the resulting {@link Map},
+	 * "=" is the {@link #separator(String)} (set to "=" if it hasn't been overridden already),
 	 * "value" is decoded by the previously set {@link StringParser}.
-	 * "property_name" is the {@link String} key in the resulting {@link Map}
+	 * 
 	 * 
 	 * Tip: You can pass {@link #defaultValueDescriber(Describer)} a
 	 * {@link Describers#mapDescriber(Map)} to describe each property that you
@@ -485,8 +488,8 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * @return a new (more specific) builder
 	 * @throws IllegalStateException if a {@link #defaultValueDescriber(Describer)} or
-	 *             {@link #defaultValue(Object)} has been set as they have no place in a property
-	 *             map.
+	 *             {@link #defaultValue(Object)} has been set before {@link #asPropertyMap()} is called
+	 * 
 	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}
 	 * </pre>
 	 */
@@ -529,6 +532,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@CheckReturnValue
 	public final <Key> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(StringParser<Key> keyParser)
 	{
+		checkNotNull(keyParser);
 		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asKeyValuesWithKeyParser");
 		checkState(defaultValueDescriber == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValueDescriber", "asKeyValuesWithKeyParser");
 		return new MapArgumentBuilder<Key, T>(this, keyParser);
@@ -656,7 +660,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Override
 	public String toString()
 	{
-		return new Argument<T>(this).toString();
+		return Objects.toStringHelper(this).omitNullValues().add("names", names).add("description", description)
+				.add("metaDescription", metaDescription).add("hideFromUsage", hideFromUsage).add("ignoreCase", ignoreCase).add("limiter", limiter)
+				.add("required", required).add("separator", separator).add("defaultValueDescriber", defaultValueDescriber)
+				.add("defaultValueSupplier", defaultValueSupplier).add("internalStringParser", internalStringParser).toString();
 	}
 
 	/**
@@ -703,6 +710,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	final SELF_TYPE finalizeWith(Function<T, T> aFinalizer)
 	{
+		checkNotNull(aFinalizer);
 		finalizer = Functions2.compound(finalizer, aFinalizer);
 		return myself;
 	}
@@ -1132,26 +1140,34 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@NotThreadSafe
 	public static final class MapArgumentBuilder<K, V> extends InternalArgumentBuilder<MapArgumentBuilder<K, V>, Map<K, V>>
 	{
+		private final ArgumentBuilder<?, V> valueBuilder;
+		private final StringParser<K> keyParser;
+
 		private MapArgumentBuilder(final ArgumentBuilder<?, V> builder, StringParser<K> keyParser)
 		{
-			super(new KeyValueParser<K, V>(keyParser, builder.internalParser(), builder.limiter));
+			this.valueBuilder = builder;
+			this.keyParser = keyParser;
 			copy(builder);
-
-			// TODO: should the state be verified just before the argument is built?
-			checkState(names().size() > 0, ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
-			if(separator() != null)
-			{
-				checkState(separator().length() > 0, ProgrammaticErrors.EMPTY_SEPARATOR);
-			}
-			else
-			{
-				separator("=");
-			}
 
 			finalizeWith(Functions2.<K, V>mapValueTransformer(builder.finalizer));
 			finalizeWith(Functions2.<K, V>unmodifiableMap());
 
 			setAsPropertyMap();
+		}
+
+		@Override
+		InternalStringParser<Map<K, V>> internalParser()
+		{
+			checkState(names().size() > 0, ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
+			if(separator().equals(DEFAULT_SEPARATOR))
+			{
+				separator("=");
+			}
+			else
+			{
+				checkState(separator().length() > 0, ProgrammaticErrors.EMPTY_SEPARATOR);
+			}
+			return new KeyValueParser<K, V>(keyParser, valueBuilder.internalParser(), valueBuilder.limiter, defaultValueSupplier());
 		}
 
 		/**
@@ -1175,6 +1191,28 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		public SplitterArgumentBuilder<Map<K, V>> splitWith(final String valueSeparator)
 		{
 			throw new IllegalStateException("You'll need to call splitWith before asPropertyMap");
+		}
+
+		/**
+		 * @deprecated because {@link #arity(int)} should be
+		 *             called before {@link #asPropertyMap()}.
+		 */
+		@Deprecated
+		@Override
+		public ArityArgumentBuilder<Map<K, V>> arity(final int nrOfParameters)
+		{
+			throw new IllegalStateException("You'll need to call arity before asPropertyMap");
+		}
+
+		/**
+		 * @deprecated because {@link #variableArity(String)} and {@link #asPropertyMap()} doesn't
+		 *             work together
+		 */
+		@Deprecated
+		@Override
+		public ArityArgumentBuilder<Map<K, V>> variableArity()
+		{
+			throw new IllegalStateException();
 		}
 	}
 
@@ -1217,7 +1255,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * Exposes package-private {@link Argument} methods that can be called without the generic type
 	 * parameter
 	 */
-	abstract static class ArgumentSettings implements Comparable<ArgumentSettings>
+	abstract static class ArgumentSettings
 	{
 		@Nonnull
 		abstract List<String> names();
@@ -1244,16 +1282,6 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			return names().isEmpty();
 		}
 
-		/**
-		 * Compares {@link Argument}s by their {@link Argument#toString()}, ignoring case.
-		 */
-		@Override
-		public int compareTo(ArgumentSettings other)
-		{
-			// TODO: what about locale-sensitive ordering?
-			return toString().compareToIgnoreCase(other.toString());
-		}
-
 		// Predicates
 
 		static final Predicate<ArgumentSettings> IS_VISIBLE = new Predicate<ArgumentSettings>(){
@@ -1264,11 +1292,11 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 			}
 		};
 
-		static final Predicate<ArgumentSettings> IS_NAMED = new Predicate<ArgumentSettings>(){
+		static final Predicate<ArgumentSettings> IS_INDEXED = new Predicate<ArgumentSettings>(){
 			@Override
 			public boolean apply(ArgumentSettings input)
 			{
-				return !input.isIndexed();
+				return input.isIndexed();
 			}
 		};
 

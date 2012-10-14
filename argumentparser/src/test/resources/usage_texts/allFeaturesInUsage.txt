@@ -1,8 +1,10 @@
-Usage: HelloWorld [Options]
+Usage: HelloWorld [Arguments]
+
+Arguments:
  <string>                                                              A greeting phrase to greet new connections with [Required]
                                                                        <string>: any string
 --arity <boolean> <boolean> <boolean> <boolean> <boolean> <boolean>    <boolean>: true or false
-                                                                       Default: [false, false, false, false, false, false]
+                                                                       Default: false, false, false, false, false, false
 --big <big-integer>                                                    <big-integer>: any integer
                                                                        Default: 0
 --bool <boolean>                                                       <boolean>: true or false

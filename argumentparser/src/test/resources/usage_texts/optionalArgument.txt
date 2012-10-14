@@ -1,2 +1,4 @@
-Usage: OptionalArgumentDescription [Options]
+Usage: OptionalArgumentDescription [Arguments]
+
+Arguments:
 -l, --enable-logging     Default: disabled

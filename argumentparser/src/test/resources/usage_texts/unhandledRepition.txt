@@ -1,5 +1,7 @@
 Non-allowed repetition of the argument -s. See usage for -s for proper values.
 
-Usage: NonAllowedRepition [Options]
+Usage: NonAllowedRepition [Arguments]
+
+Arguments:
 -s <string>    <string>: any string
                Default: 

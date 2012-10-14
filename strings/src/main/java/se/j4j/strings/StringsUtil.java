@@ -4,8 +4,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Iterables.isEmpty;
+import static se.j4j.strings.StringsUtil.CloseMatch.BY_CLOSEST_MATCH_FIRST;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -85,6 +87,7 @@ public final class StringsUtil
 	@CheckReturnValue
 	public static String closestMatch(final String input, final Iterable<String> validOptions)
 	{
+		checkNotNull(input);
 		checkArgument(!isEmpty(validOptions), "No valid options to match the input against");
 
 		int shortestDistance = Integer.MAX_VALUE;
@@ -109,12 +112,15 @@ public final class StringsUtil
 	 * For example when given "stats" as input and "status", "staging",
 	 * "stage" as validOptions, and 4 as maximumDistance, "status", "stage", "staging" is returned.
 	 * 
+	 * Only values with a distance less than or equal to {@code maximumDistance} will be included in the result.
+	 * 
 	 * </pre>
 	 */
 	@Nonnull
 	@CheckReturnValue
 	public static List<String> closestMatches(final String input, final Iterable<String> validOptions, int maximumDistance)
 	{
+		checkNotNull(input);
 		if(isEmpty(validOptions))
 			return Collections.emptyList();
 
@@ -127,11 +133,11 @@ public final class StringsUtil
 				closeMatches.add(new CloseMatch(validOption, distance));
 			}
 		}
-		Collections.sort(closeMatches);
+		Collections.sort(closeMatches, BY_CLOSEST_MATCH_FIRST);
 		return Lists.transform(closeMatches, CloseMatch.GET_VALUE);
 	}
 
-	private static final class CloseMatch implements Comparable<CloseMatch>
+	static final class CloseMatch
 	{
 		private final int measuredDistance;
 		private final String value;
@@ -142,11 +148,13 @@ public final class StringsUtil
 			value = validOption;
 		}
 
-		@Override
-		public int compareTo(CloseMatch o)
-		{
-			return measuredDistance - o.measuredDistance;
-		}
+		static final Comparator<CloseMatch> BY_CLOSEST_MATCH_FIRST = new Comparator<CloseMatch>(){
+			@Override
+			public int compare(CloseMatch left, CloseMatch right)
+			{
+				return left.measuredDistance - right.measuredDistance;
+			}
+		};
 
 		private static final Function<CloseMatch, String> GET_VALUE = new Function<CloseMatch, String>(){
 			@Override

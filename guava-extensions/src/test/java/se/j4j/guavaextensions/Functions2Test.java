@@ -15,6 +15,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 
 /**
  * Tests for {@link Functions2}
@@ -105,6 +107,7 @@ public class Functions2Test
 	@Test
 	public void testUtilityClassDesign()
 	{
+		new NullPointerTester().testStaticMethods(Functions2.class, Visibility.PACKAGE);
 		UtilityClassTester.testUtilityClassDesign(Functions2.class);
 	}
 }

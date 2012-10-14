@@ -16,6 +16,10 @@ import org.junit.Test;
 
 import se.j4j.testlib.Explanation;
 import se.j4j.testlib.UtilityClassTester;
+
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class StringsUtilTest
@@ -106,6 +110,7 @@ public class StringsUtilTest
 	@Test
 	public void testUtilityClassDesign()
 	{
+		new NullPointerTester().testStaticMethods(StringsUtil.class, Visibility.PACKAGE);
 		UtilityClassTester.testUtilityClassDesign(StringsUtil.class);
 	}
 }

@@ -4,6 +4,7 @@ import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
+import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class RequiredArgumentTest
 		}
 		catch(ArgumentException e)
 		{
-			assertThat(e).hasMessage("Missing required arguments: [--number, --number2]");
+			assertThat(e.getMessageAndUsage("MissingRequiredArguments")).isEqualTo(expected("missingRequiredArguments"));
 		}
 	}
 

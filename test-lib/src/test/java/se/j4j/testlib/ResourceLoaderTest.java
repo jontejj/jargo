@@ -5,6 +5,9 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 public class ResourceLoaderTest
 {
 	@Test
@@ -26,5 +29,11 @@ public class ResourceLoaderTest
 		{
 			assertThat(expected).hasMessage(String.format("resource %s relative to %s not found.", resourceName, ResourceLoader.class.getName()));
 		}
+	}
+
+	@Test
+	public void testNullContracts()
+	{
+		new NullPointerTester().testStaticMethods(ResourceLoader.class, Visibility.PACKAGE);
 	}
 }

@@ -55,3 +55,7 @@ TODO: Compare to http://commons.apache.org/cli/introduction.html
 often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted. No reflection is used here.
 
 7) You can have final fields
+
+8) Uses generics, just like https://github.com/purcell/jargs, but with all the features that jcommander has.
+
+9) this library uses no casting, when you ask for a value of a specific type you'll get it

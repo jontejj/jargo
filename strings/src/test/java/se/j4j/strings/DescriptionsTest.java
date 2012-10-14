@@ -7,6 +7,9 @@ import org.junit.Test;
 import se.j4j.testlib.Serializer;
 import se.j4j.testlib.UtilityClassTester;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 /**
  * Tests for {@link Descriptions}
  */
@@ -64,6 +67,7 @@ public class DescriptionsTest
 	@Test
 	public void testUtilityClassDesign()
 	{
+		new NullPointerTester().testStaticMethods(Descriptions.class, Visibility.PACKAGE);
 		UtilityClassTester.testUtilityClassDesign(Descriptions.class);
 	}
 }

@@ -1,5 +1,7 @@
 Unexpected argument: foo, previous argument: 1
 
-Usage: DidNotExpectFoo [Options]
+Usage: DidNotExpectFoo [Arguments]
+
+Arguments:
 --number <integer>    <integer>: -2147483648 to 2147483647
                       Default: 0

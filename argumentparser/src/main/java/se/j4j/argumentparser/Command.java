@@ -19,7 +19,7 @@ import com.google.common.base.Suppliers;
 
 /**
  * <pre>
- * {@link Command}s automatically gets an invocation of {@link #execute(ParsedArguments)} when given on the command line.
+ * {@link Command}s automatically gets an invocation of execute when given on the command line.
  * This is particularly useful to avoid a never ending switch statement.
  * 
  * {@link Command}s have a {@link CommandLineParser} themselves, that is,
@@ -142,6 +142,14 @@ public abstract class Command extends InternalStringParser<String> implements De
 								// command in the given input arguments
 	}
 
+	/**
+	 * The parser for parsing {@link Command#commandArguments()}
+	 */
+	private CommandLineParser parser()
+	{
+		return commandArgumentParser.get();
+	}
+
 	@Nonnull private final Supplier<CommandLineParser> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
 		@Override
 		public CommandLineParser get()
@@ -149,11 +157,6 @@ public abstract class Command extends InternalStringParser<String> implements De
 			return CommandLineParser.createCommandParser(commandArguments());
 		}
 	});
-
-	private CommandLineParser parser()
-	{
-		return commandArgumentParser.get();
-	}
 
 	@Override
 	final String defaultValue()
@@ -164,7 +167,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	@Override
 	final String descriptionOfValidValues(ArgumentSettings argumentSettings)
 	{
-		return parser().usage("");
+		return parser().commandUsage();
 	}
 
 	@Override

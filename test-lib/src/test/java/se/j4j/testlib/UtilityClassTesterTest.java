@@ -5,6 +5,9 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 public class UtilityClassTesterTest
 {
 	@Test
@@ -73,5 +76,11 @@ public class UtilityClassTesterTest
 		private AbstractUtility()
 		{
 		}
+	}
+
+	@Test
+	public void testNullContracts()
+	{
+		new NullPointerTester().testStaticMethods(UtilityClassTester.class, Visibility.PACKAGE);
 	}
 }
