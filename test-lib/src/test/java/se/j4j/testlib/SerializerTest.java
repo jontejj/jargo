@@ -9,6 +9,9 @@ import java.io.Serializable;
 
 import org.junit.Test;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 public class SerializerTest
 {
 	@Test
@@ -93,7 +96,7 @@ public class SerializerTest
 
 		/**
 		 * @param stream unused
-		 * @throws ClassNotFoundException always
+		 * @throws IOException always
 		 */
 		private void readObject(ObjectInputStream stream) throws IOException
 		{
@@ -105,5 +108,11 @@ public class SerializerTest
 		{
 			return "foo class";
 		}
+	}
+
+	@Test
+	public void testNullContracts()
+	{
+		new NullPointerTester().testStaticMethods(Serializer.class, Visibility.PACKAGE);
 	}
 }

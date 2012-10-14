@@ -37,6 +37,7 @@ public final class Describers
 	@CheckReturnValue
 	public static <T> Describer<T> withConstantString(final String constant)
 	{
+		checkNotNull(constant);
 		return new ConstantStringDescriber<T>(constant);
 	}
 
@@ -315,6 +316,7 @@ public final class Describers
 	public static <T> Describer<List<T>> listDescriber(Describer<T> valueDescriber, String valueSeparator)
 	{
 		checkNotNull(valueDescriber);
+		checkNotNull(valueSeparator);
 		return new ListDescriber<T>(valueDescriber, valueSeparator);
 	}
 

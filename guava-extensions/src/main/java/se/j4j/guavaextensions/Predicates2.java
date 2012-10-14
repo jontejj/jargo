@@ -1,5 +1,6 @@
 package se.j4j.guavaextensions;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.Descriptions.illegalArgument;
 
@@ -24,6 +25,7 @@ public final class Predicates2
 	 */
 	public static <E> Predicate<List<E>> listPredicate(Predicate<E> elementLimiter)
 	{
+		checkNotNull(elementLimiter);
 		if(elementLimiter == Predicates.alwaysTrue())
 			return Predicates.alwaysTrue();
 		return new ListPredicate<E>(elementLimiter);

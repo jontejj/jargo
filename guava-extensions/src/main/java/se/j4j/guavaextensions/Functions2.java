@@ -1,6 +1,7 @@
 package se.j4j.guavaextensions;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,8 @@ public final class Functions2
 	@Nonnull
 	public static <T> Function<T, T> compound(Function<T, T> first, Function<T, T> second)
 	{
+		checkNotNull(first);
+		checkNotNull(second);
 		if(first == Functions.identity())
 			return second;
 
@@ -75,6 +78,7 @@ public final class Functions2
 	@Nonnull
 	public static <E> Function<List<E>, List<E>> listTransformer(Function<E, E> elementTransformer)
 	{
+		checkNotNull(elementTransformer);
 		if(elementTransformer == Functions.identity())
 			return Functions.identity();
 		return new ListTransformer<E>(elementTransformer);
@@ -103,6 +107,7 @@ public final class Functions2
 	@Nonnull
 	public static <K, V> Function<Map<K, V>, Map<K, V>> mapValueTransformer(Function<V, V> valueTransformer)
 	{
+		checkNotNull(valueTransformer);
 		if(valueTransformer == Functions.identity())
 			return Functions.identity();
 		return new MapValueTransformer<K, V>(valueTransformer);
@@ -176,6 +181,7 @@ public final class Functions2
 	@Nonnull
 	public static <T> Function<T, T> repeat(Function<T, T> function, long times)
 	{
+		checkNotNull(function);
 		checkArgument(times > 0, "Useless to repeat something zero times");
 		return new FunctionRepeater<T>(function, times);
 	}

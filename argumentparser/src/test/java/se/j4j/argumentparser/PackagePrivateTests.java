@@ -5,6 +5,8 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.testlib.UtilityClassTester.testUtilityClassDesign;
 
+import java.util.Collections;
+
 import org.junit.Test;
 
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
@@ -31,8 +33,16 @@ public class PackagePrivateTests
 	@Test
 	public void testArgumentToString()
 	{
-		assertThat(integerArgument().toString()).isEqualTo("<integer>");
-		assertThat(integerArgument("-n").toString()).isEqualTo("-n");
+		assertThat(integerArgument().build().toString()).isEqualTo("<integer>");
+		assertThat(integerArgument("-n").build().toString()).isEqualTo("-n");
+	}
+
+	@Test
+	public void testArgumentBuilderToString()
+	{
+		assertThat(integerArgument("-i").description("foo").metaDescription("bar").toString())
+				.isEqualTo(	"DefaultArgumentBuilder{names=[-i], description=foo, metaDescription=bar, hideFromUsage=false"
+									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= }");
 	}
 
 	@Test
@@ -66,6 +76,12 @@ public class PackagePrivateTests
 	{
 		Build command = new Build();
 		assertThat(command.toString()).isEqualTo(command.commandName());
+	}
+
+	@Test
+	public void testUsageToString()
+	{
+		assertThat(new Usage(Collections.<Argument<?>>emptySet()).toString()).isEqualTo("Usage: ");
 	}
 
 	@Test

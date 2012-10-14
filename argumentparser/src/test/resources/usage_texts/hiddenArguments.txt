@@ -1,3 +1,5 @@
-Usage: HiddenArgument [Options]
+Usage: HiddenArgument [Arguments]
+
+Arguments:
 --visible <string>    <string>: any string
                       Default: 

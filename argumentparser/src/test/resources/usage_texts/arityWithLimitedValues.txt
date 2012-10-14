@@ -1,4 +1,6 @@
 'bar' is not foo. See usage for -f for proper values.
 
-Usage: OnlyAllowsFoo [Options]
+Usage: OnlyAllowsFoo [Arguments]
+
+Arguments:
 -f, --foos <string> <string>    <string>: foo [Required]

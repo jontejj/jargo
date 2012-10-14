@@ -1,5 +1,7 @@
 package se.j4j.testlib;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +25,7 @@ public final class Serializer
 	 */
 	public static <T extends Serializable> T clone(T objectToSerialize)
 	{
+		checkNotNull(objectToSerialize);
 		try
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

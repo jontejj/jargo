@@ -33,6 +33,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class CommandLineParserTest
 {
+	// TODO: test quoted file paths, also space
+
 	/**
 	 * An example of how to create a <b>easy to understand</b> command line invocation:<br>
 	 * java testprog --enable-logging --listen-port 8090 Hello
@@ -83,14 +85,6 @@ public class CommandLineParserTest
 			// exception message
 			assertThat(expected.getMessageAndUsage("MissingParameterTest")).isEqualTo(expected("missingParameter"));
 		}
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "Checks enforcement of the annotation")
-	public void testNullMetaDescription()
-	{
-		// TODO: should this use NullPointerTester in guava-testlib instead?
-		integerArgument("-n").metaDescription(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

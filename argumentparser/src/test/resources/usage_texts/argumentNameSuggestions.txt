@@ -2,7 +2,9 @@ Didn't expect --namr, did you mean one of these?
 	--name
 	--number
 
-Usage: ArgumentNameSuggestions [Options]
+Usage: ArgumentNameSuggestions [Arguments]
+
+Arguments:
 --name <integer>       <integer>: -2147483648 to 2147483647
                        Default: 0
 --nothing <integer>    <integer>: -2147483648 to 2147483647

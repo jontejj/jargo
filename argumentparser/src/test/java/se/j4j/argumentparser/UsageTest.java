@@ -5,6 +5,7 @@ import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
+import static se.j4j.argumentparser.ProgramInformation.programName;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import org.fest.assertions.Fail;
@@ -21,13 +22,6 @@ import se.j4j.strings.Description;
  */
 public class UsageTest
 {
-	@Test
-	public void testUsageWithRequiredArguments()
-	{
-		String usage = stringArgument("-s").required().usage("RequiredArgumentDescription");
-		assertThat(usage).isEqualTo(expected("requiredArgument"));
-	}
-
 	@Test
 	public void testUsageWithOptionalArguments()
 	{
@@ -69,9 +63,6 @@ public class UsageTest
 	@Test
 	public void testUsageForNoArguments()
 	{
-		// TODO: add possibility to add a description of the program as a whole
-		// Introduce ProgramInformation class on top of String
-		// ProgramInformation.name("NoArguments").description("What NoArguments does").includeOneLinerInUsage()
 		String usage = CommandLineParser.withArguments().usage("NoArguments");
 		assertThat(usage).isEqualTo("Usage: NoArguments");
 	}
@@ -87,7 +78,7 @@ public class UsageTest
 	public void testUsageWithArguments()
 	{
 		String usage = stringArgument().usage("SomeArguments");
-		assertThat(usage).startsWith("Usage: SomeArguments [Options]");
+		assertThat(usage).startsWith("Usage: SomeArguments [Arguments]");
 	}
 
 	@Test
@@ -111,7 +102,7 @@ public class UsageTest
 	public void testUsageTextForDefaultList()
 	{
 		String usage = integerArgument().defaultValue(1).repeated().usage("DefaultList");
-		assertThat(usage).contains("Default: [1]");
+		assertThat(usage).contains("Default: 1");
 	}
 
 	@Test
@@ -143,9 +134,9 @@ public class UsageTest
 				e.getMessageAndUsage("ProgramName");
 				fail("getMessageAndUsage should throw when not enough information is available to produce a sane usage text");
 			}
-			catch(IllegalStateException illegalState)
+			catch(NullPointerException expected)
 			{
-				assertThat(illegalState).hasMessage("No originParser set for ArgumentException. No usage available for ProgramName");
+				assertThat(expected).hasMessage("No originParser set for ArgumentException. No usage available for ProgramName");
 			}
 		}
 	}
@@ -189,6 +180,15 @@ public class UsageTest
 		{
 			assertThat(e.getMessageAndUsage("DidNotExpectFoo")).isEqualTo(expected("unexpectedArgumentWithoutPrevious"));
 		}
+	}
+
+	@Test
+	public void testProgramDescriptionInUsage()
+	{
+		String usage = CommandLineParser.withArguments(integerArgument().build())
+				.usage(programName("ProgramName").programDescription("Program description of ProgramName"));
+
+		assertThat(usage).isEqualTo(expected("programDescription"));
 	}
 
 	@Test

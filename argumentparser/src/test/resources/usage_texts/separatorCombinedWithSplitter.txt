@@ -1,3 +1,5 @@
-Usage: SeparatorCombinedWithSplitter [Options]
+Usage: SeparatorCombinedWithSplitter [Arguments]
+
+Arguments:
 -N=<integer>,<integer>,...    <integer>: -2147483648 to 2147483647
                               Default: Empty list

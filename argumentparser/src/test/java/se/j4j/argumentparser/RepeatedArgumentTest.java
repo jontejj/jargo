@@ -70,12 +70,6 @@ public class RepeatedArgumentTest
 		assertThat(numberMap.get("number")).isEqualTo(expected);
 	}
 
-	@Test(expected = ArgumentException.class)
-	public void testRepeatedPropertyValuesWithoutHandling() throws ArgumentException
-	{
-		integerArgument("-N").asPropertyMap().parse("-Nnumber=1", "-Nnumber=2");
-	}
-
 	@Test
 	public void testRepeatedValuesWithoutHandling()
 	{

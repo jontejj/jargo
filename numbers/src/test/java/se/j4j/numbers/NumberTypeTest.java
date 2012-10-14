@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
 public class NumberTypeTest
 {
 	@Test
@@ -174,5 +177,11 @@ public class NumberTypeTest
 
 			}
 		}
+	}
+
+	@Test
+	public void testNullContracts()
+	{
+		new NullPointerTester().testInstanceMethods(NumberType.LONG, Visibility.PACKAGE);
 	}
 }

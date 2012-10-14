@@ -1,3 +1,5 @@
-Usage: Split [Options]
+Usage: Split [Arguments]
+
+Arguments:
 -n <integer>,<integer>,...    <integer>: -2147483648 to 2147483647
                               Default: Empty list

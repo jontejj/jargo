@@ -1,10 +1,12 @@
-Usage: CommandUsage [Options]
+Usage: CommandUsage [Arguments]
+
+Arguments:
 build      Builds a target
            
 clean      Cleans a target
            
 commit     Commits to a repository
-            [Options]
+           Arguments:
             --amend              Default: disabled
             --author=<string>    <string>: any string [Required]
              <path> ...          <path>: a file path

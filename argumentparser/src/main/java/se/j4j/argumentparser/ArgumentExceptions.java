@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static se.j4j.strings.StringsUtil.numberToPositionalString;
 
 import java.io.Serializable;
@@ -44,6 +45,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	public static ArgumentException withMessage(Description message)
 	{
+		checkNotNull(message);
 		return new SimpleArgumentException(message);
 	}
 
@@ -57,7 +59,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		protected String getMessage(String argumentNameOrcommandName)
 		{
 			return message.description();
 		}
@@ -77,6 +79,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	static IllegalArgumentException asUnchecked(final ArgumentException cause)
 	{
+		checkNotNull(cause);
 		return new UncheckedArgumentException(cause);
 	}
 
@@ -111,6 +114,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	static ArgumentException wrapException(final Throwable exceptionToWrap)
 	{
+		checkNotNull(exceptionToWrap);
 		return new WrappedArgumentException(exceptionToWrap);
 	}
 
@@ -141,13 +145,12 @@ public final class ArgumentExceptions
 	 * argument wasn't found in the input arguments
 	 * 
 	 * @param missingArguments a collection of all the missing arguments
-	 * @param parser the parser that is missing the arguments
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static ArgumentException forMissingArguments(final Collection<Argument<?>> missingArguments, final CommandLineParser parser)
+	static ArgumentException forMissingArguments(final Collection<Argument<?>> missingArguments)
 	{
-		return new MissingRequiredArgumentException(missingArguments).originatedFrom(parser);
+		return new MissingRequiredArgumentException(missingArguments);
 	}
 
 	private static final class MissingRequiredArgumentException extends ArgumentException
@@ -160,7 +163,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		protected String getMessage(String argumentNameOrcommandName)
 		{
 			if(isCausedByCommand(argumentNameOrcommandName))
 				return String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, argumentNameOrcommandName, missingArguments);
@@ -189,6 +192,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	static ArgumentException forUnallowedRepetitionArgument(final String unhandledArgument)
 	{
+		checkNotNull(unhandledArgument);
 		return new SimpleArgumentException(Descriptions.format(UserErrors.UNALLOWED_REPETITION, unhandledArgument));
 	}
 
@@ -217,7 +221,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		protected String getMessage(String argumentNameOrcommandName)
 		{
 			return String.format(UserErrors.MISSING_PARAMETER, parameterDescription, argumentNameOrcommandName);
 		}
@@ -246,6 +250,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	static ArgumentException forMissingNthParameter(String parameterDescription, int missingIndex)
 	{
+		checkNotNull(parameterDescription);
 		return new MissingNthParameterException(parameterDescription, missingIndex);
 	}
 
@@ -261,7 +266,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrCommandName)
+		protected String getMessage(String argumentNameOrCommandName)
 		{
 			return String.format(	UserErrors.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
 									argumentNameOrCommandName);
@@ -307,7 +312,7 @@ public final class ArgumentExceptions
 		}
 
 		@Override
-		public String getMessage(String argumentNameOrcommandName)
+		protected String getMessage(String argumentNameOrcommandName)
 		{
 			String message = "Unexpected argument: " + unexpectedArgument;
 			if(previousArgument != null)

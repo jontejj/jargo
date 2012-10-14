@@ -1,5 +1,6 @@
 package se.j4j.numbers;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.Descriptions.illegalArgument;
 
@@ -83,9 +84,7 @@ public abstract class NumberType<T extends Number>
 	}
 
 	/**
-	 * Casts {@code value} to a {@code T}, as {@link Long} is the biggest
-	 * data type supported by {@link NumberType} this method can guarantee
-	 * that no bits are lost.
+	 * Casts {@code value} to a {@code T}, losing bits as necessary.
 	 */
 	public abstract T fromLong(Long value);
 
@@ -101,6 +100,8 @@ public abstract class NumberType<T extends Number>
 	 */
 	public final T decode(String value)
 	{
+		// TODO: use NumberFormat instead (requires specific locale),
+		// beware and check ParsePosition == value.length()
 		try
 		{
 			Long result = Long.decode(value);
@@ -223,7 +224,7 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public Long fromLong(Long value)
 		{
-			return value;
+			return checkNotNull(value);
 		}
 
 		@Override

@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.asList;
 import static se.j4j.argumentparser.StringParsers.bigIntegerParser;
 import static se.j4j.argumentparser.StringParsers.booleanParser;
@@ -249,6 +250,7 @@ public final class ArgumentFactory
 	@Nonnull
 	public static <T> DefaultArgumentBuilder<T> withParser(final StringParser<T> parser)
 	{
+		checkNotNull(parser);
 		return new DefaultArgumentBuilder<T>(parser);
 	}
 }

@@ -11,6 +11,8 @@ import se.j4j.testlib.UtilityClassTester;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 
 public class Suppliers2Test
 {
@@ -58,6 +60,7 @@ public class Suppliers2Test
 	@Test
 	public void testUtilityClassDesign()
 	{
+		new NullPointerTester().testStaticMethods(Suppliers2.class, Visibility.PACKAGE);
 		UtilityClassTester.testUtilityClassDesign(Suppliers2.class);
 	}
 }

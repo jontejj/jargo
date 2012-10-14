@@ -11,6 +11,8 @@ import se.j4j.testlib.UtilityClassTester;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 
 public class Predicates2Test
 {
@@ -63,6 +65,7 @@ public class Predicates2Test
 	@Test
 	public void testUtilityClassDesign()
 	{
+		new NullPointerTester().testStaticMethods(Predicates2.class, Visibility.PACKAGE);
 		UtilityClassTester.testUtilityClassDesign(Predicates2.class);
 	}
 }

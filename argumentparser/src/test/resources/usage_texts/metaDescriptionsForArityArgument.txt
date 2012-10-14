@@ -1,10 +1,12 @@
-Usage: Arity [Options]
+Usage: Arity [Arguments]
+
+Arguments:
 --bar <integer> <integer>           MetaDescShouldBeDisplayedTwoTimes
                                     <integer>: -2147483648 to 2147483647
-                                    Default: [0, 0]
+                                    Default: 0, 0
 --foo <string> <string> <string>    MetaDescShouldBeDisplayedThreeTimes
                                     <string>: any string
-                                    Default: [, , ]
+                                    Default: , , 
 --zoo <integer> ...                 MetaDescShouldIndicateVariableAmount
                                     <integer>: -2147483648 to 2147483647
                                     Default: Empty list

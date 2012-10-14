@@ -7,27 +7,24 @@ import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.newIdentityHashMap;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
-import static java.lang.Math.max;
-import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_NAMED;
+import static se.j4j.argumentparser.ArgumentBuilder.DEFAULT_SEPARATOR;
 import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_OF_VARIABLE_ARITY;
 import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_REQUIRED;
-import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_VISIBLE;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingArguments;
 import static se.j4j.argumentparser.ArgumentExceptions.forUnallowedRepetitionArgument;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
 import static se.j4j.argumentparser.ArgumentFactory.command;
+import static se.j4j.argumentparser.ProgramInformation.programName;
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 import static se.j4j.strings.StringsUtil.TAB;
-import static se.j4j.strings.StringsUtil.spaces;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,14 +47,12 @@ import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.OptionParser;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
-import se.j4j.argumentparser.internal.Texts.UsageTexts;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.collections.CharacterTrie;
 import se.j4j.strings.StringsUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
@@ -151,6 +146,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final String ... actualArguments) throws ArgumentException
 	{
+		// TODO: test that the array is copied
 		return parse(newArrayList(actualArguments));
 	}
 
@@ -180,8 +176,18 @@ public final class CommandLineParser
 	@Nonnull
 	public String usage(final String programName)
 	{
-		// TODO: maybe print one line with all options
-		return new Usage().withProgramName(programName);
+		return new Usage(allArguments()).forProgram(programName(programName));
+	}
+
+	/**
+	 * Returns a usage text describing all arguments this {@link CommandLineParser} handles.
+	 * Suitable to print on {@link System#out}.
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public String usage(final ProgramInformation programInformation)
+	{
+		return new Usage(allArguments()).forProgram(programInformation);
 	}
 
 	@Override
@@ -205,15 +211,18 @@ public final class CommandLineParser
 		}
 
 		/**
-		 * @param argumentToFetch
-		 * @return the parsed value for the given {@code argumentToFetch},
-		 *         if no value was given on the command line the {@link Argument#defaultValue()} is
-		 *         returned.
+		 * Returns the parsed value for the given {@code argumentToFetch},
+		 * if no value was given on the command line the default value is
+		 * returned.
+		 * 
+		 * @see StringParser#defaultValue()
 		 */
 		@Nullable
 		@CheckReturnValue
 		public <T> T get(final Argument<T> argumentToFetch)
 		{
+			checkNotNull(argumentToFetch);
+
 			T value = holder.getValue(argumentToFetch);
 			if(value == null)
 				return argumentToFetch.defaultValue();
@@ -234,7 +243,7 @@ public final class CommandLineParser
 		}
 
 		@Override
-		public boolean equals(Object obj)
+		public boolean equals(@Nullable Object obj)
 		{
 			if(this == obj)
 				return true;
@@ -310,7 +319,7 @@ public final class CommandLineParser
 				addNamedArgumentDefinition(name, definition);
 			}
 		}
-		boolean added = allArguments.add(definition);
+		boolean added = allArguments().add(definition);
 		checkArgument(added, ProgrammaticErrors.UNIQUE_ARGUMENT, definition);
 	}
 
@@ -322,13 +331,13 @@ public final class CommandLineParser
 		{
 			oldDefinition = specialArguments.put(name, definition);
 		}
-		else if(separator != null)
+		else if(separator.equals(DEFAULT_SEPARATOR))
 		{
-			oldDefinition = specialArguments.put(name + separator, definition);
+			oldDefinition = namedArguments.put(name, definition);
 		}
 		else
 		{
-			oldDefinition = namedArguments.put(name, definition);
+			oldDefinition = specialArguments.put(name + separator, definition);
 		}
 		checkArgument(oldDefinition == null, ProgrammaticErrors.NAME_COLLISION, name);
 	}
@@ -374,13 +383,13 @@ public final class CommandLineParser
 	@Nonnull
 	ParsedArguments parse(ArgumentIterator arguments) throws ArgumentException
 	{
-		ParsedArgumentHolder holder = new ParsedArgumentHolder(allArguments);
+		ParsedArgumentHolder holder = new ParsedArgumentHolder(allArguments());
 
 		parseArguments(arguments, holder);
 
 		Collection<Argument<?>> missingArguments = holder.requiredArgumentsLeft();
 		if(missingArguments.size() > 0)
-			throw forMissingArguments(missingArguments, this);
+			throw forMissingArguments(missingArguments).originatedFrom(this);
 
 		for(Argument<?> arg : holder.parsedArguments.keySet())
 		{
@@ -434,7 +443,7 @@ public final class CommandLineParser
 	}
 
 	/**
-	 * @return a definition that defines how to handle an argument
+	 * @return a definition that defines how to handle the current argument
 	 * @throws UnexpectedArgumentException if no definition could be found
 	 *             for the current argument
 	 */
@@ -445,6 +454,34 @@ public final class CommandLineParser
 
 		arguments.setCurrentArgumentName(currentArgument);
 
+		Argument<?> byName = lookupByName(currentArgument, arguments);
+		if(byName != null)
+			return byName;
+
+		Argument<?> option = batchOfShortNamedArguments(currentArgument, arguments, holder);
+		if(option != null)
+			return option;
+
+		Argument<?> indexedArgument = indexedArgument(arguments, holder);
+		if(indexedArgument != null)
+			return indexedArgument;
+
+		if(isCommandParser())
+		{
+			// Rolling back here means that the parent parser/command will receive the argument
+			// instead, maybe it can handle it
+			arguments.previous();
+			return null;
+		}
+
+		guessAndSuggestIfCloseMatch(currentArgument, holder);
+
+		// We're out of order, tell the user what we didn't like
+		throw ArgumentExceptions.forUnexpectedArgument(arguments);
+	}
+
+	private Argument<?> lookupByName(String currentArgument, ArgumentIterator arguments)
+	{
 		// Ordinary, named, arguments that directly matches the argument
 		Argument<?> definition = namedArguments.get(currentArgument);
 		if(definition != null)
@@ -459,9 +496,16 @@ public final class CommandLineParser
 			arguments.setNextArgumentTo(valueAfterSeparator);
 			return entry.getValue();
 		}
+		return null;
+	}
 
-		// Batch of short-named optional arguments
-		// For instance, "-fs" was used instead of "-f -s"
+	/**
+	 * Batch of short-named optional arguments
+	 * For instance, "-fs" was used instead of "-f -s"
+	 */
+	private Argument<?> batchOfShortNamedArguments(String currentArgument, ArgumentIterator arguments, ParsedArgumentHolder holder)
+			throws ArgumentException
+	{
 		if(currentArgument.startsWith("-") && currentArgument.length() > 1)
 		{
 			List<Character> givenCharacters = Lists.charactersOf(currentArgument.substring(1));
@@ -493,11 +537,14 @@ public final class CommandLineParser
 				return lastOption;
 			}
 		}
+		return null;
+	}
 
-		// Indexed arguments
+	private Argument<?> indexedArgument(ArgumentIterator arguments, ParsedArgumentHolder holder)
+	{
 		if(holder.indexedArgumentsParsed < indexedArguments.size())
 		{
-			definition = indexedArguments.get(holder.indexedArgumentsParsed);
+			Argument<?> definition = indexedArguments.get(holder.indexedArgumentsParsed);
 			arguments.previous();
 			// This helps the error messages explain which of the indexed arguments that failed
 			if(isCommandParser())
@@ -510,25 +557,17 @@ public final class CommandLineParser
 			}
 			return definition;
 		}
-
-		if(isCommandParser())
-		{
-			// Rolling back here means that the parent parser/command will receive the argument
-			// instead, maybe it can handle it
-			arguments.previous();
-			return null;
-		}
-
-		guessAndSuggestIfCloseMatch(currentArgument, holder);
-
-		// We're out of order, tell the user what we didn't like
-		throw ArgumentExceptions.forUnexpectedArgument(arguments);
+		return null;
 	}
 
+	/**
+	 * Suggests probable, valid, alternatives for a faulty argument, based on the
+	 * {@link StringsUtil#levenshteinDistance(String, String)}
+	 */
 	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArgumentHolder holder) throws ArgumentException
 	{
-		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments.size());
-		for(ArgumentSettings argument : allArguments)
+		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments().size());
+		for(ArgumentSettings argument : allArguments())
 		{
 			if(!holder.parsedArguments.containsKey(argument) || argument.isAllowedToRepeat())
 			{
@@ -541,16 +580,16 @@ public final class CommandLineParser
 
 		if(!validArguments.isEmpty())
 		{
-			// TODO: verify that 4 is reasonable
-			List<String> suggestions = StringsUtil.closestMatches(currentArgument, validArguments, 4);
+			List<String> suggestions = StringsUtil.closestMatches(currentArgument, validArguments, ONLY_REALLY_CLOSE_MATCHES);
 			if(!suggestions.isEmpty())
 				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, NEW_LINE_AND_TAB.join(suggestions)));
 		}
 	}
 
+	private static final int ONLY_REALLY_CLOSE_MATCHES = 4;
 	private static final Joiner NEW_LINE_AND_TAB = Joiner.on(NEWLINE + TAB);
 
-	private boolean isCommandParser()
+	boolean isCommandParser()
 	{
 		return isCommandParser;
 	}
@@ -571,209 +610,16 @@ public final class CommandLineParser
 		}
 	}
 
-	// TODO: move out these private classes into an internal package
-	private final class Usage
+	Set<Argument<?>> allArguments()
 	{
-		private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
-		private static final int SPACES_BETWEEN_COLUMNS = 4;
+		return allArguments;
+	}
 
-		private final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
-
-		private final Iterable<Argument<?>> argumentsToPrint = Iterables.filter(sortedArguments(), IS_VISIBLE);
-
-		/**
-		 * The builder to append usage texts to
-		 */
-		@Nonnull private final StringBuilder builder;
-
-		/**
-		 * <pre>
-		 * For:
-		 * -l, --enable-logging Output debug information to standard out
-		 * -p, --listen-port    The port clients should connect to.
-		 * 
-		 * This would be 20.
-		 */
-		private final int indexOfDescriptionColumn;
-		private boolean needsNewline = false;
-
-		Usage()
-		{
-			indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
-			builder = new StringBuilder(expectedUsageTextSize());
-		}
-
-		private Iterable<Argument<?>> sortedArguments()
-		{
-			Iterable<Argument<?>> indexedWithoutVariableArity = filter(indexedArguments, not(IS_OF_VARIABLE_ARITY));
-			Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
-			List<Argument<?>> sortedArgumentsByName = newArrayList(filter(allArguments, IS_NAMED));
-			// TODO: sort in a lexicographical way?
-			Collections.sort(sortedArgumentsByName);
-			return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
-		}
-
-		private int determineLongestNameColumn()
-		{
-			int longestNameSoFar = 0;
-			for(Argument<?> arg : argumentsToPrint)
-			{
-				longestNameSoFar = max(longestNameSoFar, lengthOfNameColumn(arg));
-			}
-			return longestNameSoFar;
-		}
-
-		private int lengthOfNameColumn(final Argument<?> argument)
-		{
-			int namesLength = 0;
-
-			for(String name : argument.names())
-			{
-				namesLength += name.length();
-			}
-			int separatorLength = max(0, UsageTexts.NAME_SEPARATOR.length() * (argument.names().size() - 1));
-
-			int metaLength = argument.metaDescriptionInLeftColumn().length();
-
-			return namesLength + separatorLength + metaLength;
-		}
-
-		private int expectedUsageTextSize()
-		{
-			// Two lines for each argument
-			return 2 * allArguments.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
-		}
-
-		@CheckReturnValue
-		@Nonnull
-		String withProgramName(final String programName)
-		{
-			mainUsage(programName);
-			for(Argument<?> arg : argumentsToPrint)
-			{
-				usageForArgument(arg);
-			}
-			return toString();
-		}
-
-		private void mainUsage(final String programName)
-		{
-			if(!isCommandParser())
-			{
-				builder.append(UsageTexts.USAGE_HEADER + programName);
-			}
-			if(!isEmpty(argumentsToPrint))
-			{
-				builder.append(UsageTexts.OPTIONS);
-				builder.append(NEWLINE);
-			}
-		}
-
-		@Override
-		public String toString()
-		{
-			return builder.toString();
-		};
-
-		/**
-		 * <pre>
-		 * 	-foo   Foo something [Required]
-		 *         	Valid values: 1 to 5
-		 *        -bar   Bar something
-		 *         	Default: 0
-		 * </pre>
-		 */
-		@Nonnull
-		private void usageForArgument(final Argument<?> arg)
-		{
-			int lengthBeforeCurrentArgument = builder.length();
-
-			NAME_JOINER.appendTo(builder, arg.names());
-
-			builder.append(arg.metaDescriptionInLeftColumn());
-
-			int lengthOfFirstColumn = builder.length() - lengthBeforeCurrentArgument;
-			builder.append(spaces(indexOfDescriptionColumn - lengthOfFirstColumn));
-
-			// TODO: handle long descriptions, names, meta descriptions, default value
-			// descriptions
-			String description = arg.description();
-			if(!description.isEmpty())
-			{
-				builder.append(description);
-				addIndicators(arg);
-				needsNewline = true;
-				newlineWithIndentation();
-				valueExplanation(arg);
-			}
-			else
-			{
-				valueExplanation(arg);
-				addIndicators(arg);
-			}
-			builder.append(NEWLINE);
-			needsNewline = false;
-		}
-
-		private void newlineWithIndentation()
-		{
-			if(needsNewline)
-			{
-				builder.append(NEWLINE);
-				builder.append(spaces(indexOfDescriptionColumn));
-				needsNewline = false;
-			}
-		}
-
-		private <T> void addIndicators(final Argument<T> arg)
-		{
-			if(arg.isRequired())
-			{
-				builder.append(UsageTexts.REQUIRED);
-			}
-			if(arg.isAllowedToRepeat())
-			{
-				builder.append(UsageTexts.ALLOWS_REPETITIONS);
-			}
-		}
-
-		private <T> void valueExplanation(final Argument<T> arg)
-		{
-			// TODO: handle long value explanations, replace each newline with enough spaces,
-			// split up long lines
-			String description = arg.descriptionOfValidValues();
-			if(!description.isEmpty())
-			{
-				boolean isCommand = arg.parser() instanceof Command;
-				if(isCommand)
-				{
-					// For commands the validValues is a usage text itself for the command arguments
-					// +1 = indentation so that command options are tucked under the command
-					String spaces = spaces(indexOfDescriptionColumn + 1);
-					description = description.replace(NEWLINE, NEWLINE + spaces);
-				}
-				else
-				{
-					String meta = arg.metaDescriptionInRightColumn();
-					builder.append(meta + ": ");
-				}
-
-				builder.append(description);
-				needsNewline = true;
-			}
-			if(arg.isRequired())
-				return;
-
-			String descriptionOfDefaultValue = arg.defaultValueDescription();
-			if(descriptionOfDefaultValue != null)
-			{
-				newlineWithIndentation();
-				String spaces = spaces(indexOfDescriptionColumn + UsageTexts.DEFAULT_VALUE_START.length());
-				descriptionOfDefaultValue = descriptionOfDefaultValue.replace(NEWLINE, NEWLINE + spaces);
-
-				builder.append(UsageTexts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
-			}
-		}
+	@CheckReturnValue
+	@Nonnull
+	String commandUsage()
+	{
+		return new Usage(allArguments()).forCommand();
 	}
 
 	/**

@@ -26,6 +26,7 @@ import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import se.j4j.testlib.Explanation;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Ranges;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -126,20 +127,6 @@ public class PropertyMapTest
 	}
 
 	@Test
-	public void testThatRepeatedPropertyKeysAreInvalidatedBeforeParsed()
-	{
-		try
-		{
-			integerArgument("-I").asPropertyMap().parse("-Ifoo=10", "-Ifoo=NotANumber");
-			fail("Repeated key wasn't invalidated");
-		}
-		catch(ArgumentException expected)
-		{
-			assertThat(expected).hasMessage("'-Ifoo' was found as a key several times in the input");
-		}
-	}
-
-	@Test
 	public void testLimitationOfPropertyMapKeysAndValues()
 	{
 		Predicate<Integer> zeroToTen = Ranges.closed(0, 10);
@@ -190,20 +177,6 @@ public class PropertyMapTest
 	public void testCustomKeyParser() throws ArgumentException
 	{
 		assertThat(integerArgument("-N").asKeyValuesWithKeyParser(integerParser()).parse("-N1=42").get(1)).isEqualTo(42);
-	}
-
-	@Test
-	public void testInvalidationOfRepeatedValues()
-	{
-		try
-		{
-			integerArgument("-N").asKeyValuesWithKeyParser(integerParser()).parse("-N1=42", "-N1=43");
-			fail("-N keys should not be allowed to be repeated");
-		}
-		catch(ArgumentException expected)
-		{
-			assertThat(expected).hasMessage(String.format(UserErrors.UNALLOWED_REPETITION_OF_KEY, "-N", "1"));
-		}
 	}
 
 	@Test
@@ -324,5 +297,34 @@ public class PropertyMapTest
 		{
 			assertThat(expected).hasMessage("'bar' is not foo");
 		}
+	}
+
+	@Test
+	public void testArityAndPropertyMap() throws ArgumentException
+	{
+		// A bit crazy but it is supported
+		Map<String, List<Integer>> value = integerArgument("-D").arity(2).asPropertyMap().parse("-Dt=1", "2");
+		assertThat(value.get("t")).isEqualTo(Arrays.asList(1, 2));
+	}
+
+	@Test
+	public void testDefaultValueForOnePropertyAndCommandLineValueForOneProperty() throws ArgumentException
+	{
+		Map<String, Integer> defaults = ImmutableMap.<String, Integer>builder().put("n", 10).build();
+
+		Map<String, Integer> values = integerArgument("-D").asPropertyMap().defaultValue(defaults).parse("-Ds=20");
+
+		assertThat(values.get("s")).isEqualTo(20);
+		assertThat(values.get("n")).isEqualTo(10);
+	}
+
+	@Test
+	public void testOverridingDefaultValue() throws ArgumentException
+	{
+		Map<String, Integer> defaults = ImmutableMap.<String, Integer>builder().put("n", 1).build();
+
+		int n = integerArgument("-D").asPropertyMap().defaultValue(defaults).parse("-Dn=2").get("n");
+
+		assertThat(n).isEqualTo(2);
 	}
 }
