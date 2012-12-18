@@ -54,7 +54,7 @@ import com.google.common.collect.Ranges;
 
 /**
  * <pre>
- * Responsible for building {@link Argument} instances.
+ * Responsible for configuring and building {@link Argument} instances.
  * Example builders can be created through the {@link ArgumentFactory}.
  * 
  * <b>Note:</b>The code examples assumes that all methods in {@link ArgumentFactory} have been statically imported.
@@ -671,7 +671,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * Copies all values from the given copy into this one, except for:
 	 * {@link #parser()}, {@link #defaultValueSupplier()} & {@link #defaultValueDescriber()}
 	 * as they may change between different builders
-	 * (e.g the default value for Argument<Boolean> and Argument<List<Boolean>> are not compatible)
+	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;List&lt;Boolean&gt; are not compatible)
 	 * @param copy the ArgumentBuilder to copy from
 	 */
 	@OverridingMethodsMustInvokeSuper
@@ -953,8 +953,9 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	}
 
 	/**
-	 * An intermediate builder used by {@link #splitWith(String)}. It's mainly used to switch the T
-	 * argument of the previous builder to List<T> and to indicate invalid call orders.
+	 * An intermediate builder used by {@link #arity(int)} and {@link #variableArity()}. It's mainly
+	 * used to switch the T argument of the previous builder to List<T> and to indicate invalid call
+	 * orders.
 	 */
 	@NotThreadSafe
 	public static final class ArityArgumentBuilder<T> extends ListArgumentBuilder<ArityArgumentBuilder<T>, T>
@@ -1205,7 +1206,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 
 		/**
-		 * @deprecated because {@link #variableArity(String)} and {@link #asPropertyMap()} doesn't
+		 * @deprecated because {@link #variableArity()} and {@link #asPropertyMap()} doesn't
 		 *             work together
 		 */
 		@Deprecated

@@ -15,8 +15,8 @@ import se.j4j.argumentparser.internal.Texts.UsageTexts;
 /**
  * Indicates that something went wrong in a {@link CommandLineParser}. The typical remedy action is
  * to present {@link #getMessageAndUsage(String)} to the user so he is informed about what he did
- * wrong. As all {@link Exception}s {@link ArgumentException} is {@link Serializable} so usage is
- * available after deserialization.
+ * wrong. As all {@link Exception}s should be, {@link ArgumentException} is {@link Serializable} so
+ * usage is available after deserialization.
  */
 @NotThreadSafe
 public abstract class ArgumentException extends Exception

@@ -34,11 +34,11 @@ public class GreetingServer
 			.description("A greeting phrase to greet new connections with").build();
 
 	// Immutable and therefore also reusable parser
-	static final CommandLineParser parser = withArguments(GREETING_PHRASES, ENABLE_LOGGING, PORTS);
+	static final CommandLineParser PARSER = withArguments(GREETING_PHRASES, ENABLE_LOGGING, PORTS);
 
 	public static void main(String[] args)
 	{
-		System.out.println(parser.usage(GreetingServer.class.getSimpleName()));
+		System.out.println(PARSER.usage(GreetingServer.class.getSimpleName()));
 
 		GreetingServer server = new GreetingServer();
 		server.startWithArgs("--enable-logging", "--listen-port", "8090", "Hello world", "Habla Senor");
@@ -49,7 +49,7 @@ public class GreetingServer
 	{
 		try
 		{
-			ParsedArguments args = parser.parse(arguments);
+			ParsedArguments args = PARSER.parse(arguments);
 
 			start(args.get(ENABLE_LOGGING), args.get(PORTS), args.get(GREETING_PHRASES));
 		}

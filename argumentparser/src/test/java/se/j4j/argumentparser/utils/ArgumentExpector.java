@@ -55,9 +55,6 @@ public final class ArgumentExpector
 		/**
 		 * Creates a parser for all the definitions previously given to this
 		 * expectation and asserts that they are all correct.
-		 * 
-		 * @param arguments
-		 * @throws ArgumentException
 		 */
 		public void given(String arguments) throws ArgumentException
 		{

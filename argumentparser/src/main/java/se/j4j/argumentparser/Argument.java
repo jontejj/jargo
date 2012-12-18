@@ -34,11 +34,6 @@ import com.google.common.base.Suppliers;
  * {@link Argument}s are created with the static methods in {@link ArgumentFactory} or with a custom {@link ArgumentBuilder} and then
  * used by the {@link CommandLineParser} to parse strings (typically from the command line).
  * 
- * TODO: add readFromConsole(), should required arguments be handled by this always?
- * 			think about Multiple Occurrences (ask Do you want to enter one more value for [-s] (y/N):
- * 			Can auto complete be provided?
- * 			Repeat reading for invalid values
- * 
  * @param <T> the type of values this {@link Argument} is configured to parse
  * 
  * </pre>
@@ -46,8 +41,6 @@ import com.google.common.base.Suppliers;
 @Immutable
 public final class Argument<T> extends ArgumentSettings
 {
-	// TODO: move non T members into ArgumentSettings and contain
-	// ArgumentSettings instead of inheriting
 	@Nonnull private final List<String> names;
 
 	@Nonnull private final Description description;

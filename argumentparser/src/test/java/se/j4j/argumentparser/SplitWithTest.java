@@ -73,7 +73,7 @@ public class SplitWithTest
 	}
 
 	@Test
-	public void testArityCombinedWithPropertyMap() throws ArgumentException
+	public void testSplitWithCombinedWithPropertyMap() throws ArgumentException
 	{
 		Map<String, List<Integer>> numbers = integerArgument("-n").splitWith(",").asPropertyMap().parse("-nsmall=1,2", "-nbig=3,4");
 

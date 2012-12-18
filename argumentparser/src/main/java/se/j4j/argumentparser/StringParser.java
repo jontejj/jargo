@@ -5,14 +5,59 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * <pre>
  * Parses {@link String}s into values of the type {@code T}.
+ * Create an {@link Argument} for your created {@link StringParser}s with
+ * {@link ArgumentFactory#withParser(StringParser)}.
+ * An example implementation for handling joda-time dates:
  * 
- * Pass your created {@link StringParser}s to {@link ArgumentFactory#withParser(StringParser)}
- * to create an {@link Argument} that uses it to parse values.
+ * <pre class="prettyprint">
+ * <code class="language-java">
+ * public class DateTimeParser implements StringParser&lt;DateTime&gt;
+ * {
+ * 	public static DefaultArgumentBuilder&lt;DateTime&gt; dateArgument(String ... names)
+ * 	{
+ * 		return ArgumentFactory.withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);
+ * 	}
+ * 
+ * 	public String descriptionOfValidValues()
+ * 	{
+ * 		return "an ISO8601 date, such as 2011-02-28";
+ * 	}
+ * 
+ * 	public DateTime parse(final String value) throws ArgumentException
+ * 	{
+ * 		try
+ * 		{
+ * 			return DateTime.parse(value);
+ * 		}
+ * 		catch(IllegalArgumentException wrongDateFormat)
+ * 		{
+ * 			throw ArgumentExceptions.withMessage(wrongDateFormat.getLocalizedMessage());
+ * 		}
+ * 	}
+ * 
+ * 	public DateTime defaultValue()
+ * 	{
+ * 		return DateTime.now();
+ * 	}
+ * 
+ * 	public String metaDescription()
+ * 	{
+ * 		return "&lt;date&gt;";
+ * 	}
+ * }
+ * </code>
+ * </pre>
+ * 
+ * <pre>
+ * When printed in usage, this would look like:
+ * <code>
+ * --start &lt;date&gt; &lt;date&gt;: an ISO8601 date, such as 2011-02-28
+ *                Default: Current time
+ * </code>
+ * </pre>
  * 
  * @param <T> the type to parse {@link String}s into
- * </pre>
  */
 @Immutable
 public interface StringParser<T>
@@ -26,7 +71,6 @@ public interface StringParser<T>
 	 *             {@link #descriptionOfValidValues()}
 	 */
 	@Nonnull
-	// TODO: maybe this shouldn't throw a checked exception?
 	T parse(String argument) throws ArgumentException;
 
 	/**

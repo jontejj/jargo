@@ -1,5 +1,6 @@
 package se.j4j.argumentparser.exceptions;
 
+import static junit.framework.Assert.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 
 import org.junit.Test;
@@ -39,12 +40,16 @@ public class NullPointerTest
 		CommandLineParser parser = CommandLineParser.withArguments(argument);
 		npeTester.testInstanceMethods(parser, Visibility.PROTECTED);
 
+		ProgramInformation info = ProgramInformation.programName("helloworld");
+		npeTester.testInstanceMethods(info, Visibility.PROTECTED);
+
 		ParsedArguments result = parser.parse();
 		npeTester.testInstanceMethods(result, Visibility.PROTECTED);
 
 		try
 		{
 			parser.parse("--a");
+			fail("--a should have been unhandled");
 		}
 		catch(ArgumentException expected)
 		{

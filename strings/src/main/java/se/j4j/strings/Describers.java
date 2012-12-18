@@ -29,9 +29,9 @@ public final class Describers
 
 	/**
 	 * Always describes any value of type {@code T} with the given {@code constant}. For instance,
-	 * if you have implemented a time related parser and don't want different times
-	 * in the usage depending on when the usage is printed you could pass in "The current time",
-	 * then this describer would describe any time object with "The current time".
+	 * if you have implemented a time related parser and don't want different times in the
+	 * usage depending on when the usage is printed you could pass in "The current time", then this
+	 * describer would describe any time object with "The current time".
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -58,10 +58,10 @@ public final class Describers
 	}
 
 	/**
-	 * Calls {@link String#valueOf(Object)} for input values.
-	 * As this goes against the very purpose of the {@link Describer} interface
-	 * it may seem odd but this {@link Describer} works really well as a null object,
-	 * it can also act as a functor for calling toString.
+	 * Calls {@link String#valueOf(Object)} for input values. As this goes
+	 * against the very purpose of the {@link Describer} interface it may seem
+	 * odd but this {@link Describer} works really well as a null object, it can
+	 * also act as a functor for calling toString.
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -72,16 +72,16 @@ public final class Describers
 		return toStringDescriber;
 	}
 
-	private static final class ToStringDescriber<T> implements Describer<T>
+	private static final class ToStringDescriber implements Describer<Object>
 	{
-		private static final Describer<Object> INSTANCE = new ToStringDescriber<Object>();
+		private static final Describer<Object> INSTANCE = new ToStringDescriber();
 
 		private ToStringDescriber()
 		{
 		}
 
 		@Override
-		public String describe(T value)
+		public String describe(Object value)
 		{
 			return String.valueOf(value);
 		}
@@ -174,11 +174,10 @@ public final class Describers
 	}
 
 	/**
-	 * Describes what a key=value in a {@link Map} means by fetching a description from
-	 * {@code descriptions} for each key in a given map. So {@code descriptions} need to have
-	 * values (descriptions) for all keys in any given map, otherwise a {@link NullPointerException}
-	 * is thrown.
-	 * For example:
+	 * Describes what a key=value in a {@link Map} means by fetching a
+	 * description from {@code descriptions} for each key in a given map. So {@code descriptions}
+	 * need to have values (descriptions) for all keys in any given map,
+	 * otherwise a {@link NullPointerException} is thrown. For example:
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
@@ -258,7 +257,7 @@ public final class Describers
 	@Beta
 	@Nonnull
 	@CheckReturnValue
-	public static <T> Function<T, String> asFunction(final Describer<T> describer)
+	public static <T> Function<? super T, String> asFunction(final Describer<T> describer)
 	{
 		checkNotNull(describer);
 		return new Function<T, String>(){
@@ -295,8 +294,9 @@ public final class Describers
 	}
 
 	/**
-	 * Describes values in lists with {@code valueDescriber}.
-	 * Lists with {@link List#size()} = zero is described with the string "Empty List".
+	 * Describes values in lists with {@code valueDescriber} and separates
+	 * elements with ", ". Lists with {@link List#size()} = zero is described
+	 * with the string "Empty List".
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -307,9 +307,9 @@ public final class Describers
 	}
 
 	/**
-	 * Describes values in lists with {@code valueDescriber} and separates values with
-	 * {@code valueSeperator}.
-	 * Lists with {@link List#size()} = zero is described with the string "Empty List".
+	 * Describes values in lists with {@code valueDescriber} and separates
+	 * values with {@code valueSeperator}. Lists with {@link List#size()} = zero
+	 * is described with the string "Empty List".
 	 */
 	@Nonnull
 	@CheckReturnValue
