@@ -7,7 +7,6 @@ import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.newIdentityHashMap;
@@ -29,7 +28,6 @@ import static se.j4j.strings.StringsUtil.TAB;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,7 +56,11 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
 
 /**
- * Manages multiple {@link Argument}s and/or {@link Command}s.
+ * Manages multiple {@link Argument}s and/or {@link Command}s. The brain of this API.
+ * Immutability is dearly embraced. Thus a {@link CommandLineParser} can be reused to parse
+ * arguments over and over again. Different {@link CommandLineParser}s can even
+ * share {@link Argument} configurations as {@link Argument} instances are immutable as well.
+ * Documentation through example:
  * 
  * <pre class="prettyprint">
  * <code class="language-java">
@@ -67,14 +69,19 @@ import com.google.common.collect.UnmodifiableIterator;
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
  * 
  * Argument&lt;Boolean&gt; enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
- * Argument&lt;Integer&gt; port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").build();
  * Argument&lt;String&gt; greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
+ * Argument&lt;Integer&gt; port = integerArgument("-p", "--listen-port")
+ * 						.defaultValue(8080)
+ * 						.description("The port clients should connect to.")
+ * 						.metaDescription("&lt;port&gt;")
+ * 						.limitTo(Ranges.closed(0, 65536)
+ * 						.repeated().build();
  * 
  * try
  * {
  *   ParsedArguments parsedValues = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
  *   assertThat(parsedValues.get(enableLogging)).isTrue();
- *   assertThat(parsedValues.get(port)).isEqualTo(8090);
+ *   assertThat(parsedValues.get(port)).isEqualTo(Arrays.asList(8090));
  *   assertThat(parsedValues.get(greetingPhrase)).isEqualTo("Hello");
  * }
  * catch(ArgumentException exception)
@@ -86,6 +93,20 @@ import com.google.common.collect.UnmodifiableIterator;
  * </pre>
  * 
  * <pre>
+ * For this program the usage would look like:
+ * <code>
+ * Usage: YourProgramName [Arguments]
+ * 
+ * Arguments:
+ * &lt;string&gt;                       A greeting phrase to greet new connections with
+ *                                &lt;string&gt;: any string
+ *                                Default:
+ * -l, --enable-logging           Output debug information to standard out
+ *                                Default: disabled
+ * -p, --listen-port &lt;port&gt;       The port clients should connect to [Supports Multiple occurrences]
+ *                                port: [0‥65536]
+ *                                Default: 8080
+ * </code>
  * If something goes wrong during the parsing (Missing required arguments, Unexpected arguments, Invalid values),
  * it will be described by the ArgumentException. Use {@link ArgumentException#getMessageAndUsage(String)} if you
  * want to explain what went wrong to the user.
@@ -146,17 +167,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final String ... actualArguments) throws ArgumentException
 	{
-		// TODO: test that the array is copied
-		return parse(newArrayList(actualArguments));
-	}
-
-	/**
-	 * {@link Iterator} version of {@link #parse(String...)}
-	 */
-	@Nonnull
-	public ParsedArguments parse(final Iterator<String> actualArguments) throws ArgumentException
-	{
-		return parse(newArrayList(actualArguments));
+		return parse(Lists.newArrayList(actualArguments));
 	}
 
 	/**
@@ -165,7 +176,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final Iterable<String> actualArguments) throws ArgumentException
 	{
-		return parse(newArrayList(actualArguments));
+		return parse(Lists.newArrayList(actualArguments));
 	}
 
 	/**
@@ -432,7 +443,6 @@ public final class CommandLineParser
 	{
 		T oldValue = parsedArguments.getValue(definition);
 
-		// TODO: maybe null was the result of a previous argument
 		if(oldValue != null && !definition.isAllowedToRepeat() && !definition.isPropertyMap())
 			throw forUnallowedRepetitionArgument(arguments.current());
 
@@ -831,6 +841,7 @@ public final class CommandLineParser
 
 	private static final class SpecialArguments
 	{
+		// TODO: Replace with NavigableMap?
 		private final CharacterTrie<Argument<?>> specialArguments;
 
 		SpecialArguments()

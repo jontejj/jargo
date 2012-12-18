@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * Describes values of the type {@code T}.
- * Useful when {@link Object#toString()} doesn't give you what you want.
+ * Describes values of the type {@code T} (or subclasses of {@code T}). Useful
+ * when {@link Object#toString()} doesn't give you what you want.
  * 
  * @param <T> the type to describe
  */

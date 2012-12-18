@@ -21,11 +21,11 @@ import org.junit.Test;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentBuilder;
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
-import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
-import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ForwardingStringParser;
 import se.j4j.argumentparser.StringParser;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.testlib.Explanation;
 
 import com.google.common.base.Supplier;

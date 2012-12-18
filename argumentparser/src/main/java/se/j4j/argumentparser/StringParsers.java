@@ -10,13 +10,13 @@ import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
-import static se.j4j.strings.Describers.listDescriber;
 import static se.j4j.strings.Descriptions.format;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -31,8 +31,6 @@ import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
 import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.numbers.NumberType;
-import se.j4j.strings.Describer;
-import se.j4j.strings.Describers;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -196,6 +194,7 @@ public final class StringParsers
 		@Override
 		public File defaultValue()
 		{
+			// TODO: does this work in Windows?
 			return new File(".");
 		}
 
@@ -770,28 +769,28 @@ public final class StringParsers
 	 */
 	private abstract static class ListParser<T> extends InternalStringParser<List<T>>
 	{
-		private final InternalStringParser<T> parser;
+		private final InternalStringParser<T> elementParser;
 
-		private ListParser(final InternalStringParser<T> parser)
+		private ListParser(final InternalStringParser<T> elementParser)
 		{
-			this.parser = parser;
+			this.elementParser = elementParser;
 		}
 
 		protected final InternalStringParser<T> elementParser()
 		{
-			return parser;
+			return elementParser;
 		}
 
 		@Override
 		public String descriptionOfValidValues(ArgumentSettings argumentSettings)
 		{
-			return parser.descriptionOfValidValues(argumentSettings);
+			return elementParser.descriptionOfValidValues(argumentSettings);
 		}
 
 		@Override
 		String metaDescription(ArgumentSettings argumentSettings)
 		{
-			return parser.metaDescription(argumentSettings);
+			return elementParser.metaDescription(argumentSettings);
 		}
 
 		@Override
@@ -800,13 +799,23 @@ public final class StringParsers
 			return emptyList();
 		}
 
-		// TODO: make static, <Object>?
-		private final Describer<List<T>> describer = listDescriber(Describers.<T>toStringDescriber());
-
 		@Override
 		String describeValue(List<T> value, ArgumentSettings argumentSettings)
 		{
-			return describer.describe(value);
+			if(value.isEmpty())
+				return "Empty list";
+
+			Iterator<T> values = value.iterator();
+			String firstValue = String.valueOf(values.next());
+
+			StringBuilder sb = new StringBuilder(value.size() * firstValue.length());
+
+			sb.append(firstValue);
+			while(values.hasNext())
+			{
+				sb.append(", ").append(String.valueOf(values.next()));
+			}
+			return sb.toString();
 		}
 	}
 

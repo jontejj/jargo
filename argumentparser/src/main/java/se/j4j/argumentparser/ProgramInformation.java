@@ -53,7 +53,6 @@ public final class ProgramInformation
 
 	String programName()
 	{
-		// TODO: maybe print one line with all options, .includeOneLinerInUsage()
 		return programName;
 	}
 

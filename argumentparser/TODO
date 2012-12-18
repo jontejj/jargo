@@ -1,8 +1,15 @@
 BasicArgumentBuilder
 Document Locale usage
-Serialization of arguments
-Read arguments from console
-Suggest correct arguments when given nearly matching ones
+Print one line with all options, ProgramInformation.includeOneLinerInUsage()
+readPassword()
+ICommand, interface version of Command that's simpler and doesn't support arguments
 
 //This would be exactly like the old feature "Callback"
 ArgumentBuilder#withAction(Action actionToPerformForParsedValues)
+
+readFromConsole()
+ * should required arguments be handled by this always?
+ * What about clients that don't have a console? Default to throw? Opt-in-feature.
+ * think about Multiple Occurrences (ask Do you want to enter one more value for [-s] (y/N):
+ * Can auto complete be provided?
+ * Repeat reading for invalid values

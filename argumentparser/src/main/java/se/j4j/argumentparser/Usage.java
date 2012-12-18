@@ -250,7 +250,7 @@ final class Usage implements Serializable
 	private <T> void valueExplanation(final Argument<T> arg)
 	{
 		// TODO: handle long value explanations, replace each newline with enough spaces,
-		// split up long lines
+		// split up long lines, Use BreakIterator.getLineInstance()?
 		String description = arg.descriptionOfValidValues();
 		if(!description.isEmpty())
 		{

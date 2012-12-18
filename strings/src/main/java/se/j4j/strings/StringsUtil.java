@@ -34,19 +34,19 @@ public final class StringsUtil
 	@Nonnull public static final char TAB = '\t';
 
 	/**
-	 * @param nrOfSpaces number of spaces to put in the created string
-	 * @return a string with nrOfSpaces in it
+	 * @param numberOfSpaces to put in the created string
+	 * @return a string with numberOfSpaces in it
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static String spaces(final int nrOfSpaces)
+	public static String spaces(final int numberOfSpaces)
 	{
-		return repeat(" ", nrOfSpaces);
+		return repeat(" ", numberOfSpaces);
 	}
 
 	/**
-	 * Converts all {@link String}s in {@code strings} into lower case using the default
-	 * locale.
+	 * Converts all {@link String}s in {@code strings} into lower case using the
+	 * default locale.
 	 * TODO: add overloaded method that takes in the Locale as well
 	 * 
 	 * @return a new (mutable) list with lower case strings in
@@ -176,8 +176,8 @@ public final class StringsUtil
 		checkNotNull(left);
 		checkNotNull(right);
 
-		// a "cleaner" version of the org.apache.commons-lang algorithm which in turn was inspired
-		// by http://www.merriampark.com/ldjava.htm
+		// a "cleaner" version of the org.apache.commons-lang algorithm which in
+		// turn was inspired by http://www.merriampark.com/ldjava.htm
 		int leftLength = left.length();
 		int rightLength = right.length();
 
@@ -223,14 +223,16 @@ public final class StringsUtil
 			distances = temp;
 		}
 
-		// our last action in the above loop was to switch distances and previousDistances, so
+		// our last action in the above loop was to switch distances and
+		// previousDistances, so
 		// previousDistances now actually has the most recent cost counts
 		return previousDistances[leftLength];
 	}
 
 	/**
-	 * Returns {@code number} expressed as a position. For example 0 returns "zeroth", 1 returns
-	 * "first" and so forth up to "fifth". Higher positions are described as "6th", "7th" and so on.
+	 * Returns {@code number} expressed as a position. For example 0 returns
+	 * "zeroth", 1 returns "first" and so forth up to "fifth". Higher positions
+	 * are described as "6th", "7th" and so on.
 	 * 
 	 * @throws IllegalArgumentException if {@code number} is negative
 	 */

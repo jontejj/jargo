@@ -37,7 +37,7 @@ import se.j4j.strings.Describers;
  * The produced arguments can be passed to
  * {@link CommandLineParser#withArguments(Argument...)} to group several
  * {@link Argument}s together. If only one argument should be
- * parsed {@link ArgumentBuilder#parse(String...)} can be used instead.
+ * parsed, {@link ArgumentBuilder#parse(String...)} can be used instead.
  * </pre>
  */
 public final class ArgumentFactory

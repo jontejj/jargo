@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.fest.assertions.Fail;
 import org.junit.Ignore;
@@ -27,14 +28,13 @@ import se.j4j.testlib.Explanation;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class CommandLineParserTest
 {
-	// TODO: test quoted file paths, also space
-
 	/**
 	 * An example of how to create a <b>easy to understand</b> command line invocation:<br>
 	 * java testprog --enable-logging --listen-port 8090 Hello
@@ -122,11 +122,8 @@ public class CommandLineParserTest
 
 		ParsedArguments listResult = CommandLineParser.withArguments(Arrays.<Argument<?>>asList(number)).parse(Arrays.asList(args));
 		ParsedArguments arrayResult = CommandLineParser.withArguments(number).parse(args);
-		ParsedArguments iteratorResult = CommandLineParser.withArguments(Arrays.<Argument<?>>asList(number))
-				.parse(Arrays.asList(args).listIterator());
 
 		assertThat(listResult).isEqualTo(arrayResult);
-		assertThat(iteratorResult).isEqualTo(arrayResult);
 	}
 
 	@Test
@@ -200,6 +197,22 @@ public class CommandLineParserTest
 		{
 			assertThat(expected).hasMessage("Argument strings may not be null");
 		}
+	}
+
+	@Test
+	public void testThatInputIsCopiedBeforeBeingWorkedOn() throws ArgumentException
+	{
+		List<String> args = Arrays.asList("-Dfoo=bar", "-Dbaz=zoo");
+		List<String> copy = Lists.newArrayList(args);
+		Argument<Map<String, String>> arg = stringArgument("-D").asPropertyMap().build();
+		CommandLineParser.withArguments(arg).parse(args);
+		assertThat(args).isEqualTo(copy);
+	}
+
+	@Test
+	public void testThatQuotesAreNotTrimmedAsTheShellIsResponsibleForThat() throws ArgumentException
+	{
+		assertThat(stringArgument().parse("\"hello\"")).isEqualTo("\"hello\"");
 	}
 
 	/**
