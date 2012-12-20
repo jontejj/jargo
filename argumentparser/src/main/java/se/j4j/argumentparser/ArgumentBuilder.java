@@ -89,10 +89,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	// Members that uses the T type, think about
 	// ListArgumentBuilder#copyAsListBuilder() when adding new ones
-	@Nullable private Supplier<T> defaultValueSupplier = null;
-	@Nullable private Describer<T> defaultValueDescriber = null;
+	@Nullable private Supplier<? extends T> defaultValueSupplier = null;
+	@Nullable private Describer<? super T> defaultValueDescriber = null;
 	@Nonnull private Function<T, T> finalizer = Functions.identity();
-	@Nonnull private Predicate<T> limiter = Predicates.alwaysTrue();
+	@Nonnull private Predicate<? super T> limiter = Predicates.alwaysTrue();
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
@@ -349,7 +349,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * because these two methods are mutually exclusive
 	 */
 	@Beta
-	public SELF_TYPE defaultValueSupplier(final Supplier<T> aDefaultValueSupplier)
+	public SELF_TYPE defaultValueSupplier(final Supplier<? extends T> aDefaultValueSupplier)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = checkNotNull(aDefaultValueSupplier);
@@ -377,7 +377,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param describer a describer
 	 * @return this builder
 	 */
-	public SELF_TYPE defaultValueDescriber(final Describer<T> describer)
+	public SELF_TYPE defaultValueDescriber(final Describer<? super T> describer)
 	{
 		this.defaultValueDescriber = checkNotNull(describer);
 		return myself;
@@ -464,7 +464,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @return this builder
 	 */
 	@Beta
-	public SELF_TYPE limitTo(Predicate<T> aLimiter)
+	public SELF_TYPE limitTo(Predicate<? super T> aLimiter)
 	{
 		limiter = checkNotNull(aLimiter);
 		return myself;
@@ -646,7 +646,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * </pre>
 	 * 
 	 * {@link #repeated()} should be called before {@link #asPropertyMap()}.
-	 * For arguments without a name use {@link #variableArity()} instead.
+	 * For arguments without a name (indexed arguments) use {@link #variableArity()} instead.
 	 * 
 	 * @return a new (more specific) builder
 	 *         </pre>
@@ -749,7 +749,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 */
 	@Nonnull final List<String> names(){ return names; }
 
-	@Nullable final Describer<T> defaultValueDescriber(){ return defaultValueDescriber; }
+	@Nullable final Describer<? super T> defaultValueDescriber(){ return defaultValueDescriber; }
 
 	@Nonnull Description description(){ return description; }
 
@@ -768,10 +768,10 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	@Nullable final String metaDescription(){ return metaDescription; }
 	final boolean isHiddenFromUsage(){ return hideFromUsage; }
 
-	@Nullable final Supplier<T> defaultValueSupplier(){ return defaultValueSupplier; }
+	@Nullable final Supplier<? extends T> defaultValueSupplier(){ return defaultValueSupplier; }
 
 	@Nonnull final Function<T, T> finalizer(){ return finalizer; }
-	@Nonnull final Predicate<T> limiter(){ return limiter; }
+	@Nonnull final Predicate<? super T> limiter(){ return limiter; }
 
 	/**
 	 * @formatter.on
@@ -801,7 +801,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	// Non-Interesting builders below, most declarations under here handles
 	// (by deprecating) invalid invariants between different argument properties
 
-	private static class InternalArgumentBuilder<Builder extends InternalArgumentBuilder<Builder, T>, T> extends ArgumentBuilder<Builder, T>
+	private static abstract class InternalArgumentBuilder<Builder extends InternalArgumentBuilder<Builder, T>, T> extends ArgumentBuilder<Builder, T>
 	{
 		/**
 		 * Only used to flag that this builder is an internal one, not used for parsing
@@ -862,7 +862,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder defaultValueSupplier(Supplier<String> defaultValueSupplier)
+		public CommandBuilder defaultValueSupplier(Supplier<? extends String> defaultValueSupplier)
 		{
 			throw new IllegalStateException();
 		}
@@ -882,7 +882,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder defaultValueDescriber(Describer<String> defaultValueDescriber)
+		public CommandBuilder defaultValueDescriber(Describer<? super String> defaultValueDescriber)
 		{
 			throw new IllegalStateException();
 		}
@@ -892,7 +892,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder limitTo(Predicate<String> limiter)
+		public CommandBuilder limitTo(Predicate<? super String> limiter)
 		{
 			throw new IllegalStateException();
 		}

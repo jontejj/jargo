@@ -29,7 +29,8 @@ public final class ArgumentExceptions
 
 	/**
 	 * The most simple version of {@link ArgumentException}s, it simply prints the result of
-	 * {@link #toString()} for {@code message} as the message.
+	 * {@link #toString()} for {@code message} as the message. To set the cause, use
+	 * {@link ArgumentException#andCause(Throwable)}.
 	 */
 	@CheckReturnValue
 	@Nonnull

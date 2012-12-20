@@ -53,9 +53,9 @@ public final class Argument<T> extends ArgumentSettings
 	private final boolean hideFromUsage;
 
 	@Nonnull private final InternalStringParser<T> parser;
-	@Nonnull private final Supplier<T> defaultValue;
-	@Nullable private final Describer<T> defaultValueDescriber;
-	@Nonnull private final Predicate<T> limiter;
+	@Nonnull private final Supplier<? extends T> defaultValue;
+	@Nullable private final Describer<? super T> defaultValueDescriber;
+	@Nonnull private final Predicate<? super T> limiter;
 
 	@Nonnull private final Supplier<CommandLineParser> commandLineParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
 		@Override

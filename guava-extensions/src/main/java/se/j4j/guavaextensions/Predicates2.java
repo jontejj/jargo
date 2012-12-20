@@ -23,7 +23,7 @@ public final class Predicates2
 	 * doesn't return true for {@code elementLimiter.apply(Object)}.
 	 * The detail message only mentions the first element that didn't return true.
 	 */
-	public static <E> Predicate<List<E>> listPredicate(Predicate<E> elementLimiter)
+	public static <E> Predicate<List<? extends E>> listPredicate(Predicate<E> elementLimiter)
 	{
 		checkNotNull(elementLimiter);
 		if(elementLimiter == Predicates.alwaysTrue())
@@ -31,7 +31,7 @@ public final class Predicates2
 		return new ListPredicate<E>(elementLimiter);
 	}
 
-	private static final class ListPredicate<E> implements Predicate<List<E>>
+	private static final class ListPredicate<E> implements Predicate<List<? extends E>>
 	{
 		private final Predicate<E> elementLimiter;
 
@@ -41,7 +41,7 @@ public final class Predicates2
 		}
 
 		@Override
-		public boolean apply(List<E> values)
+		public boolean apply(List<? extends E> values)
 		{
 			for(E value : values)
 			{

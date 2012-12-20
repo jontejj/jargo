@@ -17,6 +17,7 @@ import se.j4j.argumentparser.stringparsers.custom.Port;
 import se.j4j.argumentparser.stringparsers.custom.PortParser;
 import se.j4j.testlib.Explanation;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Ranges;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -111,5 +112,34 @@ public class LimiterTest
 		}
 		// Also make sure the range accepts valid ports
 		assertThat(portArgument.parse("2")).isEqualTo(new Port(2));
+	}
+
+	@Test
+	public void testThatLimiterForSuperClassWorks()
+	{
+		try
+		{
+			integerArgument("-n").limitTo(new LowNumberLimiter()).parse("-n", "5");
+			fail("5 should not be allowed");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("'5' is not Any number between 0 and 4 (inclusive)");
+		}
+	}
+
+	private static final class LowNumberLimiter implements Predicate<Number>
+	{
+		@Override
+		public boolean apply(Number input)
+		{
+			return input.byteValue() <= 4 && input.byteValue() >= 0;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "Any number between 0 and 4 (inclusive)";
+		}
 	}
 }

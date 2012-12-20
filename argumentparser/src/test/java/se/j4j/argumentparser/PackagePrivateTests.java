@@ -5,6 +5,7 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.testlib.UtilityClassTester.testUtilityClassDesign;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class PackagePrivateTests
 	@Test
 	public void testArgumentIteratorToString()
 	{
-		assertThat(ArgumentIterator.forSingleArgument("foobar").toString()).isEqualTo("[foobar]");
+		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar"), null).toString()).isEqualTo("[foobar]");
 	}
 
 	@Test

@@ -21,7 +21,7 @@ public final class Suppliers2
 	 * Creates a {@link Supplier} that supplies {@code elementsToSupply} number of elements from
 	 * {@code elementSupplier}
 	 */
-	public static <T> Supplier<List<T>> ofRepeatedElements(Supplier<T> elementSupplier, int elementsToSupply)
+	public static <T> Supplier<List<T>> ofRepeatedElements(Supplier<? extends T> elementSupplier, int elementsToSupply)
 	{
 		checkNotNull(elementSupplier);
 		return new ListSupplier<T>(elementSupplier, elementsToSupply);
@@ -29,10 +29,10 @@ public final class Suppliers2
 
 	private static final class ListSupplier<T> implements Supplier<List<T>>
 	{
-		private final Supplier<T> elementSupplier;
+		private final Supplier<? extends T> elementSupplier;
 		private final int elementsToSupply;
 
-		private ListSupplier(Supplier<T> elementSupplier, final int elementsToSupply)
+		private ListSupplier(Supplier<? extends T> elementSupplier, final int elementsToSupply)
 		{
 			this.elementSupplier = elementSupplier;
 			this.elementsToSupply = elementsToSupply;

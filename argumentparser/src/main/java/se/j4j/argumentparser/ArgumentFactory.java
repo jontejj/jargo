@@ -46,10 +46,6 @@ public final class ArgumentFactory
 	{
 	}
 
-	// TODO: add CommandLineParser#andHelp(), a command with an optional argument that specifies a
-	// specific argument one needs help with. names("-h", "--help", "?", "help")
-	// program help build, should print the usage for the build argument/command
-
 	/**
 	 * Creates an {@link Argument} that uses {@link StringParsers#booleanParser()}
 	 * 

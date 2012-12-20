@@ -11,6 +11,7 @@ import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
+import static se.j4j.argumentparser.stringparsers.custom.ObjectParser.objectArgument;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import se.j4j.argumentparser.ForwardingStringParser;
 import se.j4j.argumentparser.StringParser;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
+import se.j4j.strings.Describer;
 import se.j4j.testlib.Explanation;
 
 import com.google.common.base.Supplier;
@@ -213,6 +215,35 @@ public class DefaultValueTest
 		// description is used for each value but if there is no value there is nothing to describe
 		String usage = integerArgument("-n").defaultValueDescription("SomethingThatWillBeReplacedWithEmptyList").repeated().usage("DefaultEmptyList");
 		assertThat(usage).contains("Default: Empty list [Supports Multiple occurrences]");
+	}
+
+	@Test
+	public void testThatDefaultValuesCanBeDescribedWithObjectDescriber()
+	{
+		// If a describer can describe an Object, it can also describe an Integer
+		Describer<Object> hashCodeDescriber = new Describer<Object>(){
+			@Override
+			public String describe(Object value)
+			{
+				return "(Hashcode) " + value.hashCode();
+			}
+		};
+		String usage = integerArgument("-n").defaultValueDescriber(hashCodeDescriber).usage("");
+		assertThat(usage).contains("Default: (Hashcode) 0");
+	}
+
+	@Test
+	public void testThatDefaultValuesCanBeSuppliedAsIntegersForObjectArgument()
+	{
+		Supplier<Integer> integerSupply = new Supplier<Integer>(){
+			@Override
+			public Integer get()
+			{
+				return 2;
+			}
+		};
+		String usage = objectArgument().defaultValueSupplier(integerSupply).usage("");
+		assertThat(usage).contains("Default: 2");
 	}
 
 	@Test(expected = IllegalStateException.class)

@@ -11,6 +11,7 @@ import static se.j4j.strings.Describers.booleanAsOnOff;
 import static se.j4j.strings.Describers.characterDescriber;
 import static se.j4j.strings.Describers.fileDescriber;
 import static se.j4j.strings.Describers.mapDescriber;
+import static se.j4j.strings.Describers.withConstantString;
 
 import java.io.File;
 import java.util.Arrays;
@@ -71,20 +72,17 @@ public class DescribersTest
 	@Test
 	public void testThatListDescriberDescribesEachValueWithTheValueDescriber()
 	{
-		Describer<Integer> valueDescriber = Describers.withConstantString("42");
-		Describer<List<Integer>> listDescriber = Describers.listDescriber(valueDescriber);
+		Describer<List<?>> describer = Describers.listDescriber(withConstantString("42"));
 
-		assertThat(listDescriber.describe(Arrays.asList(1, 2, 3))).isEqualTo("42, 42, 42");
-		assertThat(listDescriber.describe(Collections.<Integer>emptyList())).isEqualTo("Empty list");
+		assertThat(describer.describe(Arrays.asList(1, 2, 3))).isEqualTo("42, 42, 42");
+		assertThat(describer.describe(Collections.<Integer>emptyList())).isEqualTo("Empty list");
 	}
 
 	@Test
 	public void testThatListDescriberSeparatesValuesWithValueSeparator()
 	{
-		Describer<Integer> valueDescriber = Describers.withConstantString("42");
-		Describer<List<Integer>> listDescriber = Describers.listDescriber(valueDescriber, "-");
-
-		assertThat(listDescriber.describe(Arrays.asList(1, 2, 3))).isEqualTo("42-42-42");
+		Describer<List<?>> dotter = Describers.listDescriber(withConstantString("."), "");
+		assertThat(dotter.describe(Arrays.asList(1, 2, 3))).isEqualTo("...");
 	}
 
 	@Test
