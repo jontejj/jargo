@@ -388,7 +388,7 @@ public final class CommandLineParser
 	@Nonnull
 	private ParsedArguments parse(final List<String> actualArguments) throws ArgumentException
 	{
-		return parse(ArgumentIterator.forArguments(actualArguments));
+		return parse(ArgumentIterator.forArguments(actualArguments, this));
 	}
 
 	@Nonnull
@@ -712,13 +712,15 @@ public final class CommandLineParser
 		private String currentArgumentName;
 
 		private int indexOfLastCommand = NONE;
+		private final CommandLineParser originParser;
 
 		/**
 		 * @param actualArguments a list of arguments, will be modified
 		 */
-		private ArgumentIterator(List<String> actualArguments)
+		private ArgumentIterator(List<String> actualArguments, CommandLineParser originParser)
 		{
-			arguments = actualArguments;
+			this.arguments = actualArguments;
+			this.originParser = originParser;
 		}
 
 		void markStartOfParse()
@@ -743,18 +745,16 @@ public final class CommandLineParser
 			return arguments.get(indexOfLastCommand);
 		}
 
-		private static ArgumentIterator forArguments(List<String> actualArguments)
+		static ArgumentIterator forArguments(List<String> actualArguments, CommandLineParser originParser)
 		{
 			// specialSeparatorArguments, KeyValueParser etc may modify the list
 			// so it should be a private copy
-			return new ArgumentIterator(actualArguments);
+			return new ArgumentIterator(actualArguments, originParser);
 		}
 
-		static ArgumentIterator forSingleArgument(String argument)
-		{
-			return new ArgumentIterator(Arrays.asList(argument));
-		}
-
+		/**
+		 * Returns the string that was given by the previous {@link #next()} invocation.
+		 */
 		String current()
 		{
 			return arguments.get(currentArgumentIndex - 1);
@@ -800,6 +800,14 @@ public final class CommandLineParser
 		String getCurrentArgumentName()
 		{
 			return currentArgumentName;
+		}
+
+		/**
+		 * Returns the parser that spawned this iterator
+		 */
+		CommandLineParser originParser()
+		{
+			return originParser;
 		}
 
 		@Override

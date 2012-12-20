@@ -101,7 +101,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	 * 
 	 * Will only be called once and only if this command is encountered.
 	 * 
-	 * @return a list of arguments that this command supports
+	 * @return a list of arguments that this command supports (default is none)
 	 * 
 	 * TODO: what can List<Argument<?>> be replaced with so that callers can use Arrays.asList(someArgument);?
 	 * </pre>

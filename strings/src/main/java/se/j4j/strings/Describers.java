@@ -300,7 +300,7 @@ public final class Describers
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static <T> Describer<List<T>> listDescriber(Describer<T> valueDescriber)
+	public static <T> Describer<List<? extends T>> listDescriber(Describer<T> valueDescriber)
 	{
 		checkNotNull(valueDescriber);
 		return new ListDescriber<T>(valueDescriber, ", ");
@@ -313,14 +313,14 @@ public final class Describers
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static <T> Describer<List<T>> listDescriber(Describer<T> valueDescriber, String valueSeparator)
+	public static <T> Describer<List<? extends T>> listDescriber(Describer<T> valueDescriber, String valueSeparator)
 	{
 		checkNotNull(valueDescriber);
 		checkNotNull(valueSeparator);
 		return new ListDescriber<T>(valueDescriber, valueSeparator);
 	}
 
-	private static final class ListDescriber<T> implements Describer<List<T>>
+	private static final class ListDescriber<T> implements Describer<List<? extends T>>
 	{
 		private final Describer<T> valueDescriber;
 		private final String valueSeparator;
@@ -332,12 +332,12 @@ public final class Describers
 		}
 
 		@Override
-		public String describe(List<T> value)
+		public String describe(List<? extends T> value)
 		{
 			if(value.isEmpty())
 				return "Empty list";
 
-			Iterator<T> values = value.iterator();
+			Iterator<? extends T> values = value.iterator();
 			String firstValue = valueDescriber.describe(values.next());
 
 			StringBuilder sb = new StringBuilder(value.size() * firstValue.length());

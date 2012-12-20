@@ -16,6 +16,7 @@ import static se.j4j.strings.StringsUtil.NEWLINE;
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -935,7 +936,7 @@ public final class StringParsers
 
 			for(String value : splitter.split(values))
 			{
-				ArgumentIterator argument = ArgumentIterator.forSingleArgument(value);
+				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value), arguments.originParser());
 				T parsedValue = elementParser().parse(argument, null, argumentSettings);
 				result.add(parsedValue);
 			}
@@ -991,11 +992,11 @@ public final class StringParsers
 	{
 		@Nonnull private final InternalStringParser<V> valueParser;
 		@Nonnull private final StringParser<K> keyParser;
-		@Nonnull private final Predicate<V> valueLimiter;
-		@Nonnull private final Supplier<Map<K, V>> defaultValueSupplier;
+		@Nonnull private final Predicate<? super V> valueLimiter;
+		@Nonnull private final Supplier<? extends Map<K, V>> defaultValueSupplier;
 
-		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<V> valueLimiter,
-				@Nullable Supplier<Map<K, V>> defaultValueSupplier)
+		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<? super V> valueLimiter,
+				@Nullable Supplier<? extends Map<K, V>> defaultValueSupplier)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
