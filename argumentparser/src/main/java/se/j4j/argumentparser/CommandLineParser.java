@@ -57,6 +57,7 @@ import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Manages multiple {@link Argument}s and/or {@link Command}s. The brain of this API.
+ * Its primary goal is to decide which {@link Argument} each input string belongs to.
  * Immutability is dearly embraced. Thus a {@link CommandLineParser} can be reused to parse
  * arguments over and over again. Different {@link CommandLineParser}s can even
  * share {@link Argument} configurations as {@link Argument} instances are immutable as well.
@@ -498,7 +499,7 @@ public final class CommandLineParser
 			return definition;
 
 		// Property Maps,Special separator, ignore case arguments
-		Map.Entry<CharSequence, Argument<?>> entry = specialArguments.get(currentArgument);
+		Entry<String, Argument<?>> entry = specialArguments.get(currentArgument);
 		if(entry != null)
 		{
 			// Remove "--name=" from "--name=value"
@@ -576,6 +577,18 @@ public final class CommandLineParser
 	 */
 	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArgumentHolder holder) throws ArgumentException
 	{
+		Set<String> availableArguments = availableArguments(holder);
+
+		if(!availableArguments.isEmpty())
+		{
+			List<String> suggestions = StringsUtil.closestMatches(currentArgument, availableArguments, ONLY_REALLY_CLOSE_MATCHES);
+			if(!suggestions.isEmpty())
+				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, NEW_LINE_AND_TAB.join(suggestions)));
+		}
+	}
+
+	private Set<String> availableArguments(final ParsedArgumentHolder holder)
+	{
 		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments().size());
 		for(ArgumentSettings argument : allArguments())
 		{
@@ -587,13 +600,7 @@ public final class CommandLineParser
 				}
 			}
 		}
-
-		if(!validArguments.isEmpty())
-		{
-			List<String> suggestions = StringsUtil.closestMatches(currentArgument, validArguments, ONLY_REALLY_CLOSE_MATCHES);
-			if(!suggestions.isEmpty())
-				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, NEW_LINE_AND_TAB.join(suggestions)));
-		}
+		return validArguments;
 	}
 
 	private static final int ONLY_REALLY_CLOSE_MATCHES = 4;
@@ -849,7 +856,6 @@ public final class CommandLineParser
 
 	private static final class SpecialArguments
 	{
-		// TODO: Replace with NavigableMap?
 		private final CharacterTrie<Argument<?>> specialArguments;
 
 		SpecialArguments()
@@ -865,14 +871,14 @@ public final class CommandLineParser
 			return specialArguments.put(name, definition);
 		}
 
-		Map.Entry<CharSequence, Argument<?>> get(String name)
+		Entry<String, Argument<?>> get(String name)
 		{
-			Entry<CharSequence, Argument<?>> entry = specialArguments.getLastMatchingEntry(name);
+			Entry<String, Argument<?>> entry = specialArguments.findLongestPrefix(name);
 			if(entry != null)
 				return entry;
 
 			String lowerCase = name.toLowerCase(Locale.ENGLISH);
-			entry = specialArguments.getLastMatchingEntry(lowerCase);
+			entry = specialArguments.findLongestPrefix(lowerCase);
 			if(entry != null && entry.getValue().isIgnoringCase())
 				return entry;
 			return null;

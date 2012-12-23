@@ -64,7 +64,7 @@ import com.google.common.collect.Ranges;
  * caller, such invalid orders are documented with {@link Deprecated}. If those warnings
  * are ignored {@link IllegalStateException} will be thrown at the offending call.
  * 
- * @param <SELF_TYPE> the type of the subclass extending this class.
+ * @param <SELF> the type of the subclass extending this class.
  * 		Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
  * 		The pattern also resembles the <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
  * @param <T> the type of arguments the built {@link Argument} instance should handle,
@@ -72,7 +72,7 @@ import com.google.common.collect.Ranges;
  * </pre>
  */
 @NotThreadSafe
-public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYPE, T>, T>
+public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 {
 	static final String DEFAULT_SEPARATOR = " ";
 	// ArgumentSetting variables, think about #copy() when adding new ones
@@ -96,7 +96,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
-	@Nonnull private final SELF_TYPE myself;
+	@Nonnull private final SELF myself;
 
 	/**
 	 * Creates a default {@link ArgumentBuilder} that produces arguments that:
@@ -124,12 +124,12 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		myself = self();
 	}
 
-	// SELF_TYPE is passed in by subclasses as a type-variable, so type-safety
+	// SELF is passed in by subclasses as a type-variable, so type-safety
 	// is up to them
 	@SuppressWarnings("unchecked")
-	private SELF_TYPE self()
+	private SELF self()
 	{
-		return (SELF_TYPE) this;
+		return (SELF) this;
 	}
 
 	/**
@@ -233,7 +233,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *            </ul>
 	 * @return this builder
 	 */
-	public SELF_TYPE names(final String ... argumentNames)
+	public SELF names(final String ... argumentNames)
 	{
 		names = copyOf(argumentNames);
 		return myself;
@@ -245,7 +245,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param argumentNames the list to use as argument names
 	 * @return this builder
 	 */
-	public SELF_TYPE names(final Iterable<String> argumentNames)
+	public SELF names(final Iterable<String> argumentNames)
 	{
 		names = copyOf(argumentNames);
 		return myself;
@@ -256,7 +256,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * @return this builder
 	 */
-	public final SELF_TYPE ignoreCase()
+	public final SELF ignoreCase()
 	{
 		ignoreCase = true;
 		return myself;
@@ -272,7 +272,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param descriptionString the description to use
 	 * @return this builder
 	 */
-	public final SELF_TYPE description(final String descriptionString)
+	public final SELF description(final String descriptionString)
 	{
 		description = withString(descriptionString);
 		return myself;
@@ -284,7 +284,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param aDescription
 	 * @return this builder
 	 */
-	public final SELF_TYPE description(final Description aDescription)
+	public final SELF description(final Description aDescription)
 	{
 		description = checkNotNull(aDescription);
 		return myself;
@@ -304,7 +304,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *             called, because these two methods are mutually exclusive
 	 * </pre>
 	 */
-	public SELF_TYPE required()
+	public SELF required()
 	{
 		checkState(defaultValueSupplier == null, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		required = true;
@@ -325,7 +325,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalStateException if {@link #required()} has been called,
 	 * because these two methods are mutually exclusive
 	 */
-	public SELF_TYPE defaultValue(@Nullable final T value)
+	public SELF defaultValue(@Nullable final T value)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = Suppliers.ofInstance(value);
@@ -349,7 +349,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * because these two methods are mutually exclusive
 	 */
 	@Beta
-	public SELF_TYPE defaultValueSupplier(final Supplier<? extends T> aDefaultValueSupplier)
+	public SELF defaultValueSupplier(final Supplier<? extends T> aDefaultValueSupplier)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = checkNotNull(aDefaultValueSupplier);
@@ -365,7 +365,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @return this builder
 	 * @see Describers#withConstantString(String)
 	 */
-	public SELF_TYPE defaultValueDescription(final String aDescription)
+	public SELF defaultValueDescription(final String aDescription)
 	{
 		this.defaultValueDescriber = Describers.withConstantString(aDescription);
 		return myself;
@@ -377,7 +377,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param describer a describer
 	 * @return this builder
 	 */
-	public SELF_TYPE defaultValueDescriber(final Describer<? super T> describer)
+	public SELF defaultValueDescriber(final Describer<? super T> describer)
 	{
 		this.defaultValueDescriber = checkNotNull(describer);
 		return myself;
@@ -407,7 +407,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @throws IllegalArgumentException if aMetaDescription is empty or null
 	 * </pre>
 	 */
-	public final SELF_TYPE metaDescription(final String aMetaDescription)
+	public final SELF metaDescription(final String aMetaDescription)
 	{
 		checkArgument(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
 		this.metaDescription = aMetaDescription;
@@ -421,7 +421,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * 
 	 * @return this builder
 	 */
-	public final SELF_TYPE hideFromUsage()
+	public final SELF hideFromUsage()
 	{
 		this.hideFromUsage = true;
 		return myself;
@@ -434,7 +434,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 *            argument value, defaults to a space
 	 * @return this builder
 	 */
-	public SELF_TYPE separator(final String aSeparator)
+	public SELF separator(final String aSeparator)
 	{
 		separator = checkNotNull(aSeparator);
 		return myself;
@@ -464,7 +464,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @return this builder
 	 */
 	@Beta
-	public SELF_TYPE limitTo(Predicate<? super T> aLimiter)
+	public SELF limitTo(Predicate<? super T> aLimiter)
 	{
 		limiter = checkNotNull(aLimiter);
 		return myself;
@@ -708,7 +708,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	 * @param aFinalizer a finalizer
 	 * @return this builder
 	 */
-	final SELF_TYPE finalizeWith(Function<T, T> aFinalizer)
+	final SELF finalizeWith(Function<T, T> aFinalizer)
 	{
 		checkNotNull(aFinalizer);
 		finalizer = Functions2.compound(finalizer, aFinalizer);
@@ -801,7 +801,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 	// Non-Interesting builders below, most declarations under here handles
 	// (by deprecating) invalid invariants between different argument properties
 
-	private static abstract class InternalArgumentBuilder<Builder extends InternalArgumentBuilder<Builder, T>, T> extends ArgumentBuilder<Builder, T>
+	private abstract static class InternalArgumentBuilder<BUILDER extends InternalArgumentBuilder<BUILDER, T>, T> extends ArgumentBuilder<BUILDER, T>
 	{
 		/**
 		 * Only used to flag that this builder is an internal one, not used for parsing
@@ -928,7 +928,7 @@ public abstract class ArgumentBuilder<SELF_TYPE extends ArgumentBuilder<SELF_TYP
 		}
 	}
 
-	private static class ListArgumentBuilder<Builder extends ListArgumentBuilder<Builder, T>, T> extends InternalArgumentBuilder<Builder, List<T>>
+	private static class ListArgumentBuilder<BUILDER extends ListArgumentBuilder<BUILDER, T>, T> extends InternalArgumentBuilder<BUILDER, List<T>>
 	{
 		ListArgumentBuilder(InternalStringParser<List<T>> parser)
 		{
