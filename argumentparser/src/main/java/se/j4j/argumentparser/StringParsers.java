@@ -398,22 +398,22 @@ public final class StringParsers
 		return NumberParser.LONG;
 	}
 
-	private static final class NumberParser<T extends Number> implements StringParser<T>
+	private static final class NumberParser<N extends Number> implements StringParser<N>
 	{
 		private static final StringParser<Byte> BYTE = new NumberParser<Byte>(NumberType.BYTE);
 		private static final StringParser<Short> SHORT = new NumberParser<Short>(NumberType.SHORT);
 		private static final StringParser<Integer> INTEGER = new NumberParser<Integer>(NumberType.INTEGER);
 		private static final StringParser<Long> LONG = new NumberParser<Long>(NumberType.LONG);
 
-		private final NumberType<T> type;
+		private final NumberType<N> type;
 
-		private NumberParser(NumberType<T> type)
+		private NumberParser(NumberType<N> type)
 		{
 			this.type = type;
 		}
 
 		@Override
-		public T parse(String argument) throws ArgumentException
+		public N parse(String argument) throws ArgumentException
 		{
 			try
 			{
@@ -432,7 +432,7 @@ public final class StringParsers
 		}
 
 		@Override
-		public T defaultValue()
+		public N defaultValue()
 		{
 			return type.defaultValue();
 		}
@@ -480,7 +480,7 @@ public final class StringParsers
 		@Override
 		public String descriptionOfValidValues()
 		{
-			// TODO: use NumberFormat.getInstance(locale).format(-Double.MIN_VALUE);
+			// TODO: use NumberFormat.getInstance(locale).format();
 			return -Double.MAX_VALUE + " to " + Double.MAX_VALUE;
 		}
 
@@ -641,7 +641,6 @@ public final class StringParsers
 	 * @param <T> the type this parser parses strings into
 	 * </pre>
 	 */
-	@Immutable
 	abstract static class InternalStringParser<T>
 	{
 		/**
@@ -768,7 +767,7 @@ public final class StringParsers
 	 * Base class for {@link StringParser}s that uses a sub parser to parse element values and puts
 	 * them into a {@link List}
 	 */
-	private abstract static class ListParser<T> extends InternalStringParser<List<T>>
+	abstract static class ListParser<T> extends InternalStringParser<java.util.List<T>>
 	{
 		private final InternalStringParser<T> elementParser;
 

@@ -14,6 +14,7 @@
 
 		<version.fest.assert>1.4</version.fest.assert>
 		<version.findbugs.annotations>2.0.0</version.findbugs.annotations>
+		<version.caliper>0.5-rc1</version.caliper>
 		<version.guava>13.0.1</version.guava>
 		<version.guava.testlib>13.0.1</version.guava.testlib>
 		<version.jodatime>2.1</version.jodatime>
@@ -101,6 +102,7 @@
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
 			<version>${version.jsr305}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
@@ -112,6 +114,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava-testlib</artifactId>
             <version>${version.guava.testlib}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.caliper</groupId>
+            <artifactId>caliper</artifactId>
+            <version>${version.caliper}</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>
