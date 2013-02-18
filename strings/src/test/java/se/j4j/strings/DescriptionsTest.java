@@ -1,6 +1,7 @@
 package se.j4j.strings;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static se.j4j.strings.Descriptions.cache;
 
 import org.junit.Test;
 
@@ -62,6 +63,29 @@ public class DescriptionsTest
 		Description fortyTwo = Descriptions.toString(42);
 		Exception cause = new Exception();
 		assertThat(Descriptions.illegalArgument(fortyTwo, cause).getCause()).isEqualTo(cause);
+	}
+
+	@Test
+	public void testThatCachedDescriptionIsOnlyCreatedOnce()
+	{
+		ProfilingDescription description = new ProfilingDescription();
+		Description cachedDescription = cache(description);
+		assertThat(cachedDescription.description()).isEqualTo("foo");
+		assertThat(cachedDescription.description()).isEqualTo("foo");
+		assertThat(cachedDescription.toString()).isEqualTo("foo");
+		assertThat(description.timesCalled).isEqualTo(1);
+	}
+
+	private static class ProfilingDescription implements Description
+	{
+		int timesCalled;
+
+		@Override
+		public String description()
+		{
+			timesCalled++;
+			return "foo";
+		}
 	}
 
 	@Test

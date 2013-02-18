@@ -1,4 +1,4 @@
-Usage: OptionalArgumentDescriptionWithDescription [Arguments]
+Usage: optionalArgumentWithDescription [Arguments]
 
 Arguments:
 -l, --enable-logging     Enable logging

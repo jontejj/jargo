@@ -1,8 +1,8 @@
 package se.j4j.argumentparser;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
@@ -13,8 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParserInstance.ArgumentIterator;
 import se.j4j.testlib.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -80,7 +79,7 @@ public class ArityArgumentTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected.getMessageAndUsage("MissingSecondParameter")).isEqualTo(expected("missingSecondParameter"));
+			assertThat(expected.getMessageAndUsage()).isEqualTo(expected("missingSecondParameter"));
 		}
 	}
 
@@ -91,22 +90,24 @@ public class ArityArgumentTest
 		Argument<List<Integer>> bar = integerArgument("--bar").arity(2).description("MetaDescShouldBeDisplayedTwoTimes").build();
 		Argument<List<Integer>> zoo = integerArgument("--zoo").variableArity().description("MetaDescShouldIndicateVariableAmount").build();
 		Argument<List<Integer>> boo = integerArgument().variableArity().description("MetaDescShouldIndicateVariableAmount").build();
-		String usage = CommandLineParser.withArguments(foo, bar, zoo, boo).usage("Arity");
+		String usage = CommandLineParser.withArguments(foo, bar, zoo, boo).usage();
 		assertThat(usage).isEqualTo(expected("metaDescriptionsForArityArgument"));
 	}
 
 	@Test
 	public void testUsageTextForEmptyList()
 	{
-		String usage = stringArgument().arity(2).defaultValue(Collections.<String>emptyList()).usage("DefaultEmptyList");
+		String usage = stringArgument().arity(2).defaultValue(Collections.<String>emptyList()).usage();
 		assertThat(usage).contains("Default: Empty list");
 	}
 
 	@Test
 	public void testThatNrOfRemainingArgumentsGivesTheCorrectCapacity()
 	{
-		ArgumentIterator args = ArgumentIterator.forArguments(Arrays.asList("foo"), null);
+		ArgumentIterator args = ArgumentIterator.forArguments(Arrays.asList("foo"));
 		assertThat(args.nrOfRemainingArguments()).isEqualTo(1);
+		args.next(); // Consume one argument
+		assertThat(args.nrOfRemainingArguments()).isEqualTo(0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

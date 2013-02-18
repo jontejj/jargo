@@ -4,8 +4,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,7 +19,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 
-// TODO: remove dependency to Guava from strings
 /**
  * Gives you static access to implementations of the {@link Describer} interface.
  */
@@ -51,7 +52,7 @@ public final class Describers
 		}
 
 		@Override
-		public String describe(T value)
+		public String describe(T value, Locale inLocale)
 		{
 			return constant;
 		}
@@ -81,7 +82,7 @@ public final class Describers
 		}
 
 		@Override
-		public String describe(Object value)
+		public String describe(Object value, Locale inLocale)
 		{
 			return String.valueOf(value);
 		}
@@ -102,10 +103,11 @@ public final class Describers
 		private static final Describer<Character> INSTANCE = new CharDescriber();
 
 		@Override
-		public String describe(Character value)
+		public String describe(Character value, Locale inLocale)
 		{
 			if(value == null)
 				return "null";
+			// TODO: describe more characters? All ASCII characters perhaps?
 			return ((int) value == 0) ? "the Null character" : value.toString();
 		}
 	}
@@ -126,14 +128,16 @@ public final class Describers
 		private static final Describer<File> INSTANCE = new FileDescriber();
 
 		@Override
-		public String describe(File file)
+		public String describe(File file, Locale inLocale)
 		{
+			if(file == null)
+				return "null";
 			return file.getAbsolutePath();
 		}
 	}
 
 	/**
-	 * Describes a boolean as enabled when true and disabled when false
+	 * Describes a boolean as enabled when {@code true} and disabled when {@code false}
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -143,7 +147,7 @@ public final class Describers
 	}
 
 	/**
-	 * Describes a boolean as on when true and off when false
+	 * Describes a boolean as on when {@code true} and off when {@code false}
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -158,7 +162,7 @@ public final class Describers
 		ENABLED_DISABLED
 		{
 			@Override
-			public String describe(Boolean value)
+			public String describe(Boolean value, Locale inLocale)
 			{
 				return value ? "enabled" : "disabled";
 			}
@@ -166,11 +170,38 @@ public final class Describers
 		ON_OFF
 		{
 			@Override
-			public String describe(Boolean value)
+			public String describe(Boolean value, Locale inLocale)
 			{
 				return value ? "on" : "off";
 			}
 		};
+	}
+
+	/**
+	 * Describes {@link Number}s in a {@link Locale} sensitive manner using {@link NumberFormat}.
+	 */
+	public static Describer<Number> numberDescriber()
+	{
+		return NumberDescriber.INSTANCE;
+	}
+
+	private static final class NumberDescriber implements Describer<Number>
+	{
+		private static final Describer<Number> INSTANCE = new NumberDescriber();
+
+		@Override
+		public String describe(Number number, Locale locale)
+		{
+			if(number == null)
+				return "null";
+			return NumberFormat.getInstance(locale).format(number);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "NumberDescriber";
+		}
 	}
 
 	/**
@@ -213,28 +244,42 @@ public final class Describers
 	@CheckReturnValue
 	public static <K, V> Describer<Map<K, V>> mapDescriber(Map<K, String> descriptions)
 	{
-		return new MapDescriber<K, V>(ImmutableMap.copyOf(descriptions));
+		return new MapDescription<K, V>(ImmutableMap.copyOf(descriptions), Describers.<K>toStringDescriber());
 	}
 
-	// TODO: introduce <K,V> mapDescriber(Map<K, String> descriptions, Describer<V> valueDescriber)
+	/**
+	 * Works like {@link #mapDescriber(Map)} but it describes keys in any given {@link Map} with
+	 * {@code keyDescriber} instead of with {@link #toString()}
+	 * 
+	 * @param descriptions a map with strings describing what each key in it means
+	 * @param keyDescriber {@link Describer} used to transform keys into {@link String}s with
+	 * @return a {@link Describer} that can describe a map of the type {@code Map<K, V>} and where
+	 *         each key must have a corresponding description in {@code descriptions}
+	 */
+	public static <K, V> Describer<Map<K, V>> mapDescriber(Map<K, String> descriptions, Describer<K> keyDescriber)
+	{
+		return new MapDescription<K, V>(ImmutableMap.copyOf(descriptions), checkNotNull(keyDescriber));
+	}
 
-	private static final class MapDescriber<K, V> implements Describer<Map<K, V>>
+	private static final class MapDescription<K, V> implements Describer<Map<K, V>>
 	{
 		private final Map<K, String> descriptions;
+		private final Describer<K> keyDescriber;
 
-		private MapDescriber(Map<K, String> descriptions)
+		private MapDescription(Map<K, String> descriptions, Describer<K> keyDescriber)
 		{
 			this.descriptions = descriptions;
+			this.keyDescriber = keyDescriber;
 		}
 
 		@Override
-		public String describe(Map<K, V> values)
+		public String describe(Map<K, V> values, Locale inLocale)
 		{
 			StringBuilder result = new StringBuilder();
 			for(Entry<K, V> entry : values.entrySet())
 			{
 				K key = entry.getKey();
-				result.append(key);
+				result.append(keyDescriber.describe(key, inLocale));
 				result.append("=");
 				result.append(entry.getValue());
 				String descriptionForEntry = descriptions.get(key);
@@ -246,12 +291,107 @@ public final class Describers
 	}
 
 	/**
+	 * Describes key values in a {@link Map}. Keys are described with
+	 * {@link Describers#toStringDescriber()} and values with {@code valueDescriber}. "=" is used as
+	 * the separator between key and value. {@link StringsUtil#NEWLINE} separates entries.
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static <K, V> Describer<Map<K, V>> mapDescriber(Describer<V> valueDescriber)
+	{
+		return new MapDescriber<K, V>(Describers.<K>toStringDescriber(), valueDescriber, "=");
+	}
+
+	/**
+	 * Describes key values in a {@link Map}. Keys are described with
+	 * {@link Describers#toStringDescriber()} and values with {@code valueDescriber}.
+	 * {@code valueSeparator} is used as the separator between key and value.
+	 * {@link StringsUtil#NEWLINE} separates entries.
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static <K, V> Describer<Map<K, V>> mapDescriber(Describer<V> valueDescriber, String valueSeparator)
+	{
+		return new MapDescriber<K, V>(Describers.<K>toStringDescriber(), valueDescriber, valueSeparator);
+	}
+
+	/**
+	 * Describes key values in a {@link Map}. Keys are described with {@code keyDescriber} and
+	 * values with {@code valueDescriber}.
+	 * "=" is used as the separator between key and value. {@link StringsUtil#NEWLINE} separates
+	 * entries.
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static <K, V> Describer<Map<K, V>> mapDescriber(Describer<K> keyDescriber, Describer<V> valueDescriber)
+	{
+		return new MapDescriber<K, V>(keyDescriber, valueDescriber, "=");
+	}
+
+	/**
+	 * Describes key values in a {@link Map}. Keys are described with {@code keyDescriber} and
+	 * values with {@code valueDescriber}. {@code valueSeparator} is used as the separator between
+	 * key and value. {@link StringsUtil#NEWLINE} separates entries.
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static <K, V> Describer<Map<K, V>> mapDescriber(Describer<K> keyDescriber, Describer<V> valueDescriber, String valueSeparator)
+	{
+		return new MapDescriber<K, V>(keyDescriber, valueDescriber, valueSeparator);
+	}
+
+	private static final class MapDescriber<K, V> implements Describer<Map<K, V>>
+	{
+		private final Describer<V> valueDescriber;
+		private final Describer<K> keyDescriber;
+		private final String valueSeparator;
+
+		private MapDescriber(Describer<K> keyDescriber, Describer<V> valueDescriber, String valueSeparator)
+		{
+			this.keyDescriber = checkNotNull(keyDescriber);
+			this.valueDescriber = checkNotNull(valueDescriber);
+			this.valueSeparator = checkNotNull(valueSeparator);
+		}
+
+		@Override
+		public String describe(Map<K, V> values, Locale inLocale)
+		{
+			if(values == null)
+				return "null";
+			Iterator<Entry<K, V>> iterator = values.entrySet().iterator();
+			if(!iterator.hasNext())
+				return "Empty map";
+
+			StringBuilder firstKeyValue = new StringBuilder();
+			describeEntry(iterator.next(), inLocale, firstKeyValue);
+
+			// TODO: what if it's expensive to call size()?
+			StringBuilder result = new StringBuilder(firstKeyValue.length() * values.size());
+			result.append(firstKeyValue);
+
+			while(iterator.hasNext())
+			{
+				result.append(NEWLINE);
+				describeEntry(iterator.next(), inLocale, result);
+			}
+			return result.toString();
+		}
+
+		private void describeEntry(Entry<K, V> entry, Locale inLocale, StringBuilder output)
+		{
+			output.append(keyDescriber.describe(entry.getKey(), inLocale));
+			output.append(valueSeparator);
+			output.append(valueDescriber.describe(entry.getValue(), inLocale));
+		}
+	}
+
+	/**
 	 * <pre>
 	 * Exposes a {@link Describer} as a Guava {@link Function}.
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
 	 * 
 	 * @param describer the describer to convert to a {@link Function}
-	 * @return a {@link Function} that applies {@link Describer#describe(Object)} to input values.
+	 * @return a {@link Function} that applies {@link Describer#describe(Object, Locale)} to input values.
 	 * </pre>
 	 */
 	@Beta
@@ -262,9 +402,10 @@ public final class Describers
 		checkNotNull(describer);
 		return new Function<T, String>(){
 			@Override
-			public String apply(T input)
+			public String apply(@Nonnull T input)
 			{
-				return describer.describe(input);
+				// TODO: document locale
+				return describer.describe(input, Locale.getDefault());
 			}
 		};
 	}
@@ -275,7 +416,7 @@ public final class Describers
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
 	 * 
 	 * @param describerFunction a function that can convert {@code T} values into {@link String}s
-	 * @return a {@link Describer} that applies {@link Function#apply(Object)} to describe input values.
+	 * @return a {@link Describer} that applies {@link Function#apply(Object)} to {@link Describer#describe(Object, Locale)} input values.
 	 * </pre>
 	 */
 	@Beta
@@ -286,7 +427,7 @@ public final class Describers
 		checkNotNull(describerFunction);
 		return new Describer<T>(){
 			@Override
-			public String describe(T value)
+			public String describe(T value, Locale inLocale)
 			{
 				return describerFunction.apply(value);
 			}
@@ -332,20 +473,22 @@ public final class Describers
 		}
 
 		@Override
-		public String describe(List<? extends T> value)
+		public String describe(List<? extends T> value, Locale inLocale)
 		{
+			if(value == null)
+				return "null";
 			if(value.isEmpty())
 				return "Empty list";
 
 			Iterator<? extends T> values = value.iterator();
-			String firstValue = valueDescriber.describe(values.next());
+			String firstValue = valueDescriber.describe(values.next(), inLocale);
 
 			StringBuilder sb = new StringBuilder(value.size() * firstValue.length());
 
 			sb.append(firstValue);
 			while(values.hasNext())
 			{
-				sb.append(valueSeparator).append(valueDescriber.describe(values.next()));
+				sb.append(valueSeparator).append(valueDescriber.describe(values.next(), inLocale));
 			}
 			return sb.toString();
 		}

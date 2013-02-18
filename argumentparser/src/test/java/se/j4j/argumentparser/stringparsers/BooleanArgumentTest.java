@@ -25,7 +25,7 @@ public class BooleanArgumentTest
 	@Test
 	public void testDescription()
 	{
-		String usage = booleanArgument("-b").usage("BooleanArgument");
+		String usage = booleanArgument("-b").usage();
 		assertThat(usage).contains("<boolean>: true or false");
 	}
 

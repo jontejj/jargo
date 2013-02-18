@@ -2,22 +2,17 @@ package se.j4j.argumentparser.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-
-import java.util.Arrays;
-import java.util.List;
-
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.Command;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 
 public class CommandWithOneIndexedArgument extends Command
 {
 	private static final Argument<Integer> NUMBER = integerArgument().required().build();
 
-	@Override
-	protected List<Argument<?>> commandArguments()
+	public CommandWithOneIndexedArgument()
 	{
-		return Arrays.<Argument<?>>asList(NUMBER);
+		super(NUMBER);
 	}
 
 	@Override

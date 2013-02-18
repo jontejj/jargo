@@ -9,9 +9,8 @@ import java.util.List;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.Command;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public class CommitCommand extends Command
@@ -24,13 +23,8 @@ public class CommitCommand extends Command
 
 	public CommitCommand(final Repository repo)
 	{
+		super(AMEND, AUTHOR, FILES);
 		repository = repo;
-	}
-
-	@Override
-	protected List<Argument<?>> commandArguments()
-	{
-		return ImmutableList.of(AMEND, AUTHOR, FILES);
 	}
 
 	@Override

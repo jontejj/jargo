@@ -49,7 +49,10 @@ public class CharacterTrieBenchmark extends SimpleBenchmark
 		{
 			for(Entry<String, String> entry : elements.entrySet())
 			{
-				dummy++;
+				if(entry != null)
+				{
+					dummy++;
+				}
 			}
 		}
 		return dummy;
@@ -75,7 +78,10 @@ public class CharacterTrieBenchmark extends SimpleBenchmark
 		{
 			for(Entry<String, String> entry : type.entriesWithPrefix(elements, "100"))
 			{
-				dummy++;
+				if(entry != null)
+				{
+					dummy++;
+				}
 			}
 		}
 		return dummy;

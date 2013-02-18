@@ -8,7 +8,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>strings</artifactId>
-	<version>${version.strings}</version>
+	<version>0.0.1</version>
 	<name>String utilities</name>
 	<description>Nifty classes that help cope with manipulating and handling strings</description>
 	<packaging>jar</packaging>
@@ -34,13 +34,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>${version.guava}</version>
-		</dependency>
-		<dependency>
-			<groupId>se.j4j</groupId>
-			<artifactId>test-lib</artifactId>
-			<version>${version.testlib}</version>
-			<scope>test</scope>
+			<version>13.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

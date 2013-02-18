@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.CommandLineParserInstance.ArgumentIterator;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.strings.Description;
 import se.j4j.strings.Descriptions;
@@ -19,7 +19,7 @@ import se.j4j.strings.Descriptions.SerializableDescription;
 
 /**
  * Gives you static access for creating {@link ArgumentException}s.<br>
- * Remember that created exceptions are simply returned <b>not thrown</b>
+ * Remember that created exceptions are simply returned <b>not thrown</b>.
  */
 public final class ArgumentExceptions
 {
@@ -29,14 +29,24 @@ public final class ArgumentExceptions
 
 	/**
 	 * The most simple version of {@link ArgumentException}s, it simply prints the result of
-	 * {@link #toString()} for {@code message} as the message. To set the cause, use
-	 * {@link ArgumentException#andCause(Throwable)}.
+	 * {@link #toString()} for {@code message} as the message. Use
+	 * {@link #withMessage(Object, Throwable)} if you have a cause.
 	 */
 	@CheckReturnValue
 	@Nonnull
 	public static ArgumentException withMessage(final Object message)
 	{
 		return new SimpleArgumentException(Descriptions.toString(message));
+	}
+
+	/**
+	 * Like {@link #withMessage(Object)} but with a {@code cause}
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static ArgumentException withMessage(final Object message, Throwable cause)
+	{
+		return new SimpleArgumentException(Descriptions.toString(message)).andCause(cause);
 	}
 
 	/**
@@ -48,6 +58,17 @@ public final class ArgumentExceptions
 	{
 		checkNotNull(message);
 		return new SimpleArgumentException(message);
+	}
+
+	/**
+	 * Like {@link #withMessage(Description)} but with a {@code cause}
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static ArgumentException withMessage(Description message, Throwable cause)
+	{
+		checkNotNull(message);
+		return new SimpleArgumentException(message).andCause(cause);
 	}
 
 	private static final class SimpleArgumentException extends ArgumentException
@@ -72,48 +93,13 @@ public final class ArgumentExceptions
 	}
 
 	/**
-	 * @param cause the checked exception that will be used as the cause (and message) of the
-	 *            returned exception
-	 * @return an unchecked exception that uses {@code cause#getMessage()} as it's own message
-	 */
-	@CheckReturnValue
-	@Nonnull
-	static IllegalArgumentException asUnchecked(final ArgumentException cause)
-	{
-		checkNotNull(cause);
-		return new UncheckedArgumentException(cause);
-	}
-
-	private static final class UncheckedArgumentException extends IllegalArgumentException
-	{
-		private final ArgumentException cause;
-
-		UncheckedArgumentException(final ArgumentException cause)
-		{
-			super(cause);
-			this.cause = cause;
-		}
-
-		@Override
-		public String getMessage()
-		{
-			return cause.getMessage();
-		}
-
-		/**
-		 * For {@link Serializable}
-		 */
-		private static final long serialVersionUID = 1L;
-	};
-
-	/**
 	 * Converts any {@link Throwable} into an {@link ArgumentException}.
 	 * Uses the detail message of {@code exceptionToWrap} as it's own detail message.
 	 * {@code exceptionToWrap} is also set as the cause of the created exception.
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static ArgumentException wrapException(final Throwable exceptionToWrap)
+	public static ArgumentException wrapException(final Throwable exceptionToWrap)
 	{
 		checkNotNull(exceptionToWrap);
 		return new WrappedArgumentException(exceptionToWrap);
@@ -133,6 +119,38 @@ public final class ArgumentExceptions
 		protected String getMessage(String argumentNameOrcommandName)
 		{
 			return wrappedException.getMessage();
+		}
+
+		/**
+		 * For {@link Serializable}
+		 */
+		private static final long serialVersionUID = 1L;
+	};
+
+	/**
+	 * @param cause the checked exception that will be used as the cause (and message) of the
+	 *            returned exception
+	 * @return an unchecked exception that uses {@code cause#getMessage()} as it's own message
+	 */
+	@CheckReturnValue
+	@Nonnull
+	static IllegalArgumentException asUnchecked(final ArgumentException cause)
+	{
+		checkNotNull(cause);
+		return new UncheckedArgumentException(cause);
+	}
+
+	private static final class UncheckedArgumentException extends IllegalArgumentException
+	{
+		UncheckedArgumentException(final ArgumentException cause)
+		{
+			super(cause);
+		}
+
+		@Override
+		public String getMessage()
+		{
+			return getCause().getMessage();
 		}
 
 		/**

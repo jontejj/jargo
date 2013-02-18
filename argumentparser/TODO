@@ -1,15 +1,50 @@
 BasicArgumentBuilder
 Document Locale usage
-Print one line with all options, ProgramInformation.includeOneLinerInUsage()
-readPassword()
-ICommand, interface version of Command that's simpler and doesn't support arguments
+Introduce companion library with DateParser etc in
+Usage: sort with collator?
+    Collator collator = Collator.getInstance(locale);
+    collator.getCollationKey(source)
+    Collections.sort(aWords, collator);
+Features:
 
-//This would be exactly like the old feature "Callback"
-ArgumentBuilder#withAction(Action actionToPerformForParsedValues)
+Usage#includeOneLinerInUsage() - Print one line with all options
+   Before serializing ArgumentException this string will have to be calculated
 
-readFromConsole()
+CommandLineParser#interactiveMode() - For failed arguments offer an option to correct them
  * should required arguments be handled by this always?
  * What about clients that don't have a console? Default to throw? Opt-in-feature.
  * think about Multiple Occurrences (ask Do you want to enter one more value for [-s] (y/N):
  * Can auto complete be provided?
  * Repeat reading for invalid values
+
+ArgumentFactory#helpArgument() - "-h", "--help" print usage, alternatively take an argument/command and describe only that
+
+DefaultArgumentBuilder<T> ArgumentFactory#withFunction(Function<String, T> stringParser)
+    How to require a choice between required() and defaultValue()?
+
+ICommand, interface version of Command that's simpler and doesn't support arguments
+   Issues: the name isn't very clear and will people confuse it with Command?
+
+ArgumentBuilder#withAction(Callable<T> actionToPerformForParsedValues) - This would be exactly like the old "Callback" feature, Could avoid a lot of if statements
+...Issues: Should ForwardingStringParser be recommended instead?
+           ArgumentFactory#option(...) can't be decorated...
+
+ArgumentBuilder#tabCompleter(Function<String, Iterable<String>> tabCompleterFunction)
+   CommandLineParser#tabComplete(String... currentArguments) - where the last argument will be the
+                                                                input to the tabCompleterFunction for the last matching argument
+        tabCompleterFunction a function that given a starting string returns an {@link Iterable} of strings that could complete that string into a valid argument
+ArgumentBuilder#readPassword() - Read argument from Console, ensures that nobody can see the password by looking at process arguments
+
+ArgumentBuilder#incompatibleWith(Argument<?> ... otherArguments)
+
+ArgumentBuilder#transformWith(Function<F, T> function)
+        runs function.apply(parsedValue) so that Argument<F> switches type to Argument<T> such a function would be extremely
+        reusable in other scenarios as well, i.e convert this list of integers to Port objects
+
+ArgumentException#getLocalizedMessage(Locale locale)
+
+CommandLineParserInstance#getDefinitionForCurrentArgument - if one argument can be singled out choose it,
+        for instance git upd for git update as no other command starts with upd
+
+CommandLineParserInstance#guessAndSuggestIfCloseMatch - how should this work for arguments Command#Command(Argument<?>...)?
+        right now only top-level misspelled arguments gets suggestions

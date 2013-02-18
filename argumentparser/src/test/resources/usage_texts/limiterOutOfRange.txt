@@ -1,6 +1,6 @@
 '5' is not [0‥4]. See usage for <integer> for proper values.
 
-Usage: LimiterOutOfRange [Arguments]
+Usage: limiterOutOfRange [Arguments]
 
 Arguments:
  <integer>    <integer>: [0‥4]

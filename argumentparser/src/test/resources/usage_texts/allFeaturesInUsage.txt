@@ -1,11 +1,13 @@
-Usage: HelloWorld [Arguments]
+Usage: allFeaturesInUsage [Arguments]
 
 Arguments:
  <string>                                                              A greeting phrase to greet new connections with [Required]
                                                                        <string>: any string
 --arity <boolean> <boolean> <boolean> <boolean> <boolean> <boolean>    <boolean>: true or false
                                                                        Default: false, false, false, false, false, false
---big <big-integer>                                                    <big-integer>: any integer
+--big-decimal <big-decimal>                                            <big-decimal>: an arbitrary decimal number (practically no limits)
+                                                                       Default: 0
+--big-integer <big-integer>                                            <big-integer>: an arbitrary integer number (practically no limits)
                                                                        Default: 0
 --bool <boolean>                                                       <boolean>: true or false
                                                                        Default: false
@@ -15,27 +17,25 @@ Arguments:
                                                                        Default: the Null character
 --date <date>                                                          <date>: an ISO8601 date, such as 2011-02-28
                                                                        Default: Current time
---double <double>                                                      <double>: -1.7976931348623157E308 to 1.7976931348623157E308
-                                                                       Default: 0.0
 --enum <Action>                                                        <Action>: {start | stop | restart}
                                                                        Default: null
 --file <path>                                                          <path>: a file path
                                                                        Default: The current directory
---long <long>                                                          <long>: -9223372036854775808 to 9223372036854775807
+--long <long>                                                          <long>: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
                                                                        Default: 0
---repeated <integer>                                                   <integer>: -2147483648 to 2147483647
+--repeated <integer>                                                   <integer>: -2,147,483,648 to 2,147,483,647
                                                                        Default: Empty list [Supports Multiple occurrences]
---short <short>                                                        <short>: -32768 to 32767
+--short <short>                                                        <short>: -32,768 to 32,767
                                                                        Default: 0
---split=<float>,<float>,...                                            <float>: -3.4028235E38 to 3.4028235E38
+--split=<integer>,<integer>,...                                        <integer>: -2,147,483,648 to 2,147,483,647
                                                                        Default: Empty list
 --string <string>                                                      <string>: any string
                                                                        Default: 
---variableArity <integer> ...                                          <integer>: -2147483648 to 2147483647
+--variableArity <integer> ...                                          <integer>: -2,147,483,648 to 2,147,483,647
                                                                        Default: Empty list
 -B<string>=<boolean>                                                   <string>=<boolean>: where "<string>" is any string and "<boolean>" is true or false
                                                                        Default: Empty map
 -l, --enable-logging                                                   Output debug information to standard out
                                                                        Default: disabled
 -p, --listen-port <integer>                                            The port to start the server on. [Required]
-                                                                       <integer>: -2147483648 to 2147483647
+                                                                       <integer>: -2,147,483,648 to 2,147,483,647

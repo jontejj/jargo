@@ -1,5 +1,5 @@
-Usage: Split [Arguments]
+Usage: splitArgument [Arguments]
 
 Arguments:
--n <integer>,<integer>,...    <integer>: -2147483648 to 2147483647
+-n <integer>,<integer>,...    <integer>: -2 147 483 648 to 2 147 483 647
                               Default: Empty list

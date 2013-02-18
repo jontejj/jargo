@@ -4,6 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -39,9 +40,11 @@ public class Predicates2Test
 	@Test
 	public void testThatListPredicateThrowsAndIndicatesTheFirstOffendingValue()
 	{
+		List<Integer> numbers = Arrays.asList(1, -1, -2);
+
 		try
 		{
-			Predicates2.listPredicate(ABOVE_ZERO).apply(Arrays.asList(1, -1, -2));
+			Predicates2.listPredicate(ABOVE_ZERO).apply(numbers);
 			fail("-1 should not be above zero");
 		}
 		catch(IllegalArgumentException expected)

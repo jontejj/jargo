@@ -19,7 +19,7 @@ public class Port implements Comparable<Port>
 	}
 
 	public static final Port MIN = new Port(0);
-	public static final Port MAX = new Port(Short.MAX_VALUE);
+	public static final Port MAX = new Port(Short.MAX_VALUE * 2);
 	public static final Port DEFAULT = new Port(8080);
 
 	@Override

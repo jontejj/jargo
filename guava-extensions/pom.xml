@@ -7,7 +7,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>guava-extensions</artifactId>
-    <version>${version.guava.extensions}</version>
+    <version>0.0.1</version>
     <name>Guava extensions</name>
     <description>Adds implementation of guava interfaces such as Function, Supplier, Predicate</description>
     <packaging>jar</packaging>
@@ -15,18 +15,12 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${version.guava}</version>
+            <version>13.0.1</version>
         </dependency>
         <dependency>
             <groupId>se.j4j</groupId>
             <artifactId>strings</artifactId>
-            <version>${version.strings}</version>
-        </dependency>
-        <dependency>
-            <groupId>se.j4j</groupId>
-            <artifactId>test-lib</artifactId>
-            <version>${version.testlib}</version>
-            <scope>test</scope>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 </project>

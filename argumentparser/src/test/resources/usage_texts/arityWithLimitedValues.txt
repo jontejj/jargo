@@ -1,6 +1,6 @@
 'bar' is not foo. See usage for -f for proper values.
 
-Usage: OnlyAllowsFoo [Arguments]
+Usage: arityWithLimitedValues [Arguments]
 
 Arguments:
 -f, --foos <string> <string>    <string>: foo [Required]

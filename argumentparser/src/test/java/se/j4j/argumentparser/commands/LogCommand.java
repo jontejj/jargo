@@ -1,15 +1,10 @@
 package se.j4j.argumentparser.commands;
 
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
-
-import java.util.List;
-
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.Command;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 import se.j4j.argumentparser.commands.CommitCommand.Repository;
-
-import com.google.common.collect.Lists;
 
 public class LogCommand extends Command
 {
@@ -19,6 +14,7 @@ public class LogCommand extends Command
 
 	public LogCommand(final Repository repo)
 	{
+		super(LIMIT);
 		repository = repo;
 	}
 
@@ -26,14 +22,6 @@ public class LogCommand extends Command
 	protected String commandName()
 	{
 		return "log";
-	}
-
-	@Override
-	protected List<Argument<?>> commandArguments()
-	{
-		List<Argument<?>> arguments = Lists.newArrayList();
-		arguments.add(LIMIT);
-		return arguments;
 	}
 
 	@Override

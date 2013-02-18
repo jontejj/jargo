@@ -1,8 +1,8 @@
 package se.j4j.argumentparser.stringparsers;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static se.j4j.argumentparser.ArgumentFactory.enumArgument;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public class EnumArgumentTest
 	@Test
 	public void testEnumArgumentUsage()
 	{
-		String usageText = enumArgument(Action.class).usage("");
+		String usageText = enumArgument(Action.class).usage();
 		assertThat(usageText).contains("<Action>: {start | stop | restart}");
 		assertThat(usageText).contains("Default: null");
 	}

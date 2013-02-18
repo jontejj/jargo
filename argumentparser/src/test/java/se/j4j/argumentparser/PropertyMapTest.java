@@ -10,9 +10,9 @@ import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
-import static se.j4j.argumentparser.StringParsers.lowerCaseParser;
 import static se.j4j.argumentparser.limiters.FooLimiter.foos;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
+import static se.j4j.strings.Describers.withConstantString;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.argumentparser.stringparsers.custom.LimitedKeyParser;
 import se.j4j.testlib.Explanation;
@@ -142,7 +141,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException expected)
 		{
-			String usage = expected.getMessageAndUsage("LimitedKeysAndLimitedValues");
+			String usage = expected.getMessageAndUsage();
 			assertThat(usage).isEqualTo(expected("limiterUsageForBothValueLimiterAndKeyLimiter"));
 		}
 
@@ -153,7 +152,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException invalidBar)
 		{
-			assertThat(invalidBar).hasMessage(String.format(UserErrors.UNALLOWED_VALUE, -1, zeroToTen));
+			assertThat(invalidBar).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, -1, zeroToTen));
 		}
 	}
 
@@ -222,6 +221,20 @@ public class PropertyMapTest
 		integerArgument("-N").asPropertyMap().repeated();
 	}
 
+	@SuppressWarnings("deprecation")
+	@Test(expected = IllegalStateException.class)
+	public void testThatArityMustBeCalledBeforeAsPropertyMap()
+	{
+		integerArgument("-N").asPropertyMap().arity(2);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Test(expected = IllegalStateException.class)
+	public void testThatVariableArityAndAsPropertyMapIsIncompatible()
+	{
+		integerArgument("-N").asPropertyMap().variableArity();
+	}
+
 	@Test
 	public void testThatIterationOrderForPropertyKeysIsTheSameAsFromTheCommandLine() throws ArgumentException
 	{
@@ -235,26 +248,13 @@ public class PropertyMapTest
 	}
 
 	@Test
-	public void testThatPropertyKeysCanBeMadeIntoLowerCase() throws ArgumentException
-	{
-		Argument<Map<String, Integer>> arg = integerArgument("-I").asKeyValuesWithKeyParser(lowerCaseParser()).build();
-		Map<String, Integer> map = arg.parse("-IFOO=1", "-IBar=2", "-Izoo=3");
-		assertThat(map.get("foo")).isEqualTo(1);
-		assertThat(map.get("bar")).isEqualTo(2);
-		assertThat(map.get("zoo")).isEqualTo(3);
-
-		assertThat(arg.usage("LowerCase")).isEqualTo(expected("propertyMaps"));
-		assertThat(lowerCaseParser().defaultValue()).isEmpty();
-	}
-
-	@Test
 	public void testDefaultValuesInUsageForPropertyMap()
 	{
 		Map<Byte, Byte> defaults = newLinkedHashMap();
 		defaults.put((byte) 3, (byte) 4);
 		defaults.put((byte) 1, (byte) 2);
 
-		String usage = byteArgument("-N").asKeyValuesWithKeyParser(byteParser()).separator(":").defaultValue(defaults).usage("");
+		String usage = byteArgument("-N").asKeyValuesWithKeyParser(byteParser()).separator(":").defaultValue(defaults).usage();
 		assertThat(usage).isEqualTo(expected("defaultValuePropertyMap"));
 	}
 
@@ -275,7 +275,7 @@ public class PropertyMapTest
 	@Test
 	public void testThatUsageTextForRepeatedPropertyValuesLooksGood()
 	{
-		String usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage("");
+		String usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage();
 		assertThat(usage).isEqualTo(expected("repeatedPropertyValues"));
 	}
 
@@ -326,5 +326,12 @@ public class PropertyMapTest
 		int n = integerArgument("-D").asPropertyMap().defaultValue(defaults).parse("-Dn=2").get("n");
 
 		assertThat(n).isEqualTo(2);
+	}
+
+	@Test
+	public void testThatCustomDescriberCanBeUsedForPropertyMaps()
+	{
+		String usage = integerArgument("-D").asPropertyMap().defaultValueDescriber(withConstantString("a map")).usage();
+		assertThat(usage).contains("Default: a map");
 	}
 }

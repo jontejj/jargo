@@ -36,7 +36,7 @@ public class SeparatorTest
 	@Test
 	public void testArityCombinedWithSeparator() throws ArgumentException
 	{
-		String usage = integerArgument("-numbers").arity(3).separator("=").usage("SeparatorWithArity");
+		String usage = integerArgument("-numbers").arity(3).separator("=").usage();
 		assertThat(usage).isEqualTo(expected("separatorCombinedWithArity"));
 
 		List<Integer> numbers = integerArgument("-numbers").arity(3).separator("=").parse("-numbers=1", "2", "3");
@@ -86,7 +86,7 @@ public class SeparatorTest
 	@Test
 	public void testThatSeparatorIsPrintedBetweenArgumentNameAndMetaDescription()
 	{
-		String usage = integerArgument("-N").separator("=").usage("SeparatorBetweenNameAndMeta");
+		String usage = integerArgument("-N").separator("=").usage();
 
 		assertThat(usage).isEqualTo(expected("separatorBetweenNameAndMeta"));
 	}

@@ -1,3 +1,3 @@
-Usage: LimiterUsage [Arguments]
+Usage: limiterUsage [Arguments]
 -foo <string>    <string>: a string with a maximum of 10 characters
                      Default: 

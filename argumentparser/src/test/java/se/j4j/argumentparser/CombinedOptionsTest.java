@@ -5,12 +5,7 @@ import static se.j4j.argumentparser.ArgumentFactory.command;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Test;
-
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 
 /**
  * Tests for a batch of short-named optional arguments.
@@ -36,6 +31,8 @@ public class CombinedOptionsTest
 		Argument<Boolean> logging = optionArgument("-l").build();
 		Argument<Integer> number = integerArgument("-n").build();
 
+		// TODO: allow -ln 100 ?
+
 		CommandLineParser.withArguments(logging, number).parse("-ln");
 	}
 
@@ -60,19 +57,13 @@ public class CombinedOptionsTest
 		optionArgument("-l").parse("-");
 	}
 
+	private static Argument<Boolean> subOption = optionArgument("-l").build();
+
 	@Test
 	public void testThatNoOptionArgumentIsParsedWhenOneCharacterIsUnhandled() throws ArgumentException
 	{
 		Argument<Integer> programArgument = integerArgument("-lp").build();
-		Argument<String> command = command(new Command(){
-
-			Argument<Boolean> subOption = optionArgument("-l").build();
-
-			@Override
-			protected List<Argument<?>> commandArguments()
-			{
-				return Arrays.<Argument<?>>asList(subOption);
-			}
+		Argument<String> command = command(new Command(subOption){
 
 			@Override
 			protected void execute(ParsedArguments args)

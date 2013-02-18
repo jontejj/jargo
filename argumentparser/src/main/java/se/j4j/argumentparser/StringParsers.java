@@ -3,7 +3,6 @@ package se.j4j.argumentparser;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
-import static java.math.BigInteger.ZERO;
 import static java.util.Collections.emptyList;
 import static se.j4j.argumentparser.ArgumentExceptions.asUnchecked;
 import static se.j4j.argumentparser.ArgumentExceptions.forMissingNthParameter;
@@ -11,9 +10,9 @@ import static se.j4j.argumentparser.ArgumentExceptions.forMissingParameter;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentExceptions.wrapException;
 import static se.j4j.strings.Descriptions.format;
-import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +28,10 @@ import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.ArgumentExceptions.MissingParameterException;
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
+import se.j4j.argumentparser.CommandLineParserInstance.ArgumentIterator;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.numbers.NumberType;
+import se.j4j.strings.StringBuilders;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -60,23 +60,13 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return the simplest possible parser, it simply returns the strings it's given to parse.
+	 * The simplest possible parser, it simply returns the strings it's given to parse.
 	 */
 	@CheckReturnValue
 	@Nonnull
 	public static StringParser<String> stringParser()
 	{
 		return StringStringParser.STRING;
-	}
-
-	/**
-	 * @return a parser that makes the strings it parses into lower case using the default locale.
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static StringParser<String> lowerCaseParser()
-	{
-		return StringStringParser.LOWER_CASE;
 	}
 
 	@VisibleForTesting
@@ -88,26 +78,16 @@ public final class StringParsers
 		STRING
 		{
 			@Override
-			public String parse(String value) throws ArgumentException
+			public String parse(String value, Locale locale) throws ArgumentException
 			{
 				return value;
 			}
-		},
-		/**
-		 * Makes the strings it parses into lower case with the {@link Locale#getDefault()} locale.
-		 * TODO: make the Locale settable
-		 */
-		LOWER_CASE
-		{
-			@Override
-			public String parse(final String value)
-			{
-				return value.toLowerCase(Locale.getDefault());
-			}
 		};
 
+		// Put other StringParser<String> parsers here
+
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
 			return "any string";
 		}
@@ -126,7 +106,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that parse strings with {@link Boolean#valueOf(String)}
+	 * A parser that parse strings with {@link Boolean#valueOf(String)}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -140,13 +120,13 @@ public final class StringParsers
 		private static final BooleanParser INSTANCE = new BooleanParser();
 
 		@Override
-		public Boolean parse(final String value)
+		public Boolean parse(final String value, Locale locale)
 		{
 			return Boolean.valueOf(value);
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
 			return "true or false";
 		}
@@ -165,9 +145,9 @@ public final class StringParsers
 	}
 
 	/**
-	 * Returns parser that creates {@link File}s using {@link File#File(String)} for input strings.<br>
-	 * {@link StringParser#defaultValue()} returns a {@link File} representing the current working
-	 * directory.
+	 * A parser that creates {@link File}s using {@link File#File(String)} for input strings.<br>
+	 * The {@link StringParser#defaultValue() default value} is a {@link File} representing the
+	 * current working directory (cwd).
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -181,13 +161,13 @@ public final class StringParsers
 		private static final FileParser INSTANCE = new FileParser();
 
 		@Override
-		public File parse(final String value)
+		public File parse(final String value, Locale locale)
 		{
 			return new File(value);
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
 			return "a file path";
 		}
@@ -207,9 +187,9 @@ public final class StringParsers
 	}
 
 	/**
-	 * @return a parser that returns the first character in a {@link String} as a {@link Character}
-	 *         and that throws {@link ArgumentException} for any given {@link String} with more than
-	 *         one {@link Character}
+	 * A parser that returns the first character in a {@link String} as a {@link Character} and that
+	 * throws {@link ArgumentException} for any given {@link String} with more than
+	 * one {@link Character}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -223,7 +203,7 @@ public final class StringParsers
 		private static final CharParser INSTANCE = new CharParser();
 
 		@Override
-		public Character parse(final String value) throws ArgumentException
+		public Character parse(final String value, Locale locale) throws ArgumentException
 		{
 			if(value.length() != 1)
 				throw withMessage(format(UserErrors.INVALID_CHAR, value));
@@ -231,7 +211,7 @@ public final class StringParsers
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
 			return "any unicode character";
 		}
@@ -251,8 +231,7 @@ public final class StringParsers
 
 	/**
 	 * <pre>
-	 * Returns a {@link StringParser} that uses {@link Enum#valueOf(Class, String)} to
-	 * {@link StringParser#parse(String)} input strings.
+	 * A parser that uses {@link Enum#valueOf(Class, String)} to {@link StringParser#parse(String, Locale) parse} input strings.
 	 * 
 	 * <b>Case sensitivity note:</b> First a direct match with the input value in upper case is
 	 * made, if that fails a direct match without converting the case is made,
@@ -283,11 +262,11 @@ public final class StringParsers
 		}
 
 		@Override
-		public E parse(final String value) throws ArgumentException
+		public E parse(final String value, final Locale locale) throws ArgumentException
 		{
 			try
 			{
-				return Enum.valueOf(enumType, value.toUpperCase(Locale.ENGLISH));
+				return Enum.valueOf(enumType, value.toUpperCase(Locale.US));
 			}
 			catch(IllegalArgumentException noEnumFoundWithUpperCase)
 			{
@@ -305,18 +284,18 @@ public final class StringParsers
 						{
 							// Lazily call this as it's going over all enum values and converting
 							// them to strings
-							return descriptionOfValidValues();
+							return descriptionOfValidValues(locale);
 						}
-					})).andCause(noEnumFoundWithExactMatch);
+					}), noEnumFoundWithExactMatch);
 				}
 			}
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
 			E[] enumValues = enumType.getEnumConstants();
-			StringBuilder values = new StringBuilder(enumValues.length * AVERAGE_ENUM_NAME_LENGTH);
+			StringBuilder values = StringBuilders.withExpectedSize(enumValues.length * AVERAGE_ENUM_NAME_LENGTH);
 			values.append('{');
 			Joiner.on(" | ").appendTo(values, enumValues);
 			values.append('}');
@@ -339,27 +318,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * Parses {@link String}s into {@link Integer}s.
-	 * Automatically tries to identify the radix using leading 0x for hex numbers,
-	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
-	 * given.
-	 * 
-	 * @see Integer#decode(String)
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static StringParser<Integer> integerParser()
-	{
-		return NumberParser.INTEGER;
-	}
-
-	/**
-	 * Parses {@link String}s into {@link Byte}s.
-	 * Automatically tries to identify the radix using leading 0x for hex numbers,
-	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
-	 * given.
-	 * 
-	 * @see Byte#decode(String)
+	 * Parses {@link String}s into {@link Byte}s using {@link NumberType#parse(String, Locale)}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -369,12 +328,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * Parses {@link String}s into {@link Short}s.
-	 * Automatically tries to identify the radix using leading 0x for hex numbers,
-	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
-	 * given.
-	 * 
-	 * @see Short#decode(String)
+	 * Parses {@link String}s into {@link Short}s using {@link NumberType#parse(String, Locale)}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -384,12 +338,17 @@ public final class StringParsers
 	}
 
 	/**
-	 * Parses {@link String}s into {@link Long}s.
-	 * Automatically tries to identify the radix using leading 0x for hex numbers,
-	 * a leading zero (0) for octal numbers and defaults back to decimal if no such identifier is
-	 * given.
-	 * 
-	 * @see Long#decode(String)
+	 * Parses {@link String}s into {@link Integer}s using {@link NumberType#parse(String, Locale)}
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static StringParser<Integer> integerParser()
+	{
+		return NumberParser.INTEGER;
+	}
+
+	/**
+	 * Parses {@link String}s into {@link Long}s using {@link NumberType#parse(String, Locale)}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -398,12 +357,36 @@ public final class StringParsers
 		return NumberParser.LONG;
 	}
 
-	private static final class NumberParser<N extends Number> implements StringParser<N>
+	/**
+	 * Parses {@link String}s into {@link BigInteger}s using
+	 * {@link NumberType#parse(String, Locale)}
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static StringParser<BigInteger> bigIntegerParser()
+	{
+		return NumberParser.BIG_INTEGER;
+	}
+
+	/**
+	 * Parses {@link String}s into {@link BigDecimal}s using
+	 * {@link NumberType#parse(String, Locale)}
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static StringParser<BigDecimal> bigDecimalParser()
+	{
+		return NumberParser.BIG_DECIMAL;
+	}
+
+	private static final class NumberParser<N extends Number & Comparable<N>> implements StringParser<N>
 	{
 		private static final StringParser<Byte> BYTE = new NumberParser<Byte>(NumberType.BYTE);
 		private static final StringParser<Short> SHORT = new NumberParser<Short>(NumberType.SHORT);
 		private static final StringParser<Integer> INTEGER = new NumberParser<Integer>(NumberType.INTEGER);
 		private static final StringParser<Long> LONG = new NumberParser<Long>(NumberType.LONG);
+		private static final StringParser<BigInteger> BIG_INTEGER = new NumberParser<BigInteger>(NumberType.BIG_INTEGER);
+		private static final StringParser<BigDecimal> BIG_DECIMAL = new NumberParser<BigDecimal>(NumberType.BIG_DECIMAL);
 
 		private final NumberType<N> type;
 
@@ -413,11 +396,11 @@ public final class StringParsers
 		}
 
 		@Override
-		public N parse(String argument) throws ArgumentException
+		public N parse(String argument, Locale locale) throws ArgumentException
 		{
 			try
 			{
-				return type.decode(argument);
+				return type.parse(argument, locale);
 			}
 			catch(IllegalArgumentException invalidNumber)
 			{
@@ -426,9 +409,9 @@ public final class StringParsers
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
-			return type.minValue() + " to " + type.maxValue();
+			return type.descriptionOfValidValues(locale);
 		}
 
 		@Override
@@ -446,154 +429,16 @@ public final class StringParsers
 		@Override
 		public String toString()
 		{
-			return descriptionOfValidValues();
-		}
-	}
-
-	/**
-	 * @return a parser that parse {@link String}s into {@link Double}s
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static StringParser<Double> doubleParser()
-	{
-		return DoubleParser.INSTANCE;
-	}
-
-	private static final class DoubleParser implements StringParser<Double>
-	{
-		private static final DoubleParser INSTANCE = new DoubleParser();
-
-		@Override
-		public Double parse(final String value) throws ArgumentException
-		{
-			try
-			{
-				return Double.valueOf(value);
-			}
-			catch(NumberFormatException nfe)
-			{
-				throw withMessage(format(UserErrors.INVALID_DOUBLE, value)).andCause(nfe);
-			}
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			// TODO: use NumberFormat.getInstance(locale).format();
-			return -Double.MAX_VALUE + " to " + Double.MAX_VALUE;
-		}
-
-		@Override
-		public Double defaultValue()
-		{
-			return 0.0;
-		}
-
-		@Override
-		public String metaDescription()
-		{
-			return "<double>";
-		}
-	}
-
-	/**
-	 * @return a parser that parse {@link String}s into {@link Float}s
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static StringParser<Float> floatParser()
-	{
-		return FloatParser.INSTANCE;
-	}
-
-	private static final class FloatParser implements StringParser<Float>
-	{
-		private static final FloatParser INSTANCE = new FloatParser();
-
-		@Override
-		public Float parse(final String value) throws ArgumentException
-		{
-			try
-			{
-				return Float.valueOf(value);
-			}
-			catch(NumberFormatException nfe)
-			{
-				throw withMessage(format(UserErrors.INVALID_FLOAT, value)).andCause(nfe);
-			}
-		}
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			return -Float.MAX_VALUE + " to " + Float.MAX_VALUE;
-		}
-
-		@Override
-		public Float defaultValue()
-		{
-			return 0f;
-		}
-
-		@Override
-		public String metaDescription()
-		{
-			return "<float>";
-		}
-	}
-
-	/**
-	 * @return a parser that parse {@link String}s into {@link BigInteger}s
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static StringParser<BigInteger> bigIntegerParser()
-	{
-		return BigIntegerParser.INSTANCE;
-	}
-
-	private static final class BigIntegerParser implements StringParser<BigInteger>
-	{
-		private static final StringParser<BigInteger> INSTANCE = new BigIntegerParser();
-
-		@Override
-		public String descriptionOfValidValues()
-		{
-			return "any integer";
-		}
-
-		@Override
-		public BigInteger parse(final String value) throws ArgumentException
-		{
-			try
-			{
-				return new BigInteger(value);
-			}
-			catch(NumberFormatException nfe)
-			{
-				throw withMessage(format(UserErrors.INVALID_BIG_INTEGER, value)).andCause(nfe);
-			}
-		}
-
-		@Override
-		public BigInteger defaultValue()
-		{
-			return ZERO;
-		}
-
-		@Override
-		public String metaDescription()
-		{
-			return "<big-integer>";
+			return descriptionOfValidValues(Locale.US);
 		}
 	}
 
 	/**
 	 * <pre>
-	 * Makes it possible to use the given {@code parser} as a Guava {@link Function}.
-	 * For example:
+	 * A {@link Function} that uses {@link StringParser#parse(String, Locale) parse} for input {@link String}s.
 	 * </pre>
+	 * 
+	 * For example:
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
@@ -601,7 +446,9 @@ public final class StringParsers
 	 * </code>
 	 * </pre>
 	 * 
-	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
+	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.<br>
+	 * <b>Note:</b>The parser will pass the {@link Locale#getDefault()} to
+	 * {@link StringParser#parse(String, Locale)}.
 	 * 
 	 * @param parser the parser to expose as a {@link Function}
 	 * @return {@code parser} exposed in a {@link Function} that throws
@@ -615,11 +462,12 @@ public final class StringParsers
 		checkNotNull(parser);
 		return new Function<String, T>(){
 			@Override
-			public T apply(String input)
+			public T apply(@Nonnull String input)
 			{
 				try
 				{
-					return parser.parse(input);
+					// TODO: add another method that takes a chosen locale
+					return parser.parse(input, Locale.getDefault());
 				}
 				catch(final ArgumentException e)
 				{
@@ -652,10 +500,12 @@ public final class StringParsers
 		 *            argument if it appears several times, otherwise null
 		 * @param argumentSettings argument settings for this parser,
 		 *            can be used for providing good exception messages.
+		 * @param locale the locale to parse strings with, may matter when parsing numbers, dates
+		 *            et.c
 		 * @return the parsed value
 		 * @throws ArgumentException if an error occurred while parsing the value
 		 */
-		abstract T parse(final ArgumentIterator arguments, @Nullable final T previousOccurance, final ArgumentSettings argumentSettings)
+		abstract T parse(final ArgumentIterator arguments, @Nullable final T previousOccurance, final ArgumentSettings argumentSettings, Locale locale)
 				throws ArgumentException;
 
 		/**
@@ -664,7 +514,7 @@ public final class StringParsers
 		 * @return a description string to show in usage texts
 		 */
 		@Nonnull
-		abstract String descriptionOfValidValues(ArgumentSettings argumentSettings);
+		abstract String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale);
 
 		/**
 		 * If you can provide a suitable value do so, it will look much better
@@ -675,13 +525,11 @@ public final class StringParsers
 		abstract T defaultValue();
 
 		/**
-		 * @param argumentSettings can, for instance, be used to print
-		 *            {@link ArgumentSettings#separator()}s
-		 * @return {@code value} described, or null if no description is
-		 *         needed
+		 * Returns a description of {@code value}, or null if no description is
+		 * needed
 		 */
 		@Nullable
-		String describeValue(@Nullable T value, ArgumentSettings argumentSettings)
+		String describeValue(@Nullable T value)
 		{
 			return String.valueOf(value);
 		}
@@ -718,24 +566,18 @@ public final class StringParsers
 		private static final OptionParser DEFAULT_FALSE = new OptionParser(false);
 		private static final OptionParser DEFAULT_TRUE = new OptionParser(true);
 
-		/**
-		 * Specifies a {@link ArgumentSettings#parameterArity()} of zero
-		 */
-		static final int NO_ARGUMENTS = 0;
-
 		private final Boolean defaultValue;
-		private final Boolean enabledValue;
 
 		private OptionParser(final boolean defaultValue)
 		{
 			this.defaultValue = defaultValue;
-			this.enabledValue = !defaultValue;
 		}
 
 		@Override
-		Boolean parse(ArgumentIterator arguments, Boolean previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
+		Boolean parse(ArgumentIterator arguments, Boolean previousOccurance, ArgumentSettings argumentSettings, Locale locale)
+				throws ArgumentException
 		{
-			return enabledValue;
+			return !defaultValue;
 		}
 
 		@Override
@@ -750,7 +592,7 @@ public final class StringParsers
 		 * argument.
 		 */
 		@Override
-		public String descriptionOfValidValues(ArgumentSettings argumentSettings)
+		public String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
 		{
 			return "";
 		}
@@ -767,7 +609,7 @@ public final class StringParsers
 	 * Base class for {@link StringParser}s that uses a sub parser to parse element values and puts
 	 * them into a {@link List}
 	 */
-	abstract static class ListParser<T> extends InternalStringParser<java.util.List<T>>
+	abstract static class ListParser<T> extends InternalStringParser<List<T>>
 	{
 		private final InternalStringParser<T> elementParser;
 
@@ -782,9 +624,9 @@ public final class StringParsers
 		}
 
 		@Override
-		public String descriptionOfValidValues(ArgumentSettings argumentSettings)
+		public String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
 		{
-			return elementParser.descriptionOfValidValues(argumentSettings);
+			return elementParser.descriptionOfValidValues(argumentSettings, locale);
 		}
 
 		@Override
@@ -800,15 +642,17 @@ public final class StringParsers
 		}
 
 		@Override
-		String describeValue(List<T> value, ArgumentSettings argumentSettings)
+		String describeValue(List<T> value)
 		{
+			if(value == null)
+				return "null";
 			if(value.isEmpty())
 				return "Empty list";
 
 			Iterator<T> values = value.iterator();
 			String firstValue = String.valueOf(values.next());
 
-			StringBuilder sb = new StringBuilder(value.size() * firstValue.length());
+			StringBuilder sb = StringBuilders.withExpectedSize(value.size() * firstValue.length());
 
 			sb.append(firstValue);
 			while(values.hasNext())
@@ -833,14 +677,15 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings, Locale locale)
+				throws ArgumentException
 		{
 			List<T> parsedArguments = newArrayListWithCapacity(arity);
 			for(int i = 0; i < arity; i++)
 			{
 				try
 				{
-					T parsedValue = elementParser().parse(arguments, null, argumentSettings);
+					T parsedValue = elementParser().parse(arguments, null, argumentSettings, locale);
 					parsedArguments.add(parsedValue);
 				}
 				catch(MissingParameterException exception)
@@ -877,23 +722,19 @@ public final class StringParsers
 	 */
 	static final class VariableArityParser<T> extends ListParser<T>
 	{
-		/**
-		 * A marker for a variable amount of parameters
-		 */
-		static final int VARIABLE_ARITY = -1;
-
 		VariableArityParser(final InternalStringParser<T> parser)
 		{
 			super(parser);
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings, Locale locale)
+				throws ArgumentException
 		{
 			List<T> parsedArguments = newArrayListWithCapacity(arguments.nrOfRemainingArguments());
 			while(arguments.hasNext())
 			{
-				T parsedValue = elementParser().parse(arguments, null, argumentSettings);
+				T parsedValue = elementParser().parse(arguments, null, argumentSettings, locale);
 				parsedArguments.add(parsedValue);
 			}
 			return parsedArguments;
@@ -921,22 +762,23 @@ public final class StringParsers
 		{
 			super(parser);
 			this.valueSeparator = valueSeparator;
-			this.splitter = Splitter.on(valueSeparator).trimResults();
+			this.splitter = Splitter.on(valueSeparator).omitEmptyStrings().trimResults();
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings) throws ArgumentException
+		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings, Locale locale)
+				throws ArgumentException
 		{
 			if(!arguments.hasNext())
-				throw forMissingParameter(argumentSettings);
+				return null;// emptyList();
 
 			String values = arguments.next();
 			List<T> result = new ArrayList<T>();
 
 			for(String value : splitter.split(values))
 			{
-				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value), arguments.originParser());
-				T parsedValue = elementParser().parse(argument, null, argumentSettings);
+				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value));
+				T parsedValue = elementParser().parse(argument, null, argumentSettings, locale);
 				result.add(parsedValue);
 			}
 			return result;
@@ -953,7 +795,7 @@ public final class StringParsers
 	/**
 	 * Implements {@link ArgumentBuilder#repeated()}.
 	 * 
-	 * @param <T> type of the repeated values (such as {@link Integer} for {@link IntegerParser}
+	 * @param <T> type of the repeated values (such as {@link Integer} for {@link #integerParser()}
 	 */
 	static final class RepeatedArgumentParser<T> extends ListParser<T>
 	{
@@ -963,10 +805,10 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final ArgumentSettings argumentSettings)
+		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final ArgumentSettings argumentSettings, Locale locale)
 				throws ArgumentException
 		{
-			T parsedValue = elementParser().parse(arguments, null, argumentSettings);
+			T parsedValue = elementParser().parse(arguments, null, argumentSettings, locale);
 
 			List<T> listToStoreRepeatedValuesIn = previouslyCreatedList;
 			if(listToStoreRepeatedValuesIn == null)
@@ -1017,7 +859,8 @@ public final class StringParsers
 		}
 
 		@Override
-		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final ArgumentSettings argumentSettings) throws ArgumentException
+		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final ArgumentSettings argumentSettings, Locale locale)
+				throws ArgumentException
 		{
 			Map<K, V> map = previousMap;
 			if(map == null)
@@ -1027,17 +870,17 @@ public final class StringParsers
 
 			String keyValue = arguments.next();
 			String key = getKey(keyValue, argumentSettings);
-			K parsedKey = keyParser.parse(key);
+			K parsedKey = keyParser.parse(key, locale);
 			V oldValue = map.get(parsedKey);
 
 			// Hide what we just did to the parser that handles the "value"
 			arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
-			V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings);
+			V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings, locale);
 
 			try
 			{
 				if(!valueLimiter.apply(parsedValue))
-					throw withMessage(format(UserErrors.UNALLOWED_VALUE, parsedValue, valueLimiter));
+					throw withMessage(format(UserErrors.DISALLOWED_VALUE, parsedValue, valueLimiter));
 			}
 			catch(IllegalArgumentException e)
 			{
@@ -1070,11 +913,11 @@ public final class StringParsers
 		}
 
 		@Override
-		public String descriptionOfValidValues(ArgumentSettings argumentSettings)
+		public String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
 		{
 			String keyMeta = '"' + keyParser.metaDescription() + '"';
 			String valueMeta = '"' + valueParser.metaDescription(argumentSettings) + '"';
-			String keyDescription = keyParser.descriptionOfValidValues();
+			String keyDescription = keyParser.descriptionOfValidValues(locale);
 			String valueDescription;
 			if(valueLimiter != Predicates.alwaysTrue())
 			{
@@ -1082,7 +925,7 @@ public final class StringParsers
 			}
 			else
 			{
-				valueDescription = valueParser.descriptionOfValidValues(argumentSettings);
+				valueDescription = valueParser.descriptionOfValidValues(argumentSettings, locale);
 			}
 
 			return "where " + keyMeta + " is " + keyDescription + " and " + valueMeta + " is " + valueDescription;
@@ -1092,15 +935,6 @@ public final class StringParsers
 		public Map<K, V> defaultValue()
 		{
 			return defaultValueSupplier.get();
-		}
-
-		@Override
-		String describeValue(final Map<K, V> values, final ArgumentSettings argumentSettings)
-		{
-			if(values.isEmpty())
-				return "Empty map";
-
-			return Joiner.on(NEWLINE).withKeyValueSeparator(argumentSettings.separator()).join(values);
 		}
 
 		@Override
@@ -1122,7 +956,6 @@ public final class StringParsers
 		 * 
 		 * @param parserToBridge the {@link StringParser} to expose as a
 		 *            {@link InternalStringParser}
-		 * @param <T> the type the bridged {@link StringParser} handles
 		 */
 		StringParserBridge(StringParser<T> parserToBridge)
 		{
@@ -1130,17 +963,17 @@ public final class StringParsers
 		}
 
 		@Override
-		T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings) throws ArgumentException
+		T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings, Locale locale) throws ArgumentException
 		{
 			if(!arguments.hasNext())
 				throw forMissingParameter(argumentSettings);
-			return parse(arguments.next());
+			return parse(arguments.next(), locale);
 		}
 
 		@Override
-		String descriptionOfValidValues(ArgumentSettings argumentSettings)
+		String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
 		{
-			return descriptionOfValidValues();
+			return descriptionOfValidValues(locale);
 		}
 
 		@Override
@@ -1150,15 +983,15 @@ public final class StringParsers
 		}
 
 		@Override
-		public T parse(String argument) throws ArgumentException
+		public T parse(String argument, Locale locale) throws ArgumentException
 		{
-			return stringParser.parse(argument);
+			return stringParser.parse(argument, locale);
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
-			return stringParser.descriptionOfValidValues();
+			return stringParser.descriptionOfValidValues(locale);
 		}
 
 		@Override
@@ -1176,7 +1009,7 @@ public final class StringParsers
 		@Override
 		public String toString()
 		{
-			return descriptionOfValidValues();
+			return descriptionOfValidValues(Locale.US);
 		}
 	}
 }

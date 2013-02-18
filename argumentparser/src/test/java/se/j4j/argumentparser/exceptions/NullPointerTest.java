@@ -1,6 +1,6 @@
 package se.j4j.argumentparser.exceptions;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 
 import org.junit.Test;
@@ -11,8 +11,7 @@ import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.ArgumentFactory;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
-import se.j4j.argumentparser.ProgramInformation;
+import se.j4j.argumentparser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers;
 
 import com.google.common.testing.NullPointerTester;
@@ -26,9 +25,8 @@ public class NullPointerTest
 		NullPointerTester npeTester = new NullPointerTester();
 		npeTester.testStaticMethods(ArgumentExceptions.class, Visibility.PACKAGE);
 		npeTester.testStaticMethods(ArgumentFactory.class, Visibility.PACKAGE);
-		npeTester.testStaticMethods(CommandLineParser.class, Visibility.PACKAGE);
-		npeTester.testStaticMethods(ProgramInformation.class, Visibility.PACKAGE);
 		npeTester.testStaticMethods(StringParsers.class, Visibility.PACKAGE);
+		npeTester.testStaticMethods(CommandLineParser.class, Visibility.PACKAGE);
 
 		DefaultArgumentBuilder<Integer> builder = integerArgument("--name");
 		npeTester.testInstanceMethods(builder, Visibility.PROTECTED);
@@ -39,9 +37,6 @@ public class NullPointerTest
 
 		CommandLineParser parser = CommandLineParser.withArguments(argument);
 		npeTester.testInstanceMethods(parser, Visibility.PROTECTED);
-
-		ProgramInformation info = ProgramInformation.programName("helloworld");
-		npeTester.testInstanceMethods(info, Visibility.PROTECTED);
 
 		ParsedArguments result = parser.parse();
 		npeTester.testInstanceMethods(result, Visibility.PROTECTED);

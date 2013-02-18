@@ -1,5 +1,6 @@
 package se.j4j.guavaextensions;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 
@@ -20,10 +21,13 @@ public final class Suppliers2
 	/**
 	 * Creates a {@link Supplier} that supplies {@code elementsToSupply} number of elements from
 	 * {@code elementSupplier}
+	 * 
+	 * @throws IllegalArgumentException if {@code elementsToSupply} is less than zero
 	 */
 	public static <T> Supplier<List<T>> ofRepeatedElements(Supplier<? extends T> elementSupplier, int elementsToSupply)
 	{
 		checkNotNull(elementSupplier);
+		checkArgument(elementsToSupply >= 0, "elementsToSupply may not be negative");
 		return new ListSupplier<T>(elementSupplier, elementsToSupply);
 	}
 

@@ -1,7 +1,6 @@
 package se.j4j.argumentparser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static se.j4j.argumentparser.ProgramInformation.programName;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 
 import java.io.Serializable;
@@ -11,17 +10,20 @@ import javax.annotation.concurrent.NotThreadSafe;
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.argumentparser.internal.Texts.UsageTexts;
+import se.j4j.strings.Description;
+import se.j4j.strings.Descriptions;
+import se.j4j.strings.Descriptions.SerializableDescription;
 
 /**
  * Indicates that something went wrong in a {@link CommandLineParser}. The typical remedy action is
- * to present {@link #getMessageAndUsage(String)} to the user so he is informed about what he did
+ * to present {@link #getMessageAndUsage()} to the user so he is informed about what he did
  * wrong. As all {@link Exception}s should be, {@link ArgumentException} is {@link Serializable} so
  * usage is available after deserialization.
  */
 @NotThreadSafe
 public abstract class ArgumentException extends Exception
 {
-	private Usage usage = null;
+	private SerializableDescription usageText = null;
 
 	/**
 	 * The used name, one of the strings passed to {@link ArgumentBuilder#names(String...)}
@@ -50,14 +52,15 @@ public abstract class ArgumentException extends Exception
 	}
 
 	/**
-	 * Returns a usage string explaining how to use the {@link CommandLineParser} that caused this
-	 * exception, prepended with an error message detailing the erroneous argument and, if
-	 * applicable, a reference to the usage where the user can read about acceptable input.
+	 * Returns a usage string explaining how to use the {@link CommandLineParser} that
+	 * caused this exception, prepended with an error message detailing the erroneous argument and,
+	 * if applicable, a reference to the usage where the user can read about acceptable input.
 	 */
-	public final String getMessageAndUsage(String programName)
+	public final String getMessageAndUsage()
 	{
+		// TODO: jack into the uncaughtExceptionHandler and remove stacktraces?
 		String message = getMessage(usedArgumentName);
-		return message + usageReference() + NEWLINE + NEWLINE + getUsage(programName);
+		return message + usageReference() + NEWLINE + NEWLINE + getUsage();
 	}
 
 	/**
@@ -71,27 +74,38 @@ public abstract class ArgumentException extends Exception
 	protected abstract String getMessage(String referenceName);
 
 	/**
+	 * <pre>
+	 * {@inheritDoc}
+	 * 
 	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
+	 * </pre>
 	 */
 	@Override
 	public final String getMessage()
 	{
+		// TODO: Reference to usageReference even without usage?
 		return getMessage(usedArgumentName);
 	}
 
 	/**
-	 * Returns a usage string explaining how to use the {@link CommandLineParser} that caused this
-	 * exception.
+	 * Returns a usage string explaining how to use the {@link CommandLineParser} that
+	 * caused this exception.
 	 */
-	private String getUsage(String programName)
+	private String getUsage()
 	{
-		checkNotNull(usage, ProgrammaticErrors.NO_USAGE_AVAILABLE, programName);
-		return usage.forProgram(programName(programName));
+		checkNotNull(usageText, ProgrammaticErrors.NO_USAGE_AVAILABLE);
+		return usageText.description();
 	}
 
-	final ArgumentException originatedFrom(final CommandLineParser theParserThatTriggeredMe)
+	final ArgumentException withUsage(final Usage usage)
 	{
-		usage = new Usage(theParserThatTriggeredMe.allArguments());
+		usageText = Descriptions.asSerializable(new Description(){
+			@Override
+			public String description()
+			{
+				return usage.toString();
+			}
+		});
 		return this;
 	}
 

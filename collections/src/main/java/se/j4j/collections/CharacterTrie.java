@@ -30,7 +30,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * 
  * TODO: Implement SortedMap instead of Map
  * 
- * @param <E> the type of values stored in the trie
+ * @param <V> the type of values stored in the trie
  * </pre>
  */
 @NotThreadSafe
@@ -231,14 +231,13 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		}
 
 		/**
-		 * Makes sure that a child that represents the given {@link childChar} is found in this
+		 * Makes sure that a child that represents the given {@code childChar} is found in this
 		 * entry.
 		 * 
 		 * @param childChar the character to create/get a child for
-		 * @param key
 		 * @return either the already existing child or a newly created one
 		 */
-		private Entry<V> ensureChild(final Character childChar, final String key)
+		private Entry<V> ensureChild(final Character childChar)
 		{
 			if(children == null)
 			{
@@ -270,7 +269,6 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		 * the children and if nothing there then it walks back up and checks siblings.
 		 * (essentially a pre-order tree traversal)
 		 * 
-		 * @param predecessorKey
 		 * @param level the current level we're in (in the current stack)
 		 */
 		private Entry<V> successor(Entry<V> predecessor, CharSequence predecessorKey, int level, boolean isGoingDown)
@@ -296,6 +294,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 				if(next != null)
 					return next.getValue().successor(predecessor, predecessorKey, level + 1, true);
 			}
+
 			if(!isRoot()) // Go back up and enter the sibling
 				return parent.successor(predecessor, predecessorKey, level - 1, false);
 
@@ -327,7 +326,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 			return false;
 		}
 
-		public int size()
+		private int size()
 		{
 			int size = isValue ? 1 : 0;
 			if(hasChildren())
@@ -367,14 +366,10 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 	}
 
 	/**
-	 * @param key the key
-	 * @param value the value
-	 * @return the old value associated with {@code key}, or null if no
-	 *         such association existed before
 	 * @throws NullPointerException if {@code key} or {@code value} is null
 	 */
 	@Override
-	public V put(final String key, @Nullable final V value)
+	public V put(final String key, final V value)
 	{
 		checkNotNull(key, "Null key given, CharacterTrie does not support null keys as they are error-prone");
 		checkNotNull(value, "Null value given, CharacterTrie does not support null values as they are error-prone. "
@@ -387,7 +382,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		{
 			Character c = key.charAt(i);
 			// Traverses the tree down to the end where we put in our child
-			current = current.ensureChild(c, key);
+			current = current.ensureChild(c);
 		}
 		V oldValue = current.setValue(value);
 		if(oldValue == null)
@@ -398,9 +393,6 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		return oldValue;
 	}
 
-	/**
-	 * @return the number of key-value mappings in this trie
-	 */
 	@Override
 	@CheckReturnValue
 	public int size()
@@ -408,10 +400,6 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		return size;
 	}
 
-	/**
-	 * @param key the key to delete from this tree
-	 * @return true if the key previously had a value in this tree
-	 */
 	@Override
 	public V remove(final Object keyToRemove)
 	{
@@ -463,10 +451,6 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		return null;
 	}
 
-	/**
-	 * @param key
-	 * @return true if the given key exists in the tree
-	 */
 	@Override
 	@CheckReturnValue
 	public boolean containsKey(@Nullable final Object key)
@@ -477,11 +461,6 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		return root.get(keyToCheckContainMentFor) != null;
 	}
 
-	/**
-	 * @param key
-	 * @return the value stored for the given key, or null if no such value was
-	 *         found
-	 */
 	@Override
 	@CheckReturnValue
 	public V get(final Object key)
@@ -491,8 +470,9 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 	}
 
 	/**
-	 * @return the entry that starts with the greatest amount of characters as {@code key}, or null
-	 *         if no such entry exists
+	 * Returns the entry that shares the longest prefix with {@code key}, or null
+	 * if no such entry exists
+	 * 
 	 * @see <a href="http://en.wikipedia.org/wiki/Longest_prefix_match">Longest_prefix_match</a>
 	 */
 	@CheckReturnValue
@@ -515,17 +495,12 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 
 	/**
 	 * Create a simple Entry which parent is null.
-	 * 
-	 * @return
 	 */
 	private Entry<V> createRoot()
 	{
 		return new Entry<V>('r', null);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void clear()
 	{
@@ -534,20 +509,17 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		modCount++;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Set<Map.Entry<String, V>> entrySet()
 	{
 		return new EntrySet(root);
 	}
 
-	final class EntrySet extends AbstractSet<Map.Entry<String, V>>
+	private final class EntrySet extends AbstractSet<Map.Entry<String, V>>
 	{
 		private final Entry<V> startingPoint;
 
-		EntrySet(Entry<V> startingPoint)
+		private EntrySet(Entry<V> startingPoint)
 		{
 			this.startingPoint = startingPoint;
 		}
@@ -571,13 +543,13 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		}
 	}
 
-	final class EntryIterator implements Iterator<Map.Entry<String, V>>
+	private final class EntryIterator implements Iterator<Map.Entry<String, V>>
 	{
 		private int expectedModCount = modCount;
 		private Entry<V> next;
 		private Entry<V> lastReturned = null;
 
-		public EntryIterator(Entry<V> startingPoint)
+		private EntryIterator(Entry<V> startingPoint)
 		{
 			next = startingPoint;
 		}

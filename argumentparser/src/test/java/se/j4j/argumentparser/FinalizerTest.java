@@ -57,7 +57,7 @@ public class FinalizerTest
 	}
 
 	@Test
-	public void testThatCallbacksAreCalledForValuesFromSplit() throws ArgumentException
+	public void testThatFinalizersAreCalledForValuesFromSplit() throws ArgumentException
 	{
 		assertThat(stringArgument().finalizeWith(new AddBar()).splitWith(",").parse("foo,bar")).isEqualTo(asList("foobar", "barbar"));
 	}
@@ -71,7 +71,7 @@ public class FinalizerTest
 	@Test
 	public void testThatDefaultValuesAreFinalizedForUsage()
 	{
-		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage("")).contains("Default: foo");
+		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage()).contains("Default: foo");
 	}
 
 	@Test(expected = IllegalStateException.class)

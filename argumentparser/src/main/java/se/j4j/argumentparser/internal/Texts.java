@@ -20,7 +20,7 @@ public final class Texts
 	}
 
 	/**
-	 * Texts visible in usage texts printed with {@link CommandLineParser#usage(String)}
+	 * Texts visible in usage texts printed with {@link CommandLineParser#usage()}
 	 */
 	public static final class UsageTexts
 	{
@@ -46,7 +46,7 @@ public final class Texts
 		 * 
 		 * For instance: ". See usage for --author for proper values."
 		 * 
-		 * Used by {@link ArgumentException#getMessageAndUsage(String)} to guide
+		 * Used by {@link ArgumentException#getMessageAndUsage()} to guide
 		 * the user to the correct argument from an error message.
 		 * </pre>
 		 */
@@ -122,7 +122,7 @@ public final class Texts
 		 * 
 		 * For instance: "Missing required parameters for commit: [--author]"
 		 * 
-		 * Used by {@link Command}s that's missing {@link ArgumentBuilder#required()} {@link Argument}s.
+		 * Used by {@link Command}s that are missing {@link ArgumentBuilder#required()} {@link Argument}s.
 		 * </pre>
 		 */
 		public static final String MISSING_COMMAND_ARGUMENTS = "Missing required arguments for %s: %s";
@@ -142,30 +142,12 @@ public final class Texts
 		/**
 		 * <pre>
 		 * Parameters
-		 * 1st %s = the argument name
-		 * 2nd %s = the second occurrence of the key=value pair
-		 * 
-		 * For instance: "'-Dsystem.property.name' was found as a key several times in the input"
-		 * 
-		 * Used by {@link ArgumentBuilder#asPropertyMap()} when {@link ArgumentBuilder#repeated()}
-		 * hasn't been specified but the user repeats the property anyways.
-		 * </pre>
-		 */
-		public static final String UNALLOWED_REPETITION_OF_KEY = "'%s%s' was found as a key several times in the input";
-
-		/**
-		 * <pre>
-		 * Parameters
-		 * 1st %s the unallowed value
+		 * 1st %s the disallowed value
 		 * 2nd %s description of valid values
+		 * 
+		 * For instance: "'5' is not between 1 and 4" (where 1st %s = 5, 2nd %s = between 1 and 4)
 		 */
-		public static final String UNALLOWED_VALUE = "'%s' is not %s";
-
-		public static final String INVALID_BIG_INTEGER = "'%s' is not a valid big-integer";
-
-		public static final String INVALID_DOUBLE = "'%s' is not a valid double (64-bit IEEE 754 floating point)";
-
-		public static final String INVALID_FLOAT = "'%s' is not a valid float (32-bit IEEE 754 floating point)";
+		public static final String DISALLOWED_VALUE = "'%s' is not %s";
 
 		public static final String INVALID_CHAR = "'%s' is not a valid character";
 
@@ -206,6 +188,7 @@ public final class Texts
 		{
 		}
 
+		// TODO: reference all constants from test cases so that they are easy to track
 		/**
 		 * Parameter %s = the non-unique meta description
 		 */
@@ -258,14 +241,11 @@ public final class Texts
 
 		public static final String DEFAULT_VALUE_AND_REQUIRED = "Having a requried argument and a default value makes no sense";
 		public static final String INVALID_CALL_ORDER = "The %s needs to be set after the %s invocation";
-		/**
-		 * Parameter %s = the program name that is requesting a usage text
-		 */
-		public static final String NO_USAGE_AVAILABLE = "No originParser set for ArgumentException. No usage available for %s";
+		public static final String NO_USAGE_AVAILABLE = "No originParser set for ArgumentException. No usage available.";
 
 		/**
-		 * Parameter %s = the illegal argument that the {@link CommandLineParser} wasn't configured
-		 * to handle
+		 * Parameter %s = the illegal argument that the {@link CommandLineParser} wasn't
+		 * configured to handle
 		 */
 		public static final String ILLEGAL_ARGUMENT = "%s was not found in this result at all. Did you perhaps forget to add it to withArguments(...)?";
 	}

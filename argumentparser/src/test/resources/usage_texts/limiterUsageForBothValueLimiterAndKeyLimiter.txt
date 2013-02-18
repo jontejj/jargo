@@ -1,6 +1,6 @@
 'zoo' didn't match any of: [foo, bar]. See usage for -I for proper values.
 
-Usage: LimitedKeysAndLimitedValues [Arguments]
+Usage: limiterUsageForBothValueLimiterAndKeyLimiter [Arguments]
 
 Arguments:
 -I<string>=<integer>    <string>=<integer>: where "<string>" is any of [foo, bar] and "<integer>" is [0‥10]

@@ -45,12 +45,12 @@ public final class EnumTester
 		{
 			throw new IllegalArgumentException(enumClass.getSimpleName() + " is not an Enum", e);
 		}
-		int index = 0;
 		for(T enumConstant : enumClass.getEnumConstants())
 		{
+			String toStringValue = enumConstant.toString();
 			try
 			{
-				Object viaValueOf = compilerGeneratedMethod.invoke(null, enumConstant.toString());
+				Object viaValueOf = compilerGeneratedMethod.invoke(null, toStringValue);
 				assertThat(viaValueOf).isSameAs(enumConstant);
 			}
 			catch(IllegalAccessException e)
@@ -59,9 +59,10 @@ public final class EnumTester
 			}
 			catch(InvocationTargetException e)
 			{
-				throw new IllegalArgumentException("valueOf failed for: " + enumConstant + " (the enum constant at index " + index + ")", e);
+				// TODO: verify error string
+				throw new IllegalArgumentException(enumClass.getName() + "#" + enumConstant.name() + "#valueOf() threw " + e.getCause()
+						+ " for input: " + toStringValue, e);
 			}
-			index++;
 		}
 	}
 }

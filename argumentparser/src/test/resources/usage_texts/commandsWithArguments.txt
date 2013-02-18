@@ -1,4 +1,4 @@
-Usage: CommandUsage [Arguments]
+Usage: commandsWithArguments [Arguments]
 
 Arguments:
 build      Builds a target

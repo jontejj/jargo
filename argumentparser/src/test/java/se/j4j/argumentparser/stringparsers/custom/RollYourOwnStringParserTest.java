@@ -34,7 +34,7 @@ public class RollYourOwnStringParserTest
 	{
 		assertThat(dateArgument("--start").parse("--start", "2011-03-30")).isEqualTo(new DateTime("2011-03-30"));
 
-		String usage = dateArgument("--start").usage("");
+		String usage = dateArgument("--start").usage();
 		assertThat(usage).isEqualTo(expected("dateTime"));
 	}
 }
