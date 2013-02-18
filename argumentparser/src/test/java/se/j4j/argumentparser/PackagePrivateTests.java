@@ -2,16 +2,20 @@ package se.j4j.argumentparser;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
+import static se.j4j.argumentparser.ProgramInformation.withProgramName;
 import static se.j4j.argumentparser.StringParsers.optionParser;
+import static se.j4j.strings.StringsUtil.NEWLINE;
 import static se.j4j.testlib.UtilityClassTester.testUtilityClassDesign;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 
 import org.junit.Test;
 
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
-import se.j4j.argumentparser.CommandLineParser.ParserCache;
+import se.j4j.argumentparser.Argument.ParameterArity;
+import se.j4j.argumentparser.CommandLineParserInstance.ArgumentIterator;
+import se.j4j.argumentparser.CommandLineParserInstance.ParserCache;
 import se.j4j.argumentparser.StringParsers.StringStringParser;
 import se.j4j.argumentparser.commands.Build;
 import se.j4j.argumentparser.internal.Texts;
@@ -42,28 +46,35 @@ public class PackagePrivateTests
 	public void testArgumentBuilderToString()
 	{
 		assertThat(integerArgument("-i").description("foo").metaDescription("bar").toString())
-				.isEqualTo(	"DefaultArgumentBuilder{names=[-i], description=foo, metaDescription=bar, hideFromUsage=false"
-									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= }");
+				.isEqualTo(	"DefaultArgumentBuilder{names=[-i], description=foo, metaDescription=Optional.of(bar), hideFromUsage=false"
+									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= , defaultValueDescriber=NumberDescriber"
+									+ ", locale=Optional.absent()}");
 	}
 
 	@Test
 	public void testParserToString()
 	{
-		assertThat(integerArgument().internalParser().toString()).isEqualTo("-2147483648 to 2147483647");
+		assertThat(integerArgument().internalParser().toString()).isEqualTo("-2,147,483,648 to 2,147,483,647");
+	}
+
+	@Test
+	public void testProgramInformationToString()
+	{
+		assertThat(withProgramName("name").programDescription("description").toString()).isEqualTo("name:" + NEWLINE + "description" + NEWLINE);
 	}
 
 	@Test
 	public void testCommandLineParserToString() throws ArgumentException
 	{
-		CommandLineParser parser = CommandLineParser.withArguments();
-		assertThat(parser.toString()).contains("CommandLineParser#toString");
+		CommandLineParser parser = CommandLineParser.withArguments(integerArgument().build());
+		assertThat(parser.toString()).contains("Usage: ");
 		assertThat(parser.parse().toString()).isEqualTo("{}");
 	}
 
 	@Test
 	public void testArgumentIteratorToString()
 	{
-		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar"), null).toString()).isEqualTo("[foobar]");
+		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar")).toString()).isEqualTo("[foobar]");
 	}
 
 	@Test
@@ -82,7 +93,8 @@ public class PackagePrivateTests
 	@Test
 	public void testUsageToString()
 	{
-		assertThat(new Usage(Collections.<Argument<?>>emptySet()).toString()).isEqualTo("Usage: ");
+		assertThat(new Usage(Collections.<Argument<?>>emptySet(), Locale.getDefault(), withProgramName("Program")).toString())
+				.isEqualTo("Usage: Program");
 	}
 
 	@Test
@@ -104,5 +116,6 @@ public class PackagePrivateTests
 	public void testValueOfAndToStringForEnums()
 	{
 		EnumTester.testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(StringStringParser.class);
+		EnumTester.testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(ParameterArity.class);
 	}
 }

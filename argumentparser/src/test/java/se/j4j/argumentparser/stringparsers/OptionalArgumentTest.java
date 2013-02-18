@@ -5,6 +5,7 @@ import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 
 import java.util.Collections;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
@@ -30,16 +31,22 @@ public class OptionalArgumentTest
 	}
 
 	@Test
+	public void testThatOptionalIsFalseWhenArgumentIsGivenAndDefaultIsTrue() throws ArgumentException
+	{
+		assertThat(optionArgument("--disable-logging").defaultValue(true).parse("--disable-logging")).isFalse();
+	}
+
+	@Test
 	public void testDescription()
 	{
-		String usage = optionArgument("--enable-logging").usage("OptionArgument");
+		String usage = optionArgument("--enable-logging").usage();
 		assertThat(usage).contains("Default: disabled");
 	}
 
 	@Test
 	public void testForDefaultTrue() throws ArgumentException
 	{
-		String usage = optionArgument("--disable-logging").defaultValue(true).usage("OptionArgument");
+		String usage = optionArgument("--disable-logging").defaultValue(true).usage();
 		assertThat(usage).contains("Default: enabled");
 
 		assertThat(optionArgument("--disable-logging").defaultValue(true).parse()).isTrue();
@@ -69,6 +76,29 @@ public class OptionalArgumentTest
 	public void testThatOptionalArgumentsCanUseAnotherName() throws ArgumentException
 	{
 		assertThat(optionArgument("-l").names("--logging").parse("--logging")).isTrue();
+	}
+
+	/**
+	 * TODO: maybe this should be supported? KeyValueParser#defaultValue() would have to create a
+	 * Map in that relayed key lookups against the defaultValue previously set.
+	 */
+	@Test
+	@Ignore
+	public void testThatOptionArgumentWorksInPropertyMap() throws ArgumentException
+	{
+		// new LinkedHashMap<K, V>()
+		// {
+		// @Override
+		// public V get(Object key)
+		// {
+		// if(!super.containsKey(key))
+		// {
+		// return defaultValueForValues;
+		// }
+		// return super.get(key);
+		// }
+		// };
+		assertThat(optionArgument("-n").asPropertyMap().parse("-nactived.property").get("actived.property")).isTrue();
 	}
 
 	@Test(expected = IllegalArgumentException.class)

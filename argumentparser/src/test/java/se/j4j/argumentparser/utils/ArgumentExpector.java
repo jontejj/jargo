@@ -9,7 +9,7 @@ import java.util.List;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 
 import com.google.common.collect.Lists;
 

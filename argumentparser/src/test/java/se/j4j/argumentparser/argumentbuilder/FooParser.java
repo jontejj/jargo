@@ -1,5 +1,7 @@
 package se.j4j.argumentparser.argumentbuilder;
 
+import java.util.Locale;
+
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.StringParser;
 
@@ -13,13 +15,13 @@ public class FooParser implements StringParser<Foo>
 	}
 
 	@Override
-	public Foo parse(String argument) throws ArgumentException
+	public Foo parse(String argument, Locale locale) throws ArgumentException
 	{
 		return new Foo(argument, bar);
 	}
 
 	@Override
-	public String descriptionOfValidValues()
+	public String descriptionOfValidValues(Locale locale)
 	{
 		return "foos";
 	}

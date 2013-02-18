@@ -23,7 +23,7 @@ import com.google.common.collect.Ranges;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Test for {@link Limiter} and {@link ArgumentBuilder#limitTo(Limiter)}
+ * Test for {@link ArgumentBuilder#limitTo(Predicate)}
  */
 public class LimiterTest
 {
@@ -38,7 +38,7 @@ public class LimiterTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected.getMessageAndUsage("LimiterOutOfRange")).isEqualTo(expected("limiterOutOfRange"));
+			assertThat(expected.getMessageAndUsage()).isEqualTo(expected("limiterOutOfRange"));
 		}
 		assertThat(limitedNumber.parse("4")).isEqualTo(4);
 
@@ -70,7 +70,7 @@ public class LimiterTest
 		}
 		catch(ArgumentException expected)
 		{
-			String usage = expected.getMessageAndUsage("OnlyAllowsFoo");
+			String usage = expected.getMessageAndUsage();
 			assertThat(usage).isEqualTo(expected("arityWithLimitedValues"));
 		}
 	}

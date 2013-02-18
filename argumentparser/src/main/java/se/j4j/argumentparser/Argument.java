@@ -3,7 +3,9 @@ package se.j4j.argumentparser;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.strings.Descriptions.format;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
@@ -11,10 +13,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.ParsedArgumentHolder;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
-import se.j4j.argumentparser.StringParsers.VariableArityParser;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.argumentparser.internal.Texts.UserErrors;
 import se.j4j.guavaextensions.Suppliers2;
@@ -22,6 +21,7 @@ import se.j4j.strings.Describer;
 import se.j4j.strings.Description;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
@@ -41,11 +41,23 @@ import com.google.common.base.Suppliers;
 @Immutable
 public final class Argument<T> extends ArgumentSettings
 {
+	enum ParameterArity
+	{
+		NO_ARGUMENTS,
+		/**
+		 * A marker for a variable amount of parameters
+		 */
+		VARIABLE_AMOUNT,
+		AT_LEAST_ONE_ARGUMENT
+	}
+
 	@Nonnull private final List<String> names;
 
 	@Nonnull private final Description description;
-	@Nullable private final String metaDescription;
+	@Nullable private final Optional<String> metaDescription;
 	@Nullable private final String separator;
+
+	private final Optional<Locale> localeOveride;
 
 	private final boolean required;
 	private final boolean ignoreCase;
@@ -57,20 +69,20 @@ public final class Argument<T> extends ArgumentSettings
 	@Nullable private final Describer<? super T> defaultValueDescriber;
 	@Nonnull private final Predicate<? super T> limiter;
 
-	@Nonnull private final Supplier<CommandLineParser> commandLineParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
+	@Nonnull private final Supplier<CommandLineParserInstance> commandLineParser = Suppliers.memoize(new Supplier<CommandLineParserInstance>(){
 		@Override
-		public CommandLineParser get()
+		public CommandLineParserInstance get()
 		{
-			return CommandLineParser.withArguments(Argument.this);
+			return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), ProgramInformation.AUTO);
 		}
 	});
 
 	// Internal bookkeeping
 	@Nonnull private final Function<T, T> finalizer;
-	private final int parameterArity;
+	private final ParameterArity parameterArity;
 	private final boolean isPropertyMap;
 
-	private CommandLineParser commandLineParser()
+	private CommandLineParserInstance commandLineParser()
 	{
 		return commandLineParser.get();
 	}
@@ -78,13 +90,9 @@ public final class Argument<T> extends ArgumentSettings
 	/**
 	 * <pre>
 	 * Creates a basic object for handling {@link Argument}s taken from a command line invocation.
-	 * For practical uses of this constructor see {@link ArgumentFactory#optionArgument(String...)} (and friends)
+	 * For practical uses of this constructor see {@link ArgumentFactory#optionArgument(String, String...)} (and friends)
 	 * and the {@link ArgumentBuilder}.
 	 * </pre>
-	 * 
-	 * @return an Argument that can be given as input to
-	 *         {@link CommandLineParser#withArguments(Argument...)} and
-	 *         {@link ParsedArguments#get(Argument)}
 	 */
 	Argument(final ArgumentBuilder<?, T> builder)
 	{
@@ -93,6 +101,7 @@ public final class Argument<T> extends ArgumentSettings
 		this.description = builder.description();
 		this.required = builder.isRequired();
 		this.separator = builder.separator();
+		this.localeOveride = builder.localeOverride();
 		this.ignoreCase = builder.isIgnoringCase();
 		this.names = builder.names();
 		this.isPropertyMap = builder.isPropertyMap();
@@ -140,23 +149,23 @@ public final class Argument<T> extends ArgumentSettings
 	@Nullable
 	public T parse(String ... actualArguments) throws ArgumentException
 	{
-		return commandLineParser().parse(actualArguments).get(this);
+		return commandLineParser().parse(Arrays.asList(actualArguments), locale(Locale.getDefault())).get(this);
 	}
 
 	/**
 	 * Returns a usage string for this argument. Should only be used if one argument is supported,
-	 * otherwise the {@link CommandLineParser#usage(String)} method should be used instead.
+	 * otherwise the {@link CommandLineParser#usage()} method should be used instead.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public String usage(String programName)
+	public String usage()
 	{
-		return commandLineParser().usage(programName);
+		return new Usage(commandLineParser().allArguments(), locale(Locale.getDefault()), ProgramInformation.AUTO).toString();
 	}
 
 	/**
 	 * Describes {@link Argument}s by their first name. If they are indexed and have no name the
-	 * meta description is used instead.
+	 * {@link StringParser#metaDescription() meta description} is used instead.
 	 */
 	@Override
 	public String toString()
@@ -172,12 +181,12 @@ public final class Argument<T> extends ArgumentSettings
 		return parser;
 	}
 
-	String descriptionOfValidValues()
+	String descriptionOfValidValues(Locale localeToDescribeValuesWith)
 	{
 		if(limiter != Predicates.alwaysTrue())
 			return limiter.toString();
 
-		return parser().descriptionOfValidValues(this);
+		return parser().descriptionOfValidValues(this, locale(localeToDescribeValuesWith));
 	}
 
 	@Override
@@ -218,15 +227,8 @@ public final class Argument<T> extends ArgumentSettings
 		return isAllowedToRepeat;
 	}
 
-	/**
-	 * {@link ArgumentFactory#optionArgument(String, String...)} returns 0<br>
-	 * {@link ArgumentBuilder#variableArity()} returns {@link VariableArityParser#VARIABLE_ARITY} <br>
-	 * {@link ArgumentBuilder#arity(int)} returns <code>numberOfParameters</code>
-	 * 
-	 * @return
-	 */
 	@Override
-	int parameterArity()
+	ParameterArity parameterArity()
 	{
 		return parameterArity;
 	}
@@ -255,22 +257,27 @@ public final class Argument<T> extends ArgumentSettings
 	}
 
 	@Nullable
-	String defaultValueDescription()
+	String defaultValueDescription(Locale inLocale)
 	{
 		T value = defaultValue();
 		if(defaultValueDescriber != null)
-			return defaultValueDescriber.describe(value);
-		return parser().describeValue(value, this);
+			return defaultValueDescriber.describe(value, inLocale);
+		return parser().describeValue(value);
 	}
 
 	@Nonnull
 	String metaDescriptionInLeftColumn()
 	{
-		String meta = metaDescription;
-		// If the meta description hasn't been overridden we default to the one provided by
-		// the StringParser interface
-		if(meta == null)
+		String meta;
+
+		if(metaDescription.isPresent())
 		{
+			meta = metaDescription.get();
+		}
+		else
+		{
+			// If the meta description hasn't been overridden we default to the one provided by
+			// the StringParser interface
 			meta = parser.metaDescriptionInLeftColumn(this);
 		}
 
@@ -286,8 +293,8 @@ public final class Argument<T> extends ArgumentSettings
 	String metaDescriptionInRightColumn()
 	{
 		// First check if the description has been overridden
-		if(metaDescription != null)
-			return metaDescription;
+		if(metaDescription.isPresent())
+			return metaDescription.get();
 		return parser.metaDescriptionInRightColumn(this);
 	}
 
@@ -300,7 +307,7 @@ public final class Argument<T> extends ArgumentSettings
 	void checkLimit(@Nullable final T value) throws ArgumentException
 	{
 		if(!limiter.apply(value))
-			throw withMessage(format(UserErrors.UNALLOWED_VALUE, value, limiter));
+			throw withMessage(format(UserErrors.DISALLOWED_VALUE, value, limiter));
 	}
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
@@ -309,7 +316,7 @@ public final class Argument<T> extends ArgumentSettings
 		{
 			if(!limiter.apply(value))
 			{
-				String unallowedValue = String.format(UserErrors.UNALLOWED_VALUE, value, limiter.toString());
+				String unallowedValue = String.format(UserErrors.DISALLOWED_VALUE, value, limiter);
 				throw new IllegalStateException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, unallowedValue));
 			}
 		}
@@ -320,10 +327,15 @@ public final class Argument<T> extends ArgumentSettings
 		}
 	}
 
-	void finalizeValue(ParsedArgumentHolder holder)
+	void finalizeValue(ParsedArguments holder)
 	{
 		T value = holder.getValue(this);
 		T finalizedValue = finalizer.apply(value);
 		holder.put(this, finalizedValue);
+	}
+
+	Locale locale(Locale usualLocale)
+	{
+		return localeOveride.or(usualLocale);
 	}
 }

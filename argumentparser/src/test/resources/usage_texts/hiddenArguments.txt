@@ -1,4 +1,4 @@
-Usage: HiddenArgument [Arguments]
+Usage: hiddenArguments [Arguments]
 
 Arguments:
 --visible <string>    <string>: any string

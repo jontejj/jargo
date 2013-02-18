@@ -1,5 +1,5 @@
-Usage: SeparatorBetweenNameAndMeta [Arguments]
+Usage: separatorBetweenNameAndMeta [Arguments]
 
 Arguments:
--N=<integer>    <integer>: -2147483648 to 2147483647
+-N=<integer>    <integer>: -2 147 483 648 to 2 147 483 647
                 Default: 0

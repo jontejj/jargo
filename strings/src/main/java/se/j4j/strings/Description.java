@@ -1,5 +1,6 @@
 package se.j4j.strings;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -8,6 +9,8 @@ import javax.annotation.concurrent.Immutable;
  * optimization that the string is not constructed if it's not used.
  * If you already have a created {@link String} it's recommended to just use that instead.
  * This interface is typically implemented using an anonymous class.
+ * 
+ * @see Descriptions
  */
 @Immutable
 public interface Description
@@ -16,5 +19,6 @@ public interface Description
 	 * @return a description
 	 */
 	@Nonnull
+	@CheckReturnValue
 	String description();
 }

@@ -96,6 +96,8 @@ public final class Functions2
 		@Override
 		public List<E> apply(List<E> values)
 		{
+			if(values == null)
+				return null;
 			return ImmutableList.copyOf(Lists.transform(values, elementTransformer));
 		}
 	}
@@ -107,7 +109,6 @@ public final class Functions2
 	@Nonnull
 	public static <K, V> Function<Map<K, V>, Map<K, V>> mapValueTransformer(Function<V, V> valueTransformer)
 	{
-		checkNotNull(valueTransformer);
 		if(valueTransformer == Functions.identity())
 			return Functions.identity();
 		return new MapValueTransformer<K, V>(valueTransformer);
@@ -119,12 +120,14 @@ public final class Functions2
 
 		private MapValueTransformer(Function<V, V> valueTransformer)
 		{
-			this.valueTransformer = valueTransformer;
+			this.valueTransformer = checkNotNull(valueTransformer);
 		}
 
 		@Override
 		public Map<K, V> apply(Map<K, V> map)
 		{
+			if(map == null)
+				return null;
 			return ImmutableMap.copyOf(Maps.transformValues(map, valueTransformer));
 		}
 	}
@@ -144,6 +147,8 @@ public final class Functions2
 		@Override
 		public List<E> apply(List<E> value)
 		{
+			if(value == null)
+				return null;
 			return Collections.unmodifiableList(value);
 		}
 	}
@@ -163,6 +168,8 @@ public final class Functions2
 		@Override
 		public Map<K, V> apply(Map<K, V> value)
 		{
+			if(value == null)
+				return null;
 			return Collections.unmodifiableMap(value);
 		}
 	}

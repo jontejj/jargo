@@ -1,15 +1,14 @@
 package se.j4j.argumentparser.commands;
 
 import static java.util.Collections.emptyList;
-import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static se.j4j.argumentparser.ArgumentFactory.command;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ import se.j4j.argumentparser.ArgumentBuilder.CommandBuilder;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.Command;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 import se.j4j.argumentparser.commands.Build.BuildTarget;
 import se.j4j.argumentparser.commands.CommitCommand.Commit;
 import se.j4j.argumentparser.commands.CommitCommand.Repository;
@@ -177,16 +176,15 @@ public class CommandTest
 	{
 		BuildTarget target = new BuildTarget();
 		CommandLineParser parser = CommandLineParser.withCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
-		String usage = parser.usage("CommandUsage");
+		String usage = parser.usage();
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
 	}
 
 	private static final class CommandWithIndexedArguments extends Command
 	{
-		@Override
-		protected List<Argument<?>> commandArguments()
+		CommandWithIndexedArguments()
 		{
-			return Arrays.<Argument<?>>asList(integerArgument().arity(2).build());
+			super(integerArgument().arity(2).build());
 		}
 
 		@Override
@@ -219,12 +217,7 @@ public class CommandTest
 	@Test
 	public void testThatTheInnerMostCommandIsPrintedInErrorMessage()
 	{
-		Argument<String> superCommand = command(new Command(){
-			@Override
-			protected List<Argument<?>> commandArguments()
-			{
-				return Arrays.<Argument<?>>asList(command(new CommandWithIndexedArguments()).build());
-			}
+		Argument<String> superCommand = command(new Command(command(new CommandWithIndexedArguments()).build()){
 
 			@Override
 			protected String commandName()
@@ -237,6 +230,7 @@ public class CommandTest
 			{
 			}
 		}).build();
+
 		try
 		{
 			superCommand.parse("superCommand", "aCommand", "1");
@@ -250,23 +244,16 @@ public class CommandTest
 
 	private static final class CommandWithSubCommand extends Command
 	{
-		@Override
-		protected List<Argument<?>> commandArguments()
-		{
-			return Arrays.<Argument<?>>asList(command(new Command(){
+		private static final Argument<Integer> number = integerArgument("-n").build();
 
-				private final Argument<Integer> number = integerArgument("-n").build();
+		public CommandWithSubCommand()
+		{
+			super(command(new Command(number){
 
 				@Override
 				public String description()
 				{
 					return "A subcommand with an argument";
-				}
-
-				@Override
-				protected List<Argument<?>> commandArguments()
-				{
-					return Arrays.<Argument<?>>asList(number);
 				}
 
 				@Override
@@ -305,7 +292,7 @@ public class CommandTest
 
 		commandWithSubCommand.parse("command", "subcommand", "-n", "1");
 
-		assertThat(commandWithSubCommand.usage("CommandWithSubCommand")).isEqualTo(expected("commandWithSubCommand"));
+		assertThat(commandWithSubCommand.usage()).isEqualTo(expected("commandWithSubCommand"));
 	}
 
 	/**
@@ -342,11 +329,15 @@ public class CommandTest
 		ProfilingCommand profiler = new ProfilingCommand();
 		Argument<String> command = command(profiler).build();
 
-		assertThat(ProfilingCommand.numberOfCallsToCreate).isZero();
-		command.parse("profile");
-		assertThat(command.usage("CallUsageToEnsureUsageUsesTheSameParserAsParseUsed")).isNotEmpty();
-
-		assertThat(ProfilingCommand.numberOfCallsToCreate).isEqualTo(1);
+		try
+		{
+			command.parse("profile");
+			fail("Invalid arguments passed to super constructor in ProfilingCommand should cause a lazy initialization error");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage("-n is handled by several arguments");
+		}
 	}
 
 	@Test
@@ -364,6 +355,24 @@ public class CommandTest
 	public void testRepeatedCommands() throws ArgumentException
 	{
 		assertThat(command(new Clean()).repeated().parse("clean", "clean", "clean")).hasSize(3);
+	}
+
+	@Test
+	public void testThatParsedArgumentsCanBeQueriedForTheUsedCommandName() throws ArgumentException
+	{
+		Argument<String> command = command(new Clean()).ignoreCase().build();
+		ParsedArguments result = CommandLineParser.withArguments(command).parse("Clean");
+
+		assertThat(result.get(command)).isEqualTo("Clean");
+	}
+
+	@Test
+	public void testAddingCommandsInChainedFashion() throws ArgumentException
+	{
+		BuildTarget target = new BuildTarget();
+		CommandLineParser.withArguments().and(new Clean(target)).and(new Build(target)).parse("clean", "build");
+		assertThat(target.isClean()).isTrue();
+		assertThat(target.isBuilt()).isTrue();
 	}
 
 	@Test

@@ -1,6 +1,6 @@
 Non-allowed repetition of the argument -s. See usage for -s for proper values.
 
-Usage: NonAllowedRepition [Arguments]
+Usage: unhandledRepition [Arguments]
 
 Arguments:
 -s <string>    <string>: any string

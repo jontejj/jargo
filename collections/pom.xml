@@ -8,7 +8,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>collections</artifactId>
-	<version>${version.collections}</version>
+	<version>0.0.1</version>
 	<name>Collections</name>
 	<description>Classes that implement java.util.Map/List/Set/Collection like functionality. Complements guava.</description>
 	<packaging>jar</packaging>
@@ -16,13 +16,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>${version.guava}</version>
-		</dependency>
-		<dependency>
-			<groupId>se.j4j</groupId>
-			<artifactId>test-lib</artifactId>
-			<version>${version.testlib}</version>
-			<scope>test</scope>
+			<version>13.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

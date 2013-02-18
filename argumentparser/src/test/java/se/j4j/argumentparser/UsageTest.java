@@ -5,34 +5,43 @@ import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.optionArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
-import static se.j4j.argumentparser.ProgramInformation.programName;
 import static se.j4j.argumentparser.utils.ExpectedTexts.expected;
 
 import org.fest.assertions.Fail;
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentExceptions.UnexpectedArgumentException;
+import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
+import se.j4j.argumentparser.internal.Texts.UsageTexts;
+import se.j4j.classes.Classes;
 import se.j4j.strings.Description;
 
 /**
- * Tests for {@link CommandLineParser#usage(String)}, {@link Argument#usage(String)} and
- * {@link ArgumentBuilder#usage(String)}
+ * Tests for {@link CommandLineParser#usage()}, {@link Argument#usage()} and
+ * {@link ArgumentBuilder#usage()}
  * 
  * @formatter:off
  */
 public class UsageTest
 {
 	@Test
+	public void testThatProgramNameDefaultsToMainClassName()
+	{
+		String usage = integerArgument("-n").usage();
+		assertThat(usage).startsWith(UsageTexts.USAGE_HEADER + Classes.mainClassName());
+	}
+
+	@Test
 	public void testUsageWithOptionalArguments()
 	{
-		String usage = optionArgument("-l", "--enable-logging").usage("OptionalArgumentDescription");
+		String usage = optionArgument("-l", "--enable-logging").usage();
 		assertThat(usage).isEqualTo(expected("optionalArgument"));
 	}
 
 	@Test
 	public void testUsageWithOptionalArgumentWithDescription()
 	{
-		String usage = optionArgument("-l", "--enable-logging").description("Enable logging").usage("OptionalArgumentDescriptionWithDescription");
+		String usage = optionArgument("-l", "--enable-logging").description("Enable logging").usage();
 		assertThat(usage).isEqualTo(expected("optionalArgumentWithDescription"));
 	}
 
@@ -40,8 +49,7 @@ public class UsageTest
 	public void testUsageWithRepeatedArguments()
 	{
 		String usage = stringArgument("-s").repeated().metaDescription("greeting phrase")
-				.description("A greeting phrase to greet new connections with").defaultValueDescription("Nothing")
-				.usage("RepeatedArgumentDescription");
+				.description("A greeting phrase to greet new connections with").defaultValueDescription("Nothing").usage();
 
 		assertThat(usage).isEqualTo(expected("repeatedArguments"));
 	}
@@ -56,29 +64,29 @@ public class UsageTest
 		}
 		catch(ArgumentException e)
 		{
-			assertThat(e.getMessageAndUsage("NonAllowedRepition")).isEqualTo(expected("unhandledRepition"));
+			assertThat(e.getMessageAndUsage()).isEqualTo(expected("unhandledRepition"));
 		}
 	}
 
 	@Test
 	public void testUsageForNoArguments()
 	{
-		String usage = CommandLineParser.withArguments().usage("NoArguments");
+		String usage = CommandLineParser.withArguments().programName("NoArguments").usage();
 		assertThat(usage).isEqualTo("Usage: NoArguments");
 	}
 
 	@Test
 	public void testUsageForNoVisibleArguments()
 	{
-		String usage = CommandLineParser.withArguments(integerArgument().hideFromUsage().build()).usage("NoVisibleArguments");
+		String usage = CommandLineParser.withArguments(integerArgument().hideFromUsage().build()).programName("NoVisibleArguments").usage();
 		assertThat(usage).isEqualTo("Usage: NoVisibleArguments");
 	}
 
 	@Test
 	public void testUsageWithArguments()
 	{
-		String usage = stringArgument().usage("SomeArguments");
-		assertThat(usage).startsWith("Usage: SomeArguments [Arguments]");
+		String usage = stringArgument().usage();
+		assertThat(usage).startsWith("Usage: ");
 	}
 
 	@Test
@@ -87,7 +95,7 @@ public class UsageTest
 		Argument<String> hiddenArgument = stringArgument("--hidden").hideFromUsage().build();
 		Argument<String> visibleArgument = stringArgument("--visible").build();
 		CommandLineParser parser = CommandLineParser.withArguments(hiddenArgument, visibleArgument);
-		String usage = parser.usage("HiddenArgument");
+		String usage = parser.usage();
 
 		assertThat(usage).isEqualTo(expected("hiddenArguments"));
 	}
@@ -101,7 +109,7 @@ public class UsageTest
 	@Test
 	public void testUsageTextForDefaultList()
 	{
-		String usage = integerArgument().defaultValue(1).repeated().usage("DefaultList");
+		String usage = integerArgument().defaultValue(1).repeated().usage();
 		assertThat(usage).contains("Default: 1");
 	}
 
@@ -116,7 +124,7 @@ public class UsageTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected.getMessageAndUsage("ArgumentNameSuggestions")).isEqualTo(expected("argumentNameSuggestions"));
+			assertThat(expected.getMessageAndUsage()).isEqualTo(expected("argumentNameSuggestions"));
 		}
 	}
 
@@ -131,12 +139,12 @@ public class UsageTest
 		{
 			try
 			{
-				e.getMessageAndUsage("ProgramName");
+				e.getMessageAndUsage();
 				fail("getMessageAndUsage should throw when not enough information is available to produce a sane usage text");
 			}
 			catch(NullPointerException expected)
 			{
-				assertThat(expected).hasMessage("No originParser set for ArgumentException. No usage available for ProgramName");
+				assertThat(expected).hasMessage(ProgrammaticErrors.NO_USAGE_AVAILABLE);
 			}
 		}
 	}
@@ -149,7 +157,7 @@ public class UsageTest
 		Argument<String> indexThree = stringArgument().description("IndexThree").build();
 		Argument<String> namedOne = stringArgument("-S").build();
 		Argument<String> namedTwo = stringArgument("-T").build();
-		String usage = CommandLineParser.withArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage("SortingOfIndexedArguments");
+		String usage = CommandLineParser.withArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage();
 
 		assertThat(usage).isEqualTo(expected("indexedArgumentsSortingOrder"));
 	}
@@ -164,7 +172,7 @@ public class UsageTest
 		}
 		catch(UnexpectedArgumentException e)
 		{
-			assertThat(e.getMessageAndUsage("DidNotExpectFoo")).isEqualTo(expected("unexpectedArgument"));
+			assertThat(e.getMessageAndUsage()).isEqualTo(expected("unexpectedArgument"));
 		}
 	}
 
@@ -178,15 +186,15 @@ public class UsageTest
 		}
 		catch(UnexpectedArgumentException e)
 		{
-			assertThat(e.getMessageAndUsage("DidNotExpectFoo")).isEqualTo(expected("unexpectedArgumentWithoutPrevious"));
+			assertThat(e.getMessageAndUsage()).isEqualTo(expected("unexpectedArgumentWithoutPrevious"));
 		}
 	}
 
 	@Test
 	public void testProgramDescriptionInUsage()
 	{
-		String usage = CommandLineParser.withArguments(integerArgument().build())
-				.usage(programName("ProgramName").programDescription("Program description of ProgramName"));
+		String usage = CommandLineParser.withArguments(integerArgument().build()).programName("ProgramName")
+				.programDescription("Program description of ProgramName").usage();
 
 		assertThat(usage).isEqualTo(expected("programDescription"));
 	}
@@ -200,7 +208,7 @@ public class UsageTest
 			{
 				return "foo";
 			}
-		}).usage("DescriptionTest");
+		}).usage();
 		assertThat(usage).contains("foo");
 	}
 

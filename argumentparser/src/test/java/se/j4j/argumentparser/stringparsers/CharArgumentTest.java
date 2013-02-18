@@ -38,12 +38,12 @@ public class CharArgumentTest
 	@Test
 	public void testDescription()
 	{
-		String usage = charArgument("-c").usage("CharArgument");
+		String usage = charArgument("-c").usage();
 		assertThat(usage).contains("<character>: any unicode character");
 		assertThat(usage).contains("Default: the Null character");
 
-		assertThat(charArgument("-c").defaultValue(null).usage("CharArgument")).contains("Default: null");
-		assertThat(charArgument("-c").defaultValue('A').usage("CharArgument")).contains("Default: A");
+		assertThat(charArgument("-c").defaultValue(null).usage()).contains("Default: null");
+		assertThat(charArgument("-c").defaultValue('A').usage()).contains("Default: A");
 	}
 
 	@Test

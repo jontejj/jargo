@@ -7,6 +7,9 @@ import java.io.Serializable;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+
 /**
  * Gives you static access to implementations of the {@link Description} interface.
  */
@@ -82,6 +85,44 @@ public final class Descriptions
 		public String description()
 		{
 			return String.format(formattingTemplate, args);
+		}
+
+		@Override
+		public String toString()
+		{
+			return description();
+		}
+	}
+
+	/**
+	 * Lazily caches the result of running {@link Description#description()} on {@code description}
+	 * so that it's only run once.
+	 */
+	public static Description cache(Description description)
+	{
+		checkNotNull(description);
+		return new CachingDescription(description);
+	}
+
+	private static final class CachingDescription implements Description
+	{
+		private final Supplier<String> description;
+
+		private CachingDescription(final Description description)
+		{
+			this.description = Suppliers.memoize(new Supplier<String>(){
+				@Override
+				public String get()
+				{
+					return description.description();
+				}
+			});
+		}
+
+		@Override
+		public String description()
+		{
+			return description.get();
 		}
 
 		@Override
@@ -179,7 +220,9 @@ public final class Descriptions
 	}
 
 	/**
-	 * Returns a version of {@code description} that is serializable
+	 * Returns a version of {@code description} that is serializable. Note that after serialization
+	 * the description is fixed, that is {@link Description#description()} won't be called on
+	 * {@code description} any more.
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -204,9 +247,7 @@ public final class Descriptions
 		private static final class SerializationProxy implements Serializable
 		{
 			/**
-			 * The detail message for this description. Constructed lazily when serialized.
-			 * 
-			 * @serial
+			 * @serial the detail message for this description. Constructed lazily when serialized.
 			 */
 			private final String message;
 

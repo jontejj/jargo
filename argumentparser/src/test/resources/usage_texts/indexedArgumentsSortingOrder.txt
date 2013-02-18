@@ -1,4 +1,4 @@
-Usage: SortingOfIndexedArguments [Arguments]
+Usage: indexedArgumentsSortingOrder [Arguments]
 
 Arguments:
  <string>      IndexOne

@@ -1,7 +1,7 @@
 package se.j4j.argumentparser.exceptions;
 
-import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static se.j4j.argumentparser.ArgumentExceptions.withMessage;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
 import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
+import se.j4j.argumentparser.ArgumentExceptions;
 import se.j4j.argumentparser.CommandLineParser;
 import se.j4j.strings.Description;
 import se.j4j.strings.Descriptions;
@@ -17,7 +18,7 @@ import se.j4j.testlib.Serializer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Tests for {@link ArgumentException}
+ * Tests for {@link ArgumentException} and {@link ArgumentExceptions}
  */
 public class ArgumentExceptionTest
 {
@@ -40,6 +41,13 @@ public class ArgumentExceptionTest
 	public void testThatToStringIsNotRunWhenItIsNotNeeded()
 	{
 		withMessage(Descriptions.format("%s", new FailingToString()));
+	}
+
+	@Test
+	public void testThatCauseIsSetWithMessage()
+	{
+		Throwable cause = new Error();
+		assertThat(withMessage("", cause).getCause()).isEqualTo(cause);
 	}
 
 	@Test
@@ -67,26 +75,41 @@ public class ArgumentExceptionTest
 		}
 		catch(ArgumentException expected)
 		{
-			String usageBeforeSerialization = expected.getMessageAndUsage("SerializationTest");
+			String usageBeforeSerialization = expected.getMessageAndUsage();
 			ArgumentException revivedException = Serializer.clone(expected);
-			assertThat(revivedException.getMessageAndUsage("SerializationTest")).isEqualTo(usageBeforeSerialization);
+			assertThat(revivedException.getMessageAndUsage()).isEqualTo(usageBeforeSerialization);
 		}
 	}
 
 	@Test
-	public void testThatDifferentProgramNamesWorksAfterSerialization()
+	public void testThatProgramNameIsSerialized()
 	{
 		Argument<Integer> number = integerArgument("-n").build();
 		try
 		{
-			CommandLineParser.withArguments(number).parse("-n");
+			CommandLineParser.withArguments(number).programName("MyProgram").parse("-n");
 			fail("-n argument should require an integer parameter");
 		}
 		catch(ArgumentException expected)
 		{
 			ArgumentException revivedException = Serializer.clone(expected);
-			assertThat(revivedException.getMessageAndUsage("SerializationTestOne")).contains("SerializationTestOne");
-			assertThat(revivedException.getMessageAndUsage("SerializationTestTwo")).contains("SerializationTestTwo");
+			assertThat(revivedException.getMessageAndUsage()).contains("MyProgram");
+		}
+	}
+
+	@Test
+	public void testThatProgramDescriptionIsSerialized()
+	{
+		Argument<Integer> number = integerArgument("-n").build();
+		try
+		{
+			CommandLineParser.withArguments(number).programDescription("MyDescription").parse("-n");
+			fail("-n argument should require an integer parameter");
+		}
+		catch(ArgumentException expected)
+		{
+			ArgumentException revivedException = Serializer.clone(expected);
+			assertThat(revivedException.getMessageAndUsage()).contains("MyDescription");
 		}
 	}
 

@@ -9,7 +9,6 @@ import static se.j4j.strings.StringsUtil.CloseMatch.BY_CLOSEST_MATCH_FIRST;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
@@ -30,8 +29,12 @@ public final class StringsUtil
 	/**
 	 * A suitable string to represent newlines on this specific platform
 	 */
-	@Nonnull public static final String NEWLINE = System.getProperty("line.separator");
-	@Nonnull public static final char TAB = '\t';
+	public static final String NEWLINE = System.getProperty("line.separator");
+
+	/**
+	 * The <a href="http://en.wikipedia.org/wiki/ASCII_tab">ASCII tab</a> (\t) character
+	 */
+	public static final char TAB = '\t';
 
 	/**
 	 * @param numberOfSpaces to put in the created string
@@ -45,22 +48,16 @@ public final class StringsUtil
 	}
 
 	/**
-	 * Converts all {@link String}s in {@code strings} into lower case using the
-	 * default locale.
-	 * TODO: add overloaded method that takes in the Locale as well
-	 * 
-	 * @return a new (mutable) list with lower case strings in
+	 * Returns a "       ^" string pointing at the position indicated by {@code indexToPointAt}
 	 */
-	@Nonnull
-	@CheckReturnValue
-	public static List<String> toLowerCase(List<String> strings)
+	public static String pointingAtIndex(int indexToPointAt)
 	{
-		List<String> lowerCaseStrings = Lists.newArrayListWithExpectedSize(strings.size());
-		for(String string : strings)
-		{
-			lowerCaseStrings.add(string.toLowerCase(Locale.getDefault()));
-		}
-		return lowerCaseStrings;
+		return spaces(indexToPointAt) + "^";
+	}
+
+	public static boolean startsWithAndHasMore(String input, String toStartWith)
+	{
+		return input.startsWith(toStartWith) && input.length() > toStartWith.length();
 	}
 
 	/**
@@ -158,7 +155,7 @@ public final class StringsUtil
 
 		private static final Function<CloseMatch, String> GET_VALUE = new Function<CloseMatch, String>(){
 			@Override
-			public String apply(CloseMatch input)
+			public String apply(@Nonnull CloseMatch input)
 			{
 				return input.value;
 			}

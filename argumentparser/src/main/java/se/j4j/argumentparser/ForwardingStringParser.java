@@ -1,5 +1,7 @@
 package se.j4j.argumentparser;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -20,10 +22,10 @@ import javax.annotation.concurrent.Immutable;
  *     super(StringParsers.integerParser());
  *   }
  * 
- *   public Integer parse(String value) throws ArgumentException
+ *   public Integer parse(String value, Locale locale) throws ArgumentException
  *   {
  *     waterPlants();
- *     return super.parse(value);
+ *     return super.parse(value, locale);
  *   }
  * 
  *   private void waterPlants()
@@ -50,21 +52,21 @@ public abstract class ForwardingStringParser<T> implements StringParser<T>
 	 * Just remember that a {@link StringParser} should be treated like it's {@link Immutable} so
 	 * make sure your callers can't tell the difference when you switch parser.
 	 * 
-	 * @return the delegate to pass non-overriden calls to
+	 * @return the delegate to pass non-overridden calls to
 	 */
 	@Nonnull
 	protected abstract StringParser<T> delegate();
 
 	@Override
-	public String descriptionOfValidValues()
+	public String descriptionOfValidValues(Locale locale)
 	{
-		return delegate().descriptionOfValidValues();
+		return delegate().descriptionOfValidValues(locale);
 	}
 
 	@Override
-	public T parse(final String value) throws ArgumentException
+	public T parse(final String value, Locale locale) throws ArgumentException
 	{
-		return delegate().parse(value);
+		return delegate().parse(value, locale);
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public abstract class ForwardingStringParser<T> implements StringParser<T>
 	@Override
 	public String toString()
 	{
-		return descriptionOfValidValues();
+		return descriptionOfValidValues(Locale.US);
 	}
 
 	/**

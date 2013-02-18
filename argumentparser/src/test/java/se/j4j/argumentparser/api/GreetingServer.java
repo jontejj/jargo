@@ -15,7 +15,8 @@ import java.util.List;
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.ArgumentException;
 import se.j4j.argumentparser.CommandLineParser;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
+import se.j4j.strings.Describers;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.Charsets;
@@ -28,7 +29,8 @@ public class GreetingServer
 			.build();
 
 	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(Ranges.closed(0, 65536)).defaultValue(10000)
-			.repeated().description("The port clients should connect to").metaDescription("port").build();
+			.defaultValueDescriber(Describers.toStringDescriber()).repeated().description("The port clients should connect to")
+			.metaDescription("port").build();
 
 	static final Argument<List<String>> GREETING_PHRASES = stringArgument().variableArity()
 			.description("A greeting phrase to greet new connections with").build();
@@ -38,7 +40,7 @@ public class GreetingServer
 
 	public static void main(String[] args)
 	{
-		System.out.println(PARSER.usage(GreetingServer.class.getSimpleName()));
+		System.out.println(PARSER.usage());
 
 		GreetingServer server = new GreetingServer();
 		server.startWithArgs("--enable-logging", "--listen-port", "8090", "Hello world", "Habla Senor");
@@ -55,7 +57,7 @@ public class GreetingServer
 		}
 		catch(ArgumentException exception)
 		{
-			System.out.println(exception.getMessageAndUsage(GreetingServer.class.getSimpleName()));
+			System.out.println(exception.getMessageAndUsage());
 			System.exit(1);
 		}
 	}

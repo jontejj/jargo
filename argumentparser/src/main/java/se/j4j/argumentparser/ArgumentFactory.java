@@ -2,14 +2,13 @@ package se.j4j.argumentparser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.asList;
+import static se.j4j.argumentparser.StringParsers.bigDecimalParser;
 import static se.j4j.argumentparser.StringParsers.bigIntegerParser;
 import static se.j4j.argumentparser.StringParsers.booleanParser;
 import static se.j4j.argumentparser.StringParsers.byteParser;
 import static se.j4j.argumentparser.StringParsers.charParser;
-import static se.j4j.argumentparser.StringParsers.doubleParser;
 import static se.j4j.argumentparser.StringParsers.enumParser;
 import static se.j4j.argumentparser.StringParsers.fileParser;
-import static se.j4j.argumentparser.StringParsers.floatParser;
 import static se.j4j.argumentparser.StringParsers.integerParser;
 import static se.j4j.argumentparser.StringParsers.longParser;
 import static se.j4j.argumentparser.StringParsers.shortParser;
@@ -17,8 +16,10 @@ import static se.j4j.argumentparser.StringParsers.stringParser;
 import static se.j4j.strings.Describers.booleanAsEnabledDisabled;
 import static se.j4j.strings.Describers.characterDescriber;
 import static se.j4j.strings.Describers.fileDescriber;
+import static se.j4j.strings.Describers.numberDescriber;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import javax.annotation.CheckReturnValue;
@@ -59,15 +60,15 @@ public final class ArgumentFactory
 	}
 
 	/**
-	 * Creates an {@link Argument} that uses {@link StringParsers#integerParser()}
+	 * Creates an {@link Argument} that uses {@link StringParsers#byteParser()}
 	 * 
 	 * @param names the {@link ArgumentBuilder#names(String...)} to use
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static DefaultArgumentBuilder<Integer> integerArgument(final String ... names)
+	public static DefaultArgumentBuilder<Byte> byteArgument(final String ... names)
 	{
-		return withParser(integerParser()).names(names);
+		return withParser(byteParser()).defaultValueDescriber(numberDescriber()).names(names);
 	}
 
 	/**
@@ -79,19 +80,19 @@ public final class ArgumentFactory
 	@Nonnull
 	public static DefaultArgumentBuilder<Short> shortArgument(final String ... names)
 	{
-		return withParser(shortParser()).names(names);
+		return withParser(shortParser()).defaultValueDescriber(numberDescriber()).names(names);
 	}
 
 	/**
-	 * Creates an {@link Argument} that uses {@link StringParsers#byteParser()}
+	 * Creates an {@link Argument} that uses {@link StringParsers#integerParser()}
 	 * 
 	 * @param names the {@link ArgumentBuilder#names(String...)} to use
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static DefaultArgumentBuilder<Byte> byteArgument(final String ... names)
+	public static DefaultArgumentBuilder<Integer> integerArgument(final String ... names)
 	{
-		return withParser(byteParser()).names(names);
+		return withParser(integerParser()).defaultValueDescriber(numberDescriber()).names(names);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public final class ArgumentFactory
 	@Nonnull
 	public static DefaultArgumentBuilder<Long> longArgument(final String ... names)
 	{
-		return withParser(longParser()).names(names);
+		return withParser(longParser()).defaultValueDescriber(numberDescriber()).names(names);
 	}
 
 	/**
@@ -115,7 +116,19 @@ public final class ArgumentFactory
 	@Nonnull
 	public static DefaultArgumentBuilder<BigInteger> bigIntegerArgument(final String ... names)
 	{
-		return withParser(bigIntegerParser()).names(names);
+		return withParser(bigIntegerParser()).defaultValueDescriber(numberDescriber()).names(names);
+	}
+
+	/**
+	 * Creates an {@link Argument} that uses {@link StringParsers#bigIntegerParser()}
+	 * 
+	 * @param names the {@link ArgumentBuilder#names(String...)} to use
+	 */
+	@CheckReturnValue
+	@Nonnull
+	public static DefaultArgumentBuilder<BigDecimal> bigDecimalArgument(final String ... names)
+	{
+		return withParser(bigDecimalParser()).defaultValueDescriber(numberDescriber()).names(names);
 	}
 
 	/**
@@ -130,30 +143,6 @@ public final class ArgumentFactory
 	public static DefaultArgumentBuilder<Character> charArgument(final String ... names)
 	{
 		return withParser(charParser()).defaultValueDescriber(characterDescriber()).names(names);
-	}
-
-	/**
-	 * Creates an {@link Argument} that uses {@link StringParsers#doubleParser()}
-	 * 
-	 * @param names the {@link ArgumentBuilder#names(String...)} to use
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static DefaultArgumentBuilder<Double> doubleArgument(final String ... names)
-	{
-		return withParser(doubleParser()).names(names);
-	}
-
-	/**
-	 * Creates an {@link Argument} that uses {@link StringParsers#floatParser()}
-	 * 
-	 * @param names the {@link ArgumentBuilder#names(String...)} to use
-	 */
-	@CheckReturnValue
-	@Nonnull
-	public static DefaultArgumentBuilder<Float> floatArgument(final String ... names)
-	{
-		return withParser(floatParser()).names(names);
 	}
 
 	/**
@@ -224,11 +213,10 @@ public final class ArgumentFactory
 
 	/**
 	 * <pre>
-	 * Creates an {@link Argument} for {@code command}.
-	 * 
-	 * Should only be used if you mix {@link Argument}s that aren't {@link Command}s
-	 * with {@link Command}s as {@link CommandLineParser#withCommands(Command...)}
-	 * is preferred if you only support {@link Command}s.
+	 * Creates an {@link CommandBuilder} for {@code command}. Used for setting up custom things like
+	 * {@link ArgumentBuilder#ignoreCase()} for a {@link Command#commandName()}. Typically not needed
+	 * as {@link CommandLineParser#and(Command)} or {@link CommandLineParser#withCommands(Command...)}
+	 * can be used.
 	 * </pre>
 	 */
 	@CheckReturnValue

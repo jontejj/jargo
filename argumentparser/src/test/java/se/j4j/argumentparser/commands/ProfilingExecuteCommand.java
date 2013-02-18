@@ -1,7 +1,7 @@
 package se.j4j.argumentparser.commands;
 
 import se.j4j.argumentparser.Command;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 
 final class ProfilingExecuteCommand extends Command
 {

@@ -4,6 +4,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 
+import java.util.Locale;
+
 import org.junit.Test;
 
 import se.j4j.argumentparser.ArgumentException;
@@ -23,7 +25,7 @@ public class ForwardingStringParserTest
 		String result = withParser(new InterningStringParser()).parse(argumentValue);
 		assertThat(result).isSameAs(argumentValue.intern());
 
-		String usage = withParser(new InterningStringParser()).names("-f").usage("ForwardingStringParser");
+		String usage = withParser(new InterningStringParser()).names("-f").usage();
 		assertThat(usage).contains("-f <interned_string>    <interned_string>: some string");
 		assertThat(usage).contains("Default: foo");
 	}
@@ -40,9 +42,10 @@ public class ForwardingStringParserTest
 		};
 
 		StringParser<Integer> regularParser = StringParsers.integerParser();
+		Locale locale = Locale.ENGLISH;
 
-		assertThat(delegatedParser.parse("1")).isEqualTo(regularParser.parse("1"));
-		assertThat(delegatedParser.descriptionOfValidValues()).isEqualTo(regularParser.descriptionOfValidValues());
+		assertThat(delegatedParser.parse("1", locale)).isEqualTo(regularParser.parse("1", locale));
+		assertThat(delegatedParser.descriptionOfValidValues(locale)).isEqualTo(regularParser.descriptionOfValidValues(locale));
 		assertThat(delegatedParser.defaultValue()).isEqualTo(regularParser.defaultValue());
 		assertThat(delegatedParser.metaDescription()).isEqualTo(regularParser.metaDescription());
 		assertThat(delegatedParser.toString()).isEqualTo(regularParser.toString());
@@ -51,7 +54,7 @@ public class ForwardingStringParserTest
 	private static final class InterningStringParser extends ForwardingStringParser<String>
 	{
 		@Override
-		public String parse(String value) throws ArgumentException
+		public String parse(String value, Locale locale) throws ArgumentException
 		{
 			return value.intern();
 		}
@@ -69,7 +72,7 @@ public class ForwardingStringParserTest
 		}
 
 		@Override
-		public String descriptionOfValidValues()
+		public String descriptionOfValidValues(Locale locale)
 		{
 			return "some string";
 		}

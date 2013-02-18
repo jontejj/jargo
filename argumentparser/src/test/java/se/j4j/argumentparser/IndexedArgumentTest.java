@@ -8,9 +8,10 @@ import static se.j4j.argumentparser.ArgumentFactory.stringArgument;
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
 
+import java.util.Locale;
+
 import org.junit.Test;
 
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
 import se.j4j.argumentparser.internal.Texts.ProgrammaticErrors;
 import se.j4j.testlib.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -93,7 +94,7 @@ public class IndexedArgumentTest
 		{
 			withParser(new ForwardingStringParser.SimpleForwardingStringParser<String>(stringParser()){
 				@Override
-				public String parse(String value) throws ArgumentException
+				public String parse(String value, Locale locale) throws ArgumentException
 				{
 					throw new UsedArgumentAsMessageException();
 				}

@@ -2,6 +2,8 @@ package se.j4j.argumentparser.stringparsers.custom;
 
 import static se.j4j.argumentparser.ArgumentFactory.withParser;
 
+import java.util.Locale;
+
 import org.joda.time.DateTime;
 
 import se.j4j.argumentparser.ArgumentBuilder.DefaultArgumentBuilder;
@@ -12,13 +14,13 @@ import se.j4j.argumentparser.StringParser;
 public class DateTimeParser implements StringParser<DateTime>
 {
 	@Override
-	public String descriptionOfValidValues()
+	public String descriptionOfValidValues(Locale locale)
 	{
 		return "an ISO8601 date, such as 2011-02-28";
 	}
 
 	@Override
-	public DateTime parse(final String value) throws ArgumentException
+	public DateTime parse(final String value, Locale locale) throws ArgumentException
 	{
 		try
 		{

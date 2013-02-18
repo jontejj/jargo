@@ -19,14 +19,14 @@ public class FileArgumentTest
 	@Test
 	public void testDescription()
 	{
-		String usage = fileArgument("-f").usage("FileArgument");
+		String usage = fileArgument("-f").usage();
 		assertThat(usage).contains("<path>: a file path");
 	}
 
 	@Test
 	public void testThatFilesAreDescribedByAbsolutePath()
 	{
-		String usage = fileArgument("-f").usage("AbsolutePath");
+		String usage = fileArgument("-f").usage();
 		assertThat(usage).contains("Default: " + new File("").getAbsolutePath());
 	}
 

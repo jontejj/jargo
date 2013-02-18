@@ -1,6 +1,7 @@
 package se.j4j.argumentparser;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.j4j.argumentparser.ArgumentFactory.integerArgument;
@@ -32,7 +33,7 @@ public class SplitWithTest
 	@Test
 	public void testThatUsageTextForSplittingWithCommaLooksGood()
 	{
-		String usage = integerArgument("-n").splitWith(",").usage("Split");
+		String usage = integerArgument("-n").splitWith(",").usage();
 		assertThat(usage).isEqualTo(expected("splitArgument"));
 	}
 
@@ -46,7 +47,7 @@ public class SplitWithTest
 	@Test
 	public void testThatSeparatorIsPrintedBetweenArgumentNameAndMetaDescription()
 	{
-		String usage = integerArgument("-N").separator("=").usage("SeparatorBetweenNameAndMeta");
+		String usage = integerArgument("-N").separator("=").usage();
 
 		assertThat(usage).isEqualTo(expected("separatorBetweenNameAndMeta"));
 	}
@@ -68,7 +69,7 @@ public class SplitWithTest
 	@Test
 	public void testThatSeparatorCombinedWithSplitterLooksGoodInUsage()
 	{
-		String usage = integerArgument("-N").separator("=").splitWith(",").usage("SeparatorCombinedWithSplitter");
+		String usage = integerArgument("-N").separator("=").splitWith(",").usage();
 		assertThat(usage).isEqualTo(expected("separatorCombinedWithSplitter"));
 	}
 
@@ -94,10 +95,31 @@ public class SplitWithTest
 		assertThat(numbers).isEqualTo(expected);
 	}
 
-	@Test(expected = ArgumentException.class)
+	@Test
 	public void testSplittingWithNoArg() throws ArgumentException
 	{
-		integerArgument("-n").splitWith(",").parse("-n");
+		assertThat(integerArgument("-n").splitWith(",").parse("-n")).isEqualTo(emptyList());
+	}
+
+	@Test
+	public void testSplittingWithEmptyInputString() throws ArgumentException
+	{
+		assertThat(integerArgument("-n").splitWith(",").parse("-n", "")).isEqualTo(emptyList());
+	}
+
+	@Test
+	public void testSplittingWithEmptyInputStringAndDefaultValue() throws ArgumentException
+	{
+		assertThat(integerArgument("-n").defaultValue(42).splitWith(",").parse("-n", "")).isEqualTo(emptyList());
+	}
+
+	@Test
+	public void testSplittingWithOnlyWhitespaceInInputString() throws ArgumentException
+	{
+		// TODO: how to handle -s --numbers 1,2, should a direct lookup be made for --numbers?
+		// I.e throw something like:
+		// ArgumentExceptions.withMessage("--numbers matches an argument, did you really mean to use it as input to -s? If so surround it with quotes.")
+		assertThat(integerArgument("-n").splitWith(",").parse("-n", " 	\n\r")).isEqualTo(emptyList());
 	}
 
 	@Test

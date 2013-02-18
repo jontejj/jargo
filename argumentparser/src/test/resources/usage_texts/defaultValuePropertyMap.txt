@@ -1,4 +1,4 @@
-Usage:  [Arguments]
+Usage: defaultValuePropertyMap [Arguments]
 
 Arguments:
 -N<byte>:<byte>    <byte>:<byte>: where "<byte>" is -128 to 127 and "<byte>" is -128 to 127

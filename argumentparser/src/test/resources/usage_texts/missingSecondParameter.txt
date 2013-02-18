@@ -1,7 +1,7 @@
 Missing second <integer> parameter for --numbers. See usage for --numbers for proper values.
 
-Usage: MissingSecondParameter [Arguments]
+Usage: missingSecondParameter [Arguments]
 
 Arguments:
---numbers <integer> <integer>    <integer>: -2147483648 to 2147483647
+--numbers <integer> <integer>    <integer>: -2 147 483 648 to 2 147 483 647
                                  Default: 0, 0

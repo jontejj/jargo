@@ -1,4 +1,4 @@
-Usage:  [Arguments]
+Usage: defaultValuesDescribedInPropertyMap [Arguments]
 -N<string>=<integer>    <string>=<integer>: where "<string>" is any string and "<integer>" is -2147483648 to 2147483647
                         Default: population=42
                                   The number of citizens in the world

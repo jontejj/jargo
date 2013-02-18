@@ -2,13 +2,13 @@ package se.j4j.argumentparser.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
 import se.j4j.argumentparser.Command;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 
 public class Build extends Command
 {
 	final BuildTarget target;
 
-	Build(BuildTarget target)
+	public Build(BuildTarget target)
 	{
 		this.target = target;
 	}
@@ -36,7 +36,7 @@ public class Build extends Command
 		target.build();
 	}
 
-	static class BuildTarget
+	public static class BuildTarget
 	{
 		private boolean cleaned;
 		private boolean built;
@@ -45,7 +45,7 @@ public class Build extends Command
 		{
 			// The clean command should be run before the build command, this verifies that commands
 			// are executed in the order they are given on the command line
-			assertThat(isClean()).isTrue();
+			assertThat(isClean()).as("Target should be clean before being built, hasn't the clean command been executed?").isTrue();
 			built = true;
 		}
 

@@ -1,5 +1,5 @@
-Usage: LowerCase [Arguments]
+Usage: propertyMaps [Arguments]
 
 Arguments:
--I<string>=<integer>    <string>=<integer>: where "<string>" is any string and "<integer>" is -2147483648 to 2147483647
+-I<string>=<integer>    <string>=<integer>: where "<string>" is any string and "<integer>" is -2 147 483 648 to 2 147 483 647
                         Default: Empty map

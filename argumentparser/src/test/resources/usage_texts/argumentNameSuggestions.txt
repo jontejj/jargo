@@ -2,12 +2,12 @@ Didn't expect --namr, did you mean one of these?
 	--name
 	--number
 
-Usage: ArgumentNameSuggestions [Arguments]
+Usage: argumentNameSuggestions [Arguments]
 
 Arguments:
---name <integer>       <integer>: -2147483648 to 2147483647
+--name <integer>       <integer>: -2 147 483 648 to 2 147 483 647
                        Default: 0
---nothing <integer>    <integer>: -2147483648 to 2147483647
+--nothing <integer>    <integer>: -2 147 483 648 to 2 147 483 647
                        Default: 0
---number <integer>     <integer>: -2147483648 to 2147483647
+--number <integer>     <integer>: -2 147 483 648 to 2 147 483 647
                        Default: 0

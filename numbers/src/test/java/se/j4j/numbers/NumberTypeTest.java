@@ -1,17 +1,25 @@
 package se.j4j.numbers;
 
-import static java.lang.Long.MAX_VALUE;
-import static java.lang.Long.MIN_VALUE;
-import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.valueOf;
+import static java.lang.String.format;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.j4j.numbers.NumberType.BIG_DECIMAL;
+import static se.j4j.numbers.NumberType.BIG_INTEGER;
+import static se.j4j.numbers.NumberType.BYTE;
 import static se.j4j.numbers.NumberType.INTEGER;
+import static se.j4j.numbers.NumberType.LONG;
+import static se.j4j.numbers.NumberType.OUT_OF_RANGE;
+import static se.j4j.numbers.NumberType.SHORT;
+import static se.j4j.strings.StringsUtil.NEWLINE;
+import static se.j4j.testlib.Locales.SWEDISH;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.testing.NullPointerTester;
@@ -19,23 +27,7 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 public class NumberTypeTest
 {
-	@Test
-	public void testDecimalInput()
-	{
-		assertThat(INTEGER.decode("112")).isEqualTo(112);
-	}
-
-	@Test
-	public void testOctalInput()
-	{
-		assertThat(INTEGER.decode("0112")).isEqualTo(0112);
-	}
-
-	@Test
-	public void testHexInput()
-	{
-		assertThat(INTEGER.decode("0x112")).isEqualTo(0x112);
-	}
+	static final BigInteger biggerThanLong = BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE);
 
 	@Test
 	public void testMappingOfByteFields()
@@ -66,54 +58,131 @@ public class NumberTypeTest
 	}
 
 	@Test
-	public void testByteWithDifferentRadixes()
+	public void testMappingOfFloatFields()
 	{
-		testWithDifferentRadixes(NumberType.BYTE);
+		assertThat(NumberType.FLOAT.maxValue()).isEqualTo(Float.MAX_VALUE);
+		assertThat(NumberType.FLOAT.minValue()).isEqualTo(Float.MIN_VALUE);
 	}
 
 	@Test
-	public void testShortWithDifferentRadixes()
+	public void testMappingOfDoubleFields()
 	{
-		testWithDifferentRadixes(NumberType.SHORT);
+		assertThat(NumberType.DOUBLE.maxValue()).isEqualTo(Double.MAX_VALUE);
+		assertThat(NumberType.DOUBLE.minValue()).isEqualTo(Double.MIN_VALUE);
 	}
 
 	@Test
-	public void testIntegerWithDifferentRadixes()
+	public void testNumbersAtBounds()
 	{
-		testWithDifferentRadixes(NumberType.INTEGER);
+		System.out.println(Float.compare(0, Float.MIN_VALUE));
+		System.out.println(0.0f >= Float.MIN_VALUE);
+		for(NumberType<?> type : NumberType.TYPES)
+		{
+			assertThat(type.parse("0").intValue()).isZero();
+			assertThat(type.parse("1").intValue()).isEqualTo(1);
+			assertThat(type.parse("-1").intValue()).isEqualTo(-1);
+
+			if(NumberType.UNLIMITED_TYPES.contains(type))
+			{
+				testUnlimitedType(type);
+			}
+			else
+			{
+				// Numbers at the bounds
+				assertThat(type.parse(type.minValue().toString())).isEqualTo(type.minValue());
+				assertThat(type.parse(type.maxValue().toString())).isEqualTo(type.maxValue());
+			}
+
+			// Default values
+			assertThat(type.defaultValue().intValue()).isZero();
+		}
+	}
+
+	private void testUnlimitedType(NumberType<?> type)
+	{
+		try
+		{
+			type.minValue();
+			fail("Unlimited types should not support minValue");
+		}
+		catch(UnsupportedOperationException expected)
+		{
+
+		}
+		try
+		{
+			type.maxValue();
+			fail("Unlimited types should not support maxValue");
+		}
+		catch(UnsupportedOperationException expected)
+		{
+
+		}
 	}
 
 	@Test
-	public void testLongWithDifferentRadixes()
+	public void testThatParseCanHandleLargeNumbers() throws Exception
 	{
-		testWithDifferentRadixes(NumberType.LONG);
+
+		BigInteger bigInteger = BIG_INTEGER.parse(biggerThanLong.toString());
+		assertThat(bigInteger).isEqualTo(biggerThanLong);
+
+		BigDecimal biggerThanLongWithFraction = new BigDecimal(biggerThanLong).add(new BigDecimal(2.5));
+
+		BigDecimal bigDecimal = BIG_DECIMAL.parse(biggerThanLongWithFraction.toString());
+		assertThat(bigDecimal).isEqualTo(biggerThanLongWithFraction);
 	}
 
-	/**
-	 * Tests that {@code type} handles different radixes
-	 */
-	public <T extends Number> void testWithDifferentRadixes(NumberType<T> type)
+	@Test
+	public void testThatDescriptionOfValidValuesReturnsHumanReadableStrings() throws Exception
 	{
-		// Decimal numbers
-		assertThat(type.decode("0").intValue()).isZero();
-		assertThat(type.decode("1").intValue()).isEqualTo(1);
-		assertThat(type.decode("-1").intValue()).isEqualTo(-1);
+		assertThat(BYTE.descriptionOfValidValues(SWEDISH)).isEqualTo("-128 to 127");
+		assertThat(SHORT.descriptionOfValidValues(SWEDISH)).isEqualTo("-32 768 to 32 767");
+		assertThat(INTEGER.descriptionOfValidValues(SWEDISH)).isEqualTo("-2 147 483 648 to 2 147 483 647");
+		assertThat(LONG.descriptionOfValidValues(SWEDISH)).isEqualTo("-9 223 372 036 854 775 808 to 9 223 372 036 854 775 807");
+		assertThat(BIG_INTEGER.descriptionOfValidValues(SWEDISH)).isEqualTo("an arbitrary integer number (practically no limits)");
+		assertThat(BIG_DECIMAL.descriptionOfValidValues(SWEDISH)).isEqualTo("an arbitrary decimal number (practically no limits)");
+	}
 
-		// Hex numbers
-		assertThat(type.decode("0x0").intValue()).isEqualTo(0x0);
-		assertThat(type.decode("0x01").intValue()).isEqualTo(0x01);
-		assertThat(type.decode("-0x01").intValue()).isEqualTo(-0x01);
+	@Test(expected = IllegalArgumentException.class)
+	public void testThatEmptyInputThrows() throws Exception
+	{
+		BYTE.parse("");
+	}
 
-		// Octal numbers
-		assertThat(type.decode("01").intValue()).isEqualTo(001);
-		assertThat(type.decode("-01").intValue()).isEqualTo(-001);
+	@Test
+	public void testThatNumbersTruncatesFractions() throws Exception
+	{
+		assertThat(BYTE.from(2.5)).isEqualTo((byte) 2);
+		assertThat(SHORT.from(2.5)).isEqualTo((short) 2);
+		assertThat(INTEGER.from(2.5)).isEqualTo(2);
+		assertThat(LONG.from(2.5)).isEqualTo(2);
+		assertThat(BIG_INTEGER.from(BigDecimal.valueOf(2.5))).isEqualTo(BigInteger.valueOf(2));
+	}
 
-		// Numbers at the bounds
-		assertThat(type.decode(type.minValue().toString())).isEqualTo(type.minValue());
-		assertThat(type.decode(type.maxValue().toString())).isEqualTo(type.maxValue());
+	@Test
+	public void testThatBigDecimalUsesAsHighPrecisionAsPossible() throws Exception
+	{
+		assertThat(BIG_DECIMAL.from(Double.MAX_VALUE)).isEqualTo(BigDecimal.valueOf(Double.MAX_VALUE));
+		assertThat(BIG_DECIMAL.from(2.5)).isEqualTo(BigDecimal.valueOf(2.5));
+		assertThat(BIG_DECIMAL.from(Long.MAX_VALUE)).isEqualTo(BigDecimal.valueOf(((Long) Long.MAX_VALUE).doubleValue()));
+		assertThat(BIG_DECIMAL.from(biggerThanLong)).isEqualTo(new BigDecimal(biggerThanLong));
+	}
 
-		// Default values
-		assertThat(type.defaultValue().intValue()).isZero();
+	@Test
+	public void testThatBigIntegerUsesLongValueOnNumber() throws Exception
+	{
+		assertThat(BIG_INTEGER.from(Long.MAX_VALUE)).isEqualTo(BigInteger.valueOf(Long.MAX_VALUE));
+		assertThat(BIG_INTEGER.from(Double.MAX_VALUE)).isEqualTo(BigInteger.valueOf(((Double) Double.MAX_VALUE).longValue()));
+	}
+
+	@Test
+	public void testThatFromReturnsTheArgumentIfItsOfTheSameType() throws Exception
+	{
+		BigInteger integer = new BigInteger("1");
+		assertThat(BIG_INTEGER.from(integer)).isSameAs(integer);
+		BigDecimal decimal = new BigDecimal("2.5");
+		assertThat(BIG_DECIMAL.from(decimal)).isSameAs(decimal);
 	}
 
 	@Test
@@ -133,12 +202,12 @@ public class NumberTypeTest
 		{
 			try
 			{
-				NumberType.SHORT.decode(input.toString());
+				NumberType.SHORT.parse(input.toString());
 				fail("Invalid short input not detected: " + input);
 			}
 			catch(IllegalArgumentException expected)
 			{
-
+				assertThat(expected).hasMessage(format(OUT_OF_RANGE, input, "-32,768", "32,767"));
 			}
 		}
 	}
@@ -151,12 +220,12 @@ public class NumberTypeTest
 		{
 			try
 			{
-				NumberType.INTEGER.decode(input.toString());
+				NumberType.INTEGER.parse(input.toString());
 				fail("Invalid integer input not detected: " + input);
 			}
 			catch(IllegalArgumentException expected)
 			{
-
+				assertThat(expected).hasMessage(format(OUT_OF_RANGE, input, "-2,147,483,648", "2,147,483,647"));
 			}
 		}
 	}
@@ -164,17 +233,56 @@ public class NumberTypeTest
 	@Test
 	public void testInvalidLongNumbers()
 	{
-		List<BigInteger> invalidInput = Arrays.asList(valueOf(MIN_VALUE).subtract(ONE), valueOf(MAX_VALUE).add(ONE));
+		List<BigInteger> invalidInput = Arrays.asList(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), BigInteger.valueOf(Long.MAX_VALUE)
+				.add(BigInteger.ONE));
 		for(BigInteger input : invalidInput)
 		{
 			try
 			{
-				NumberType.LONG.decode(input.toString());
+				NumberType.LONG.parse(input.toString());
 				fail("Invalid long input not detected: " + input);
 			}
 			catch(IllegalArgumentException expected)
 			{
+				assertThat(expected).hasMessage(format(OUT_OF_RANGE, input, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807"));
+			}
+		}
+	}
 
+	@Ignore("Why doesn't Float.parseFloat throw here?")
+	@Test
+	public void testInvalidFloatNumbers()
+	{
+		List<BigDecimal> invalidInput = Arrays.asList(	BigDecimal.valueOf(Float.MIN_VALUE).subtract(BigDecimal.ONE),
+														BigDecimal.valueOf(Float.MAX_VALUE).add(BigDecimal.ONE));
+		for(BigDecimal input : invalidInput)
+		{
+			try
+			{
+				NumberType.FLOAT.parse(input.toString());
+				fail("Invalid float input not detected: " + input);
+			}
+			catch(IllegalArgumentException expected)
+			{
+			}
+		}
+	}
+
+	@Ignore("Why doesn't Double.parseDouble throw here?")
+	@Test
+	public void testInvalidDoubleNumbers()
+	{
+		List<BigDecimal> invalidInput = Arrays.asList(	BigDecimal.valueOf(Double.MIN_VALUE).subtract(BigDecimal.ONE),
+														BigDecimal.valueOf(Double.MAX_VALUE).add(BigDecimal.ONE));
+		for(BigDecimal input : invalidInput)
+		{
+			try
+			{
+				NumberType.DOUBLE.parse(input.toString());
+				fail("Invalid double input not detected: " + input);
+			}
+			catch(IllegalArgumentException expected)
+			{
 			}
 		}
 	}
@@ -182,6 +290,28 @@ public class NumberTypeTest
 	@Test
 	public void testNullContracts()
 	{
-		new NullPointerTester().testInstanceMethods(NumberType.LONG, Visibility.PACKAGE);
+		new NullPointerTester().testInstanceMethods(NumberType.LONG, Visibility.PUBLIC);
+		new NullPointerTester().testStaticMethods(NumberType.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUnparsableTextGeneratesProperErrorMessage() throws Exception
+	{
+		try
+		{
+			NumberType.INTEGER.parse("a", Locale.ENGLISH);
+			fail("a should not be a parsable number");
+		}
+		catch(IllegalArgumentException e)
+		{
+			/**
+			 * @formatter.off
+			 */
+			assertThat(e).hasMessage("'a' is not a valid integer (Localization: English)" + NEWLINE +
+			                         " ^");
+			/**
+			 * @formatter.on
+			 */
+		}
 	}
 }

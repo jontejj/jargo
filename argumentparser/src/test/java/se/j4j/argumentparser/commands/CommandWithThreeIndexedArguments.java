@@ -8,16 +8,15 @@ import java.util.List;
 
 import se.j4j.argumentparser.Argument;
 import se.j4j.argumentparser.Command;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.ParsedArguments;
 
 public class CommandWithThreeIndexedArguments extends Command
 {
 	private static final Argument<List<Integer>> NUMBERS = integerArgument().arity(3).required().build();
 
-	@Override
-	protected List<Argument<?>> commandArguments()
+	public CommandWithThreeIndexedArguments()
 	{
-		return Arrays.<Argument<?>>asList(NUMBERS);
+		super(NUMBERS);
 	}
 
 	@Override

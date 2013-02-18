@@ -1,29 +1,27 @@
 package se.j4j.argumentparser;
 
-import static java.util.Collections.emptyList;
-
-import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings;
-import se.j4j.argumentparser.CommandLineParser.ArgumentIterator;
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.CommandLineParserInstance.ArgumentIterator;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.strings.Description;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 
 /**
  * <pre>
  * {@link Command}s automatically gets an invocation of execute when given on the command line.
  * This is particularly useful to avoid a never ending switch statement.
  * 
- * {@link Command}s have a {@link CommandLineParser} themselves, that is,
- * they execute a command and may support contextual arguments as specified by {@link #commandArguments()}.
+ * {@link Command}s have a {@link CommandLineParser} themselves (and thereby sub-commands are allowed as well), that is,
+ * they execute a command and may support contextual arguments as specified by the constructor {@link Command#Command(Argument...)}.
  * 
  * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}
  * or {@link CommandLineParser#withCommands(Command...)} if you have several commands.
@@ -43,11 +41,9 @@ import com.google.common.base.Suppliers;
  * {
  *   private static final Argument&lt;File&gt; PATH = fileArgument().description("the directory to build").build();
  * 
- *   protected List&lt;Argument&lt;?&gt;&gt; commandArguments()
+ *   public BuildCommand()
  *   {
- *     List&lt;Argument&lt;?&gt;&gt; arguments = Lists.newArrayList();
- *     arguments.add(PATH);
- *     return arguments;
+ *     super(PATH);
  *   }
  * 
  *   public String commandName()
@@ -80,6 +76,16 @@ import com.google.common.base.Suppliers;
 @Immutable
 public abstract class Command extends InternalStringParser<String> implements Description
 {
+	@Nonnull private final ImmutableList<Argument<?>> commandArguments;
+
+	/**
+	 * @param commandArguments the arguments that this command supports.
+	 */
+	protected Command(Argument<?> ... commandArguments)
+	{
+		this.commandArguments = ImmutableList.copyOf(commandArguments);
+	}
+
 	/**
 	 * The name that triggers this command. For several names override this with
 	 * {@link ArgumentBuilder#names(String...)}
@@ -91,27 +97,10 @@ public abstract class Command extends InternalStringParser<String> implements De
 	/**
 	 * Called when this command is encountered on the command line
 	 * 
-	 * @param parsedArguments a container with parsed values for the {@link #commandArguments()}
+	 * @param parsedArguments a container with parsed values for the (optional) command arguments,
+	 *            as specified by {@link Command#Command(Argument...)}
 	 */
 	protected abstract void execute(ParsedArguments parsedArguments);
-
-	/**
-	 * <pre>
-	 * The arguments that is specific for this command.
-	 * 
-	 * Will only be called once and only if this command is encountered.
-	 * 
-	 * @return a list of arguments that this command supports (default is none)
-	 * 
-	 * TODO: what can List<Argument<?>> be replaced with so that callers can use Arrays.asList(someArgument);?
-	 * </pre>
-	 */
-	@CheckReturnValue
-	@Nonnull
-	protected List<Argument<?>> commandArguments()
-	{
-		return emptyList();
-	}
 
 	/**
 	 * Override to provide a description to print in the usage text for this command.
@@ -133,28 +122,29 @@ public abstract class Command extends InternalStringParser<String> implements De
 	}
 
 	@Override
-	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings)
+	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings, Locale locale)
 			throws ArgumentException
 	{
-		ParsedArguments commandArguments = parser().parse(arguments);
-		execute(commandArguments);
-		return commandName(); // Can be used to check for the existence of this
-								// command in the given input arguments
+		String usedCommandName = arguments.current();
+		arguments.rememberAsCommand();
+		ParsedArguments parsedArguments = parser().parse(arguments, locale);
+		execute(parsedArguments);
+		return usedCommandName;
 	}
 
 	/**
-	 * The parser for parsing {@link Command#commandArguments()}
+	 * The parser for parsing the {@link Argument}s passed to {@link Command#Command(Argument...)}
 	 */
-	private CommandLineParser parser()
+	private CommandLineParserInstance parser()
 	{
 		return commandArgumentParser.get();
 	}
 
-	@Nonnull private final Supplier<CommandLineParser> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParser>(){
+	@Nonnull private final Supplier<CommandLineParserInstance> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParserInstance>(){
 		@Override
-		public CommandLineParser get()
+		public CommandLineParserInstance get()
 		{
-			return CommandLineParser.createCommandParser(commandArguments());
+			return CommandLineParserInstance.createCommandParser(commandArguments);
 		}
 	});
 
@@ -165,13 +155,13 @@ public abstract class Command extends InternalStringParser<String> implements De
 	}
 
 	@Override
-	final String descriptionOfValidValues(ArgumentSettings argumentSettings)
+	final String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
 	{
-		return parser().commandUsage();
+		return parser().commandUsage(locale);
 	}
 
 	@Override
-	final String describeValue(String value, ArgumentSettings argumentSettings)
+	final String describeValue(String value)
 	{
 		return value;
 	}

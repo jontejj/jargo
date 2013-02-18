@@ -2,11 +2,12 @@ package se.j4j.strings;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 import static se.j4j.strings.StringsUtil.closestMatch;
 import static se.j4j.strings.StringsUtil.closestMatches;
 import static se.j4j.strings.StringsUtil.numberToPositionalString;
+import static se.j4j.strings.StringsUtil.pointingAtIndex;
 import static se.j4j.strings.StringsUtil.spaces;
-import static se.j4j.strings.StringsUtil.toLowerCase;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -83,13 +84,6 @@ public class StringsUtilTest
 	}
 
 	@Test
-	public void testToLowerCase()
-	{
-		List<String> strings = asList("ABC", "Def");
-		assertThat(toLowerCase(strings)).isEqualTo(asList("abc", "def"));
-	}
-
-	@Test
 	public void testTextsForPositionalNumbers()
 	{
 		assertThat(numberToPositionalString(0)).isEqualTo("zeroth");
@@ -99,6 +93,23 @@ public class StringsUtilTest
 		assertThat(numberToPositionalString(4)).isEqualTo("fourth");
 		assertThat(numberToPositionalString(5)).isEqualTo("fifth");
 		assertThat(numberToPositionalString(6)).isEqualTo("6th");
+	}
+
+	@Test
+	public void testThatPointingAtIndexProducesSpacesBeforeThePointer()
+	{
+		assertThat(pointingAtIndex(0)).isEqualTo("^");
+		assertThat(pointingAtIndex(1)).isEqualTo(" ^");
+		assertThat(pointingAtIndex(2)).isEqualTo("  ^");
+		try
+		{
+			pointingAtIndex(-1);
+			fail("-1 should be an invalid index to point at");
+		}
+		catch(IllegalArgumentException expected)
+		{
+
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)

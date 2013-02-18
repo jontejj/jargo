@@ -9,33 +9,15 @@
 	<url>http://www.j4j.se</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<group.id>se.j4j</group.id>
-
-		<version.fest.assert>1.4</version.fest.assert>
-		<version.findbugs.annotations>2.0.0</version.findbugs.annotations>
-		<version.caliper>0.5-rc1</version.caliper>
-		<version.guava>13.0.1</version.guava>
-		<version.guava.testlib>13.0.1</version.guava.testlib>
-		<version.jodatime>2.1</version.jodatime>
-		<version.jsr305>1.3.9</version.jsr305>
-		<version.junit>4.10</version.junit>
-
-		<version.argumentparser>0.2</version.argumentparser>
-		<version.collections>0.0.1-SNAPSHOT</version.collections>
-		<version.guava.extensions>0.0.1-SNAPSHOT</version.guava.extensions>
-		<version.numbers>0.0.1-SNAPSHOT</version.numbers>
-		<version.strings>0.0.1-SNAPSHOT</version.strings>
-		<version.testlib>0.0.1-SNAPSHOT</version.testlib>
 	</properties>
+	<scm><connection>scm:git:file:///Users/jonatanjoensson/maven_projects/j4j.se/</connection></scm>
 	<modules>
 		<module>argumentparser</module>
+		<module>classes</module>
 		<module>collections</module>
 		<module>guava-extensions</module>
 		<module>numbers</module>
-		<module>rfc-downloader</module>
 		<module>strings</module>
-		<module>test-lib</module>
 	</modules>
 	<build>
 		<plugins>
@@ -89,38 +71,44 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easytesting</groupId>
 			<artifactId>fest-assert</artifactId>
-			<version>${version.fest.assert}</version>
+			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
-			<version>${version.jsr305}</version>
+			<version>1.3.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>annotations</artifactId>
-			<version>${version.findbugs.annotations}</version>
+			<version>2.0.0</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava-testlib</artifactId>
-            <version>${version.guava.testlib}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.caliper</groupId>
-            <artifactId>caliper</artifactId>
-            <version>${version.caliper}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-testlib</artifactId>
+			<version>13.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.caliper</groupId>
+			<artifactId>caliper</artifactId>
+			<version>0.5-rc1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.j4j</groupId>
+			<artifactId>test-lib</artifactId>
+			<version>0.0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

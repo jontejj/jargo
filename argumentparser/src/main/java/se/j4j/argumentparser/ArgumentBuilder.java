@@ -1,5 +1,6 @@
 package se.j4j.argumentparser;
 
+import static com.google.common.base.Objects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -8,13 +9,13 @@ import static com.google.common.collect.Iterables.isEmpty;
 import static java.util.Collections.emptyList;
 import static se.j4j.argumentparser.StringParsers.optionParser;
 import static se.j4j.argumentparser.StringParsers.stringParser;
-import static se.j4j.argumentparser.StringParsers.VariableArityParser.VARIABLE_ARITY;
 import static se.j4j.guavaextensions.Functions2.listTransformer;
 import static se.j4j.guavaextensions.Predicates2.listPredicate;
 import static se.j4j.strings.Descriptions.EMPTY_STRING;
 import static se.j4j.strings.Descriptions.withString;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.CheckReturnValue;
@@ -24,12 +25,11 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import se.j4j.argumentparser.CommandLineParser.ParsedArguments;
+import se.j4j.argumentparser.Argument.ParameterArity;
 import se.j4j.argumentparser.ForwardingStringParser.SimpleForwardingStringParser;
 import se.j4j.argumentparser.StringParsers.FixedArityParser;
 import se.j4j.argumentparser.StringParsers.InternalStringParser;
 import se.j4j.argumentparser.StringParsers.KeyValueParser;
-import se.j4j.argumentparser.StringParsers.OptionParser;
 import se.j4j.argumentparser.StringParsers.RepeatedArgumentParser;
 import se.j4j.argumentparser.StringParsers.StringParserBridge;
 import se.j4j.argumentparser.StringParsers.StringSplitterParser;
@@ -45,7 +45,7 @@ import se.j4j.strings.Description;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
-import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
@@ -57,7 +57,7 @@ import com.google.common.collect.Ranges;
  * Responsible for configuring and building {@link Argument} instances.
  * Example builders can be created through the {@link ArgumentFactory}.
  * 
- * <b>Note:</b>The code examples assumes that all methods in {@link ArgumentFactory} have been statically imported.
+ * <b>Note:</b>The code examples (for each method) assumes that all methods in {@link ArgumentFactory} have been statically imported.
  * 
  * <b>Note:</b>Some methods needs to be called in a specific order
  * (to make the generic type system produce the correct type) and to guide the
@@ -79,13 +79,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Nonnull private List<String> names = emptyList();
 	@Nonnull private Description description = EMPTY_STRING;
 	private boolean required = false;
-	private String separator = DEFAULT_SEPARATOR;
+	@Nonnull private String separator = DEFAULT_SEPARATOR;
+	@Nonnull private Optional<Locale> localeOverride = Optional.absent();
 	private boolean ignoreCase = false;
 	private boolean isPropertyMap = false;
 	private boolean isAllowedToRepeat = false;
-	@Nullable private String metaDescription = null;
+	@Nonnull private Optional<String> metaDescription = Optional.absent();
 	private boolean hideFromUsage = false;
-	private int parameterArity = 1;
+	private ParameterArity parameterArity = ParameterArity.AT_LEAST_ONE_ARGUMENT;
 
 	// Members that uses the T type, think about
 	// ListArgumentBuilder#copyAsListBuilder() when adding new ones
@@ -133,10 +134,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * @return an Immutable {@link Argument} which can be passed to
-	 *         {@link CommandLineParser#withArguments(Argument...)} <br>
-	 *         When the parsing is done the parsed value for this
-	 *         argument can be fetched with {@link ParsedArguments#get(Argument)}.
+	 * Returns an {@link Immutable} {@link Argument} which can be passed to
+	 * {@link CommandLineParser#withArguments(Argument...)} <br>
+	 * When the parsing is done the parsed value for this
+	 * argument can be fetched with {@link ParsedArguments#get(Argument)}.
+	 * 
 	 * @throws IllegalStateException if it's not possible to construct an {@link Argument} with the
 	 *             current settings
 	 */
@@ -150,7 +152,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * <pre>
 	 * Parses command line arguments and returns the value of the argument built
-	 * by {@link #build()}.
+	 * by {@link #build()}, providing a simple one liner shortcut when faced with only one argument.
 	 * </pre>
 	 * 
 	 * <pre class="prettyprint">
@@ -181,11 +183,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * Returns a usage string for the argument that this builder builds.
 	 * Should only be used if one argument is supported,
-	 * otherwise the {@link CommandLineParser#usage(String)} method should be used instead.
+	 * otherwise the {@link CommandLineParser#usage()} method should be used instead.
 	 */
-	public final String usage(String programName)
+	public final String usage()
 	{
-		return build().usage(programName);
+		return build().usage();
 	}
 
 	/**
@@ -218,7 +220,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Specifies the argument names that triggers the argument being built. As commands sometimes
 	 * gets long and hard to understand it's recommended to also support long named arguments,
 	 * making the commands even longer but more readable instead <br>
-	 * <b>Note</b>: If you choice to use multiple {@link #required()} indexed arguments all of them
+	 * <b>Note</b>: If you choose to use multiple {@link #required()} indexed arguments all of them
 	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages better
 	 * can point out erroneous arguments
 	 * 
@@ -263,30 +265,50 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * TODO: support resource bundles with i18n texts
-	 */
-
-	/**
-	 * Provides a description of what this argument does/means
+	 * Uses {@code localeToUseForThisArgument} to handle this argument with instead of the one
+	 * passed to {@link CommandLineParser#locale(Locale)}, allowing different {@link Argument}s to
+	 * use different {@link Locale}s.
 	 * 
-	 * @param descriptionString the description to use
 	 * @return this builder
 	 */
-	public final SELF description(final String descriptionString)
+	public final SELF locale(Locale localeToUseForThisArgument)
 	{
-		description = withString(descriptionString);
+
+		this.localeOverride = Optional.of(localeToUseForThisArgument);
 		return myself;
 	}
 
 	/**
-	 * Provides a description of what this argument does/means
-	 * 
-	 * @param aDescription
-	 * @return this builder
+	 * TODO: support resource bundles with i18n texts
 	 */
-	public final SELF description(final Description aDescription)
+
+	/**
+	 * <pre>
+	 * Sets {@code theDescription} of what this argument does/means. Printed with
+	 * {@link CommandLineParser#usage()}.
+	 * 
+	 * For instance, in:
+	 * -l, --enable-logging      Output debug information to standard out
+	 *                           Default: disabled
+	 * "Output debug information to standard out" is {@code theDescription}
+	 * @return this builder
+	 * </pre>
+	 */
+	public final SELF description(final String theDescription)
 	{
-		description = checkNotNull(aDescription);
+		description = withString(theDescription);
+		return myself;
+	}
+
+	/**
+	 * <pre>
+	 * {@link Description} version of {@link #description(String)}.
+	 * @return this builder
+	 * </pre>
+	 */
+	public final SELF description(final Description theDescription)
+	{
+		description = checkNotNull(theDescription);
 		return myself;
 	}
 
@@ -399,18 +421,18 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * you provide a meta description that explains what the {@code integer} represents in the context of this argument.
 	 * 
 	 * <b>Note:</b> empty meta descriptions aren't allowed
-	 * <b>Note:</b> the surrounding < & > isn't enforced or added automatically but it's
-	 * preferred to have them because a space can easily be mistaken for something else
+	 * <b>Note:</b> the surrounding < & > aren't enforced or added automatically but it's
+	 * preferred to have them because it makes a clear distinction between {@link #names() argument names} and their parameters.
 	 * 
-	 * @param aMetaDescription "<track nr>" in the above example
+	 * @param aMetaDescription "&lt;track nr&gt;" in the above example
 	 * @return this builder
-	 * @throws IllegalArgumentException if aMetaDescription is empty or null
+	 * @throws IllegalArgumentException if aMetaDescription is empty
 	 * </pre>
 	 */
 	public final SELF metaDescription(final String aMetaDescription)
 	{
 		checkArgument(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
-		this.metaDescription = aMetaDescription;
+		this.metaDescription = Optional.of(aMetaDescription);
 		return myself;
 	}
 
@@ -447,17 +469,16 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Other values will cause an {@link ArgumentException}.
 	 * For example {@link Ranges#closed(Comparable, Comparable)} only allows values within a range.
 	 * 
-	 * To override the default error message that is generated with {@link UserErrors#UNALLOWED_VALUE}
+	 * To override the default error message that is generated with {@link UserErrors#DISALLOWED_VALUE}
 	 * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail
-	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage(String)}.
+	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage()}.
 	 * When this is needed it's generally recommended to write a parser of its own instead.
 	 * 
-	 * <b>Note:</b>{@link Object#toString()} on {@code aLimiter} will
-	 * replace {@link StringParser#descriptionOfValidValues()} in the usage
+	 * <b>Note:</b>{@link Object#toString() toString()} on {@code aLimiter} will replace {@link StringParser#descriptionOfValidValues(Locale)} in the usage
 	 * 
-	 * <b>Note:</b>The validity of {@link StringParser#defaultValue()} isn't checked until
+	 * <b>Note:</b>The validity of any {@link #defaultValueSupplier(Supplier) default value} isn't checked until
 	 * it's actually needed when {@link ParsedArguments#get(Argument)} is called. This is so
-	 * because {@link StringParser#defaultValue()} could take an arbitrary long time.
+	 * because {@link Supplier#get()} (or {@link StringParser#defaultValue()}) could take an arbitrary long time.
 	 * </pre>
 	 * 
 	 * @param aLimiter a limiter
@@ -487,8 +508,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * to use sane defaults for your properties).
 	 * 
 	 * @return a new (more specific) builder
-	 * @throws IllegalStateException if a {@link #defaultValueDescriber(Describer)} or
-	 *             {@link #defaultValue(Object)} has been set before {@link #asPropertyMap()} is called
+	 * @throws IllegalStateException if {@link #defaultValue(Object)} has been set before {@link #asPropertyMap()} is called
 	 * 
 	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}
 	 * </pre>
@@ -497,7 +517,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	public final MapArgumentBuilder<String, T> asPropertyMap()
 	{
 		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asPropertyMap");
-		checkState(defaultValueDescriber == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValueDescriber", "asPropertyMap");
 		return new MapArgumentBuilder<String, T>(this, stringParser());
 	}
 
@@ -521,7 +540,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * </code>
 	 * </pre>
 	 * 
-	 * For this to work correctly it's paramount that {@code Key} implements a
+	 * For this to work correctly it's paramount that {@code K} implements a
 	 * proper {@link Object#hashCode()} because it's going to be used a key in a {@link Map}.
 	 * 
 	 * @return a new (more specific) builder
@@ -530,12 +549,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 *             map.
 	 */
 	@CheckReturnValue
-	public final <Key> MapArgumentBuilder<Key, T> asKeyValuesWithKeyParser(StringParser<Key> keyParser)
+	public final <K> MapArgumentBuilder<K, T> asKeyValuesWithKeyParser(StringParser<K> keyParser)
 	{
 		checkNotNull(keyParser);
 		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asKeyValuesWithKeyParser");
-		checkState(defaultValueDescriber == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValueDescriber", "asKeyValuesWithKeyParser");
-		return new MapArgumentBuilder<Key, T>(this, keyParser);
+		return new MapArgumentBuilder<K, T>(this, keyParser);
 	}
 
 	/**
@@ -574,6 +592,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * </code>
 	 * </pre>
 	 * 
+	 * <b>Note:</b> if {@link #defaultValue(Object) default value} has been set before
+	 * {@link #variableArity()} is called the {@link #defaultValue(Object) default value} will be a
+	 * one element list with that value in it, otherwise it will be empty.
+	 * 
 	 * @return a new (more specific) builder
 	 */
 	@CheckReturnValue
@@ -603,6 +625,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * If this isn't wanted use {@link #defaultValue(Object)} to override it.
 	 * 
 	 * @return a new (more specific) builder
+	 * @throws IllegalArgumentException if {@code numberOfParameters} is less than 2
 	 */
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
@@ -660,9 +683,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Override
 	public String toString()
 	{
-		return Objects.toStringHelper(this).omitNullValues().add("names", names).add("description", description)
-				.add("metaDescription", metaDescription).add("hideFromUsage", hideFromUsage).add("ignoreCase", ignoreCase).add("limiter", limiter)
-				.add("required", required).add("separator", separator).add("defaultValueDescriber", defaultValueDescriber)
+		return toStringHelper(this).omitNullValues().add("names", names).add("description", description).add("metaDescription", metaDescription)
+				.add("hideFromUsage", hideFromUsage).add("ignoreCase", ignoreCase).add("limiter", limiter).add("required", required)
+				.add("separator", separator).add("defaultValueDescriber", defaultValueDescriber).add("localeOverride", localeOverride)
 				.add("defaultValueSupplier", defaultValueSupplier).add("internalStringParser", internalStringParser).toString();
 	}
 
@@ -681,6 +704,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		this.description = copy.description;
 		this.required = copy.required;
 		this.separator = copy.separator;
+		this.localeOverride = copy.localeOverride; // TODO: verify
 		this.ignoreCase = copy.ignoreCase;
 		this.isPropertyMap = copy.isPropertyMap;
 		this.isAllowedToRepeat = copy.isAllowedToRepeat;
@@ -690,10 +714,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * <pre>
-	 * {@code aFinalizer} is called after {@link StringParser#parse(String)}
+	 * {@code aFinalizer} is called after {@link StringParser#parse(String, Locale)}
 	 * but before any predicates given to {@link #limitTo(Predicate)} are tested.
 	 * 
-	 * Is used internally to finalize values produced by {@link StringParser#parse(String)}.
+	 * Is used internally to finalize values produced by {@link StringParser#parse(String, Locale)}.
 	 * 
 	 * For example {@link RepeatedArgumentParser} uses this to make the resulting {@link List} {@link Immutable}.
 	 * 
@@ -715,20 +739,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		return myself;
 	}
 
-	/**
-	 * <pre>
-	 * A mechanism for finalizing parsed values before they enter a {@link ParsedArguments} instance.
-	 * 
-	 * It's used by internal string parsers that supports repeated values, those need to wrap
-	 * lists, maps etc. in unmodifiable ones before the parsing is said to be complete.
-	 * 
-	 * For regular {@link StringParser}s it's recommended to use {@link SimpleForwardingStringParser}
-	 * and decorate your {@link StringParser} with any finalization there instead.
-	 * 
-	 * @param <T> the type of value to finalize
-	 * </pre>
-	 */
-
 	final void allowRepeatedArguments()
 	{
 		isAllowedToRepeat = true;
@@ -739,7 +749,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		isPropertyMap = true;
 	}
 
-	final void setParameterArity(int arity)
+	final void setParameterArity(ParameterArity arity)
 	{
 		parameterArity = arity;
 	}
@@ -749,7 +759,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	@Nonnull final List<String> names(){ return names; }
 
-	@Nullable final Describer<? super T> defaultValueDescriber(){ return defaultValueDescriber; }
+	@Nullable Describer<? super T> defaultValueDescriber(){ return defaultValueDescriber; }
 
 	@Nonnull Description description(){ return description; }
 
@@ -757,15 +767,18 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	@Nullable final String separator(){ return separator; }
 
+
+	@Nullable final Optional<Locale> localeOverride(){ return localeOverride; }
+
 	final boolean isIgnoringCase(){ return ignoreCase; }
 
 	final boolean isPropertyMap(){ return isPropertyMap; }
 
-	final int parameterArity(){ return parameterArity; }
+	final ParameterArity parameterArity(){ return parameterArity; }
 
 	final boolean isAllowedToRepeat(){ return isAllowedToRepeat; }
 
-	@Nullable final String metaDescription(){ return metaDescription; }
+	@Nullable final Optional<String> metaDescription(){ return metaDescription; }
 	final boolean isHiddenFromUsage(){ return hideFromUsage; }
 
 	@Nullable final Supplier<? extends T> defaultValueSupplier(){ return defaultValueSupplier; }
@@ -898,7 +911,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 
 		/**
-		 * @deprecated Commands can't be splitted
+		 * @deprecated Commands can't be split
 		 */
 		@Deprecated
 		@Override
@@ -908,7 +921,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 
 		/**
-		 * @deprecated override {@link Command#commandArguments()} instead.
+		 * @deprecated pass any {@link Argument}s to your {@link Command} to
+		 *             {@link Command#Command(Argument...)}
 		 */
 		@Deprecated
 		@Override
@@ -918,7 +932,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 
 		/**
-		 * @deprecated override {@link Command#commandArguments()} instead.
+		 * @deprecated pass any {@link Argument}s to your {@link Command} to
+		 *             {@link Command#Command(Argument...)}
 		 */
 		@Deprecated
 		@Override
@@ -963,14 +978,13 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		private ArityArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder, final int arity)
 		{
 			super(new FixedArityParser<T>(builder.internalParser(), arity));
-			setParameterArity(arity);
 			init(builder, arity);
 		}
 
 		private ArityArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder)
 		{
 			super(new VariableArityParser<T>(builder.internalParser()));
-			setParameterArity(VARIABLE_ARITY);
+			setParameterArity(ParameterArity.VARIABLE_AMOUNT);
 			init(builder, 1);
 		}
 
@@ -1043,8 +1057,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * An intermediate builder used by {@link ArgumentFactory#optionArgument(String, String...)} to
-	 * indicate invalid call orders
+	 * An intermediate builder used by {@link ArgumentFactory#optionArgument(String, String...)}
 	 */
 	@NotThreadSafe
 	public static final class OptionArgumentBuilder extends InternalArgumentBuilder<OptionArgumentBuilder, Boolean>
@@ -1052,7 +1065,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		OptionArgumentBuilder()
 		{
 			defaultValue(false);
-			setParameterArity(OptionParser.NO_ARGUMENTS);
+			setParameterArity(ParameterArity.NO_ARGUMENTS);
 		}
 
 		@Override
@@ -1062,7 +1075,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 
 		@Override
-		public OptionArgumentBuilder defaultValue(Boolean value)
+		public OptionArgumentBuilder defaultValue(@Nonnull Boolean value)
 		{
 			checkNotNull(value, ProgrammaticErrors.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
 			return super.defaultValue(value);
@@ -1171,6 +1184,24 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			return new KeyValueParser<K, V>(keyParser, valueBuilder.internalParser(), valueBuilder.limiter, defaultValueSupplier());
 		}
 
+		// TODO: fix unchecked warning
+		@SuppressWarnings("unchecked")
+		@Override
+		Describer<? super Map<K, V>> defaultValueDescriber()
+		{
+			Describer<? super Map<K, V>> hardCodedDescriber = super.defaultValueDescriber();
+			if(hardCodedDescriber != null)
+				return hardCodedDescriber;
+
+			Describer<? super V> valueDescriber = valueBuilder.defaultValueDescriber();
+			if(valueDescriber != null)
+			{
+				Describer<?> mapDescriber = Describers.mapDescriber(valueDescriber, separator());
+				return (Describer<? super Map<K, V>>) mapDescriber;
+			}
+			return Describers.mapDescriber(Describers.<V>toStringDescriber(), separator());
+		}
+
 		/**
 		 * @deprecated because {@link #repeated()} should be called before {@link #asPropertyMap()}
 		 */
@@ -1206,14 +1237,13 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 
 		/**
-		 * @deprecated because {@link #variableArity()} and {@link #asPropertyMap()} doesn't
-		 *             work together
+		 * @deprecated because {@link #asPropertyMap()} is already of variable arity
 		 */
 		@Deprecated
 		@Override
 		public ArityArgumentBuilder<Map<K, V>> variableArity()
 		{
-			throw new IllegalStateException();
+			throw new IllegalStateException("asPropertyMap is already of variable arity");
 		}
 	}
 
@@ -1276,7 +1306,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		abstract boolean isHiddenFromUsage();
 
-		abstract int parameterArity();
+		/**
+		 * {@link ArgumentFactory#optionArgument(String, String...)} returns
+		 * {@link ParameterArity#NO_ARGUMENTS}<br>
+		 * {@link ArgumentBuilder#variableArity()} returns {@link ParameterArity#VARIABLE_AMOUNT} <br>
+		 * {@link ArgumentBuilder#arity(int)} returns {@link ParameterArity#AT_LEAST_ONE_ARGUMENT}
+		 * Any other {@link Argument} returns {@link ParameterArity#AT_LEAST_ONE_ARGUMENT}
+		 */
+		abstract ParameterArity parameterArity();
 
 		boolean isIndexed()
 		{
@@ -1287,7 +1324,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		static final Predicate<ArgumentSettings> IS_VISIBLE = new Predicate<ArgumentSettings>(){
 			@Override
-			public boolean apply(ArgumentSettings input)
+			public boolean apply(@Nonnull ArgumentSettings input)
 			{
 				return !input.isHiddenFromUsage();
 			}
@@ -1295,7 +1332,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		static final Predicate<ArgumentSettings> IS_INDEXED = new Predicate<ArgumentSettings>(){
 			@Override
-			public boolean apply(ArgumentSettings input)
+			public boolean apply(@Nonnull ArgumentSettings input)
 			{
 				return input.isIndexed();
 			}
@@ -1303,7 +1340,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		static final Predicate<ArgumentSettings> IS_REQUIRED = new Predicate<ArgumentSettings>(){
 			@Override
-			public boolean apply(ArgumentSettings input)
+			public boolean apply(@Nonnull ArgumentSettings input)
 			{
 				return input.isRequired();
 			}
@@ -1311,9 +1348,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		static final Predicate<ArgumentSettings> IS_OF_VARIABLE_ARITY = new Predicate<ArgumentSettings>(){
 			@Override
-			public boolean apply(ArgumentSettings input)
+			public boolean apply(@Nonnull ArgumentSettings input)
 			{
-				return input.parameterArity() == VARIABLE_ARITY;
+				return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 			}
 		};
 	}

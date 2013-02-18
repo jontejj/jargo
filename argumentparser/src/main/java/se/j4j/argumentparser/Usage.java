@@ -9,42 +9,34 @@ import static java.lang.Math.max;
 import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_INDEXED;
 import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_OF_VARIABLE_ARITY;
 import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_VISIBLE;
-import static se.j4j.argumentparser.ProgramInformation.programName;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 import static se.j4j.strings.StringsUtil.spaces;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import se.j4j.argumentparser.internal.Texts.UsageTexts;
+import se.j4j.strings.StringBuilders;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 @NotThreadSafe
-final class Usage implements Serializable
+final class Usage
 {
-	private static final long serialVersionUID = 1L;
-
 	private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
 	private static final int SPACES_BETWEEN_COLUMNS = 4;
 	private static final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
 
-	private final transient ImmutableList<Argument<?>> argumentsToPrint;
-
-	/**
-	 * Used temporarily to build argumentDescriptions
-	 */
-	private final transient StringBuilder builder;
-
-	private transient String argumentDescriptions;
+	private final ImmutableList<Argument<?>> argumentsToPrint;
+	private final Locale locale;
+	private final ProgramInformation program;
 
 	/**
 	 * <pre>
@@ -53,48 +45,30 @@ final class Usage implements Serializable
 	 * -p, --listen-port    The port clients should connect to.
 	 * 
 	 * This would be 20.
+	 * </pre>
 	 */
-	private final transient int indexOfDescriptionColumn;
-	private transient boolean needsNewline = false;
+	private final int indexOfDescriptionColumn;
+	private boolean needsNewline = false;
+	private StringBuilder builder = null;
 
-	Usage(Set<Argument<?>> arguments)
+	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program)
 	{
+		// TODO: don't do any of this in the constructor
 		Collection<Argument<?>> visibleArguments = filter(arguments, IS_VISIBLE);
+		this.locale = locale;
 		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
 		this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
-		this.builder = new StringBuilder(expectedUsageTextSize());
+		this.program = program;
 	}
 
-	/**
-	 * Constructs Usage from a serialized string, {@code argumentDescriptions} that is
-	 */
-	Usage(String argumentDescriptions)
+	Usage(Collection<Argument<?>> arguments, Locale locale)
 	{
-		this.argumentDescriptions = argumentDescriptions;
-
-		// These aren't needed when the description already is built
-		this.indexOfDescriptionColumn = 0;
-		this.builder = null;
-		this.argumentsToPrint = null;
-	}
-
-	String forProgram(ProgramInformation programInformation)
-	{
-		return mainUsage(programInformation) + argumentDescriptions();
+		this(arguments, locale, ProgramInformation.AUTO);
 	}
 
 	String forCommand()
 	{
-		return commandUsage() + argumentDescriptions();
-	}
-
-	private String argumentDescriptions()
-	{
-		if(argumentDescriptions == null)
-		{
-			argumentDescriptions = buildArgumentDescriptions();
-		}
-		return argumentDescriptions;
+		return commandUsage() + buildArgumentDescriptions();
 	}
 
 	private Iterable<Argument<?>> sortedArguments(Collection<Argument<?>> arguments)
@@ -104,7 +78,7 @@ final class Usage implements Serializable
 		Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
 
 		List<Argument<?>> sortedArgumentsByName = newArrayList(filter(arguments, not(IS_INDEXED)));
-		// TODO: sort in a lexicographical way?
+
 		Collections.sort(sortedArgumentsByName, usingToString());
 
 		return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
@@ -120,7 +94,7 @@ final class Usage implements Serializable
 		return longestNameSoFar;
 	}
 
-	private int lengthOfNameColumn(final Argument<?> argument)
+	private static int lengthOfNameColumn(final Argument<?> argument)
 	{
 		int namesLength = 0;
 
@@ -135,14 +109,9 @@ final class Usage implements Serializable
 		return namesLength + separatorLength + metaLength;
 	}
 
-	private int expectedUsageTextSize()
-	{
-		// Two lines for each argument
-		return 2 * argumentsToPrint.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION);
-	}
-
 	private String buildArgumentDescriptions()
 	{
+		builder = newStringBuilder();
 		for(Argument<?> arg : argumentsToPrint)
 		{
 			usageForArgument(arg);
@@ -150,22 +119,28 @@ final class Usage implements Serializable
 		return builder.toString();
 	}
 
+	private StringBuilder newStringBuilder()
+	{
+		// Two lines for each argument
+		return StringBuilders.withExpectedSize(2 * argumentsToPrint.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION));
+	}
+
 	@Override
 	public String toString()
 	{
-		return mainUsage(programName("")) + argumentDescriptions();
+		return mainUsage() + buildArgumentDescriptions();
 	};
 
-	private String mainUsage(ProgramInformation programInformation)
+	private String mainUsage()
 	{
-		String mainUsage = UsageTexts.USAGE_HEADER + programInformation.programName();
+		String mainUsage = UsageTexts.USAGE_HEADER + program.programName();
 
 		if(hasArguments())
 		{
 			mainUsage += UsageTexts.ARGUMENT_INDICATOR + NEWLINE;
 		}
 
-		mainUsage += programInformation.programDescription();
+		mainUsage += program.programDescription();
 
 		if(hasArguments())
 		{
@@ -182,7 +157,7 @@ final class Usage implements Serializable
 
 	private boolean hasArguments()
 	{
-		return !argumentDescriptions().isEmpty();
+		return !argumentsToPrint.isEmpty();
 	}
 
 	/**
@@ -251,7 +226,7 @@ final class Usage implements Serializable
 	{
 		// TODO: handle long value explanations, replace each newline with enough spaces,
 		// split up long lines, Use BreakIterator.getLineInstance()?
-		String description = arg.descriptionOfValidValues();
+		String description = arg.descriptionOfValidValues(locale);
 		if(!description.isEmpty())
 		{
 			boolean isCommand = arg.parser() instanceof Command;
@@ -274,7 +249,7 @@ final class Usage implements Serializable
 		if(arg.isRequired())
 			return;
 
-		String descriptionOfDefaultValue = arg.defaultValueDescription();
+		String descriptionOfDefaultValue = arg.defaultValueDescription(locale);
 		if(descriptionOfDefaultValue != null)
 		{
 			newlineWithIndentation();
@@ -283,32 +258,5 @@ final class Usage implements Serializable
 
 			builder.append(UsageTexts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
 		}
-	}
-
-	private static final class SerializationProxy implements Serializable
-	{
-		/**
-		 * All arguments described. Constructed lazily when serialized.
-		 * 
-		 * @serial
-		 */
-		private final String argumentDescriptions;
-
-		private static final long serialVersionUID = 1L;
-
-		private SerializationProxy(Usage usage)
-		{
-			argumentDescriptions = usage.argumentDescriptions();
-		}
-
-		private Object readResolve()
-		{
-			return new Usage(argumentDescriptions);
-		}
-	}
-
-	private Object writeReplace()
-	{
-		return new SerializationProxy(this);
 	}
 }
