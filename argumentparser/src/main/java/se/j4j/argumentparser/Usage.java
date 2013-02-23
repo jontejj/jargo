@@ -6,9 +6,9 @@ import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Ordering.usingToString;
 import static java.lang.Math.max;
-import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_INDEXED;
-import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_OF_VARIABLE_ARITY;
-import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_VISIBLE;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_INDEXED;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_OF_VARIABLE_ARITY;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_VISIBLE;
 import static se.j4j.strings.StringsUtil.NEWLINE;
 import static se.j4j.strings.StringsUtil.spaces;
 

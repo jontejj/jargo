@@ -1,9 +1,11 @@
 package se.j4j.guavaextensions;
 
+import static com.google.common.base.Predicates.alwaysTrue;
+import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.j4j.guavaextensions.Predicates2.listPredicate;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,7 +13,6 @@ import org.junit.Test;
 import se.j4j.testlib.UtilityClassTester;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
@@ -34,17 +35,17 @@ public class Predicates2Test
 	@Test
 	public void testListPredicate()
 	{
-		assertThat(Predicates2.listPredicate(ABOVE_ZERO).apply(Arrays.asList(1, 2, 3))).isTrue();
+		assertThat(listPredicate(ABOVE_ZERO).apply(asList(1, 2, 3))).isTrue();
 	}
 
 	@Test
 	public void testThatListPredicateThrowsAndIndicatesTheFirstOffendingValue()
 	{
-		List<Integer> numbers = Arrays.asList(1, -1, -2);
+		List<Integer> numbers = asList(1, -1, -2);
 
 		try
 		{
-			Predicates2.listPredicate(ABOVE_ZERO).apply(numbers);
+			listPredicate(ABOVE_ZERO).apply(numbers);
 			fail("-1 should not be above zero");
 		}
 		catch(IllegalArgumentException expected)
@@ -56,13 +57,13 @@ public class Predicates2Test
 	@Test
 	public void testThatListPredicateToStringDelegatesToElementPredicateToString()
 	{
-		assertThat(Predicates2.listPredicate(ABOVE_ZERO).toString()).isEqualTo("above zero");
+		assertThat(listPredicate(ABOVE_ZERO).toString()).isEqualTo("above zero");
 	}
 
 	@Test
 	public void testThatListPredicateReturnsAlwaysTrueWhenGivenAlwaysTrue()
 	{
-		assertThat(Predicates2.listPredicate(Predicates.alwaysTrue())).isSameAs(Predicates.alwaysTrue());
+		assertThat(listPredicate(alwaysTrue())).isSameAs(alwaysTrue());
 	}
 
 	@Test

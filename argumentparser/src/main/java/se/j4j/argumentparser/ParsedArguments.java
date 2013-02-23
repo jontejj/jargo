@@ -7,7 +7,7 @@ import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Maps.newIdentityHashMap;
-import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.IS_REQUIRED;
+import static se.j4j.argumentparser.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_REQUIRED;
 
 import java.util.Collection;
 import java.util.Locale;

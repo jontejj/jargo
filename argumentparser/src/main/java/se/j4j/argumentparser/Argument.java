@@ -43,11 +43,17 @@ public final class Argument<T> extends ArgumentSettings
 {
 	enum ParameterArity
 	{
+		/**
+		 * Indicates {@link ArgumentFactory#optionArgument(String, String...)}
+		 */
 		NO_ARGUMENTS,
 		/**
-		 * A marker for a variable amount of parameters
+		 * Indicates {@link ArgumentBuilder#variableArity()}
 		 */
 		VARIABLE_AMOUNT,
+		/**
+		 * {@link ArgumentBuilder#arity(int)} or any other {@link Argument}
+		 */
 		AT_LEAST_ONE_ARGUMENT
 	}
 
