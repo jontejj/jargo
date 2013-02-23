@@ -108,6 +108,7 @@ public final class Describers
 			if(value == null)
 				return "null";
 			// TODO: describe more characters? All ASCII characters perhaps?
+			// Character.isISOControl...
 			return ((int) value == 0) ? "the Null character" : value.toString();
 		}
 	}

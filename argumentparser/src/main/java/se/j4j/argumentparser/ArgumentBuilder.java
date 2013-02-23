@@ -954,7 +954,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		{
 			finalizeWith(listTransformer(builder.finalizer));
 			finalizeWith(Functions2.<T>unmodifiableList());
-
 			limitTo(listPredicate(builder.limiter));
 			if(builder.defaultValueSupplier != null)
 			{
@@ -1306,13 +1305,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		abstract boolean isHiddenFromUsage();
 
-		/**
-		 * {@link ArgumentFactory#optionArgument(String, String...)} returns
-		 * {@link ParameterArity#NO_ARGUMENTS}<br>
-		 * {@link ArgumentBuilder#variableArity()} returns {@link ParameterArity#VARIABLE_AMOUNT} <br>
-		 * {@link ArgumentBuilder#arity(int)} returns {@link ParameterArity#AT_LEAST_ONE_ARGUMENT}
-		 * Any other {@link Argument} returns {@link ParameterArity#AT_LEAST_ONE_ARGUMENT}
-		 */
 		abstract ParameterArity parameterArity();
 
 		boolean isIndexed()
@@ -1320,38 +1312,40 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			return names().isEmpty();
 		}
 
-		// Predicates
-
-		static final Predicate<ArgumentSettings> IS_VISIBLE = new Predicate<ArgumentSettings>(){
-			@Override
-			public boolean apply(@Nonnull ArgumentSettings input)
+		enum ArgumentPredicates implements Predicate<ArgumentSettings>
+		{
+			IS_VISIBLE
 			{
-				return !input.isHiddenFromUsage();
-			}
-		};
-
-		static final Predicate<ArgumentSettings> IS_INDEXED = new Predicate<ArgumentSettings>(){
-			@Override
-			public boolean apply(@Nonnull ArgumentSettings input)
+				@Override
+				public boolean apply(@Nonnull ArgumentSettings input)
+				{
+					return !input.isHiddenFromUsage();
+				}
+			},
+			IS_INDEXED
 			{
-				return input.isIndexed();
-			}
-		};
-
-		static final Predicate<ArgumentSettings> IS_REQUIRED = new Predicate<ArgumentSettings>(){
-			@Override
-			public boolean apply(@Nonnull ArgumentSettings input)
+				@Override
+				public boolean apply(@Nonnull ArgumentSettings input)
+				{
+					return input.isIndexed();
+				}
+			},
+			IS_REQUIRED
 			{
-				return input.isRequired();
-			}
-		};
-
-		static final Predicate<ArgumentSettings> IS_OF_VARIABLE_ARITY = new Predicate<ArgumentSettings>(){
-			@Override
-			public boolean apply(@Nonnull ArgumentSettings input)
+				@Override
+				public boolean apply(@Nonnull ArgumentSettings input)
+				{
+					return input.isRequired();
+				}
+			},
+			IS_OF_VARIABLE_ARITY
 			{
-				return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
-			}
-		};
+				@Override
+				public boolean apply(@Nonnull ArgumentSettings input)
+				{
+					return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
+				}
+			};
+		}
 	}
 }
