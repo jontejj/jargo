@@ -1,0 +1,17 @@
+# @title Editor Display Settings
+# @description Show Line Numbers, Show Print Margin At 100, Spaces -> Tabs, Show invalid whitespace
+# @task_type LASTMOD
+#
+# Created by the Workspace Mechanic Preference Recorder
+#Sat Feb 23 19:07:09 CET 2013
+/instance/org.eclipse.ui.editors/showLineFeed=false
+/instance/org.eclipse.ui.editors/showEnclosedTabs=false
+/instance/org.eclipse.ui.editors/printMargin=true
+/instance/org.eclipse.ui.editors/showWhitespaceCharacters=true
+file_export_version=3.0
+/instance/org.eclipse.ui.editors/printMarginColumn=100
+/instance/org.eclipse.ui.editors/showCarriageReturn=false
+/instance/org.eclipse.ui.editors/showLeadingTabs=false
+/instance/org.eclipse.ui.editors/lineNumberRuler=true
+/instance/org.eclipse.ui.editors/spacesForTabs=true
+/instance/org.eclipse.ui.editors/showEnclosedSpaces=false

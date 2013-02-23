@@ -1,0 +1,8 @@
+# @title Easy access to assertThat, checkNotNull et.c through Content Assist
+# @description Requires that guava & fest-assert are available.
+# @task_type LASTMOD
+#
+# Created by the Workspace Mechanic Preference Recorder
+#Sat Feb 23 17:13:07 CET 2013
+file_export_version=3.0
+/instance/org.eclipse.jdt.ui/content_assist_favorite_static_members=com.google.common.base.Preconditions.*;java.util.concurrent.TimeUnit.*;org.fest.assertions.Assertions.*
