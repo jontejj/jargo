@@ -1,3 +1,17 @@
+/* Copyright 2013 Jonatan Jönsson
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package se.j4j.strings;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -240,21 +254,44 @@ public final class StringsUtil
 		checkArgument(number >= 0, "Negative numbers don't have positions");
 		switch(number)
 		{
-			case 0:
-				return "zeroth";
-			case 1:
-				return "first";
-			case 2:
-				return "second";
-			case 3:
-				return "third";
-			case 4:
-				return "fourth";
-			case 5:
-				return "fifth";
+		case 0:
+			return "zeroth";
+		case 1:
+			return "first";
+		case 2:
+			return "second";
+		case 3:
+			return "third";
+		case 4:
+			return "fourth";
+		case 5:
+			return "fifth";
 
 		}
 		return Integer.toString(number) + "th";
+	}
+
+	/**
+	 * Finds the {@code nth} occurrence of {@code needle} in {@code haystack}
+	 * 
+	 * @param haystack the string to search within
+	 * @param needle the string to search for
+	 * @param nth how many occurrences of {@code needle} that should occur before the returned index
+	 * @return the starting index of the {@code nth} occurrence of {@code needle} within
+	 *         {@code haystack}, -1 if {@code nth} occurrences couldn't be found
+	 */
+	public static int indexOfNth(String haystack, String needle, int nth)
+	{
+		checkNotNull(haystack);
+		checkNotNull(needle);
+		checkArgument(nth > 0, "nth must be at least 1");
+		int index = -1;
+		while(nth > 0)
+		{
+			index = haystack.indexOf(needle, index + 1);
+			nth--;
+		}
+		return index;
 	}
 
 }
