@@ -1,8 +1,24 @@
+/* Copyright 2013 Jonatan Jönsson
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+*/
 package se.j4j.guavaextensions;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +27,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 
 /**
- * Gives you static access to implementations of the {@link Function} interface that returns objects
- * of the same type as they take as input. That is, {@code F} & {@code T} are the same.
+ * Gives you static access to additional implementations of the {@link Function} interface, as a
+ * complement to {@link Functions}
  */
 public final class Functions2
 {
@@ -216,4 +234,33 @@ public final class Functions2
 		}
 	}
 
+	/**
+	 * Returns a {@link Function} that reads whole {@link File}s into {@link String}s using the
+	 * {@link Charsets#UTF_8 UTF-8} charset.
+	 */
+	public static Function<File, String> fileToString()
+	{
+		return FileToString.INSTANCE;
+	}
+
+	private static final class FileToString implements Function<File, String>
+	{
+		private static final Function<File, String> INSTANCE = new FileToString();
+
+		@Override
+		public String apply(File input)
+		{
+			if(input.isDirectory())
+				throw new IllegalArgumentException(input.getAbsolutePath() + " is a directory, not a file");
+			try
+			{
+				// TODO: test error message when input is a dir
+				return Files.toString(input, Charsets.UTF_8);
+			}
+			catch(IOException e)
+			{
+				throw new IllegalArgumentException("I/O error occured while reading: " + input.getAbsolutePath(), e);
+			}
+		}
+	}
 }
