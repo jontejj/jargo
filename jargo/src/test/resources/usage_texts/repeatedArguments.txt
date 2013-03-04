@@ -1,0 +1,6 @@
+Usage: repeatedArguments [Arguments]
+
+Arguments:
+-s "greeting phrase"    A greeting phrase to greet new connections with [Supports Multiple occurrences]
+                        "greeting phrase": any string
+                        Default: Nothing

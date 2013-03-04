@@ -1,4 +1,0 @@
-population=42
- The number of citizens in the world
-hello=1
- The number of times to say hello

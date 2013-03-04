@@ -1,7 +1,0 @@
-Unexpected argument: foo, previous argument: 1
-
-Usage: unexpectedArgument [Arguments]
-
-Arguments:
---number <integer>    <integer>: -2 147 483 648 to 2 147 483 647
-                      Default: 0

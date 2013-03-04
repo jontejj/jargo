@@ -1,7 +1,0 @@
-Missing <integer> parameter for -n. See usage for --number for proper values.
-
-Usage: missingParameter [Arguments]
-
-Arguments:
---number, -n <integer>    <integer>: -2 147 483 648 to 2 147 483 647
-                          Default: 0

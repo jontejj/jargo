@@ -1,0 +1,6 @@
+Usage: repeatedPropertyValues [Arguments]
+
+Arguments:
+-N<string>=<integer>    Some measurement values [Supports Multiple occurrences]
+                        <string>=<integer>: where "<string>" is any string and "<integer>" is -2,147,483,648 to 2,147,483,647
+                        Default: Empty map

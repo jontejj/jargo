@@ -1,7 +1,0 @@
-Usage: ProgramName [Arguments]
-
-Program description of ProgramName
-
-Arguments:
- <integer>    <integer>: -2 147 483 648 to 2 147 483 647
-              Default: 0
