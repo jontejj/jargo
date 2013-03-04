@@ -1,0 +1,10 @@
+Usage: commandWithSubCommand [Arguments]
+
+Arguments:
+command     Arguments:
+             subcommand     A subcommand with an argument
+                            Arguments:
+                             -b <boolean>    <boolean>: true or false
+                                             Default: false
+                             
+             

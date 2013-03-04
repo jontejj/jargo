@@ -1,0 +1,8 @@
+# @title changes testName to testThat for the test template
+# @description testThat kick starts good test names better than "testName"
+# @task_type LASTMOD
+#
+# Created by the Workspace Mechanic Preference Recorder
+#Sat Mar 02 20:06:09 CET 2013
+file_export_version=3.0
+/instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.text.custom_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates><template autoinsert\="false" context\="java-members" deleted\="true" description\="test method" enabled\="true" id\="org.eclipse.jdt.ui.templates.test" name\="test">public void test${name}() throws Exception {\n\t${cursor} \n}</template><template autoinsert\="false" context\="java-members" deleted\="false" description\="test method (JUnit 4)" enabled\="true" id\="org.eclipse.jdt.ui.templates.test_junit4" name\="test">@${testType\:newType(org.junit.Test)}\npublic void testThat${SomethingHappensWhenSomethingDoes}() throws Exception {\n\t${staticImport\:importStatic('org.junit.Assert.*')}${cursor} \n}</template></templates>

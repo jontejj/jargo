@@ -1,114 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>se.j4j</groupId>
-	<artifactId>projects</artifactId>
-	<description>Master POM for all projects@j4j.se</description>
-	<version>1</version>
+	<groupId>se.softhouse</groupId>
+	<artifactId>dandelion</artifactId>
+	<description>All projects aggregrated</description>
+	<version>0.0.1</version>
 	<packaging>pom</packaging>
-	<url>http://www.j4j.se</url>
+	<url>http://softhousegarden.appspot.com/</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm><connection>scm:git:file:///Users/jonatanjoensson/maven_projects/j4j.se/</connection></scm>
 	<modules>
-		<module>argumentparser</module>
-		<module>classes</module>
-		<module>collections</module>
-		<module>guava-extensions</module>
-		<module>numbers</module>
-		<module>strings</module>
+		<module>comeon</module>
+		<module>jargo</module>
+		<module>comeon-testlib</module>
 	</modules>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.0.1</version>
-				<executions>
-					<execution>
-						<id>enforce</id>
-						<configuration>
-							<rules>
-								<DependencyConvergence />
-							</rules>
-						</configuration>
-						<goals>
-							<!-- <goal>enforce</goal> TODO: m2e doesn't support this yet -->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8.1</version>
-				<configuration>
-					<tags>
-						<tag>
-							<name>formatter.on</name>
-							<placement>X</placement>
-						</tag>
-						<tag>
-							<name>formatter.off</name>
-							<placement>X</placement>
-						</tag>
-					</tags>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easytesting</groupId>
-			<artifactId>fest-assert</artifactId>
-			<version>1.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>1.3.9</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>annotations</artifactId>
-			<version>2.0.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava-testlib</artifactId>
-			<version>13.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.caliper</groupId>
-			<artifactId>caliper</artifactId>
-			<version>0.5-rc1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>se.j4j</groupId>
-			<artifactId>test-lib</artifactId>
-			<version>0.0.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 </project>

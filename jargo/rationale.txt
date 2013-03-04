@@ -1,0 +1,62 @@
+A tool to ease the handling of program arguments.
+
+1)
+Because typesafety and readability matters
+
+2)
+As opposed to JCommander which is annotation based this argument parsing library is based on the Generic class Argument which gives you
+compile-time errors when switching types. For example:
+
+In JCommander:
+Parameter(names = "-file", converter = FileConverter.class) //Converted type from FileConverter checked at runtime
+File file;
+
+In ArgumentParser:
+ArgumentFactory.fileArgument("-file").parse("-file", "filename.txt").createNewFile();
+
+No new classes are needed and the resulting program is more typesafe because if fileArgument
+would change to being integerArgument, trying to call createNewFile() would generate a compile-time error
+
+3)
+Because "-sPrOt" isn't easy to understand (a concept from getopts).
+
+Compare:
+TODO: create getOpt variant here
+To:
+
+String[] args = {"--logging", "-p", "8090", "Hello"};
+
+        Argument<Boolean> enableLogging = optionArgument("-l", "--logging").
+                description("Output debug information to standard out").build();
+
+        Argument<Integer> port = integerArgument("-p", "--port").defaultValue(8080).
+                description("The port to start the server on.").build();
+
+        Argument<String> greetingPhrase = string().description("A greeting phrase to greet new connections with").build();
+
+        ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
+
+        assertTrue(enableLogging + " was not found in parsed arguments", arguments.get(enableLogging));
+        assertEqual(port + " was not found in parsed arguments", 8090, arguments.get(port));
+        assertEquals(greetingPhrase + " was not found in parsed arguments", "Hello", arguments.get(greetingPhrase));
+
+4)
+Because JCommander doesn't support repeated arguments other than List<String>.
+
+String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};
+
+Handled by:
+Argument<List<List<Integer>>> numbers = integerArgument("--numbers").arity(2).repeated().build();
+
+5)
+TODO: Compare to http://commons.apache.org/cli/introduction.html
+		jopt-simple
+
+6) Reflection makes it hard to analyze references to classes/methods and it 
+often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted. No reflection is used here.
+
+7) You can have final fields
+
+8) Uses generics, just like https://github.com/purcell/jargs, but with all the features that jcommander has.
+
+9) this library uses no casting, when you ask for a value of a specific type you'll get it
