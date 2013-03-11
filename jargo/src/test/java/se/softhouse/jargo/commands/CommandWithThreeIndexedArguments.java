@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -28,9 +28,12 @@ public class CommandWithThreeIndexedArguments extends Command
 {
 	private static final Argument<List<Integer>> NUMBERS = integerArgument().arity(3).required().build();
 
-	public CommandWithThreeIndexedArguments()
+	private final List<Command> executedCommands;
+
+	CommandWithThreeIndexedArguments(final List<Command> executedCommands)
 	{
 		super(NUMBERS);
+		this.executedCommands = executedCommands;
 	}
 
 	@Override
@@ -43,5 +46,6 @@ public class CommandWithThreeIndexedArguments extends Command
 	protected void execute(ParsedArguments args)
 	{
 		assertThat(args.get(NUMBERS)).isEqualTo(Arrays.asList(1, 2, 3));
+		executedCommands.add(this);
 	}
 }

@@ -20,7 +20,7 @@ import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Maps.newIdentityHashMap;
+import static com.google.common.collect.Maps.newLinkedHashMap;
 import static se.softhouse.jargo.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_REQUIRED;
 
 import java.util.Collection;
@@ -35,6 +35,8 @@ import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 
+import com.google.common.collect.Sets;
+
 /**
  * Holds parsed arguments for a {@link CommandLineParser#parse(String...)} invocation.
  * Use {@link #get(Argument)} to fetch a parsed command line value.
@@ -45,8 +47,8 @@ public final class ParsedArguments
 	/**
 	 * Stores results from {@link StringParser#parse(String, Locale)}
 	 */
-	// TODO Map<Argument<?>, Optional<Object>>? to differentiate nulls from absence
-	@Nonnull private final Map<Argument<?>, Object> parsedArguments = newIdentityHashMap();
+	// FIXME Map<Argument<?>, Optional<Object>>? to differentiate nulls from absence
+	@Nonnull private final Map<Argument<?>, Object> parsedArguments = newLinkedHashMap();
 	@Nonnull private final Set<Argument<?>> allArguments;
 	/**
 	 * Keeps a running total of how many indexed arguments that have been parsed
@@ -149,5 +151,36 @@ public final class ParsedArguments
 	Set<Argument<?>> parsedArguments()
 	{
 		return parsedArguments.keySet();
+	}
+
+	Set<String> nonParsedArguments()
+	{
+		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments.size());
+		for(Argument<?> argument : allArguments)
+		{
+			boolean wasGiven = wasGiven(argument);
+			if(!wasGiven || argument.isAllowedToRepeat())
+			{
+				for(String name : argument.names())
+				{
+					if(argument.separator().equals(ArgumentBuilder.DEFAULT_SEPARATOR))
+					{
+						validArguments.add(name);
+					}
+					else
+					{
+						validArguments.add(name + argument.separator());
+					}
+
+				}
+			}
+			if(wasGiven && argument.parser() instanceof Command)
+			{
+				// TODO: test suggestions for sub commands as well
+				ParsedArguments lastInvocation = (ParsedArguments) getValue(argument);
+				validArguments.addAll(lastInvocation.nonParsedArguments());
+			}
+		}
+		return validArguments;
 	}
 }

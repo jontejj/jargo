@@ -40,7 +40,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 /**
  * <pre>
@@ -90,14 +89,6 @@ public final class Argument<T> extends ArgumentSettings
 	@Nullable private final Describer<? super T> defaultValueDescriber;
 	@Nonnull private final Predicate<? super T> limiter;
 
-	@Nonnull private final Supplier<CommandLineParserInstance> commandLineParser = Suppliers.memoize(new Supplier<CommandLineParserInstance>(){
-		@Override
-		public CommandLineParserInstance get()
-		{
-			return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), ProgramInformation.AUTO);
-		}
-	});
-
 	// Internal bookkeeping
 	@Nonnull private final Function<T, T> finalizer;
 	private final ParameterArity parameterArity;
@@ -105,7 +96,9 @@ public final class Argument<T> extends ArgumentSettings
 
 	private CommandLineParserInstance commandLineParser()
 	{
-		return commandLineParser.get();
+		// Not cached to save memory, users should use CommandLineParser.withArguments if they are
+		// concerned about reuse
+		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), ProgramInformation.AUTO);
 	}
 
 	/**

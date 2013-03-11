@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import java.util.Locale;
@@ -37,10 +37,18 @@ import com.google.common.collect.ImmutableList;
  * {@link Command}s have a {@link CommandLineParser} themselves (and thereby sub-commands are allowed as well), that is,
  * they execute a command and may support contextual arguments as specified by the constructor {@link Command#Command(Argument...)}.
  * 
+ * Sub-commands are executed before their parent {@link Command}.
+ * 
  * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}
  * or {@link CommandLineParser#withCommands(Command...)} if you have several commands.
+ * 
  * If you support several commands and a user enters several of them at the same
  * time they will be executed in the order given to {@link CommandLineParser#parse(String...)}.
+ * If any {@link StringParser#parse(String, Locale) parse} errors occurs (for {@link Command#Command(Argument...) command arguments}) the {@link Command}
+ * will not be executed. However, if given multiple commands and {@link StringParser#parse(String, Locale) parse errors} occurs,
+ * all {@link Command}s given before the {@link Command} with {@link StringParser#parse(String, Locale) parse errors} will have been executed.
+ * This is so because {@link Command#Command(Argument...) command arguments} are allowed to be dependent on earlier {@link Command}s being executed.
+ * So it's recommended to let the user know when you've executed a {@link Command}.
  * 
  * <b>Mutability note:</b> although a {@link Command} should be {@link Immutable}
  * the objects it handles doesn't have to be. So repeated invocations of execute
@@ -88,7 +96,7 @@ import com.google.common.collect.ImmutableList;
  * </pre>
  */
 @Immutable
-public abstract class Command extends InternalStringParser<String> implements Description
+public abstract class Command extends InternalStringParser<ParsedArguments> implements Description
 {
 	@Nonnull private final ImmutableList<Argument<?>> commandArguments;
 
@@ -111,7 +119,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	/**
 	 * Called when this command is encountered on the command line
 	 * 
-	 * @param parsedArguments a container with parsed values for the (optional) command arguments,
+	 * @param parsedArguments a container with parsed values for the command arguments,
 	 *            as specified by {@link Command#Command(Argument...)}
 	 */
 	protected abstract void execute(ParsedArguments parsedArguments);
@@ -136,14 +144,16 @@ public abstract class Command extends InternalStringParser<String> implements De
 	}
 
 	@Override
-	final String parse(final ArgumentIterator arguments, final String previousOccurance, final ArgumentSettings argumentSettings, Locale locale)
-			throws ArgumentException
+	final ParsedArguments parse(final ArgumentIterator arguments, final ParsedArguments previousOccurance, final ArgumentSettings argumentSettings,
+			Locale locale) throws ArgumentException
 	{
-		String usedCommandName = arguments.current();
 		arguments.rememberAsCommand();
+
 		ParsedArguments parsedArguments = parser().parse(arguments, locale);
-		execute(parsedArguments);
-		return usedCommandName;
+
+		arguments.rememberInvocationOfCommand(this, parsedArguments);
+
+		return parsedArguments;
 	}
 
 	/**
@@ -163,7 +173,7 @@ public abstract class Command extends InternalStringParser<String> implements De
 	});
 
 	@Override
-	final String defaultValue()
+	final ParsedArguments defaultValue()
 	{
 		return null;
 	}
@@ -175,9 +185,9 @@ public abstract class Command extends InternalStringParser<String> implements De
 	}
 
 	@Override
-	final String describeValue(String value)
+	final String describeValue(ParsedArguments value)
 	{
-		return value;
+		return null;
 	}
 
 	@Override

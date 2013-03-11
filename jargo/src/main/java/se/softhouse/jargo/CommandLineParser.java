@@ -15,9 +15,11 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Arrays.asList;
 import static se.softhouse.jargo.ArgumentFactory.command;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -48,7 +50,7 @@ import com.google.common.util.concurrent.Atomics;
  * 
  * Argument&lt;Boolean&gt; enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
  * Argument&lt;String&gt; greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
- * Argument&lt;List&lt;Integer&gt;&gt; port = integerArgument("-p", "--listen-port")
+ * Argument&lt;List&lt;Integer&gt;&gt; ports = integerArgument("-p", "--listen-port")
  * 						.defaultValue(8080)
  * 						.description("The port clients should connect to.")
  * 						.metaDescription("&lt;port&gt;")
@@ -57,9 +59,9 @@ import com.google.common.util.concurrent.Atomics;
  * 
  * try
  * {
- *   ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
+ *   ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, ports).parse(args);
  *   assertThat(arguments.get(enableLogging)).isTrue();
- *   assertThat(arguments.get(port)).isEqualTo(Arrays.asList(8090));
+ *   assertThat(arguments.get(ports)).isEqualTo(Arrays.asList(8090));
  *   assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
  * }
  * catch(ArgumentException exception)
@@ -117,7 +119,7 @@ public final class CommandLineParser
 
 	/**
 	 * Creates a {@link CommandLineParser} with support for the given {@code argumentDefinitions}.
-	 * {@link Command}s can be added later with {@link #and(Command)}.
+	 * {@link Command}s can be added later with {@link #andCommands(Command...)}.
 	 * 
 	 * @param argumentDefinitions {@link Argument}s produced with {@link ArgumentFactory} or
 	 *            with your own disciples of {@link ArgumentBuilder}
@@ -146,8 +148,8 @@ public final class CommandLineParser
 
 	/**
 	 * Creates a {@link CommandLineParser} with support for {@code commands}. To add additional
-	 * {@link Argument}s or {@link Command}s there is {@link #and(Argument)} and
-	 * {@link #and(Command)}.
+	 * {@link Argument}s or {@link Command}s there is {@link #andArguments(Argument...)} and
+	 * {@link #andCommands(Command...)}.
 	 * 
 	 * @param commands the commands to support initially
 	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
@@ -158,12 +160,7 @@ public final class CommandLineParser
 	@Nonnull
 	public static CommandLineParser withCommands(final Command ... commands)
 	{
-		List<Argument<?>> commandsAsArguments = Lists.newArrayListWithExpectedSize(commands.length);
-		for(Command c : commands)
-		{
-			commandsAsArguments.add(command(c).build());
-		}
-		return new CommandLineParser(commandsAsArguments);
+		return new CommandLineParser(commandsToArguments(commands));
 	}
 
 	/**
@@ -196,56 +193,56 @@ public final class CommandLineParser
 	@Nonnull
 	public String usage()
 	{
-		// TODO: return Usage instead? more future proof...
+		// FIXME: return Usage instead? more future proof...
 		return new Usage(parser().allArguments(), locale(), programInformation()).toString();
 	}
 
 	/**
-	 * Adds support for {@code commandToAlsoSupport} in this {@link CommandLineParser}. Typically
+	 * Adds support for {@code commandsToAlsoSupport} in this {@link CommandLineParser}. Typically
 	 * used in a chained fashion when faced with many supported {@link Command}s.
 	 * 
-	 * @param commandToAlsoSupport the command to add support for
+	 * @param commandsToAlsoSupport the commands to add support for
 	 * @return this {@link CommandLineParser} to allow for chained calls
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public CommandLineParser and(final Command commandToAlsoSupport)
+	public CommandLineParser andCommands(final Command ... commandsToAlsoSupport)
 	{
-		verifiedAdd(command(commandToAlsoSupport).build());
+		verifiedAdd(commandsToArguments(commandsToAlsoSupport));
 		return this;
 	}
 
 	/**
-	 * Adds support for {@code argumentToAlsoSupport} in this {@link CommandLineParser}. Typically
+	 * Adds support for {@code argumentsToAlsoSupport} in this {@link CommandLineParser}. Typically
 	 * used in a chained fashion when faced with many supported arguments.
 	 * 
-	 * @param argumentToAlsoSupport the argument to add support for
+	 * @param argumentsToAlsoSupport the arguments to add support for
 	 * @return this {@link CommandLineParser} to allow for chained calls
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public CommandLineParser and(Argument<?> argumentToAlsoSupport)
+	public CommandLineParser andArguments(final Argument<?> ... argumentsToAlsoSupport)
 	{
 		// TODO: test thread safety, sleep long in a parser and, add argument and verify that the
 		// second parse uses the added argument
-		verifiedAdd(argumentToAlsoSupport);
+		verifiedAdd(asList(argumentsToAlsoSupport));
 		return this;
 	}
 
 	/**
-	 * Verify that the parser would be usable after adding {@code argumentToCheck} to it.
+	 * Verify that the parser would be usable after adding {@code argumentsToAdd} to it.
 	 * This allows future parse operations to still use the unaffected old parser.
 	 */
-	private void verifiedAdd(Argument<?> argumentToAdd)
+	private void verifiedAdd(Collection<Argument<?>> argumentsToAdd)
 	{
 		try
 		{
 			modifyGuard.lock();
 			List<Argument<?>> newDefinitions = Lists.newArrayList(argumentDefinitions);
-			newDefinitions.add(checkNotNull(argumentToAdd));
+			newDefinitions.addAll(argumentsToAdd);
 			cachedParser.set(new CommandLineParserInstance(newDefinitions, programInformation()));
 			// Everything went fine, accept argument
-			argumentDefinitions.add(argumentToAdd);
+			argumentDefinitions.addAll(argumentsToAdd);
 		}
 		finally
 		{
@@ -341,5 +338,15 @@ public final class CommandLineParser
 	ProgramInformation programInformation()
 	{
 		return programInformation.get();
+	}
+
+	private static List<Argument<?>> commandsToArguments(final Command ... commands)
+	{
+		List<Argument<?>> commandsAsArguments = Lists.newArrayListWithExpectedSize(commands.length);
+		for(Command c : commands)
+		{
+			commandsAsArguments.add(command(c).build());
+		}
+		return commandsAsArguments;
 	}
 }

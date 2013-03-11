@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -20,12 +20,6 @@ import static se.softhouse.jargo.ArgumentFactory.integerArgument;
 import static se.softhouse.jargo.ArgumentFactory.optionArgument;
 
 import org.junit.Test;
-
-import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.Command;
-import se.softhouse.jargo.CommandLineParser;
-import se.softhouse.jargo.ParsedArguments;
 
 /**
  * Tests for a batch of short-named optional arguments.
@@ -83,7 +77,7 @@ public class CombinedOptionsTest
 	public void testThatNoOptionArgumentIsParsedWhenOneCharacterIsUnhandled() throws ArgumentException
 	{
 		Argument<Integer> programArgument = integerArgument("-lp").build();
-		Argument<String> command = command(new Command(subOption){
+		Argument<?> command = command(new Command(subOption){
 
 			@Override
 			protected void execute(ParsedArguments args)

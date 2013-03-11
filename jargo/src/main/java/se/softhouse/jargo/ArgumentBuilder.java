@@ -853,7 +853,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Builder for {@link Command}s. Created with {@link ArgumentFactory#command(Command)}.
 	 */
 	@NotThreadSafe
-	public static final class CommandBuilder extends InternalArgumentBuilder<CommandBuilder, String>
+	public static final class CommandBuilder extends InternalArgumentBuilder<CommandBuilder, ParsedArguments>
 	{
 		CommandBuilder(final Command command)
 		{
@@ -875,7 +875,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder defaultValue(String defaultValue)
+		public CommandBuilder defaultValue(ParsedArguments defaultValue)
 		{
 			throw new IllegalStateException();
 		}
@@ -885,7 +885,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder defaultValueSupplier(Supplier<? extends String> defaultValueSupplier)
+		public CommandBuilder defaultValueSupplier(Supplier<? extends ParsedArguments> defaultValueSupplier)
 		{
 			throw new IllegalStateException();
 		}
@@ -905,7 +905,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder defaultValueDescriber(Describer<? super String> defaultValueDescriber)
+		public CommandBuilder defaultValueDescriber(Describer<? super ParsedArguments> defaultValueDescriber)
 		{
 			throw new IllegalStateException();
 		}
@@ -915,7 +915,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public CommandBuilder limitTo(Predicate<? super String> limiter)
+		public CommandBuilder limitTo(Predicate<? super ParsedArguments> limiter)
 		{
 			throw new IllegalStateException();
 		}
@@ -925,7 +925,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public SplitterArgumentBuilder<String> splitWith(String valueSeparator)
+		public SplitterArgumentBuilder<ParsedArguments> splitWith(String valueSeparator)
 		{
 			throw new IllegalStateException();
 		}
@@ -936,7 +936,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public ArityArgumentBuilder<String> arity(int arity)
+		public ArityArgumentBuilder<ParsedArguments> arity(int arity)
 		{
 			throw new IllegalStateException();
 		}
@@ -947,7 +947,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		 */
 		@Deprecated
 		@Override
-		public ArityArgumentBuilder<String> variableArity()
+		public ArityArgumentBuilder<ParsedArguments> variableArity()
 		{
 			throw new IllegalStateException();
 		}

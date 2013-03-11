@@ -10,7 +10,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<scm><connection>scm:git:file:///Users/jonatanjoensson/maven_projects/j4j.se/</connection></scm>
+	<scm>
+		<connection>scm:git:file:///Users/jonatanjoensson/maven_projects/j4j.se/</connection>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
@@ -61,6 +63,18 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>13.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>1.3.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Testing libs -->
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
@@ -71,12 +85,6 @@
 			<artifactId>fest-assert</artifactId>
 			<version>1.4</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>1.3.9</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>

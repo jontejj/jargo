@@ -11,19 +11,24 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 /**
- * TODO: Write readme here
+ * FIXME: Write readme here
  * Oneliner API description
- * 
+ *
+ * <h2>Inspiration (a.k.a Credits)</h2>
+ * If you recognize any features in this API it may come from:
+ * <b>git</b> - the command feature, suggestions for invalid arguments
+ * <b>maven</b> - executing several commands
+ * <b>jcommander</b> - almost everything else (this is what I based the feature set on)
  * <pre>
  * Flesh out examples... with pretty-printing
- * 
+ *
  * <h2>Localization</h2>
  * By default, {@link se.softhouse.jargo.ArgumentFactory#integerArgument(String...)}, {@link se.softhouse.jargo.ArgumentFactory#longArgument(String...)} and so on,
  * formats numbers with {@link se.softhouse.comeon.strings.Describers#numberDescriber()} in a {@link java.util.Locale} sensitive way. If this isn't what you want you can override this with
  * {@link se.softhouse.jargo.ArgumentBuilder#defaultValueDescriber(se.softhouse.comeon.strings.Describer) defaultValueDescriber(Describers.toStringDescriber()}.
- * 
+ *
  * <h2>API compatibility notes</h2>
  * Public methods that have Guava types in their method signature such as:
  * {@link se.softhouse.jargo.ArgumentBuilder#limitTo(com.google.common.base.Predicate)}
