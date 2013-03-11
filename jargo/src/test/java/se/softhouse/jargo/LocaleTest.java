@@ -109,7 +109,7 @@ public class LocaleTest
 	@Test
 	public void testThatLocaleOverrideForSpecificArgumentDoesNotAffectOthers() throws Exception
 	{
-		Argument<BigDecimal> swedishNumber = bigDecimalArgument().locale(Locales.SWEDISH).build();
+		Argument<BigDecimal> swedishNumber = bigDecimalArgument().locale(SWEDISH).build();
 		Argument<BigDecimal> usNumber = bigDecimalArgument().build();
 		ParsedArguments result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(Locale.US).parse("1,000", "1,000");
 		assertThat(result.get(swedishNumber)).isEqualTo(new BigDecimal("1.000"));

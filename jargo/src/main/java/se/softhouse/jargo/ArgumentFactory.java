@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -227,9 +227,9 @@ public final class ArgumentFactory
 
 	/**
 	 * <pre>
-	 * Creates an {@link CommandBuilder} for {@code command}. Used for setting up custom things like
+	 * Creates a {@link CommandBuilder} for {@code command}. Used for setting up custom things like
 	 * {@link ArgumentBuilder#ignoreCase()} for a {@link Command#commandName()}. Typically not needed
-	 * as {@link CommandLineParser#and(Command)} or {@link CommandLineParser#withCommands(Command...)}
+	 * as {@link CommandLineParser#andCommands(Command...)} or {@link CommandLineParser#withCommands(Command...)}
 	 * can be used.
 	 * </pre>
 	 */

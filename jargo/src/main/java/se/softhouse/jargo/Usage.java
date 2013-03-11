@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import se.softhouse.comeon.strings.StringBuilders;
@@ -182,7 +181,6 @@ final class Usage
 	 *         	Default: 0
 	 * </pre>
 	 */
-	@Nonnull
 	private void usageForArgument(final Argument<?> arg)
 	{
 		int lengthBeforeCurrentArgument = builder.length();

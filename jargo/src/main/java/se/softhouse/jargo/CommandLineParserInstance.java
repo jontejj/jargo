@@ -58,7 +58,6 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
 
 @Immutable
@@ -214,6 +213,10 @@ final class CommandLineParserInstance
 			arg.finalizeValue(holder);
 			limitArgument(arg, holder, locale);
 		}
+		if(!isCommandParser())
+		{
+			arguments.executeLastCommand();
+		}
 		return holder;
 	}
 
@@ -267,8 +270,6 @@ final class CommandLineParserInstance
 	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator arguments, final ParsedArguments holder, Locale locale)
 			throws ArgumentException
 	{
-		// FIXME: what about already executed Commands, should this be validated in the outermost
-		// parse?
 		String currentArgument = checkNotNull(arguments.next(), "Argument strings may not be null");
 
 		arguments.setCurrentArgumentName(currentArgument);
@@ -289,9 +290,6 @@ final class CommandLineParserInstance
 		{
 			// Rolling back here means that the parent parser/command will receive the argument
 			// instead, maybe it can handle it
-			// FIXME: this also means that Commands will have been executed if the command line was
-			// invalid, how to prevent this? Maybe this is okay? Maybe provide a maven like "resume"
-			// operation?
 			arguments.previous();
 			return null;
 		}
@@ -388,39 +386,16 @@ final class CommandLineParserInstance
 	 */
 	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArguments holder) throws ArgumentException
 	{
-		Set<String> availableArguments = nonParsedArguments(holder);
+		Set<String> availableArguments = holder.nonParsedArguments();
 
 		if(!availableArguments.isEmpty())
 		{
 			List<String> suggestions = StringsUtil.closestMatches(currentArgument, availableArguments, ONLY_REALLY_CLOSE_MATCHES);
-			// TODO: offer yes or no and continue the parsing on yes instead of throwing
+			// TODO: offer yes or no and continue the parsing on yes instead of throwing, only if
+			// one match?
 			if(!suggestions.isEmpty())
 				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, NEW_LINE_AND_TAB.join(suggestions)));
 		}
-	}
-
-	private Set<String> nonParsedArguments(final ParsedArguments holder)
-	{
-		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments().size());
-		for(Argument<?> argument : allArguments())
-		{
-			if(!holder.wasGiven(argument) || argument.isAllowedToRepeat())
-			{
-				for(String name : argument.names())
-				{
-					if(argument.separator().equals(ArgumentBuilder.DEFAULT_SEPARATOR))
-					{
-						validArguments.add(name);
-					}
-					else
-					{
-						validArguments.add(name + argument.separator());
-					}
-
-				}
-			}
-		}
-		return validArguments;
 	}
 
 	private static final int ONLY_REALLY_CLOSE_MATCHES = 4;
@@ -473,6 +448,8 @@ final class CommandLineParserInstance
 		private static final int NONE = -1;
 		private final List<String> arguments;
 		private int currentArgumentIndex;
+		private Command lastCommandParsed;
+		private ParsedArguments argumentsToLastCommand;
 
 		/**
 		 * Corresponds to one of the {@link Argument#names()} that has been given from the command
@@ -494,9 +471,26 @@ final class CommandLineParserInstance
 
 		void rememberAsCommand()
 		{
+			executeLastCommand();
 			// The command has moved the index by 1 therefore the -1 to get the index of the
 			// commandName
 			indexOfLastCommand = currentArgumentIndex - 1;
+		}
+
+		void rememberInvocationOfCommand(Command command, ParsedArguments argumentsToCommand)
+		{
+			executeLastCommand();
+			lastCommandParsed = command;
+			this.argumentsToLastCommand = argumentsToCommand;
+		}
+
+		void executeLastCommand()
+		{
+			if(lastCommandParsed != null)
+			{
+				lastCommandParsed.execute(argumentsToLastCommand);
+				lastCommandParsed = null;
+			}
 		}
 
 		/**
@@ -569,7 +563,7 @@ final class CommandLineParserInstance
 		@Override
 		public String toString()
 		{
-			return arguments.toString();
+			return arguments.subList(currentArgumentIndex, arguments.size()).toString();
 		}
 	}
 

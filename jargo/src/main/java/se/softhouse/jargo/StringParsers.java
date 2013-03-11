@@ -827,7 +827,7 @@ public final class StringParsers
 			List<T> listToStoreRepeatedValuesIn = previouslyCreatedList;
 			if(listToStoreRepeatedValuesIn == null)
 			{
-				listToStoreRepeatedValuesIn = Lists.newArrayList();
+				listToStoreRepeatedValuesIn = Lists.newLinkedList();
 			}
 
 			listToStoreRepeatedValuesIn.add(parsedValue);

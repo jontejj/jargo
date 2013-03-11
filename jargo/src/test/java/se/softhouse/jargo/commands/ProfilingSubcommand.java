@@ -15,37 +15,50 @@
 package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.ArgumentFactory.charArgument;
 
-import java.util.Arrays;
 import java.util.List;
 
 import se.softhouse.jargo.Argument;
+import se.softhouse.jargo.ArgumentFactory;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 
-public class CommandWithTwoIndexedArguments extends Command
+public class ProfilingSubcommand extends Command
 {
-	private static final Argument<List<Integer>> NUMBERS = integerArgument().arity(2).required().build();
+	private static final Argument<Character> CHAR = charArgument().required().build();
+	final List<Command> executedCommands;
+	static Command subCommand;
 
-	private final List<Command> executedCommands;
-
-	CommandWithTwoIndexedArguments(final List<Command> executedCommands)
+	public ProfilingSubcommand(final List<Command> executedCommands)
 	{
-		super(NUMBERS);
+		super(initSubcommand(executedCommands), CHAR);
 		this.executedCommands = executedCommands;
+
+	}
+
+	static Argument<?> initSubcommand(final List<Command> executedCommandList)
+	{
+		subCommand = new CommandWithOneIndexedArgument(executedCommandList);
+		return ArgumentFactory.command(subCommand).build();
 	}
 
 	@Override
 	protected String commandName()
 	{
-		return "two_args";
+		return "main";
+	}
+
+	@Override
+	public String description()
+	{
+		return "A command with an argument and a subcommand that takes an argument as well";
 	}
 
 	@Override
 	protected void execute(ParsedArguments args)
 	{
-		assertThat(args.get(NUMBERS)).isEqualTo(Arrays.asList(1, 2));
+		assertThat(args.get(CHAR)).isEqualTo('c');
 		executedCommands.add(this);
 	}
 }

@@ -17,13 +17,15 @@ package se.softhouse.jargo.commands;
 import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static se.softhouse.jargo.ArgumentFactory.booleanArgument;
+import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
+import static se.softhouse.comeon.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.ArgumentFactory.command;
 import static se.softhouse.jargo.ArgumentFactory.integerArgument;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -41,6 +43,7 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
 
 import com.google.common.base.Predicates;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.Lists;
 
 /**
  * Tests for subclassing {@link Command}
@@ -116,8 +119,8 @@ public class CommandTest
 		assertThat(commit.files).isEqualTo(emptyList());
 	}
 
-	static final Argument<String> COMMIT = command(new CommitCommand(new Repository())).build();
-	static final Argument<String> LOG = command(new LogCommand(new Repository())).build();
+	static final Argument<?> COMMIT = command(new CommitCommand(new Repository())).build();
+	static final Argument<?> LOG = command(new LogCommand(new Repository())).build();
 
 	@Test
 	public void testCommandWithMissingRequiredArgument()
@@ -218,7 +221,7 @@ public class CommandTest
 	@Test
 	public void testCommandWithMissingIndexedArgument()
 	{
-		Argument<String> command = command(new CommandWithIndexedArguments()).build();
+		Argument<?> command = command(new CommandWithIndexedArguments()).build();
 		try
 		{
 			command.parse("aCommand", "1");
@@ -234,7 +237,7 @@ public class CommandTest
 	@Test
 	public void testThatTheInnerMostCommandIsPrintedInErrorMessage()
 	{
-		Argument<String> superCommand = command(new Command(command(new CommandWithIndexedArguments()).build()){
+		Argument<?> superCommand = command(new Command(command(new CommandWithIndexedArguments()).build()){
 
 			@Override
 			protected String commandName()
@@ -260,76 +263,32 @@ public class CommandTest
 		}
 	}
 
-	private static final class CommandWithSubCommand extends Command
-	{
-		private static final Argument<Boolean> boo = booleanArgument("-b").build();
-
-		public CommandWithSubCommand()
-		{
-			super(command(new Command(boo){
-
-				@Override
-				public String description()
-				{
-					return "A subcommand with an argument";
-				}
-
-				@Override
-				protected void execute(ParsedArguments subCommandArgs)
-				{
-					assertThat(subCommandArgs.get(boo)).isTrue();
-				}
-
-				@Override
-				protected String commandName()
-				{
-					return "subcommand";
-				}
-			}).build());
-		}
-
-		@Override
-		protected void execute(ParsedArguments commandArgs)
-		{
-		}
-
-		@Override
-		protected String commandName()
-		{
-			return "command";
-		}
-	}
-
-	/**
-	 * Tests that commands within commands works
-	 */
-	@Test
-	public void testSubCommand() throws ArgumentException
-	{
-		Argument<String> commandWithSubCommand = command(new CommandWithSubCommand()).build();
-
-		commandWithSubCommand.parse("command", "subcommand", "-b", "true");
-
-		assertThat(commandWithSubCommand.usage()).isEqualTo(expected("commandWithSubCommand"));
-	}
-
 	/**
 	 * Tests several commands that each have their own indexed arguments
 	 */
 	@Test
 	public void testMultipleCommandEachWithIndexedArguments() throws ArgumentException
 	{
-		CommandLineParser parser = CommandLineParser.withCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
-																	new CommandWithThreeIndexedArguments());
+		List<Command> executedCommands = Lists.newLinkedList();
+		CommandWithOneIndexedArgument first = new CommandWithOneIndexedArgument(executedCommands);
+		CommandWithTwoIndexedArguments second = new CommandWithTwoIndexedArguments(executedCommands);
+		CommandWithThreeIndexedArguments third = new CommandWithThreeIndexedArguments(executedCommands);
+
+		CommandLineParser parser = CommandLineParser.withCommands(first, second, third);
 
 		parser.parse("one_arg", "1", "two_args", "1", "2", "three_args", "1", "2", "3");
+		assertThat(executedCommands).containsExactly(first, second, third);
 	}
 
 	@Test
 	public void testThatCorrectCommandIsMentionedInErrorMessage()
 	{
-		CommandLineParser parser = CommandLineParser.withCommands(	new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments(),
-																	new CommandWithThreeIndexedArguments());
+		List<Command> executedCommands = Lists.newLinkedList();
+		CommandWithOneIndexedArgument first = new CommandWithOneIndexedArgument(executedCommands);
+		CommandWithTwoIndexedArguments second = new CommandWithTwoIndexedArguments(executedCommands);
+		CommandWithThreeIndexedArguments third = new CommandWithThreeIndexedArguments(executedCommands);
+
+		CommandLineParser parser = CommandLineParser.withCommands(first, second, third);
 		try
 		{
 			// Switched order of two_args and three_args for extra test harness
@@ -338,6 +297,7 @@ public class CommandTest
 		catch(ArgumentException expected)
 		{
 			assertThat(expected).hasMessage("Missing second <integer> parameter for two_args");
+			assertThat(executedCommands).containsExactly(first, third);
 		}
 	}
 
@@ -345,7 +305,7 @@ public class CommandTest
 	public void testThatParserForCommandArgumentsIsOnlyCreatedWhenCommandIsExecuted() throws ArgumentException
 	{
 		ProfilingCommand profiler = new ProfilingCommand();
-		Argument<String> command = command(profiler).build();
+		Argument<?> command = command(profiler).build();
 
 		try
 		{
@@ -362,10 +322,10 @@ public class CommandTest
 	public void testThatCommandIsExecutedOnlyOnce() throws ArgumentException
 	{
 		ProfilingExecuteCommand profiler = new ProfilingExecuteCommand();
-		Argument<String> command = command(profiler).build();
+		Argument<?> command = command(profiler).build();
 
 		assertThat(profiler.numberOfCallsToExecute).isZero();
-		command.parse("execute");
+		command.parse("profile");
 		assertThat(profiler.numberOfCallsToExecute).isEqualTo(1);
 	}
 
@@ -376,21 +336,73 @@ public class CommandTest
 	}
 
 	@Test
-	public void testThatParsedArgumentsCanBeQueriedForTheUsedCommandName() throws ArgumentException
-	{
-		Argument<String> command = command(new Clean()).ignoreCase().build();
-		ParsedArguments result = CommandLineParser.withArguments(command).parse("Clean");
-
-		assertThat(result.get(command)).isEqualTo("Clean");
-	}
-
-	@Test
 	public void testAddingCommandsInChainedFashion() throws ArgumentException
 	{
 		BuildTarget target = new BuildTarget();
-		CommandLineParser.withArguments().and(new Clean(target)).and(new Build(target)).parse("clean", "build");
+		CommandLineParser.withArguments().andCommands(new Clean(target)).andCommands(new Build(target)).parse("clean", "build");
 		assertThat(target.isClean()).isTrue();
 		assertThat(target.isBuilt()).isTrue();
+	}
+
+	@Test
+	public void testThatSuitableCommandArgumentAreSuggestedForMissspelling() throws Exception
+	{
+		try
+		{
+			CommandLineParser.withArguments(LOG).parse("log", "-limit");
+			fail("-limit should be detected as being missspelled");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-limit", "--limit" + NEWLINE + TAB + "-l"));
+		}
+	}
+
+	@Test
+	public void testThatInvalidParameterStopsExecuteFromBeingCalled() throws Exception
+	{
+		ProfilingExecuteCommand profilingCommand = new ProfilingExecuteCommand();
+		try
+		{
+
+			CommandLineParser.withCommands(profilingCommand).parse("profile", "-limit");
+			fail("-limit should not be handled by profile command");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected.getMessage()).startsWith("Unexpected argument: -limit");
+			assertThat(profilingCommand.numberOfCallsToExecute).as("profile should not have been called as -limit should be an invalid argument: ")
+					.isZero();
+		}
+	}
+
+	@Test
+	public void testThatInvalidParameterDoesNotStopEarlierCommandsFromBeingExecuted() throws Exception
+	{
+		ProfilingExecuteCommand profilingCommand = new ProfilingExecuteCommand();
+		try
+		{
+			CommandLineParser.withArguments(command(profilingCommand).repeated().build()).parse("profile", "profile", "-limit");
+			fail("-limit should not be handled by profile command");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected.getMessage()).startsWith("Unexpected argument: -limit");
+			assertThat(profilingCommand.numberOfCallsToExecute)
+					.as("profile should have been called once since previous commands should be executed once a new command is given").isEqualTo(1);
+		}
+	}
+
+	@Test
+	public void testThatSubcommandsAreExecutedBeforeMainCommands() throws Exception
+	{
+		List<Command> executedCommands = Lists.newLinkedList();
+		ProfilingSubcommand profilingSubcommand = new ProfilingSubcommand(executedCommands);
+		CommandLineParser parser = CommandLineParser.withCommands(profilingSubcommand);
+		parser.parse("main", "c", "one_arg", "1");
+		assertThat(executedCommands).containsExactly(ProfilingSubcommand.subCommand, profilingSubcommand);
+
+		assertThat(parser.usage()).isEqualTo(expected("commandWithSubCommand"));
 	}
 
 	@Test
@@ -437,7 +449,7 @@ public class CommandTest
 		}
 		try
 		{
-			builder.defaultValue("");
+			builder.defaultValue(null);
 			fail("method should throw as it's deprecated");
 		}
 		catch(IllegalStateException expected)
@@ -445,7 +457,7 @@ public class CommandTest
 		}
 		try
 		{
-			builder.defaultValueDescriber(Describers.<String>toStringDescriber());
+			builder.defaultValueDescriber(Describers.toStringDescriber());
 			fail("method should throw as it's deprecated");
 		}
 		catch(IllegalStateException expected)
@@ -453,7 +465,7 @@ public class CommandTest
 		}
 		try
 		{
-			builder.defaultValueSupplier(Suppliers.ofInstance(""));
+			builder.defaultValueSupplier(Suppliers.<ParsedArguments>ofInstance(null));
 			fail("method should throw as it's deprecated");
 		}
 		catch(IllegalStateException expected)
@@ -469,7 +481,7 @@ public class CommandTest
 		}
 		try
 		{
-			builder.limitTo(Predicates.<String>alwaysFalse());
+			builder.limitTo(Predicates.alwaysFalse());
 			fail("method should throw as it's deprecated");
 		}
 		catch(IllegalStateException expected)

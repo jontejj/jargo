@@ -302,14 +302,14 @@ public class CommandLineParserTest
 		try
 		{
 			// Oops meant to add numberTwo
-			parser.and(number);
+			parser.andArguments(number);
 			fail("number should be handled already by parser, adding it again should fail");
 		}
 		catch(IllegalArgumentException expected)
 		{
 			// Verify that adding number didn't leave the parser in a weird state by adding the
 			// correct argument and parsing it
-			parser.and(numberTwo);
+			parser.andArguments(numberTwo);
 			assertThat(parser.parse("-N", "2").get(numberTwo)).isEqualTo(2);
 		}
 	}
@@ -323,14 +323,14 @@ public class CommandLineParserTest
 		try
 		{
 			// Oops meant to add new Build
-			parser.and(new Clean(target));
+			parser.andCommands(new Clean(target));
 			fail("clean should be handled already by parser, adding it again should fail");
 		}
 		catch(IllegalArgumentException expected)
 		{
 			// Verify that adding Clean didn't leave the parser in a weird state by adding
 			// the correct argument and parsing it
-			parser.and(new Build(target));
+			parser.andCommands(new Build(target));
 			parser.parse("clean", "build");
 		}
 	}
@@ -366,7 +366,7 @@ public class CommandLineParserTest
 			@Override
 			public void invoke(CommandLineParser parser, Argument<Integer> value)
 			{
-				parser.and(value);
+				parser.andArguments(value);
 			}
 		}, integerArgument("-n").build()).contains("-n");
 	}
@@ -447,7 +447,7 @@ public class CommandLineParserTest
 	{
 		Argument<Integer> numberOne = integerArgument("-n").build();
 		Argument<Integer> numberTwo = integerArgument("-n2").build();
-		ParsedArguments result = CommandLineParser.withArguments().and(numberOne).and(numberTwo).parse("-n", "1", "-n2", "2");
+		ParsedArguments result = CommandLineParser.withArguments().andArguments(numberOne).andArguments(numberTwo).parse("-n", "1", "-n2", "2");
 		assertThat(result.get(numberOne)).isEqualTo(1);
 		assertThat(result.get(numberTwo)).isEqualTo(2);
 	}
