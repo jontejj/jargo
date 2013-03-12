@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.comeon.strings.Description;
-import se.softhouse.jargo.ArgumentBuilder.ArgumentSettings;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 
@@ -39,7 +38,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * Sub-commands are executed before their parent {@link Command}.
  * 
- * To integrate your {@link Command} into an {@link Argument} use {@link ArgumentFactory#command(Command)}
+ * To integrate your {@link Command} into an {@link Argument} use {@link Arguments#command(Command)}
  * or {@link CommandLineParser#withCommands(Command...)} if you have several commands.
  * 
  * If you support several commands and a user enters several of them at the same
@@ -144,7 +143,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	}
 
 	@Override
-	final ParsedArguments parse(final ArgumentIterator arguments, final ParsedArguments previousOccurance, final ArgumentSettings argumentSettings,
+	final ParsedArguments parse(final ArgumentIterator arguments, final ParsedArguments previousOccurance, final Argument<?> argumentSettings,
 			Locale locale) throws ArgumentException
 	{
 		arguments.rememberAsCommand();
@@ -179,7 +178,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	}
 
 	@Override
-	final String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
+	final String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 	{
 		return parser().commandUsage(locale);
 	}
@@ -191,7 +190,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	}
 
 	@Override
-	final String metaDescription(ArgumentSettings argumentSettings)
+	final String metaDescription(Argument<?> argumentSettings)
 	{
 		return "";
 	}

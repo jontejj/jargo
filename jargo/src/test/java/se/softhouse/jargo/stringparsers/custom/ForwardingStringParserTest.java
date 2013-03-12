@@ -15,7 +15,7 @@
 package se.softhouse.jargo.stringparsers.custom;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.withParser;
+import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
 
 import java.util.Locale;

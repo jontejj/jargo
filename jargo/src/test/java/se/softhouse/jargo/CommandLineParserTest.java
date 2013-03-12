@@ -20,9 +20,9 @@ import static org.fest.assertions.Fail.failure;
 import static org.junit.Assert.fail;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.testlib.Locales.SWEDISH;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
-import static se.softhouse.jargo.ArgumentFactory.optionArgument;
-import static se.softhouse.jargo.ArgumentFactory.stringArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.CommandLineParser.withArguments;
 import static se.softhouse.jargo.Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE;
 
@@ -466,4 +466,7 @@ public class CommandLineParserTest
 
 		assertThat(integerArgument("hidden-argument").hideFromUsage().arity(2).usage()).doesNotContain("hidden-argument");
 	}
+
+	// TODO: Test for memory leaks by parsing a gigantic string and System.gc -
+	// MemoryTester#allocateLargeString
 }

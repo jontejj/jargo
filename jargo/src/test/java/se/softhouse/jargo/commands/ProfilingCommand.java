@@ -14,7 +14,7 @@
 */
 package se.softhouse.jargo.commands;
 
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 

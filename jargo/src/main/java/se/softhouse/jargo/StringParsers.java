@@ -42,7 +42,6 @@ import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.comeon.numbers.NumberType;
 import se.softhouse.comeon.strings.StringBuilders;
-import se.softhouse.jargo.ArgumentBuilder.ArgumentSettings;
 import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -254,6 +253,9 @@ public final class StringParsers
 	 * <nobr><a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a>
 	 * recommends upper case for enum constants.</nobr>
 	 * </pre>
+	 * 
+	 * <b>Default value:</b> <code>null</code> is used as {@link StringParser#defaultValue()} and
+	 * not any of the enum values in {@code enumToHandle}
 	 * 
 	 * @param enumToHandle the {@link Class} literal for the {@link Enum} to parse strings into
 	 * @return a {@link StringParser} that parse strings into enum values of the type {@code T}
@@ -496,9 +498,9 @@ public final class StringParsers
 	 * Makes it possible to convert several (or zero) {@link String}s into a single {@code T} value.
 	 * For a simpler one use {@link StringParser}.
 	 * 
-	 * {@link ArgumentSettings} is passed to the functions that produces text for the usage,
+	 * {@link Argument} is passed to the functions that produces text for the usage,
 	 * it can't be a member of this class because one parser can be referenced
-	 * from multiple different {@link ArgumentSettings argumentSettings} so this is extrinsic state.
+	 * from multiple different {@link Argument}s so this is extrinsic state.
 	 * 
 	 * @param <T> the type this parser parses strings into
 	 * </pre>
@@ -519,7 +521,7 @@ public final class StringParsers
 		 * @return the parsed value
 		 * @throws ArgumentException if an error occurred while parsing the value
 		 */
-		abstract T parse(final ArgumentIterator arguments, @Nullable final T previousOccurance, final ArgumentSettings argumentSettings, Locale locale)
+		abstract T parse(final ArgumentIterator arguments, @Nullable final T previousOccurance, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException;
 
 		/**
@@ -528,7 +530,7 @@ public final class StringParsers
 		 * @return a description string to show in usage texts
 		 */
 		@Nonnull
-		abstract String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale);
+		abstract String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale);
 
 		/**
 		 * If you can provide a suitable value do so, it will look much better
@@ -549,14 +551,14 @@ public final class StringParsers
 		}
 
 		@Nonnull
-		abstract String metaDescription(ArgumentSettings argumentSettings);
+		abstract String metaDescription(Argument<?> argumentSettings);
 
-		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
+		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
 		{
 			return metaDescription(argumentSettings);
 		}
 
-		String metaDescriptionInRightColumn(ArgumentSettings argumentSettings)
+		String metaDescriptionInRightColumn(Argument<?> argumentSettings)
 		{
 			return metaDescription(argumentSettings);
 		}
@@ -588,8 +590,7 @@ public final class StringParsers
 		}
 
 		@Override
-		Boolean parse(ArgumentIterator arguments, Boolean previousOccurance, ArgumentSettings argumentSettings, Locale locale)
-				throws ArgumentException
+		Boolean parse(ArgumentIterator arguments, Boolean previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
 		{
 			return !defaultValue;
 		}
@@ -606,13 +607,13 @@ public final class StringParsers
 		 * argument.
 		 */
 		@Override
-		public String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
+		public String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 		{
 			return "";
 		}
 
 		@Override
-		String metaDescription(ArgumentSettings argumentSettings)
+		String metaDescription(Argument<?> argumentSettings)
 		{
 			// Options don't have parameters so there's no parameter to explain
 			return "";
@@ -638,13 +639,13 @@ public final class StringParsers
 		}
 
 		@Override
-		public String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
+		public String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 		{
 			return elementParser.descriptionOfValidValues(argumentSettings, locale);
 		}
 
 		@Override
-		String metaDescription(ArgumentSettings argumentSettings)
+		String metaDescription(Argument<?> argumentSettings)
 		{
 			return elementParser.metaDescription(argumentSettings);
 		}
@@ -691,7 +692,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings, Locale locale)
+		List<T> parse(final ArgumentIterator arguments, final List<T> list, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
 		{
 			List<T> parsedArguments = newArrayListWithCapacity(arity);
@@ -724,7 +725,7 @@ public final class StringParsers
 		}
 
 		@Override
-		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
+		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
 		{
 			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + repeat(" " + metaDescriptionForValue, arity - 1);
@@ -742,7 +743,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> list, final ArgumentSettings argumentSettings, Locale locale)
+		List<T> parse(final ArgumentIterator arguments, final List<T> list, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
 		{
 			List<T> parsedArguments = newArrayListWithCapacity(arguments.nrOfRemainingArguments());
@@ -755,7 +756,7 @@ public final class StringParsers
 		}
 
 		@Override
-		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
+		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
 		{
 			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + " ...";
@@ -780,7 +781,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final ArgumentSettings argumentSettings, Locale locale)
+		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
 		{
 			if(!arguments.hasNext())
@@ -799,7 +800,7 @@ public final class StringParsers
 		}
 
 		@Override
-		String metaDescriptionInLeftColumn(ArgumentSettings argumentSettings)
+		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
 		{
 			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + valueSeparator + metaDescriptionForValue + valueSeparator + "...";
@@ -819,7 +820,7 @@ public final class StringParsers
 		}
 
 		@Override
-		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final ArgumentSettings argumentSettings, Locale locale)
+		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
 		{
 			T parsedValue = elementParser().parse(arguments, null, argumentSettings, locale);
@@ -873,7 +874,7 @@ public final class StringParsers
 		}
 
 		@Override
-		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final ArgumentSettings argumentSettings, Locale locale)
+		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
 		{
 			Map<K, V> map = previousMap;
@@ -908,7 +909,7 @@ public final class StringParsers
 		/**
 		 * Fetch "key" from "key=value"
 		 */
-		private String getKey(String keyValue, ArgumentSettings argumentSettings) throws ArgumentException
+		private String getKey(String keyValue, Argument<?> argumentSettings) throws ArgumentException
 		{
 			String separator = argumentSettings.separator();
 			int keyEndIndex = keyValue.indexOf(separator);
@@ -921,13 +922,13 @@ public final class StringParsers
 		/**
 		 * Fetch "value" from "key=value"
 		 */
-		private String getValue(String key, String keyValue, ArgumentSettings argumentSettings)
+		private String getValue(String key, String keyValue, Argument<?> argumentSettings)
 		{
 			return keyValue.substring(key.length() + argumentSettings.separator().length());
 		}
 
 		@Override
-		public String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
+		public String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 		{
 			String keyMeta = '"' + keyParser.metaDescription() + '"';
 			String valueMeta = '"' + valueParser.metaDescription(argumentSettings) + '"';
@@ -952,7 +953,7 @@ public final class StringParsers
 		}
 
 		@Override
-		String metaDescription(ArgumentSettings argumentSettings)
+		String metaDescription(Argument<?> argumentSettings)
 		{
 			String keyMeta = keyParser.metaDescription();
 			String separator = argumentSettings.separator();
@@ -977,7 +978,7 @@ public final class StringParsers
 		}
 
 		@Override
-		T parse(ArgumentIterator arguments, T previousOccurance, ArgumentSettings argumentSettings, Locale locale) throws ArgumentException
+		T parse(ArgumentIterator arguments, T previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
 		{
 			if(!arguments.hasNext())
 				throw forMissingParameter(argumentSettings);
@@ -985,13 +986,13 @@ public final class StringParsers
 		}
 
 		@Override
-		String descriptionOfValidValues(ArgumentSettings argumentSettings, Locale locale)
+		String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 		{
 			return descriptionOfValidValues(locale);
 		}
 
 		@Override
-		String metaDescription(ArgumentSettings argumentSettings)
+		String metaDescription(Argument<?> argumentSettings)
 		{
 			return metaDescription();
 		}

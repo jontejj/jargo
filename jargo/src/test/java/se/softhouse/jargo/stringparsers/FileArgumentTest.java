@@ -15,18 +15,18 @@
 package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.fileArgument;
+import static se.softhouse.jargo.Arguments.fileArgument;
 
 import java.io.File;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 
 /**
- * Tests for {@link ArgumentFactory#fileArgument(String...)} and {@link StringParsers#fileParser()}
+ * Tests for {@link Arguments#fileArgument(String...)} and {@link StringParsers#fileParser()}
  */
 public class FileArgumentTest
 {

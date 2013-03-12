@@ -16,7 +16,7 @@ package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.softhouse.jargo.ArgumentFactory.optionArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
 
 import java.util.Collections;
 
@@ -24,12 +24,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Tests for {@link ArgumentFactory#optionArgument(String, String...)}
+ * Tests for {@link Arguments#optionArgument(String, String...)}
  */
 public class OptionalArgumentTest
 {

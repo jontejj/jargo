@@ -14,7 +14,7 @@
 */
 package se.softhouse.jargo.stringparsers.custom;
 
-import static se.softhouse.jargo.ArgumentFactory.withParser;
+import static se.softhouse.jargo.Arguments.withParser;
 
 import java.util.Locale;
 

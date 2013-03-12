@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 import se.softhouse.comeon.strings.Description;
 import se.softhouse.comeon.strings.Descriptions;
 import se.softhouse.comeon.strings.Descriptions.SerializableDescription;
-import se.softhouse.jargo.ArgumentBuilder.ArgumentSettings;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
@@ -237,7 +236,7 @@ public final class ArgumentExceptions
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static ArgumentException forMissingParameter(ArgumentSettings argumentWithMissingParameter)
+	static ArgumentException forMissingParameter(Argument<?> argumentWithMissingParameter)
 	{
 		return new MissingParameterException(argumentWithMissingParameter);
 	}
@@ -246,7 +245,7 @@ public final class ArgumentExceptions
 	{
 		private final String parameterDescription;
 
-		private MissingParameterException(ArgumentSettings argumentWithMissingParameter)
+		private MissingParameterException(Argument<?> argumentWithMissingParameter)
 		{
 			this.parameterDescription = argumentWithMissingParameter.metaDescriptionInRightColumn();
 		}

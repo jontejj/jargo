@@ -15,12 +15,12 @@
 package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.charArgument;
+import static se.softhouse.jargo.Arguments.charArgument;
 
 import java.util.List;
 
 import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 
@@ -40,7 +40,7 @@ public class ProfilingSubcommand extends Command
 	static Argument<?> initSubcommand(final List<Command> executedCommandList)
 	{
 		subCommand = new CommandWithOneIndexedArgument(executedCommandList);
-		return ArgumentFactory.command(subCommand).build();
+		return Arguments.command(subCommand).build();
 	}
 
 	@Override

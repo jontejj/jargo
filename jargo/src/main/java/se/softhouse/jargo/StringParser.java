@@ -23,7 +23,7 @@ import javax.annotation.concurrent.Immutable;
 /**
  * Parses {@link String}s into values of the type {@code T}.
  * Create an {@link Argument} for your {@link StringParser} with
- * {@link ArgumentFactory#withParser(StringParser)}.
+ * {@link Arguments#withParser(StringParser)}.
  * An example implementation for handling joda-time dates:
  * 
  * <pre class="prettyprint">
@@ -32,7 +32,7 @@ import javax.annotation.concurrent.Immutable;
  * {
  * 	public static DefaultArgumentBuilder&lt;DateTime&gt; dateArgument(String ... names)
  * 	{
- * 		return ArgumentFactory.withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);
+ * 		return Arguments.withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);
  * 	}
  * 
  * 	public String descriptionOfValidValues()

@@ -19,8 +19,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.strings.StringsUtil.TAB;
-import static se.softhouse.jargo.ArgumentFactory.command;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.Arguments.command;
+import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.io.File;

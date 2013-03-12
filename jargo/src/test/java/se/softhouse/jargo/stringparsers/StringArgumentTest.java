@@ -15,16 +15,16 @@
 package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.stringArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 
 /**
- * Tests for {@link ArgumentFactory#stringArgument(String...)} and
+ * Tests for {@link Arguments#stringArgument(String...)} and
  * {@link StringParsers#stringParser()}
  */
 public class StringArgumentTest

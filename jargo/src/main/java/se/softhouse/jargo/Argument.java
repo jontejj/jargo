@@ -31,7 +31,6 @@ import javax.annotation.concurrent.Immutable;
 import se.softhouse.comeon.guavaextensions.Suppliers2;
 import se.softhouse.comeon.strings.Describer;
 import se.softhouse.comeon.strings.Description;
-import se.softhouse.jargo.ArgumentBuilder.ArgumentSettings;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -45,7 +44,7 @@ import com.google.common.base.Supplier;
  * <pre>
  * Represents a supported {@link Argument} for a command line invocation.
  * 
- * {@link Argument}s are created with the static methods in {@link ArgumentFactory} or with a custom {@link ArgumentBuilder} and then
+ * {@link Argument}s are created with the static methods in {@link Arguments} or with a custom {@link ArgumentBuilder} and then
  * used by the {@link CommandLineParser} to parse strings (typically from the command line).
  * 
  * @param <T> the type of values this {@link Argument} is configured to parse
@@ -53,12 +52,12 @@ import com.google.common.base.Supplier;
  * </pre>
  */
 @Immutable
-public final class Argument<T> extends ArgumentSettings
+public final class Argument<T>
 {
 	enum ParameterArity
 	{
 		/**
-		 * Indicates {@link ArgumentFactory#optionArgument(String, String...)}
+		 * Indicates {@link Arguments#optionArgument(String, String...)}
 		 */
 		NO_ARGUMENTS,
 		/**
@@ -104,7 +103,7 @@ public final class Argument<T> extends ArgumentSettings
 	/**
 	 * <pre>
 	 * Creates a basic object for handling {@link Argument}s taken from a command line invocation.
-	 * For practical uses of this constructor see {@link ArgumentFactory#optionArgument(String, String...)} (and friends)
+	 * For practical uses of this constructor see {@link Arguments#optionArgument(String, String...)} (and friends)
 	 * and the {@link ArgumentBuilder}.
 	 * </pre>
 	 */
@@ -207,50 +206,6 @@ public final class Argument<T> extends ArgumentSettings
 		return parser().descriptionOfValidValues(this, locale(localeToDescribeValuesWith));
 	}
 
-	@Override
-	boolean isRequired()
-	{
-		return required;
-	}
-
-	@Override
-	@Nullable
-	String separator()
-	{
-		return separator;
-	}
-
-	@Nonnull
-	String description()
-	{
-		return description.description();
-	}
-
-	@Override
-	@Nonnull
-	List<String> names()
-	{
-		return names;
-	}
-
-	@Override
-	boolean isPropertyMap()
-	{
-		return isPropertyMap;
-	}
-
-	@Override
-	boolean isAllowedToRepeat()
-	{
-		return isAllowedToRepeat;
-	}
-
-	@Override
-	ParameterArity parameterArity()
-	{
-		return parameterArity;
-	}
-
 	/**
 	 * @return the default value for this argument, defaults to {@link StringParser#defaultValue()}.
 	 *         Could also be set by {@link ArgumentBuilder#defaultValue(Object)} or
@@ -266,12 +221,6 @@ public final class Argument<T> extends ArgumentSettings
 		checkLimitForDefaultValue(value);
 
 		return value;
-	}
-
-	@Override
-	boolean isIgnoringCase()
-	{
-		return ignoreCase;
 	}
 
 	@Nullable
@@ -306,7 +255,6 @@ public final class Argument<T> extends ArgumentSettings
 		return meta;
 	}
 
-	@Override
 	@Nonnull
 	String metaDescriptionInRightColumn()
 	{
@@ -314,12 +262,6 @@ public final class Argument<T> extends ArgumentSettings
 		if(metaDescription.isPresent())
 			return metaDescription.get();
 		return parser.metaDescriptionInRightColumn(this);
-	}
-
-	@Override
-	boolean isHiddenFromUsage()
-	{
-		return hideFromUsage;
 	}
 
 	void checkLimit(@Nullable final T value) throws ArgumentException
@@ -352,9 +294,92 @@ public final class Argument<T> extends ArgumentSettings
 		holder.put(this, finalizedValue);
 	}
 
-	@Override
+	boolean isRequired()
+	{
+		return required;
+	}
+
+	@Nullable
+	String separator()
+	{
+		return separator;
+	}
+
+	@Nonnull
+	String description()
+	{
+		return description.description();
+	}
+
+	@Nonnull
+	List<String> names()
+	{
+		return names;
+	}
+
+	boolean isPropertyMap()
+	{
+		return isPropertyMap;
+	}
+
+	boolean isAllowedToRepeat()
+	{
+		return isAllowedToRepeat;
+	}
+
+	ParameterArity parameterArity()
+	{
+		return parameterArity;
+	}
+
+	boolean isIgnoringCase()
+	{
+		return ignoreCase;
+	}
+
 	Locale locale(Locale usualLocale)
 	{
 		return localeOveride.or(usualLocale);
+	}
+
+	boolean isIndexed()
+	{
+		return names().isEmpty();
+	}
+
+	enum ArgumentPredicates implements Predicate<Argument<?>>
+	{
+		IS_VISIBLE
+		{
+			@Override
+			public boolean apply(@Nonnull Argument<?> input)
+			{
+				return !input.hideFromUsage;
+			}
+		},
+		IS_INDEXED
+		{
+			@Override
+			public boolean apply(@Nonnull Argument<?> input)
+			{
+				return input.isIndexed();
+			}
+		},
+		IS_REQUIRED
+		{
+			@Override
+			public boolean apply(@Nonnull Argument<?> input)
+			{
+				return input.isRequired();
+			}
+		},
+		IS_OF_VARIABLE_ARITY
+		{
+			@Override
+			public boolean apply(@Nonnull Argument<?> input)
+			{
+				return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
+			}
+		};
 	}
 }

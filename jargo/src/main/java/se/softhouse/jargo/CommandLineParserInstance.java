@@ -25,10 +25,10 @@ import static se.softhouse.comeon.strings.Descriptions.format;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.strings.StringsUtil.TAB;
 import static se.softhouse.comeon.strings.StringsUtil.startsWithAndHasMore;
+import static se.softhouse.jargo.Argument.ArgumentPredicates.IS_OF_VARIABLE_ARITY;
+import static se.softhouse.jargo.Argument.ArgumentPredicates.IS_REQUIRED;
 import static se.softhouse.jargo.Argument.ParameterArity.NO_ARGUMENTS;
 import static se.softhouse.jargo.ArgumentBuilder.DEFAULT_SEPARATOR;
-import static se.softhouse.jargo.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_OF_VARIABLE_ARITY;
-import static se.softhouse.jargo.ArgumentBuilder.ArgumentSettings.ArgumentPredicates.IS_REQUIRED;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingArguments;
 import static se.softhouse.jargo.ArgumentExceptions.forUnallowedRepetitionArgument;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
@@ -49,7 +49,6 @@ import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.comeon.collections.CharacterTrie;
 import se.softhouse.comeon.strings.StringsUtil;
-import se.softhouse.jargo.ArgumentBuilder.ArgumentSettings;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
@@ -158,7 +157,7 @@ final class CommandLineParserInstance
 		int firstOptionalIndexedArgument = Integer.MAX_VALUE;
 		for(int i = 0; i < indexedArguments.size(); i++)
 		{
-			ArgumentSettings indexedArgument = indexedArguments.get(i);
+			Argument<?> indexedArgument = indexedArguments.get(i);
 			if(indexedArgument.isRequired())
 			{
 				lastRequiredIndexedArgument = i;
@@ -176,7 +175,7 @@ final class CommandLineParserInstance
 	{
 		// Otherwise the error texts becomes ambiguous
 		Set<String> metasForRequiredAndIndexedArguments = newHashSetWithExpectedSize(indexedArguments.size());
-		for(ArgumentSettings indexedArgument : filter(indexedArguments, IS_REQUIRED))
+		for(Argument<?> indexedArgument : filter(indexedArguments, IS_REQUIRED))
 		{
 			String meta = indexedArgument.metaDescriptionInRightColumn();
 			boolean metaWasUnique = metasForRequiredAndIndexedArguments.add(meta);
@@ -362,6 +361,7 @@ final class CommandLineParserInstance
 
 	private Argument<?> indexedArgument(ArgumentIterator arguments, ParsedArguments holder)
 	{
+		// TODO: Support -- to indicate end of options and start of indexed options
 		if(holder.indexedArgumentsParsed() < indexedArguments.size())
 		{
 			Argument<?> definition = indexedArguments.get(holder.indexedArgumentsParsed());

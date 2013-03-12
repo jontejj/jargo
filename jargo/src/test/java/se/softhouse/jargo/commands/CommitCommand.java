@@ -14,9 +14,9 @@
 */
 package se.softhouse.jargo.commands;
 
-import static se.softhouse.jargo.ArgumentFactory.fileArgument;
-import static se.softhouse.jargo.ArgumentFactory.optionArgument;
-import static se.softhouse.jargo.ArgumentFactory.stringArgument;
+import static se.softhouse.jargo.Arguments.fileArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 
 import java.io.File;
 import java.util.List;

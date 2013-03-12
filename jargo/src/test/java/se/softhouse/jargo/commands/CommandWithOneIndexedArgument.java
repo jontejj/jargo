@@ -15,7 +15,7 @@
 package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
 
 import java.util.List;
 

@@ -17,7 +17,7 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.testlib.UtilityClassTester.testUtilityClassDesign;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.ProgramInformation.withProgramName;
 import static se.softhouse.jargo.StringParsers.optionParser;
 
@@ -121,7 +121,7 @@ public class PackagePrivateTests
 	@Test
 	public void testConstructorsForUtilityClasses()
 	{
-		testUtilityClassDesign(	ArgumentFactory.class, StringsUtil.class, Descriptions.class, StringParsers.class, ArgumentExceptions.class,
+		testUtilityClassDesign(	Arguments.class, StringsUtil.class, Descriptions.class, StringParsers.class, ArgumentExceptions.class,
 								Describers.class, Texts.class, ParserCache.class, Texts.class, UserErrors.class, UsageTexts.class,
 								ProgrammaticErrors.class);
 	}

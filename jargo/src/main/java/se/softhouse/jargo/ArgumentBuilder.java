@@ -69,9 +69,9 @@ import com.google.common.collect.Ranges;
 /**
  * <pre>
  * Responsible for configuring and building {@link Argument} instances.
- * Example builders can be created through the {@link ArgumentFactory}.
+ * Example builders can be created through the {@link Arguments}.
  * 
- * <b>Note:</b>The code examples (for each method) assumes that all methods in {@link ArgumentFactory} have been statically imported.
+ * <b>Note:</b>The code examples (for each method) assumes that all methods in {@link Arguments} have been statically imported.
  * 
  * <b>Note:</b>Some methods needs to be called in a specific order
  * (to make the generic type system produce the correct type) and to guide the
@@ -82,7 +82,7 @@ import com.google.common.collect.Ranges;
  * 		Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
  * 		The pattern also resembles the <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
  * @param <T> the type of arguments the built {@link Argument} instance should handle,
- * 	such as {@link Integer} in the case of {@link ArgumentFactory#integerArgument(String...)}
+ * 	such as {@link Integer} in the case of {@link Arguments#integerArgument(String...)}
  * </pre>
  */
 @NotThreadSafe
@@ -210,7 +210,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * This is a suitable place to verify the configuration of your parser.
 	 * 
 	 * If your {@link StringParser} doesn't support any configuration you can use
-	 * {@link ArgumentFactory#withParser(StringParser)} directly instead of subclassing
+	 * {@link Arguments#withParser(StringParser)} directly instead of subclassing
 	 * {@link ArgumentBuilder}
 	 * 
 	 * @return the {@link StringParser} that performs the actual parsing of an argument value
@@ -546,7 +546,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
-	 * Map&lt;Integer, Integer&gt; numberMap = ArgumentFactory.integerArgument("-N")
+	 * Map&lt;Integer, Integer&gt; numberMap = Arguments.integerArgument("-N")
 	 * 						.asKeyValuesWithKeyParser(StringParsers.integerParser())
 	 * 						.parse("-N1=5", "-N2=10");
 	 * assertThat(numberMap.get(1)).isEqualTo(5);
@@ -850,7 +850,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * Builder for {@link Command}s. Created with {@link ArgumentFactory#command(Command)}.
+	 * Builder for {@link Command}s. Created with {@link Arguments#command(Command)}.
 	 */
 	@NotThreadSafe
 	public static final class CommandBuilder extends InternalArgumentBuilder<CommandBuilder, ParsedArguments>
@@ -1067,7 +1067,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * An intermediate builder used by {@link ArgumentFactory#optionArgument(String, String...)}
+	 * An intermediate builder used by {@link Arguments#optionArgument(String, String...)}
 	 */
 	@NotThreadSafe
 	public static final class OptionArgumentBuilder extends InternalArgumentBuilder<OptionArgumentBuilder, Boolean>
@@ -1289,76 +1289,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		public ArityArgumentBuilder<List<T>> variableArity()
 		{
 			throw new IllegalStateException("You can't use both splitWith and variableArity");
-		}
-	}
-
-	/**
-	 * Exposes package-private {@link Argument} methods that can be called without the generic type
-	 * parameter
-	 */
-	abstract static class ArgumentSettings
-	{
-		@Nonnull
-		abstract List<String> names();
-
-		@Nullable
-		abstract String separator();
-
-		abstract String metaDescriptionInRightColumn();
-
-		abstract boolean isAllowedToRepeat();
-
-		abstract boolean isRequired();
-
-		abstract boolean isIgnoringCase();
-
-		abstract boolean isPropertyMap();
-
-		abstract boolean isHiddenFromUsage();
-
-		abstract ParameterArity parameterArity();
-
-		abstract Locale locale(Locale usualLocale);
-
-		boolean isIndexed()
-		{
-			return names().isEmpty();
-		}
-
-		enum ArgumentPredicates implements Predicate<ArgumentSettings>
-		{
-			IS_VISIBLE
-			{
-				@Override
-				public boolean apply(@Nonnull ArgumentSettings input)
-				{
-					return !input.isHiddenFromUsage();
-				}
-			},
-			IS_INDEXED
-			{
-				@Override
-				public boolean apply(@Nonnull ArgumentSettings input)
-				{
-					return input.isIndexed();
-				}
-			},
-			IS_REQUIRED
-			{
-				@Override
-				public boolean apply(@Nonnull ArgumentSettings input)
-				{
-					return input.isRequired();
-				}
-			},
-			IS_OF_VARIABLE_ARITY
-			{
-				@Override
-				public boolean apply(@Nonnull ArgumentSettings input)
-				{
-					return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
-				}
-			};
 		}
 	}
 }

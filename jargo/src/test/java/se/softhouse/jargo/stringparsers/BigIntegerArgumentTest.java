@@ -16,7 +16,7 @@ package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
-import static se.softhouse.jargo.ArgumentFactory.bigIntegerArgument;
+import static se.softhouse.jargo.Arguments.bigIntegerArgument;
 
 import java.math.BigInteger;
 
@@ -24,11 +24,11 @@ import org.junit.Test;
 
 import se.softhouse.comeon.testlib.Locales;
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 
 /**
- * Tests for {@link ArgumentFactory#bigIntegerArgument(String...)} and
+ * Tests for {@link Arguments#bigIntegerArgument(String...)} and
  * {@link StringParsers#bigIntegerParser()}
  */
 public class BigIntegerArgumentTest

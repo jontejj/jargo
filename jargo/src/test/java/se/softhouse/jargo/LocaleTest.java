@@ -18,8 +18,8 @@ import static java.util.Locale.US;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.comeon.testlib.Locales.SWEDISH;
 import static se.softhouse.comeon.testlib.Locales.TURKISH;
-import static se.softhouse.jargo.ArgumentFactory.bigDecimalArgument;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.Arguments.bigDecimalArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.StringParsers.integerParser;
 
 import java.math.BigDecimal;
@@ -42,7 +42,7 @@ public class LocaleTest
 		// Set the locale to something other than US so that when americans run the unit test, it
 		// still verifies what it should
 		Locales.setDefault(SWEDISH);
-		Argument<Integer> n = ArgumentFactory.withParser(new ForwardingStringParser.SimpleForwardingStringParser<Integer>(integerParser()){
+		Argument<Integer> n = Arguments.withParser(new ForwardingStringParser.SimpleForwardingStringParser<Integer>(integerParser()){
 			@Override
 			public Integer parse(String value, Locale locale) throws ArgumentException
 			{

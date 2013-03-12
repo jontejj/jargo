@@ -15,14 +15,14 @@
 package se.softhouse.jargo.exceptions;
 
 import static org.junit.Assert.fail;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ArgumentExceptions;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.StringParsers;
@@ -38,7 +38,7 @@ public class NullPointerTest
 	{
 		NullPointerTester npeTester = new NullPointerTester();
 		npeTester.testStaticMethods(ArgumentExceptions.class, Visibility.PACKAGE);
-		npeTester.testStaticMethods(ArgumentFactory.class, Visibility.PACKAGE);
+		npeTester.testStaticMethods(Arguments.class, Visibility.PACKAGE);
 		npeTester.testStaticMethods(StringParsers.class, Visibility.PACKAGE);
 		npeTester.testStaticMethods(CommandLineParser.class, Visibility.PACKAGE);
 
