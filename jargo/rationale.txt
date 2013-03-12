@@ -58,5 +58,6 @@ often requires a granted suppressAccessChecks from the SecurityManager, this may
 7) You can have final fields
 
 8) Uses generics, just like https://github.com/purcell/jargs, but with all the features that jcommander has.
+    * Compared to annotation based solutions jargo can be updated at runtime to support more arguments
 
 9) this library uses no casting, when you ask for a value of a specific type you'll get it

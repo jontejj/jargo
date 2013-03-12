@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -24,7 +24,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 import se.softhouse.comeon.strings.Description;
 import se.softhouse.comeon.strings.Descriptions;
 import se.softhouse.comeon.strings.Descriptions.SerializableDescription;
-import se.softhouse.jargo.ArgumentBuilder.ArgumentSettings;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
@@ -129,7 +128,7 @@ public abstract class ArgumentException extends Exception
 		return this;
 	}
 
-	final ArgumentException originatedFrom(final ArgumentSettings argument)
+	final ArgumentException originatedFrom(final Argument<?> argument)
 	{
 		usageReferenceName = argument.toString();
 		return this;

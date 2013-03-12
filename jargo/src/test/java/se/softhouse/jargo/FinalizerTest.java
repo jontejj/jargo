@@ -16,7 +16,7 @@ package se.softhouse.jargo;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.stringArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
 
 import java.util.Map;

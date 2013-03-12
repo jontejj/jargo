@@ -51,7 +51,7 @@ import javax.annotation.concurrent.Immutable;
  * </pre>
  * 
  * This WateringParser can then be integrated with an argument via
- * {@link ArgumentFactory#withParser(StringParser)}.
+ * {@link Arguments#withParser(StringParser)}.
  * Most subclasses can just use {@link SimpleForwardingStringParser}.
  * 
  * @param <T> the type the decorated {@link StringParser} handles

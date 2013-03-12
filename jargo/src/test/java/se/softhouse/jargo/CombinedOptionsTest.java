@@ -15,9 +15,9 @@
 package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.command;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
-import static se.softhouse.jargo.ArgumentFactory.optionArgument;
+import static se.softhouse.jargo.Arguments.command;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
 
 import org.junit.Test;
 

@@ -14,9 +14,9 @@
 */
 package se.softhouse.jargo.api;
 
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
-import static se.softhouse.jargo.ArgumentFactory.optionArgument;
-import static se.softhouse.jargo.ArgumentFactory.stringArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.CommandLineParser.withArguments;
 
 import java.io.IOException;

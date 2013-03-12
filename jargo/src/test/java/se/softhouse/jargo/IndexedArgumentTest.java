@@ -16,10 +16,10 @@ package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.softhouse.jargo.ArgumentFactory.booleanArgument;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
-import static se.softhouse.jargo.ArgumentFactory.stringArgument;
-import static se.softhouse.jargo.ArgumentFactory.withParser;
+import static se.softhouse.jargo.Arguments.booleanArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
 
 import java.util.Locale;

@@ -16,17 +16,17 @@ package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.softhouse.jargo.ArgumentFactory.charArgument;
+import static se.softhouse.jargo.Arguments.charArgument;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**
- * Tests for {@link ArgumentFactory#charArgument(String...)} and {@link StringParsers#charParser()}
+ * Tests for {@link Arguments#charArgument(String...)} and {@link StringParsers#charParser()}
  */
 public class CharArgumentTest
 {

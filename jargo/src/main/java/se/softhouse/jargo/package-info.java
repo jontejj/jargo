@@ -21,11 +21,18 @@
  * <b>git</b> - the command feature, suggestions for invalid arguments
  * <b>maven</b> - executing several commands
  * <b>jcommander</b> - almost everything else (this is what I based the feature set on)
+ *
+ * <h2>Glossary</h2>
+ * Named Argument
+ * Parameter
+ * Option
+ * Indexed Argument
+ * Argument - either named argument or indexed
  * <pre>
  * Flesh out examples... with pretty-printing
  *
  * <h2>Localization</h2>
- * By default, {@link se.softhouse.jargo.ArgumentFactory#integerArgument(String...)}, {@link se.softhouse.jargo.ArgumentFactory#longArgument(String...)} and so on,
+ * By default, {@link se.softhouse.jargo.Arguments#integerArgument(String...)}, {@link se.softhouse.jargo.Arguments#longArgument(String...)} and so on,
  * formats numbers with {@link se.softhouse.comeon.strings.Describers#numberDescriber()} in a {@link java.util.Locale} sensitive way. If this isn't what you want you can override this with
  * {@link se.softhouse.jargo.ArgumentBuilder#defaultValueDescriber(se.softhouse.comeon.strings.Describer) defaultValueDescriber(Describers.toStringDescriber()}.
  *

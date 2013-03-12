@@ -20,11 +20,11 @@ import static org.fest.assertions.Fail.fail;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.testlib.Locales.SWEDISH;
 import static se.softhouse.comeon.testlib.Locales.TURKISH;
-import static se.softhouse.jargo.ArgumentFactory.bigDecimalArgument;
-import static se.softhouse.jargo.ArgumentFactory.byteArgument;
-import static se.softhouse.jargo.ArgumentFactory.integerArgument;
-import static se.softhouse.jargo.ArgumentFactory.longArgument;
-import static se.softhouse.jargo.ArgumentFactory.shortArgument;
+import static se.softhouse.jargo.Arguments.bigDecimalArgument;
+import static se.softhouse.jargo.Arguments.byteArgument;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.longArgument;
+import static se.softhouse.jargo.Arguments.shortArgument;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.math.BigDecimal;
@@ -34,16 +34,16 @@ import java.util.List;
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 
 /**
  * <pre>
  * Tests for
- * {@link ArgumentFactory#byteArgument(String...)},
- * {@link ArgumentFactory#shortArgument(String...)},
- * {@link ArgumentFactory#integerArgument(String...)},
- * {@link ArgumentFactory#longArgument(String...)}
+ * {@link Arguments#byteArgument(String...)},
+ * {@link Arguments#shortArgument(String...)},
+ * {@link Arguments#integerArgument(String...)},
+ * {@link Arguments#longArgument(String...)}
  * and
  * {@link StringParsers#byteParser()},
  * {@link StringParsers#shortParser()},

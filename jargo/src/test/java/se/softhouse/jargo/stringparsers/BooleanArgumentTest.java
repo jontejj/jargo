@@ -15,16 +15,16 @@
 package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.jargo.ArgumentFactory.booleanArgument;
+import static se.softhouse.jargo.Arguments.booleanArgument;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 
 /**
- * Tests for {@link ArgumentFactory#booleanArgument(String...)} and
+ * Tests for {@link Arguments#booleanArgument(String...)} and
  * {@link StringParsers#booleanParser()}
  */
 public class BooleanArgumentTest

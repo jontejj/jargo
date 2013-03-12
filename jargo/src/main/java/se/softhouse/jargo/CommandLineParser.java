@@ -16,7 +16,7 @@ package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
-import static se.softhouse.jargo.ArgumentFactory.command;
+import static se.softhouse.jargo.Arguments.command;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,7 +44,7 @@ import com.google.common.util.concurrent.Atomics;
  * 
  * <pre class="prettyprint">
  * <code class="language-java">
- * import static se.softhouse.jargo.ArgumentFactory.*;
+ * import static se.softhouse.jargo.Arguments.*;
  * ...
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
  * 
@@ -121,7 +121,7 @@ public final class CommandLineParser
 	 * Creates a {@link CommandLineParser} with support for the given {@code argumentDefinitions}.
 	 * {@link Command}s can be added later with {@link #andCommands(Command...)}.
 	 * 
-	 * @param argumentDefinitions {@link Argument}s produced with {@link ArgumentFactory} or
+	 * @param argumentDefinitions {@link Argument}s produced with {@link Arguments} or
 	 *            with your own disciples of {@link ArgumentBuilder}
 	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
 	 *         and get {@link ParsedArguments} out of.

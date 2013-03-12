@@ -17,20 +17,20 @@ package se.softhouse.jargo.stringparsers;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static se.softhouse.jargo.ArgumentFactory.enumArgument;
+import static se.softhouse.jargo.Arguments.enumArgument;
 
 import java.util.List;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentFactory;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Tests for {@link ArgumentFactory#enumArgument(Class, String...)} and
+ * Tests for {@link Arguments#enumArgument(Class, String...)} and
  * {@link StringParsers#enumParser(Class)}
  */
 public class EnumArgumentTest

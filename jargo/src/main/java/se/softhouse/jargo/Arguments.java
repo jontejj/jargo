@@ -55,9 +55,9 @@ import se.softhouse.jargo.ArgumentBuilder.OptionArgumentBuilder;
  * parsed, {@link ArgumentBuilder#parse(String...)} can be used instead.
  * </pre>
  */
-public final class ArgumentFactory
+public final class Arguments
 {
-	private ArgumentFactory()
+	private Arguments()
 	{
 	}
 
