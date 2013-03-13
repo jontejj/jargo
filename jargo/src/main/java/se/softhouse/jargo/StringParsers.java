@@ -785,7 +785,7 @@ public final class StringParsers
 				throws ArgumentException
 		{
 			if(!arguments.hasNext())
-				return null;// emptyList();
+				return emptyList();
 
 			String values = arguments.next();
 			List<T> result = new ArrayList<T>();

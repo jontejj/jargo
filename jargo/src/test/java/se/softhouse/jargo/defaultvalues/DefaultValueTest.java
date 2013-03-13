@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.defaultvalues;
 
 import static java.lang.String.format;
@@ -41,10 +41,10 @@ import se.softhouse.comeon.strings.Describer;
 import se.softhouse.comeon.testlib.Explanation;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
+import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ForwardingStringParser;
 import se.softhouse.jargo.StringParser;
-import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
@@ -187,6 +187,14 @@ public class DefaultValueTest
 	public void testNullAsDefaultValue() throws ArgumentException
 	{
 		assertThat(integerArgument("-n").defaultValue(null).parse()).isNull();
+	}
+
+	@Test
+	public void testThatDefaultValueIsNotUsedWhenParserReturnsNull() throws ArgumentException
+	{
+		// TODO: fix so that null can't be passed as an argument?
+		Object actualValue = objectArgument().names("-n").defaultValue("defaultValue").parse("-n", null);
+		assertThat(actualValue).isNull();
 	}
 
 	@Test
