@@ -248,13 +248,12 @@ final class CommandLineParserInstance
 	private <T> void parseArgument(final ArgumentIterator arguments, final ParsedArguments parsedArguments, final Argument<T> definition,
 			Locale locale) throws ArgumentException
 	{
-		T oldValue = parsedArguments.getValue(definition);
-
-		if(oldValue != null && !definition.isAllowedToRepeat() && !definition.isPropertyMap())
+		if(parsedArguments.wasGiven(definition) && !definition.isAllowedToRepeat() && !definition.isPropertyMap())
 			throw forUnallowedRepetitionArgument(arguments.current());
 
 		InternalStringParser<T> parser = definition.parser();
 		Locale localeToParseWith = definition.locale(locale);
+		T oldValue = parsedArguments.getValue(definition);
 
 		T parsedValue = parser.parse(arguments, oldValue, definition, localeToParseWith);
 		parsedArguments.put(definition, parsedValue);

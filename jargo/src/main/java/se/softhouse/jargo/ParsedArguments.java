@@ -47,7 +47,6 @@ public final class ParsedArguments
 	/**
 	 * Stores results from {@link StringParser#parse(String, Locale)}
 	 */
-	// FIXME Map<Argument<?>, Optional<Object>>? to differentiate nulls from absence
 	@Nonnull private final Map<Argument<?>, Object> parsedArguments = newLinkedHashMap();
 	@Nonnull private final Set<Argument<?>> allArguments;
 	/**
@@ -73,15 +72,12 @@ public final class ParsedArguments
 	{
 		checkNotNull(argumentToFetch);
 
-		T value = getValue(argumentToFetch);
-
-		if(value == null)
+		if(!wasGiven(argumentToFetch))
 		{
 			checkArgument(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
 			return argumentToFetch.defaultValue();
 		}
-
-		return value;
+		return getValue(argumentToFetch);
 	}
 
 	/**
@@ -176,6 +172,7 @@ public final class ParsedArguments
 			}
 			if(wasGiven && argument.parser() instanceof Command)
 			{
+				// TODO: use argumentIterator.argumentsToLastCommand instead
 				// TODO: test suggestions for sub commands as well
 				ParsedArguments lastInvocation = (ParsedArguments) getValue(argument);
 				validArguments.addAll(lastInvocation.nonParsedArguments());
