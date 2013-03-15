@@ -11,12 +11,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.stringparsers.custom;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ForwardingStringParser;
 import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.StringParsers;
+import se.softhouse.jargo.Usage;
 
 /**
  * Tests for {@link ForwardingStringParser}
@@ -39,7 +41,7 @@ public class ForwardingStringParserTest
 		String result = withParser(new InterningStringParser()).parse(argumentValue);
 		assertThat(result).isSameAs(argumentValue.intern());
 
-		String usage = withParser(new InterningStringParser()).names("-f").usage();
+		Usage usage = withParser(new InterningStringParser()).names("-f").usage();
 		assertThat(usage).contains("-f <interned_string>    <interned_string>: some string");
 		assertThat(usage).contains("Default: foo");
 	}

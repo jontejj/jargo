@@ -18,6 +18,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,7 @@ public class SeparatorTest
 	@Test
 	public void testArityCombinedWithSeparator() throws ArgumentException
 	{
-		String usage = integerArgument("-numbers").arity(3).separator("=").usage();
+		Usage usage = integerArgument("-numbers").arity(3).separator("=").usage();
 		assertThat(usage).contains("-numbers=<integer> <integer> <integer> ");
 
 		List<Integer> numbers = integerArgument("-numbers").arity(3).separator("=").parse("-numbers=1", "2", "3");
@@ -102,7 +103,7 @@ public class SeparatorTest
 	@Test
 	public void testThatSeparatorIsPrintedBetweenArgumentNameAndMetaDescription()
 	{
-		String usage = integerArgument("-N").separator("=").usage();
+		Usage usage = integerArgument("-N").separator("=").usage();
 		assertThat(usage).contains("-N=<integer>");
 	}
 

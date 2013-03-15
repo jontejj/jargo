@@ -198,7 +198,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Should only be used if one argument is supported,
 	 * otherwise the {@link CommandLineParser#usage()} method should be used instead.
 	 */
-	public final String usage()
+	public final Usage usage()
 	{
 		return build().usage();
 	}

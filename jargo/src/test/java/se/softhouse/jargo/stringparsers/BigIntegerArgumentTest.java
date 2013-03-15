@@ -11,12 +11,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.jargo.Arguments.bigIntegerArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.math.BigInteger;
 
@@ -26,6 +27,7 @@ import se.softhouse.comeon.testlib.Locales;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
+import se.softhouse.jargo.Usage;
 
 /**
  * Tests for {@link Arguments#bigIntegerArgument(String...)} and
@@ -64,7 +66,7 @@ public class BigIntegerArgumentTest
 	@Test
 	public void testDescription()
 	{
-		String usage = bigIntegerArgument("-b").usage();
+		Usage usage = bigIntegerArgument("-b").usage();
 		assertThat(usage).contains("<big-integer>: an arbitrary integer number (practically no limits)");
 	}
 
@@ -78,7 +80,7 @@ public class BigIntegerArgumentTest
 	@Test
 	public void testThatDefaultValueForBigIntegerIsFormattedInTheChosenLocale()
 	{
-		String b = bigIntegerArgument("-b").locale(Locales.TURKISH).defaultValue(BigInteger.valueOf(Long.MAX_VALUE)).usage();
+		Usage b = bigIntegerArgument("-b").locale(Locales.TURKISH).defaultValue(BigInteger.valueOf(Long.MAX_VALUE)).usage();
 		assertThat(b).contains("Default: 9.223.372.036.854.775.807" + NEWLINE);
 	}
 }

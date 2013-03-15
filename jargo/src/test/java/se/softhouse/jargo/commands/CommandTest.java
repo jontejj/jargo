@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.Arguments.command;
-import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.io.File;
@@ -36,6 +36,7 @@ import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.commands.Build.BuildTarget;
 import se.softhouse.jargo.commands.CommitCommand.Commit;
 import se.softhouse.jargo.commands.CommitCommand.Repository;
@@ -195,49 +196,30 @@ public class CommandTest
 	{
 		BuildTarget target = new BuildTarget();
 		CommandLineParser parser = CommandLineParser.withCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
-		String usage = parser.usage();
+		Usage usage = parser.usage();
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
-	}
-
-	private static final class CommandWithIndexedArguments extends Command
-	{
-		CommandWithIndexedArguments()
-		{
-			super(integerArgument().arity(2).build());
-		}
-
-		@Override
-		protected String commandName()
-		{
-			return "aCommand";
-		}
-
-		@Override
-		protected void execute(ParsedArguments parsedArguments)
-		{
-		}
 	}
 
 	@Test
 	public void testCommandWithMissingIndexedArgument()
 	{
-		Argument<?> command = command(new CommandWithIndexedArguments()).build();
+		Argument<?> command = command(new CommandWithTwoIndexedArguments()).build();
 		try
 		{
-			command.parse("aCommand", "1");
-			fail("Indexed argument should require two parameters");
+			command.parse("two_args", "1");
+			fail("two_args argument should require two parameters");
 		}
 		catch(ArgumentException missingSecondParameterForIndexedArgument)
 		{
 			assertThat(missingSecondParameterForIndexedArgument).hasMessage(String.format(	UserErrors.MISSING_NTH_PARAMETER, "second", "<integer>",
-																							"aCommand"));
+																							"two_args"));
 		}
 	}
 
 	@Test
 	public void testThatTheInnerMostCommandIsPrintedInErrorMessage()
 	{
-		Argument<?> superCommand = command(new Command(command(new CommandWithIndexedArguments()).build()){
+		Argument<?> superCommand = command(new Command(command(new CommandWithTwoIndexedArguments()).build()){
 
 			@Override
 			protected String commandName()
@@ -253,13 +235,13 @@ public class CommandTest
 
 		try
 		{
-			superCommand.parse("superCommand", "aCommand", "1");
-			fail("Indexed argument should require two parameters");
+			superCommand.parse("superCommand", "two_args", "1");
+			fail("two_args argument should require two parameters");
 		}
 		catch(ArgumentException missingSecondParameterForIndexedArgument)
 		{
 			assertThat(missingSecondParameterForIndexedArgument).hasMessage(String.format(	UserErrors.MISSING_NTH_PARAMETER, "second", "<integer>",
-																							"aCommand"));
+																							"two_args"));
 		}
 	}
 
@@ -293,6 +275,7 @@ public class CommandTest
 		{
 			// Switched order of two_args and three_args for extra test harness
 			parser.parse("one_arg", "1", "three_args", "1", "2", "3", "two_args", "1");
+			fail("two_args should require two args");
 		}
 		catch(ArgumentException expected)
 		{
@@ -304,13 +287,13 @@ public class CommandTest
 	@Test
 	public void testThatParserForCommandArgumentsIsOnlyCreatedWhenCommandIsExecuted() throws ArgumentException
 	{
-		ProfilingCommand profiler = new ProfilingCommand();
+		InvalidCommand profiler = new InvalidCommand();
 		Argument<?> command = command(profiler).build();
 
 		try
 		{
 			command.parse("profile");
-			fail("Invalid arguments passed to super constructor in ProfilingCommand should cause a lazy initialization error");
+			fail("Invalid arguments passed to super constructor in InvalidCommand should cause a lazy initialization error");
 		}
 		catch(IllegalArgumentException expected)
 		{
@@ -356,6 +339,38 @@ public class CommandTest
 		{
 			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-limit", "--limit" + NEWLINE + TAB + "-l"));
 		}
+	}
+
+	@Test
+	public void testThatArgumentsToSubcommandsAreSuggested() throws Exception
+	{
+		try
+		{
+			CommandLineParser.withCommands(new CommandWithOneIndexedArgument()).parse("one_arg", "1", "cm");
+			fail("cmd should be suggested for cm");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "cm", "cmd"));
+		}
+	}
+
+	@Test
+	public void testThatMissspelledArgumentIsNotSuggestedForAlreadyExecutedCommand() throws Exception
+	{
+		CommandLineParser parser = CommandLineParser.withCommands(new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments());
+		try
+		{
+			// As one_arg already has been executed, by the time two_args is seen,
+			// suggesting --bool (optional argument to one_arg) would be an error
+			parser.parse("one_arg", "1", "two_args", "1", "2", "-boo");
+			fail("-boo not detected as unhandled argument");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Unexpected argument: -boo, previous argument: 2");
+		}
+
 	}
 
 	@Test

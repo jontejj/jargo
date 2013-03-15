@@ -40,8 +40,18 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+/**
+ * Responsible for formatting usage texts for {@link CommandLineParser#usage()}.
+ * Using it is often as simple as:
+ * 
+ * <pre class="prettyprint">
+ * <code class="language-java">
+ * System.out.print(CommandLineParser.withArguments(someArguments).usage());
+ * </code>
+ * </pre>
+ */
 @NotThreadSafe
-final class Usage
+public final class Usage
 {
 	private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
 	private static final int SPACES_BETWEEN_COLUMNS = 4;
@@ -138,6 +148,9 @@ final class Usage
 		return StringBuilders.withExpectedSize(2 * argumentsToPrint.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION));
 	}
 
+	/**
+	 * Returns the usage text that's suitable to print on {@link System#out}.
+	 */
 	@Override
 	public String toString()
 	{

@@ -16,6 +16,7 @@ package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,16 +25,24 @@ import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 
+import com.google.common.collect.Lists;
+
 public class CommandWithTwoIndexedArguments extends Command
 {
 	private static final Argument<List<Integer>> NUMBERS = integerArgument().arity(2).required().build();
+	private static final Argument<String> FOO = stringArgument("--string").build();
 
 	private final List<Command> executedCommands;
 
 	CommandWithTwoIndexedArguments(final List<Command> executedCommands)
 	{
-		super(NUMBERS);
+		super(NUMBERS, FOO);
 		this.executedCommands = executedCommands;
+	}
+
+	CommandWithTwoIndexedArguments()
+	{
+		this(Lists.<Command>newArrayList());
 	}
 
 	@Override

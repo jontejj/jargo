@@ -28,6 +28,7 @@ import static se.softhouse.jargo.StringParsers.integerParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
 import static se.softhouse.jargo.stringparsers.custom.ObjectParser.objectArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
@@ -45,6 +46,7 @@ import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ForwardingStringParser;
 import se.softhouse.jargo.StringParser;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
@@ -255,7 +257,7 @@ public class DefaultValueTest
 	@Test
 	public void testThatEachDefaultValueIsDescribedInArityArgument()
 	{
-		String usage = integerArgument("-n").defaultValue(1).defaultValueDescription("One").arity(2).usage();
+		Usage usage = integerArgument("-n").defaultValue(1).defaultValueDescription("One").arity(2).usage();
 		assertThat(usage).isEqualTo(expected("arityOfDefaultValuesDescribed"));
 	}
 
@@ -264,7 +266,7 @@ public class DefaultValueTest
 	{
 		// When a defaultValueDescription has been set before repeated/arity/variableArity that
 		// description is used for each value but if there is no value there is nothing to describe
-		String usage = integerArgument("-n").defaultValueDescription("SomethingThatWillBeReplacedWithEmptyList").repeated().usage();
+		Usage usage = integerArgument("-n").defaultValueDescription("SomethingThatWillBeReplacedWithEmptyList").repeated().usage();
 		assertThat(usage).contains("Default: Empty list [Supports Multiple occurrences]");
 	}
 
@@ -279,7 +281,7 @@ public class DefaultValueTest
 				return "(Hashcode) " + value.hashCode();
 			}
 		};
-		String usage = integerArgument("-n").defaultValueDescriber(hashCodeDescriber).usage();
+		Usage usage = integerArgument("-n").defaultValueDescriber(hashCodeDescriber).usage();
 		assertThat(usage).contains("Default: (Hashcode) 0");
 	}
 
@@ -293,7 +295,7 @@ public class DefaultValueTest
 				return 2;
 			}
 		};
-		String usage = objectArgument().defaultValueSupplier(integerSupply).usage();
+		Usage usage = objectArgument().defaultValueSupplier(integerSupply).usage();
 		assertThat(usage).contains("Default: 2");
 	}
 
@@ -315,14 +317,14 @@ public class DefaultValueTest
 	public void testThatSettingDefaultValueDescriberForValuesInAKeyValueArgumentIsUsedForValues()
 	{
 		Map<String, Integer> defaults = ImmutableMap.<String, Integer>builder().put("foo", 4000).build();
-		String usage = integerArgument("-n").asPropertyMap().defaultValue(defaults).usage();
+		Usage usage = integerArgument("-n").asPropertyMap().defaultValue(defaults).usage();
 		assertThat(usage).isEqualTo(expected("defaultValuesInPropertyMapDescribedByDescriber"));
 	}
 
 	@Test
 	public void testThatMapDescriberIsUsedAsDefaultValueDescriberForValuesInAKeyValueArgument()
 	{
-		String usage = stringArgument("-n").asPropertyMap().usage();
+		Usage usage = stringArgument("-n").asPropertyMap().usage();
 		assertThat(usage).contains("Empty map");
 	}
 }

@@ -25,6 +25,7 @@ import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.CommandLineParser.withArguments;
 import static se.softhouse.jargo.Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.fest.assertions.StringAssert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,6 +51,7 @@ import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import se.softhouse.jargo.utils.ArgumentExpector;
+import se.softhouse.jargo.utils.Assertions2.UsageAssert;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -371,7 +372,7 @@ public class CommandLineParserTest
 		}, integerArgument("-n").build()).contains("-n");
 	}
 
-	private <T> StringAssert testThatNullDoesNotCauseOtherConcurrentUpdatesToFail(final ParserInvocation<T> toInvoke, final @Nonnull T nonnullValue)
+	private <T> UsageAssert testThatNullDoesNotCauseOtherConcurrentUpdatesToFail(final ParserInvocation<T> toInvoke, final @Nonnull T nonnullValue)
 			throws InterruptedException
 	{
 		final AtomicReference<Throwable> failure = new AtomicReference<Throwable>();

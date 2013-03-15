@@ -15,6 +15,7 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Predicates.alwaysTrue;
+import static java.util.Arrays.asList;
 import static se.softhouse.comeon.strings.Descriptions.format;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
@@ -54,34 +55,15 @@ import com.google.common.base.Supplier;
 @Immutable
 public final class Argument<T>
 {
-	enum ParameterArity
-	{
-		/**
-		 * Indicates {@link Arguments#optionArgument(String, String...)}
-		 */
-		NO_ARGUMENTS,
-		/**
-		 * Indicates {@link ArgumentBuilder#variableArity()}
-		 */
-		VARIABLE_AMOUNT,
-		/**
-		 * {@link ArgumentBuilder#arity(int)} or any other {@link Argument}
-		 */
-		AT_LEAST_ONE_ARGUMENT
-	}
-
 	@Nonnull private final List<String> names;
-
 	@Nonnull private final Description description;
 	@Nullable private final Optional<String> metaDescription;
+	private final boolean hideFromUsage;
+
 	@Nullable private final String separator;
-
 	private final Optional<Locale> localeOveride;
-
 	private final boolean required;
 	private final boolean ignoreCase;
-	private final boolean isAllowedToRepeat;
-	private final boolean hideFromUsage;
 
 	@Nonnull private final InternalStringParser<T> parser;
 	@Nonnull private final Supplier<? extends T> defaultValue;
@@ -91,14 +73,10 @@ public final class Argument<T>
 	// Internal bookkeeping
 	@Nonnull private final Function<T, T> finalizer;
 	private final ParameterArity parameterArity;
-	private final boolean isPropertyMap;
 
-	private CommandLineParserInstance commandLineParser()
-	{
-		// Not cached to save memory, users should use CommandLineParser.withArguments if they are
-		// concerned about reuse
-		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), ProgramInformation.AUTO);
-	}
+	// TODO: these should be queried on the parser instead
+	private final boolean isAllowedToRepeat;
+	private final boolean isPropertyMap;
 
 	/**
 	 * <pre>
@@ -164,20 +142,20 @@ public final class Argument<T>
 	@Nullable
 	public T parse(String ... actualArguments) throws ArgumentException
 	{
-		return commandLineParser().parse(Arrays.asList(actualArguments), locale(US_BY_DEFAULT)).get(this);
+		return commandLineParser().parse(asList(actualArguments), locale(US_BY_DEFAULT)).get(this);
 	}
 
 	/**
-	 * Returns a usage string for this argument. Should only be used if one argument is supported,
-	 * otherwise the {@link CommandLineParser#usage()} method should be used instead.
+	 * Returns the {@link Usage} for this argument. Should only be used if one argument is
+	 * supported, otherwise the {@link CommandLineParser#usage()} method should be used instead.
 	 * {@link Locale#US} is used by default. Use {@link ArgumentBuilder#locale(Locale)} to specify
 	 * another {@link Locale}, such as {@link Locale#getDefault()}.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public String usage()
+	public Usage usage()
 	{
-		return new Usage(commandLineParser().allArguments(), locale(US_BY_DEFAULT), ProgramInformation.AUTO).toString();
+		return new Usage(commandLineParser().allArguments(), locale(US_BY_DEFAULT), ProgramInformation.AUTO);
 	}
 
 	/**
@@ -345,6 +323,29 @@ public final class Argument<T>
 	boolean isIndexed()
 	{
 		return names().isEmpty();
+	}
+
+	private CommandLineParserInstance commandLineParser()
+	{
+		// Not cached to save memory, users should use CommandLineParser.withArguments if they are
+		// concerned about reuse
+		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), ProgramInformation.AUTO);
+	}
+
+	enum ParameterArity
+	{
+		/**
+		 * Indicates {@link Arguments#optionArgument(String, String...)}
+		 */
+		NO_ARGUMENTS,
+		/**
+		 * Indicates {@link ArgumentBuilder#variableArity()}
+		 */
+		VARIABLE_AMOUNT,
+		/**
+		 * {@link ArgumentBuilder#arity(int)} or any other {@link Argument}
+		 */
+		AT_LEAST_ONE_ARGUMENT
 	}
 
 	enum ArgumentPredicates implements Predicate<Argument<?>>

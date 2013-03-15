@@ -17,6 +17,7 @@ package se.softhouse.jargo.stringparsers;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.Collections;
 
@@ -25,6 +26,7 @@ import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -54,14 +56,14 @@ public class OptionalArgumentTest
 	@Test
 	public void testDescription()
 	{
-		String usage = optionArgument("--enable-logging").usage();
+		Usage usage = optionArgument("--enable-logging").usage();
 		assertThat(usage).contains("Default: disabled");
 	}
 
 	@Test
 	public void testForDefaultTrue() throws ArgumentException
 	{
-		String usage = optionArgument("--disable-logging").defaultValue(true).usage();
+		Usage usage = optionArgument("--disable-logging").defaultValue(true).usage();
 		assertThat(usage).contains("Default: enabled");
 
 		assertThat(optionArgument("--disable-logging").defaultValue(true).parse()).isTrue();

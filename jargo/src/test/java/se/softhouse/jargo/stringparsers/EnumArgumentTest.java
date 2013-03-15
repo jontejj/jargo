@@ -18,6 +18,7 @@ import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static se.softhouse.jargo.Arguments.enumArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.junit.Test;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -66,7 +68,7 @@ public class EnumArgumentTest
 	@Test
 	public void testEnumArgumentUsage()
 	{
-		String usageText = enumArgument(Action.class).usage();
+		Usage usageText = enumArgument(Action.class).usage();
 		assertThat(usageText).contains("<Action>: {start | stop | restart}");
 		assertThat(usageText).contains("Default: null");
 	}

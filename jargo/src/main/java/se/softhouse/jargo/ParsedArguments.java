@@ -170,13 +170,6 @@ public final class ParsedArguments
 
 				}
 			}
-			if(wasGiven && argument.parser() instanceof Command)
-			{
-				// TODO: use argumentIterator.argumentsToLastCommand instead
-				// TODO: test suggestions for sub commands as well
-				ParsedArguments lastInvocation = (ParsedArguments) getValue(argument);
-				validArguments.addAll(lastInvocation.nonParsedArguments());
-			}
 		}
 		return validArguments;
 	}

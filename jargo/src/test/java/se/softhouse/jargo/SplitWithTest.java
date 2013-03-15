@@ -19,6 +19,7 @@ import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class SplitWithTest
 	@Test
 	public void testThatUsageTextForSplittingWithCommaLooksGood()
 	{
-		String usage = integerArgument("-n").splitWith(",").usage();
+		Usage usage = integerArgument("-n").splitWith(",").usage();
 		assertThat(usage).contains("-n <integer>,<integer>,... ");
 	}
 
@@ -60,7 +61,7 @@ public class SplitWithTest
 	@Test
 	public void testThatSeparatorCombinedWithSplitterLooksGoodInUsage()
 	{
-		String usage = integerArgument("-N").separator("=").splitWith(",").usage();
+		Usage usage = integerArgument("-N").separator("=").splitWith(",").usage();
 		assertThat(usage).contains("-N=<integer>,<integer>,... ");
 	}
 

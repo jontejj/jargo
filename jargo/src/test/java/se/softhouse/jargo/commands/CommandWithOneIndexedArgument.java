@@ -15,6 +15,8 @@
 package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static se.softhouse.jargo.Arguments.booleanArgument;
+import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.Arguments.integerArgument;
 
 import java.util.List;
@@ -23,16 +25,37 @@ import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 
+import com.google.common.collect.Lists;
+
 public class CommandWithOneIndexedArgument extends Command
 {
 	private static final Argument<Integer> NUMBER = integerArgument().required().build();
+	private static final Argument<Boolean> FOO = booleanArgument("--bool").build();
+	private static final Argument<?> CMD = command(new Command(){
+
+		@Override
+		protected void execute(ParsedArguments parsedArguments)
+		{
+		}
+
+		@Override
+		protected String commandName()
+		{
+			return "cmd";
+		}
+	}).build();
 
 	private final List<Command> executedCommands;
 
 	CommandWithOneIndexedArgument(final List<Command> executedCommands)
 	{
-		super(NUMBER);
+		super(NUMBER, FOO, CMD);
 		this.executedCommands = executedCommands;
+	}
+
+	CommandWithOneIndexedArgument()
+	{
+		this(Lists.<Command>newArrayList());
 	}
 
 	@Override

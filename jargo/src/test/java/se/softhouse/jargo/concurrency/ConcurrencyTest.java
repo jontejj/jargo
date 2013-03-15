@@ -30,6 +30,7 @@ import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.shortArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.stringparsers.custom.DateTimeParser.dateArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -52,6 +53,7 @@ import org.junit.Test;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 import se.softhouse.jargo.utils.ExpectedTexts;
 
@@ -242,7 +244,7 @@ public class ConcurrencyTest
 
 					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
 					{
-						String usage = parser.usage();
+						Usage usage = parser.usage();
 						assertThat(usage).isEqualTo(expectedUsageText);
 					}
 				}
