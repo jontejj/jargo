@@ -191,10 +191,9 @@ public final class CommandLineParser
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public String usage()
+	public Usage usage()
 	{
-		// FIXME: return Usage instead? more future proof...
-		return new Usage(parser().allArguments(), locale(), programInformation()).toString();
+		return new Usage(parser().allArguments(), locale(), programInformation());
 	}
 
 	/**
@@ -316,7 +315,7 @@ public final class CommandLineParser
 	@Override
 	public String toString()
 	{
-		return usage();
+		return usage().toString();
 	};
 
 	CommandLineParser(Iterable<Argument<?>> argumentDefinitions)

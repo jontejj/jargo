@@ -21,6 +21,7 @@ import static se.softhouse.comeon.testlib.Locales.TURKISH;
 import static se.softhouse.jargo.Arguments.bigDecimalArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.StringParsers.integerParser;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Locale;

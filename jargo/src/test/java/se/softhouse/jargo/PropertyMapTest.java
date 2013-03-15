@@ -26,6 +26,7 @@ import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.StringParsers.byteParser;
 import static se.softhouse.jargo.StringParsers.integerParser;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
@@ -277,7 +278,7 @@ public class PropertyMapTest
 		defaults.put((byte) 3, (byte) 4);
 		defaults.put((byte) 1, (byte) 2);
 
-		String usage = byteArgument("-N").asKeyValuesWithKeyParser(byteParser()).separator(":").defaultValue(defaults).usage();
+		Usage usage = byteArgument("-N").asKeyValuesWithKeyParser(byteParser()).separator(":").defaultValue(defaults).usage();
 		assertThat(usage).isEqualTo(expected("defaultValuePropertyMap"));
 	}
 
@@ -306,7 +307,7 @@ public class PropertyMapTest
 	@Test
 	public void testThatUsageTextForRepeatedPropertyValuesLooksGood()
 	{
-		String usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage();
+		Usage usage = integerArgument("-N").repeated().asPropertyMap().description("Some measurement values").usage();
 		assertThat(usage).isEqualTo(expected("repeatedPropertyValues"));
 	}
 
@@ -362,7 +363,7 @@ public class PropertyMapTest
 	@Test
 	public void testThatCustomDescriberCanBeUsedForPropertyMaps()
 	{
-		String usage = integerArgument("-D").asPropertyMap().defaultValueDescriber(withConstantString("a map")).usage();
+		Usage usage = integerArgument("-D").asPropertyMap().defaultValueDescriber(withConstantString("a map")).usage();
 		assertThat(usage).contains("Default: a map");
 	}
 }

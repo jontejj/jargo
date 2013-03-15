@@ -11,21 +11,20 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.Map;
 
 import org.junit.Test;
 
 import se.softhouse.comeon.testlib.Explanation;
-import se.softhouse.jargo.ArgumentBuilder;
-import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.functions.AddBar;
 import se.softhouse.jargo.functions.AddFoo;
 import se.softhouse.jargo.limiters.FooLimiter;

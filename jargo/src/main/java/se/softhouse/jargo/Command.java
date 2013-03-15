@@ -107,6 +107,8 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 		this.commandArguments = ImmutableList.copyOf(commandArguments);
 	}
 
+	// TODO: support commandArguments() by a method as well
+
 	/**
 	 * The name that triggers this command. For several names override this with
 	 * {@link ArgumentBuilder#names(String...)}

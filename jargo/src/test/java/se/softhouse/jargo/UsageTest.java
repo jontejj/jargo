@@ -19,6 +19,7 @@ import static org.fest.assertions.Fail.fail;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import org.fest.assertions.Fail;
@@ -42,21 +43,21 @@ public class UsageTest
 	@Test
 	public void testThatProgramNameDefaultsToMainClassName()
 	{
-		String usage = integerArgument("-n").usage();
+		Usage usage = integerArgument("-n").usage();
 		assertThat(usage).startsWith(UsageTexts.USAGE_HEADER + Classes.mainClassName());
 	}
 
 	@Test
 	public void testUsageWithRequiredArguments()
 	{
-		String usage = integerArgument("-n").required().usage();
+		Usage usage = integerArgument("-n").required().usage();
 		assertThat(usage).contains(UsageTexts.REQUIRED);
 	}
 
 	@Test
 	public void testUsageWithRepeatedArguments()
 	{
-		String usage = stringArgument("-s").repeated().metaDescription("\"greeting phrase\"")
+		Usage usage = stringArgument("-s").repeated().metaDescription("\"greeting phrase\"")
 				.description("A greeting phrase to greet new connections with").defaultValueDescription("Nothing").usage();
 
 		assertThat(usage).isEqualTo(expected("repeatedArguments"));
@@ -65,21 +66,21 @@ public class UsageTest
 	@Test
 	public void testUsageForNoArguments()
 	{
-		String usage = CommandLineParser.withArguments().programName("NoArguments").usage();
+		Usage usage = CommandLineParser.withArguments().programName("NoArguments").usage();
 		assertThat(usage).isEqualTo("Usage: NoArguments" + NEWLINE);
 	}
 
 	@Test
 	public void testUsageForNoVisibleArguments()
 	{
-		String usage = CommandLineParser.withArguments(integerArgument().hideFromUsage().build()).programName("NoVisibleArguments").usage();
+		Usage usage = CommandLineParser.withArguments(integerArgument().hideFromUsage().build()).programName("NoVisibleArguments").usage();
 		assertThat(usage).isEqualTo("Usage: NoVisibleArguments" + NEWLINE);
 	}
 
 	@Test
 	public void testUsageWithArguments()
 	{
-		String usage = stringArgument().usage();
+		Usage usage = stringArgument().usage();
 		assertThat(usage).startsWith(UsageTexts.USAGE_HEADER).contains(UsageTexts.ARGUMENT_INDICATOR).contains(UsageTexts.ARGUMENT_HEADER);
 	}
 
@@ -89,7 +90,7 @@ public class UsageTest
 		Argument<String> hiddenArgument = stringArgument("--hidden-argument").hideFromUsage().build();
 		Argument<String> visibleArgument = stringArgument("--visible-argument").build();
 		CommandLineParser parser = CommandLineParser.withArguments(hiddenArgument, visibleArgument);
-		String usage = parser.usage();
+		Usage usage = parser.usage();
 
 		assertThat(usage).doesNotContain("--hidden-argument");
 		assertThat(usage).contains("--visible-argument");
@@ -104,7 +105,7 @@ public class UsageTest
 	@Test
 	public void testUsageTextForRepeatedArgumentWithDefaultValueSet()
 	{
-		String usage = integerArgument().defaultValue(1).repeated().usage();
+		Usage usage = integerArgument().defaultValue(1).repeated().usage();
 		assertThat(usage).contains(UsageTexts.DEFAULT_VALUE_START + "1").contains(UsageTexts.ALLOWS_REPETITIONS);
 	}
 
@@ -152,7 +153,7 @@ public class UsageTest
 		Argument<String> indexThree = stringArgument().description("IndexThree").build();
 		Argument<String> namedOne = stringArgument("-S").build();
 		Argument<String> namedTwo = stringArgument("-T").build();
-		String usage = CommandLineParser.withArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage();
+		Usage usage = CommandLineParser.withArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage();
 
 		assertThat(usage).isEqualTo(expected("indexedArgumentsSortingOrder"));
 	}
@@ -189,7 +190,7 @@ public class UsageTest
 	@Test
 	public void testProgramDescriptionInUsage()
 	{
-		String usage = CommandLineParser.withArguments().programName("ProgramName").programDescription("Program description of ProgramName").usage();
+		Usage usage = CommandLineParser.withArguments().programName("ProgramName").programDescription("Program description of ProgramName").usage();
 
 		assertThat(usage).isEqualTo("Usage: ProgramName" + NEWLINE + NEWLINE + "Program description of ProgramName" + NEWLINE);
 	}
@@ -197,7 +198,7 @@ public class UsageTest
 	@Test
 	public void testThatDescriptionsAreLazilyInitialized()
 	{
-		String usage = integerArgument("-n").description(new Description(){
+		Usage usage = integerArgument("-n").description(new Description(){
 			@Override
 			public String description()
 			{

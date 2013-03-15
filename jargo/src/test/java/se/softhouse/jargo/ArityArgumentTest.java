@@ -19,6 +19,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
@@ -107,14 +108,14 @@ public class ArityArgumentTest
 		Argument<List<Integer>> bar = integerArgument("--bar").arity(2).description("MetaDescShouldBeDisplayedTwoTimes").build();
 		Argument<List<Integer>> zoo = integerArgument("--zoo").variableArity().description("MetaDescShouldIndicateVariableAmount").build();
 		Argument<List<Integer>> boo = integerArgument().variableArity().description("MetaDescShouldIndicateVariableAmount").build();
-		String usage = CommandLineParser.withArguments(foo, bar, zoo, boo).usage();
+		Usage usage = CommandLineParser.withArguments(foo, bar, zoo, boo).usage();
 		assertThat(usage).isEqualTo(expected("metaDescriptionsForArityArgument"));
 	}
 
 	@Test
 	public void testUsageTextForEmptyList()
 	{
-		String usage = stringArgument().arity(2).defaultValue(Collections.<String>emptyList()).usage();
+		Usage usage = stringArgument().arity(2).defaultValue(Collections.<String>emptyList()).usage();
 		assertThat(usage).contains("Default: Empty list");
 	}
 

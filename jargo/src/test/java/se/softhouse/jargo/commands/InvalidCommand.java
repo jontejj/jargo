@@ -18,9 +18,9 @@ import static se.softhouse.jargo.Arguments.integerArgument;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 
-final class ProfilingCommand extends Command
+final class InvalidCommand extends Command
 {
-	public ProfilingCommand()
+	public InvalidCommand()
 	{
 		// Two arguments with the same name ("-n" here) should trigger an exception when building a
 		// command line parser, but as that's only done when the command is encountered it shouldn't

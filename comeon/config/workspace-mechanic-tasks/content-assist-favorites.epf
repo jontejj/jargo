@@ -5,4 +5,4 @@
 # Created by the Workspace Mechanic Preference Recorder
 #Sat Feb 23 17:13:07 CET 2013
 file_export_version=3.0
-/instance/org.eclipse.jdt.ui/content_assist_favorite_static_members=com.google.common.base.Preconditions.*;java.util.concurrent.TimeUnit.*;org.fest.assertions.Assertions.*
+/instance/org.eclipse.jdt.ui/content_assist_favorite_static_members=com.google.common.base.Preconditions.*;java.util.concurrent.TimeUnit.*;org.fest.assertions.Assertions.*;se.softhouse.jargo.Arguments.*;se.softhouse.jargo.utils.Assertions2.*

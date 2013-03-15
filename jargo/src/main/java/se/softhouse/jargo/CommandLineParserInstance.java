@@ -21,6 +21,7 @@ import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
+import static java.util.Collections.emptySet;
 import static se.softhouse.comeon.strings.Descriptions.format;
 import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
 import static se.softhouse.comeon.strings.StringsUtil.TAB;
@@ -57,6 +58,7 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
 
 @Immutable
@@ -292,7 +294,7 @@ final class CommandLineParserInstance
 			return null;
 		}
 
-		guessAndSuggestIfCloseMatch(currentArgument, holder);
+		guessAndSuggestIfCloseMatch(currentArgument, holder, arguments);
 
 		// We're out of order, tell the user what we didn't like
 		throw ArgumentExceptions.forUnexpectedArgument(arguments);
@@ -383,9 +385,10 @@ final class CommandLineParserInstance
 	 * Suggests probable, valid, alternatives for a faulty argument, based on the
 	 * {@link StringsUtil#levenshteinDistance(String, String)}
 	 */
-	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArguments holder) throws ArgumentException
+	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArguments holder, ArgumentIterator arguments)
+			throws ArgumentException
 	{
-		Set<String> availableArguments = holder.nonParsedArguments();
+		Set<String> availableArguments = Sets.union(holder.nonParsedArguments(), arguments.nonParsedArguments());
 
 		if(!availableArguments.isEmpty())
 		{
@@ -490,6 +493,16 @@ final class CommandLineParserInstance
 				lastCommandParsed.execute(argumentsToLastCommand);
 				lastCommandParsed = null;
 			}
+		}
+
+		/**
+		 * Returns any non-parsed arguments to the last command that was executed
+		 */
+		Set<String> nonParsedArguments()
+		{
+			if(lastCommandParsed != null)
+				return argumentsToLastCommand.nonParsedArguments();
+			return emptySet();
 		}
 
 		/**

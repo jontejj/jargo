@@ -11,21 +11,22 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.stringparsers;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.booleanArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
+import se.softhouse.jargo.Usage;
 
 /**
- * Tests for {@link Arguments#booleanArgument(String...)} and
- * {@link StringParsers#booleanParser()}
+ * Tests for {@link Arguments#booleanArgument(String...)} and {@link StringParsers#booleanParser()}
  */
 public class BooleanArgumentTest
 {
@@ -39,7 +40,7 @@ public class BooleanArgumentTest
 	@Test
 	public void testDescription()
 	{
-		String usage = booleanArgument("-b").usage();
+		Usage usage = booleanArgument("-b").usage();
 		assertThat(usage).contains("<boolean>: true or false");
 	}
 

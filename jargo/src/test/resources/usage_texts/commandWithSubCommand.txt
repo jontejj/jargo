@@ -5,6 +5,9 @@ main     A command with an argument and a subcommand that takes an argument as w
          Arguments:
            <character>    <character>: any unicode character [Required]
           one_arg         Arguments:
-                            <integer>    <integer>: -2,147,483,648 to 2,147,483,647 [Required]
+                            <integer>          <integer>: -2,147,483,648 to 2,147,483,647 [Required]
+                           --bool <boolean>    <boolean>: true or false
+                                               Default: false
+                           cmd                 
                            
           

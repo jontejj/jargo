@@ -11,12 +11,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.stringparsers.custom;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.stringparsers.custom.DateTimeParser.dateArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.util.Set;
@@ -25,6 +26,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.Usage;
 
 public class RollYourOwnStringParserTest
 {
@@ -48,7 +50,7 @@ public class RollYourOwnStringParserTest
 	{
 		assertThat(dateArgument("--start").parse("--start", "2011-03-30")).isEqualTo(new DateTime("2011-03-30"));
 
-		String usage = dateArgument("--start").usage();
+		Usage usage = dateArgument("--start").usage();
 		assertThat(usage).isEqualTo(expected("dateTime"));
 	}
 }
