@@ -159,7 +159,7 @@ public final class ParsedArguments
 			{
 				for(String name : argument.names())
 				{
-					if(argument.separator().equals(ArgumentBuilder.DEFAULT_SEPARATOR))
+					if(argument.separator().equals(ArgumentBuilder.DEFAULT_SEPARATOR) || argument.isPropertyMap())
 					{
 						validArguments.add(name);
 					}

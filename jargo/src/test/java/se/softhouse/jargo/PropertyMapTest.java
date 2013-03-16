@@ -366,4 +366,18 @@ public class PropertyMapTest
 		Usage usage = integerArgument("-D").asPropertyMap().defaultValueDescriber(withConstantString("a map")).usage();
 		assertThat(usage).contains("Default: a map");
 	}
+
+	@Test
+	public void testThatSeparatorIsNotInSuggestions() throws Exception
+	{
+		try
+		{
+			integerArgument("-n").asPropertyMap().parse("-a");
+			fail("-a should be suggested to -n");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-a", "-n"));
+		}
+	}
 }

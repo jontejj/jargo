@@ -64,6 +64,7 @@ public final class Argument<T>
 	private final Optional<Locale> localeOveride;
 	private final boolean required;
 	private final boolean ignoreCase;
+	private final boolean isAllowedToRepeat;
 
 	@Nonnull private final InternalStringParser<T> parser;
 	@Nonnull private final Supplier<? extends T> defaultValue;
@@ -73,9 +74,6 @@ public final class Argument<T>
 	// Internal bookkeeping
 	@Nonnull private final Function<T, T> finalizer;
 	private final ParameterArity parameterArity;
-
-	// TODO: these should be queried on the parser instead
-	private final boolean isAllowedToRepeat;
 	private final boolean isPropertyMap;
 
 	/**

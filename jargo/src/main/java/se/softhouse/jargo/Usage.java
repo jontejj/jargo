@@ -76,7 +76,6 @@ public final class Usage
 
 	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program)
 	{
-		// TODO: don't do any of this in the constructor
 		Collection<Argument<?>> visibleArguments = filter(arguments, IS_VISIBLE);
 		this.locale = locale;
 		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));

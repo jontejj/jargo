@@ -82,8 +82,6 @@ final class CommandLineParserInstance
 	 */
 	@Nonnull private final SpecialArguments specialArguments;
 
-	// TODO: this could be dynamically gathered as a view of indexedArguments, namedArguments and
-	// specialArguments, worth it?
 	@Nonnull private final Set<Argument<?>> allArguments;
 
 	/**
