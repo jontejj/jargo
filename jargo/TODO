@@ -1,5 +1,3 @@
-BasicArgumentBuilder
-Document Locale usage
 Introduce companion library with DateParser etc in
 Usage: sort with collator?
     Collator collator = Collator.getInstance(locale);
@@ -19,8 +17,8 @@ CommandLineParser#interactiveMode() - For failed arguments offer an option to co
 
 ArgumentFactory#helpArgument() - "-h", "--help" print usage, alternatively take an argument/command and describe only that
 
-DefaultArgumentBuilder<T> ArgumentFactory#withFunction(Function<String, T> stringParser)
-    How to require a choice between required() and defaultValue()?
+DefaultArgumentBuilder<T> Arguments#withFunction(Function<String, T> stringParser)
+    How to require a choice between required() and defaultValue(), meta description?
 
 ICommand, interface version of Command that's simpler and doesn't support arguments
    Issues: the name isn't very clear and will people confuse it with Command?
@@ -42,13 +40,7 @@ ArgumentBuilder#transformWith(Function<F, T> function)
         reusable in other scenarios as well, i.e convert this list of integers to Port objects
         How should limiters be called? If they are called before function.apply(), what if it's modifiable and the limiter may change the value?
 
-
-ArgumentBuilder#defaultValue(DefaultProvider#getFrom(ParsedArguments arguments))
-        quite verbose client code, consider scrapping this one
 ArgumentException#getLocalizedMessage(Locale locale)
 
 CommandLineParserInstance#getDefinitionForCurrentArgument - if one argument can be singled out choose it,
         for instance git upd for git update as no other command starts with upd, think about command arguments: git upd --ind, should --index be assumed
-
-CommandLineParserInstance#guessAndSuggestIfCloseMatch - how should this work for arguments Command#Command(Argument<?>...)?
-        right now only top-level misspelled arguments gets suggestions

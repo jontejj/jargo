@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import java.util.Locale;
@@ -83,7 +83,7 @@ public interface StringParser<T>
 	 * Parses the given {@link String} into the type {@code T}
 	 * 
 	 * @param argument the string as given from the command line
-	 * @param locale the locale to parse strings with, may matter when parsing numbers, dates et.c
+	 * @param locale the locale to parse strings with, may matter when parsing numbers, dates etc
 	 * @return the parsed value
 	 * @throws ArgumentException if the string isn't valid according to
 	 *             {@link #descriptionOfValidValues(Locale)}

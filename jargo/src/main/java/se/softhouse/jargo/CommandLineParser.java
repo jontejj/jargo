@@ -320,7 +320,7 @@ public final class CommandLineParser
 
 	CommandLineParser(Iterable<Argument<?>> argumentDefinitions)
 	{
-		this.argumentDefinitions = Lists.newCopyOnWriteArrayList(argumentDefinitions);
+		this.argumentDefinitions = Lists.newArrayList(argumentDefinitions);
 		this.cachedParser = Atomics.newReference(new CommandLineParserInstance(this.argumentDefinitions, programInformation()));
 	}
 

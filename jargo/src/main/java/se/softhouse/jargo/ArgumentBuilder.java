@@ -1194,14 +1194,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			return new KeyValueParser<K, V>(keyParser, valueBuilder.internalParser(), valueBuilder.limiter, defaultValueSupplier());
 		}
 
-		// TODO: fix unchecked warning
+		// A Describer<? super V> is also a describer for a V
 		@SuppressWarnings("unchecked")
 		@Override
 		Describer<? super Map<K, V>> defaultValueDescriber()
 		{
-			Describer<? super Map<K, V>> hardCodedDescriber = super.defaultValueDescriber();
-			if(hardCodedDescriber != null)
-				return hardCodedDescriber;
+			Describer<? super Map<K, V>> overriddenDescriber = super.defaultValueDescriber();
+			if(overriddenDescriber != null)
+				return overriddenDescriber;
 
 			Describer<? super V> valueDescriber = valueBuilder.defaultValueDescriber();
 			if(valueDescriber != null)

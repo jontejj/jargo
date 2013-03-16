@@ -59,7 +59,6 @@ import se.softhouse.jargo.utils.ExpectedTexts;
 
 import com.google.common.base.Strings;
 
-//TODO: run all tests in parallel
 public class ConcurrencyTest
 {
 	final Argument<Boolean> enableLoggingArgument = optionArgument("-l", "--enable-logging").description("Output debug information to standard out")

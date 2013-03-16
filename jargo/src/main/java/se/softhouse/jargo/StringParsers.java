@@ -464,7 +464,8 @@ public final class StringParsers
 	 * 
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.<br>
 	 * <b>Note:</b>The parser will pass the {@link Locale#getDefault()} to
-	 * {@link StringParser#parse(String, Locale) parse}.
+	 * {@link StringParser#parse(String, Locale) parse}. Use
+	 * {@link StringParsers#asFunction(StringParser, Locale)} to specify a specific {@link Locale}
 	 * 
 	 * @param parser the parser to expose as a {@link Function}
 	 * @return {@code parser} exposed in a {@link Function} that throws
@@ -475,15 +476,26 @@ public final class StringParsers
 	@Beta
 	public static <T> Function<String, T> asFunction(final StringParser<T> parser)
 	{
+		return asFunction(parser, Locale.getDefault());
+	}
+
+	/**
+	 * {@link Locale} version of {@link #asFunction(StringParser)}
+	 */
+	@Nonnull
+	@CheckReturnValue
+	@Beta
+	public static <T> Function<String, T> asFunction(final StringParser<T> parser, final Locale localeToUse)
+	{
 		checkNotNull(parser);
+		checkNotNull(localeToUse);
 		return new Function<String, T>(){
 			@Override
 			public T apply(@Nonnull String input)
 			{
 				try
 				{
-					// TODO: add another method that takes a chosen locale
-					return parser.parse(input, Locale.getDefault());
+					return parser.parse(input, localeToUse);
 				}
 				catch(final ArgumentException e)
 				{
