@@ -60,7 +60,7 @@ import com.google.common.collect.ImmutableList;
  * <code class="language-java">
  * public class BuildCommand extends Command
  * {
- *   private static final Argument&lt;File&gt; PATH = fileArgument().description("the directory to build").build();
+ *   private static final Argument&lt;File&gt; PATH = Arguments.fileArgument().description("the directory to build").build();
  * 
  *   public BuildCommand()
  *   {

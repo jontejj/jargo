@@ -11,19 +11,17 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
-import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.junit.Test;
-
-import se.softhouse.common.testlib.Serializer;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;

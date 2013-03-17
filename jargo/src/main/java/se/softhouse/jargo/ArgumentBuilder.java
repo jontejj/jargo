@@ -710,7 +710,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * @param copy the ArgumentBuilder to copy from
 	 */
 	@OverridingMethodsMustInvokeSuper
-	protected void copy(final ArgumentBuilder<?, ?> copy)
+	void copy(final ArgumentBuilder<?, ?> copy)
 	{
 		this.names = copy.names;
 		this.description = copy.description;

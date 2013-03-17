@@ -14,14 +14,12 @@
  */
 package se.softhouse.common.testlib;
 
-import static junit.framework.Assert.fail;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
-
-import se.softhouse.common.testlib.EnumTester;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
