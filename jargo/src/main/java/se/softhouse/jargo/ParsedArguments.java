@@ -21,7 +21,7 @@ import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Maps.newLinkedHashMap;
-import static se.softhouse.jargo.Argument.ArgumentPredicates.IS_REQUIRED;
+import static se.softhouse.jargo.Argument.IS_REQUIRED;
 
 import java.util.Collection;
 import java.util.Locale;

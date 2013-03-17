@@ -346,39 +346,35 @@ public final class Argument<T>
 		AT_LEAST_ONE_ARGUMENT
 	}
 
-	enum ArgumentPredicates implements Predicate<Argument<?>>
-	{
-		IS_VISIBLE
+	public static Predicate<Argument<?>> IS_INDEXED = new Predicate<Argument<?>>(){
+		@Override
+		public boolean apply(Argument<?> input)
 		{
-			@Override
-			public boolean apply(@Nonnull Argument<?> input)
-			{
-				return !input.hideFromUsage;
-			}
-		},
-		IS_INDEXED
+			return input.isIndexed();
+		}
+	};
+
+	public static Predicate<Argument<?>> IS_REQUIRED = new Predicate<Argument<?>>(){
+		@Override
+		public boolean apply(Argument<?> input)
 		{
-			@Override
-			public boolean apply(@Nonnull Argument<?> input)
-			{
-				return input.isIndexed();
-			}
-		},
-		IS_REQUIRED
+			return input.isRequired();
+		}
+	};
+
+	public static Predicate<Argument<?>> IS_VISIBLE = new Predicate<Argument<?>>(){
+		@Override
+		public boolean apply(Argument<?> input)
 		{
-			@Override
-			public boolean apply(@Nonnull Argument<?> input)
-			{
-				return input.isRequired();
-			}
-		},
-		IS_OF_VARIABLE_ARITY
+			return !input.hideFromUsage;
+		}
+	};
+
+	public static Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = new Predicate<Argument<?>>(){
+		@Override
+		public boolean apply(Argument<?> input)
 		{
-			@Override
-			public boolean apply(@Nonnull Argument<?> input)
-			{
-				return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
-			}
-		};
-	}
+			return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
+		}
+	};
 }
