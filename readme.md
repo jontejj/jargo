@@ -1,7 +1,7 @@
 # Jargo
 A tool to ease the handling of program arguments/options
 
-# Most basic usage:
+# Most basic usage
     String[] argv = {"--enable-logging", "--port", "8090", "Hello World!"};
 
     Argument<Boolean> enableLogging = Arguments.optionArgument("-l", "--enable-logging")
@@ -23,29 +23,27 @@ A tool to ease the handling of program arguments/options
 For more examples see javadoc on CommandLineParser and ArgumentBuilder.
 
 # Rationale
-for writing yet another argument parsing library (see [Is there a good command line argument parser for Java?](http://stackoverflow.com/a/7829772) for others):
+ for writing yet another argument parsing library (see [Is there a good command line argument parser for Java?](http://stackoverflow.com/a/7829772) for others)
 
 1. Because type-safety, immutability and readability matters
 
 2. Compared to annotation based solutions (like [JCommander](http://www.jcommander.org)) jargo can be updated at runtime to support more arguments
 
-3. The generics on Argument gives you compile-time errors when switching types. For example:
+3. The generics on Argument gives you compile-time errors when switching types
 
-    In JCommander:
-	    Parameter(names = "-file", converter = FileConverter.class)
-	    File file; //Oops, changing this to int would not work very well with FileConverter
+    In JCommander:  
+    @Parameter(names = "-file", converter = FileConverter.class)  
+    File file; //Oops, changing this to int would not work very well with FileConverter
 
-    In jargo:
-        Arguments.fileArgument("-file").parse("-file", "filename.txt").createNewFile();
+    In jargo:  
+    Arguments.fileArgument("-file").parse("-file", "filename.txt").createNewFile();
 
     if fileArgument would change to being integerArgument, trying to call createNewFile() would generate a compile-time error
 
-4. Because JCommander doesn't support repeated arguments other than List&lt;String&gt;.
+4. Because JCommander doesn't support repeated arguments other than List&lt;String&gt;
 
-        String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};<br/>
-        Argument<List<List<Integer>>> numbers = Arguments.integerArgument("--numbers")
-                                                                            .arity(2)
-                                                                            .repeated().build();
+    String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};  
+    Argument&lt;List&lt;List&lt;Integer&gt;&gt;&gt; numbers = Arguments.integerArgument("--numbers").arity(2).repeated().build();
 
 5. Because I love [Guava](https://code.google.com/p/guava-libraries/) and wanted an argument parsing
     library well integrated with it (more to come in this department)
