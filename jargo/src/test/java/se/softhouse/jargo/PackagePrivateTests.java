@@ -15,8 +15,8 @@
 package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
-import static se.softhouse.comeon.testlib.UtilityClassTester.testUtilityClassDesign;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesign;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.ProgramInformation.withProgramName;
 import static se.softhouse.jargo.StringParsers.optionParser;
@@ -27,11 +27,11 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.numbers.NumberType;
-import se.softhouse.comeon.strings.Describers;
-import se.softhouse.comeon.strings.Descriptions;
-import se.softhouse.comeon.strings.StringsUtil;
-import se.softhouse.comeon.testlib.EnumTester;
+import se.softhouse.common.numbers.NumberType;
+import se.softhouse.common.strings.Describers;
+import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.StringsUtil;
+import se.softhouse.common.testlib.EnumTester;
 import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.CommandLineParserInstance.ParserCache;

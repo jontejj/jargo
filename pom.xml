@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>se.softhouse</groupId>
-	<artifactId>dandelion</artifactId>
-	<description>All projects aggregrated</description>
+	<artifactId>jargo-parent</artifactId>
+	<description>Jargo maven parent</description>
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
 	<url>http://softhousegarden.appspot.com/</url>
@@ -12,8 +12,7 @@
 	</properties>
 	<scm><connection>scm:git:file:///Users/jonatanjoensson/maven_projects/j4j.se/</connection></scm>
 	<modules>
-		<module>comeon</module>
+		<module>common-test</module>
 		<module>jargo</module>
-		<module>comeon-testlib</module>
 	</modules>
 </project>

@@ -24,7 +24,7 @@ import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;

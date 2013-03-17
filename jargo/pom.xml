@@ -5,7 +5,7 @@
 	<artifactId>jargo</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
-	<name>jargo - an argument parser for java</name>
+	<name>jargo - an argument and options parser for java</name>
 	<url>http://softhousegarden.appspot.com/</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,14 +86,14 @@
 				<version>0.29</version>
 				<configuration>
 					<targetClasses>
-						<param>se.softhouse.jargo.*</param>
+						<param>se.softhouse.*</param>
 					</targetClasses>
 					<targetTests>
-						<param>se.softhouse.jargo.*</param>
+						<param>se.softhouse.*</param>
 					</targetTests>
 					<timeoutConstant>10000</timeoutConstant>
 					<avoidCallsTo>
-						<param>se.softhouse.comeon.strings.StringBuilders</param>
+						<param>se.softhouse.common.strings.StringBuilders</param>
 					</avoidCallsTo>
 					<mutators>
 						<mutator>DEFAULTS</mutator>
@@ -115,12 +115,6 @@
 			<version>1.3.9</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Softhouse libs -->
-		<dependency>
-			<groupId>se.softhouse.comeon</groupId>
-			<artifactId>comeon</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 		<!-- Testing libs -->
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
@@ -132,6 +126,12 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-testlib</artifactId>
 			<version>13.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.caliper</groupId>
+			<artifactId>caliper</artifactId>
+			<version>0.5-rc1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -153,8 +153,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>se.softhouse.comeon</groupId>
-			<artifactId>test-lib</artifactId>
+			<groupId>se.softhouse</groupId>
+			<artifactId>common-test</artifactId>
 			<version>0.0.1</version>
 			<scope>test</scope>
 		</dependency>

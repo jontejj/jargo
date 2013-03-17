@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.testlib.Explanation;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**

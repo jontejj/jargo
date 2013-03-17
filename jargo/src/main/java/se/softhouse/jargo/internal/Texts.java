@@ -14,8 +14,8 @@
  */
 package se.softhouse.jargo.internal;
 
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
-import static se.softhouse.comeon.strings.StringsUtil.TAB;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;

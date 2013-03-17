@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static java.util.Collections.emptyList;
-import static se.softhouse.comeon.strings.Descriptions.format;
+import static se.softhouse.common.strings.Descriptions.format;
 import static se.softhouse.jargo.ArgumentExceptions.asUnchecked;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingNthParameter;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingParameter;
@@ -40,8 +40,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.comeon.numbers.NumberType;
-import se.softhouse.comeon.strings.StringBuilders;
+import se.softhouse.common.numbers.NumberType;
+import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -911,7 +911,7 @@ public final class StringParsers
 			}
 			catch(IllegalArgumentException e)
 			{
-				throw wrapException(e).originatedFrom(argumentSettings);
+				throw wrapException(e);
 			}
 
 			map.put(parsedKey, parsedValue);

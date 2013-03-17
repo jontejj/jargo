@@ -26,7 +26,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
-import se.softhouse.comeon.strings.Describers;
+import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.CommandLineParser;

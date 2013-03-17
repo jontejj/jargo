@@ -15,15 +15,15 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static se.softhouse.comeon.strings.Descriptions.cache;
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.Descriptions.cache;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.comeon.classes.Classes;
-import se.softhouse.comeon.strings.Description;
-import se.softhouse.comeon.strings.Descriptions;
+import se.softhouse.common.classes.Classes;
+import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Descriptions;
 
 /**
  * Information about a program, printed in {@link Usage} before any {@link Argument}s are described.

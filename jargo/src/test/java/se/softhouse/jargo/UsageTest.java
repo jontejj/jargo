@@ -16,7 +16,7 @@ package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
@@ -25,8 +25,8 @@ import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 import org.fest.assertions.Fail;
 import org.junit.Test;
 
-import se.softhouse.comeon.classes.Classes;
-import se.softhouse.comeon.strings.Description;
+import se.softhouse.common.classes.Classes;
+import se.softhouse.common.strings.Description;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;

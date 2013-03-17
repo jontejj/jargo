@@ -22,9 +22,9 @@ import static se.softhouse.jargo.Arguments.stringArgument;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.strings.Description;
-import se.softhouse.comeon.strings.Descriptions;
-import se.softhouse.comeon.testlib.Serializer;
+import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.testlib.Serializer;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ArgumentExceptions;

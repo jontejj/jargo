@@ -38,8 +38,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.strings.Describer;
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.strings.Describer;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
 import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
