@@ -22,6 +22,21 @@ A tool to ease the handling of program arguments/options
 
 For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/jargo/)
 
+# Dependency
+#### Jargo
+     <dependency>
+       <groupId>se.softhouse</groupId>
+       <artifactId>jargo</artifactId>
+       <version>0.0.1</version>
+     </dependency>
+  
+#### Common-test (optional)
+     <dependency>
+      <groupId>se.softhouse</groupId>
+      <artifactId>common-test</artifactId>
+      <version>0.0.1</version>
+  </dependency>
+
 # Rationale
  for writing yet another argument parsing library (see [Is there a good command line argument parser for Java?](http://stackoverflow.com/a/7829772) for others)
 
