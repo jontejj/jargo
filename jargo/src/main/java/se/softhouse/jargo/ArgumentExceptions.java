@@ -15,7 +15,7 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static se.softhouse.comeon.strings.StringsUtil.numberToPositionalString;
+import static se.softhouse.common.strings.StringsUtil.numberToPositionalString;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -24,9 +24,9 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import se.softhouse.comeon.strings.Description;
-import se.softhouse.comeon.strings.Descriptions;
-import se.softhouse.comeon.strings.Descriptions.SerializableDescription;
+import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Descriptions.SerializableDescription;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 

@@ -16,8 +16,8 @@ package se.softhouse.jargo;
 
 import static java.util.Locale.US;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.comeon.testlib.Locales.SWEDISH;
-import static se.softhouse.comeon.testlib.Locales.TURKISH;
+import static se.softhouse.common.testlib.Locales.SWEDISH;
+import static se.softhouse.common.testlib.Locales.TURKISH;
 import static se.softhouse.jargo.Arguments.bigDecimalArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.StringParsers.integerParser;
@@ -30,7 +30,7 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Locales;
+import se.softhouse.common.testlib.Locales;
 
 /**
  * Tests for {@link CommandLineParser#locale(Locale)} and {@link ArgumentBuilder#locale(Locale)}
@@ -110,11 +110,13 @@ public class LocaleTest
 	@Test
 	public void testThatLocaleOverrideForSpecificArgumentDoesNotAffectOthers() throws Exception
 	{
-		Argument<BigDecimal> swedishNumber = bigDecimalArgument().locale(SWEDISH).build();
-		Argument<BigDecimal> usNumber = bigDecimalArgument().build();
-		ParsedArguments result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(Locale.US).parse("1,000", "1,000");
-		assertThat(result.get(swedishNumber)).isEqualTo(new BigDecimal("1.000"));
+		Argument<BigDecimal> usNumber = bigDecimalArgument().locale(Locale.US).build();
+		Argument<BigDecimal> swedishNumber = bigDecimalArgument().build();
+
+		ParsedArguments result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(SWEDISH).parse("1,000", "1,000");
+
 		assertThat(result.get(usNumber)).isEqualTo(BigDecimal.valueOf(1000));
+		assertThat(result.get(swedishNumber)).isEqualTo(new BigDecimal("1.000"));
 	}
 
 	@AfterClass

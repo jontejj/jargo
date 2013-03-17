@@ -20,8 +20,8 @@ import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Ordering.usingToString;
 import static java.lang.Math.max;
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
-import static se.softhouse.comeon.strings.StringsUtil.spaces;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.spaces;
 import static se.softhouse.jargo.Argument.ArgumentPredicates.IS_INDEXED;
 import static se.softhouse.jargo.Argument.ArgumentPredicates.IS_OF_VARIABLE_ARITY;
 import static se.softhouse.jargo.Argument.ArgumentPredicates.IS_VISIBLE;
@@ -33,7 +33,7 @@ import java.util.Locale;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import se.softhouse.comeon.strings.StringBuilders;
+import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
 import com.google.common.base.Joiner;

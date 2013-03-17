@@ -17,8 +17,8 @@ package se.softhouse.jargo.commands;
 import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
-import static se.softhouse.comeon.strings.StringsUtil.TAB;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.strings.Describers;
+import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;
 import se.softhouse.jargo.ArgumentException;
@@ -120,7 +120,7 @@ public class CommandTest
 		assertThat(commit.files).isEqualTo(emptyList());
 	}
 
-	static final Argument<?> COMMIT = command(new CommitCommand(new Repository())).build();
+	static final Argument<ParsedArguments> COMMIT = command(new CommitCommand(new Repository())).build();
 	static final Argument<?> LOG = command(new LogCommand(new Repository())).build();
 
 	@Test
@@ -418,6 +418,13 @@ public class CommandTest
 		assertThat(executedCommands).containsExactly(ProfilingSubcommand.subCommand, profilingSubcommand);
 
 		assertThat(parser.usage()).isEqualTo(expected("commandWithSubCommand"));
+	}
+
+	@Test
+	public void testThatCommandArgumentsCanBeFetchedAfterExecution() throws Exception
+	{
+		ParsedArguments commitArguments = COMMIT.parse("commit", "--author=joj");
+		assertThat(commitArguments.get(CommitCommand.AUTHOR)).isEqualTo("joj");
 	}
 
 	@Test

@@ -15,15 +15,15 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static se.softhouse.comeon.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 
 import java.io.Serializable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import se.softhouse.comeon.strings.Description;
-import se.softhouse.comeon.strings.Descriptions;
-import se.softhouse.comeon.strings.Descriptions.SerializableDescription;
+import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Descriptions.SerializableDescription;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
@@ -136,14 +136,7 @@ public abstract class ArgumentException extends Exception
 
 	private String usageReference()
 	{
-		if(hasUsageReference())
-			return String.format(UsageTexts.USAGE_REFERENCE, usageReferenceName);
-		return "";
-	}
-
-	private boolean hasUsageReference()
-	{
-		return usageReferenceName != null;
+		return String.format(UsageTexts.USAGE_REFERENCE, usageReferenceName);
 	}
 
 	/**

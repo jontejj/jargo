@@ -33,8 +33,8 @@
  *
  * <h2>Localization</h2>
  * By default, {@link se.softhouse.jargo.Arguments#integerArgument(String...)}, {@link se.softhouse.jargo.Arguments#longArgument(String...)} and so on,
- * formats numbers with {@link se.softhouse.comeon.strings.Describers#numberDescriber()} in a {@link java.util.Locale} sensitive way. If this isn't what you want you can override this with
- * {@link se.softhouse.jargo.ArgumentBuilder#defaultValueDescriber(se.softhouse.comeon.strings.Describer) defaultValueDescriber(Describers.toStringDescriber()}.
+ * formats numbers with {@link se.softhouse.common.strings.Describers#numberDescriber()} in a {@link java.util.Locale} sensitive way. If this isn't what you want you can override this with
+ * {@link se.softhouse.jargo.ArgumentBuilder#defaultValueDescriber(se.softhouse.common.strings.Describer) defaultValueDescriber(Describers.toStringDescriber()}.
  *
  * <h2>API compatibility notes</h2>
  * Public methods that have Guava types in their method signature such as:

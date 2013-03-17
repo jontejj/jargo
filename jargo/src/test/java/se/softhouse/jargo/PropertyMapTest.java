@@ -19,7 +19,7 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static se.softhouse.comeon.strings.Describers.withConstantString;
+import static se.softhouse.common.strings.Describers.withConstantString;
 import static se.softhouse.jargo.Arguments.byteArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
@@ -35,7 +35,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import se.softhouse.jargo.stringparsers.custom.LimitedKeyParser;

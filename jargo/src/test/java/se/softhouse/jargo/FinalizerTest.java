@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.functions.AddBar;
 import se.softhouse.jargo.functions.AddFoo;
 import se.softhouse.jargo.limiters.FooLimiter;

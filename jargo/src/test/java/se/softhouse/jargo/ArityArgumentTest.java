@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;

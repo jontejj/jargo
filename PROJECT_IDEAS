@@ -1,3 +1,0 @@
-RFC Downloader
-    Takes RFC numbers as arguments, downloads these rfcs, puts them in their own directories and then
-    it also downloads RFCs that they reference and puts them together with the origin RFC, recursively

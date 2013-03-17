@@ -21,7 +21,7 @@ import static se.softhouse.jargo.Arguments.optionArgument;
 
 import org.junit.Test;
 
-import se.softhouse.comeon.testlib.Explanation;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

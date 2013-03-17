@@ -16,7 +16,7 @@ package se.softhouse.jargo;
 
 import static com.google.common.base.Predicates.alwaysTrue;
 import static java.util.Arrays.asList;
-import static se.softhouse.comeon.strings.Descriptions.format;
+import static se.softhouse.common.strings.Descriptions.format;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
@@ -29,9 +29,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.comeon.guavaextensions.Suppliers2;
-import se.softhouse.comeon.strings.Describer;
-import se.softhouse.comeon.strings.Description;
+import se.softhouse.common.guavaextensions.Suppliers2;
+import se.softhouse.common.strings.Describer;
+import se.softhouse.common.strings.Description;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;

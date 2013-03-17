@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.commands;
 
 import static se.softhouse.jargo.Arguments.fileArgument;
@@ -32,7 +32,7 @@ public class CommitCommand extends Command
 	public final Repository repository;
 
 	private static final Argument<Boolean> AMEND = optionArgument("--amend").build();
-	private static final Argument<String> AUTHOR = stringArgument("--author").required().separator("=").build();
+	static final Argument<String> AUTHOR = stringArgument("--author").required().separator("=").build();
 	private static final Argument<List<File>> FILES = fileArgument().variableArity().build();
 
 	public CommitCommand(final Repository repo)

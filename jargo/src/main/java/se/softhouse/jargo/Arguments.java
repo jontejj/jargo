@@ -16,10 +16,10 @@ package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.asList;
-import static se.softhouse.comeon.strings.Describers.booleanAsEnabledDisabled;
-import static se.softhouse.comeon.strings.Describers.characterDescriber;
-import static se.softhouse.comeon.strings.Describers.fileDescriber;
-import static se.softhouse.comeon.strings.Describers.numberDescriber;
+import static se.softhouse.common.strings.Describers.booleanAsEnabledDisabled;
+import static se.softhouse.common.strings.Describers.characterDescriber;
+import static se.softhouse.common.strings.Describers.fileDescriber;
+import static se.softhouse.common.strings.Describers.numberDescriber;
 import static se.softhouse.jargo.StringParsers.bigDecimalParser;
 import static se.softhouse.jargo.StringParsers.bigIntegerParser;
 import static se.softhouse.jargo.StringParsers.booleanParser;
@@ -39,8 +39,8 @@ import java.math.BigInteger;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
-import se.softhouse.comeon.strings.Describer;
-import se.softhouse.comeon.strings.Describers;
+import se.softhouse.common.strings.Describer;
+import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;
 import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.ArgumentBuilder.OptionArgumentBuilder;

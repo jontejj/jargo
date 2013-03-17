@@ -11,11 +11,11 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.utils;
 
-import se.softhouse.comeon.classes.Classes;
-import se.softhouse.comeon.testlib.ResourceLoader;
+import se.softhouse.common.classes.Classes;
+import se.softhouse.common.testlib.ResourceLoader;
 
 public class ExpectedTexts
 {
@@ -26,7 +26,7 @@ public class ExpectedTexts
 	 */
 	public static String expected(String testName)
 	{
-		String expectedUsage = ResourceLoader.get("/usage_texts/" + testName + ".txt");
+		String expectedUsage = ResourceLoader.get("/jargo/usage_texts/" + testName + ".txt");
 
 		// Avoids having RemoteTestRunner or ForkedBooter in the .txt files. As the main class is
 		// fetched by ProgramInformation.AUTO by default this avoids test runner specific code
