@@ -20,7 +20,7 @@ A tool to ease the handling of program arguments/options
     System.out.println("Port: " + args.get(port));
     System.out.println("Greeting visitors with: " + args.get(greetingPhrase));
 
-For more examples see javadoc on CommandLineParser and ArgumentBuilder.
+For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/jargo/)
 
 # Rationale
  for writing yet another argument parsing library (see [Is there a good command line argument parser for Java?](http://stackoverflow.com/a/7829772) for others)

@@ -3,6 +3,16 @@ Usage: sort with collator?
     Collator collator = Collator.getInstance(locale);
     collator.getCollationKey(source)
     Collections.sort(aWords, collator);
+Deploy javadoc to gh-pages automatically when release is performed, execute:
+    git clone https://github.com/Softhouse/jargo.git jargo-gh-pages
+    cd jargo-gh-pages/
+    git checkout --orphan gh-pages
+    cp -r ../jargo/jargo/target/site/apidocs/ javadoc/jargo/
+    cp -r ../jargo/common-test/target/site/apidocs/ javadoc/common-test/
+    git add -u
+    git commit -m "Updated javadocs"
+    git push origin gh-pages
+
 Features:
 
 Usage#includeOneLinerInUsage() - Print one line with all options
