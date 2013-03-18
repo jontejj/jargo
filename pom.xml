@@ -40,7 +40,7 @@
 			<name>Jonatan Jönsson</name>
 			<email>jontejj@gmail.com</email>
 			<organization>Softhouse</organization>
-			<organizationUrl>http://www.softhouse.se</organizationUrl>
+			<organizationUrl>http://www.softhouse.se/en/</organizationUrl>
 			<roles>
 				<role>owner</role>
 				<role>developer</role>
@@ -71,7 +71,6 @@
 					<encoding>UTF-8</encoding>
 					<docencoding>UTF-8</docencoding>
 					<charset>UTF-8</charset>
-					<additionalparam>-XDignore.symbol.file</additionalparam>
 					<linksource>true</linksource>
 					<links>
 						<link>http://docs.guava-libraries.googlecode.com/git/javadoc/</link>
