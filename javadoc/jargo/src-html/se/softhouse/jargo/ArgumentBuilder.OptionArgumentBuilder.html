@@ -72,7 +72,7 @@
 <span class="sourceLineNo">064</span>import com.google.common.base.Predicates;<a name="line.64"></a>
 <span class="sourceLineNo">065</span>import com.google.common.base.Supplier;<a name="line.65"></a>
 <span class="sourceLineNo">066</span>import com.google.common.base.Suppliers;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>import com.google.common.collect.Ranges;<a name="line.67"></a>
+<span class="sourceLineNo">067</span>import com.google.common.collect.Range;<a name="line.67"></a>
 <span class="sourceLineNo">068</span><a name="line.68"></a>
 <span class="sourceLineNo">069</span>/**<a name="line.69"></a>
 <span class="sourceLineNo">070</span> * &lt;pre&gt;<a name="line.70"></a>
@@ -488,7 +488,7 @@
 <span class="sourceLineNo">480</span>         * Limits values parsed so that they conform to some specific rule.<a name="line.480"></a>
 <span class="sourceLineNo">481</span>         * Only values for which {@link Predicate#apply(Object)} returns true, will be accepted.<a name="line.481"></a>
 <span class="sourceLineNo">482</span>         * Other values will cause an {@link ArgumentException}.<a name="line.482"></a>
-<span class="sourceLineNo">483</span>         * For example {@link Ranges#closed(Comparable, Comparable)} only allows values within a range.<a name="line.483"></a>
+<span class="sourceLineNo">483</span>         * For example {@link Range#closed(Comparable, Comparable)} only allows values within a range.<a name="line.483"></a>
 <span class="sourceLineNo">484</span>         * <a name="line.484"></a>
 <span class="sourceLineNo">485</span>         * To override the default error message that is generated with {@link UserErrors#DISALLOWED_VALUE}<a name="line.485"></a>
 <span class="sourceLineNo">486</span>         * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail<a name="line.486"></a>
@@ -982,7 +982,7 @@
 <span class="sourceLineNo">974</span>                                defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));<a name="line.974"></a>
 <span class="sourceLineNo">975</span>                        }<a name="line.975"></a>
 <span class="sourceLineNo">976</span>                        // TODO: should meta description &lt;foo&gt; be expanded to &lt;foo&gt; &lt;foo&gt;?<a name="line.976"></a>
-<span class="sourceLineNo">977</span>                };<a name="line.977"></a>
+<span class="sourceLineNo">977</span>                }<a name="line.977"></a>
 <span class="sourceLineNo">978</span>        }<a name="line.978"></a>
 <span class="sourceLineNo">979</span><a name="line.979"></a>
 <span class="sourceLineNo">980</span>        /**<a name="line.980"></a>

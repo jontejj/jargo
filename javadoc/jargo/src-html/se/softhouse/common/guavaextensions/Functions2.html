@@ -256,7 +256,7 @@
 <span class="sourceLineNo">248</span>                private static final Function&lt;File, String&gt; INSTANCE = new FileToString();<a name="line.248"></a>
 <span class="sourceLineNo">249</span><a name="line.249"></a>
 <span class="sourceLineNo">250</span>                @Override<a name="line.250"></a>
-<span class="sourceLineNo">251</span>                public String apply(File input)<a name="line.251"></a>
+<span class="sourceLineNo">251</span>                public String apply(@Nonnull File input)<a name="line.251"></a>
 <span class="sourceLineNo">252</span>                {<a name="line.252"></a>
 <span class="sourceLineNo">253</span>                        if(input.isDirectory())<a name="line.253"></a>
 <span class="sourceLineNo">254</span>                                throw new IllegalArgumentException(input.getAbsolutePath() + " is a directory, not a file");<a name="line.254"></a>

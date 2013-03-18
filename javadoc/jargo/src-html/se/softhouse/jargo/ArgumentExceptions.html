@@ -144,7 +144,7 @@
 <span class="sourceLineNo">136</span>                 * For {@link Serializable}<a name="line.136"></a>
 <span class="sourceLineNo">137</span>                 */<a name="line.137"></a>
 <span class="sourceLineNo">138</span>                private static final long serialVersionUID = 1L;<a name="line.138"></a>
-<span class="sourceLineNo">139</span>        };<a name="line.139"></a>
+<span class="sourceLineNo">139</span>        }<a name="line.139"></a>
 <span class="sourceLineNo">140</span><a name="line.140"></a>
 <span class="sourceLineNo">141</span>        /**<a name="line.141"></a>
 <span class="sourceLineNo">142</span>         * @param cause the checked exception that will be used as the cause (and message) of the<a name="line.142"></a>
@@ -176,7 +176,7 @@
 <span class="sourceLineNo">168</span>                 * For {@link Serializable}<a name="line.168"></a>
 <span class="sourceLineNo">169</span>                 */<a name="line.169"></a>
 <span class="sourceLineNo">170</span>                private static final long serialVersionUID = 1L;<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        };<a name="line.171"></a>
+<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
 <span class="sourceLineNo">172</span><a name="line.172"></a>
 <span class="sourceLineNo">173</span>        /**<a name="line.173"></a>
 <span class="sourceLineNo">174</span>         * Thrown when {@link ArgumentBuilder#required()} has been specified but the<a name="line.174"></a>
@@ -281,15 +281,15 @@
 <span class="sourceLineNo">273</span>         * "-p 8080" is given&lt;br&gt;<a name="line.273"></a>
 <span class="sourceLineNo">274</span>         * Prints "Missing second &lt;Integer&gt; parameter for -p"<a name="line.274"></a>
 <span class="sourceLineNo">275</span>         * <a name="line.275"></a>
-<span class="sourceLineNo">276</span>         * @param parameterDescription the &lt;Integer&gt; argument in this case<a name="line.276"></a>
-<span class="sourceLineNo">277</span>         * @param missingIndex 1 in this case<a name="line.277"></a>
-<span class="sourceLineNo">278</span>         */<a name="line.278"></a>
-<span class="sourceLineNo">279</span>        @CheckReturnValue<a name="line.279"></a>
-<span class="sourceLineNo">280</span>        @Nonnull<a name="line.280"></a>
-<span class="sourceLineNo">281</span>        static ArgumentException forMissingNthParameter(String parameterDescription, int missingIndex)<a name="line.281"></a>
-<span class="sourceLineNo">282</span>        {<a name="line.282"></a>
-<span class="sourceLineNo">283</span>                checkNotNull(parameterDescription);<a name="line.283"></a>
-<span class="sourceLineNo">284</span>                return new MissingNthParameterException(parameterDescription, missingIndex);<a name="line.284"></a>
+<span class="sourceLineNo">276</span>         * @param cause with a {@link MissingParameterException#parameterDescription()<a name="line.276"></a>
+<span class="sourceLineNo">277</span>         *            parameterDescription} such as "&amp;lt;Integer&amp;gt;" in this case<a name="line.277"></a>
+<span class="sourceLineNo">278</span>         * @param missingIndex 1 in this case<a name="line.278"></a>
+<span class="sourceLineNo">279</span>         */<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        @CheckReturnValue<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        @Nonnull<a name="line.281"></a>
+<span class="sourceLineNo">282</span>        static ArgumentException forMissingNthParameter(MissingParameterException cause, int missingIndex)<a name="line.282"></a>
+<span class="sourceLineNo">283</span>        {<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                return new MissingNthParameterException(cause.parameterDescription(), missingIndex).andCause(cause);<a name="line.284"></a>
 <span class="sourceLineNo">285</span>        }<a name="line.285"></a>
 <span class="sourceLineNo">286</span><a name="line.286"></a>
 <span class="sourceLineNo">287</span>        private static final class MissingNthParameterException extends ArgumentException<a name="line.287"></a>
