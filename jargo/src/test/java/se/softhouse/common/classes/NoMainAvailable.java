@@ -14,7 +14,6 @@
  */
 package se.softhouse.common.classes;
 
-
 public class NoMainAvailable
 {
 	public static void main(String[] args)
@@ -26,7 +25,14 @@ public class NoMainAvailable
 			{
 				while(mainThread.isAlive())
 				{
-					;
+					try
+					{
+						Thread.sleep(50);
+					}
+					catch(InterruptedException e)
+					{
+						Thread.currentThread().interrupt();
+					}
 				}
 				try
 				{

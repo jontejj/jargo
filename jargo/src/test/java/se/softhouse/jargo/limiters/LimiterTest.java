@@ -32,7 +32,7 @@ import se.softhouse.jargo.stringparsers.custom.Port;
 import se.softhouse.jargo.stringparsers.custom.PortParser;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -44,7 +44,7 @@ public class LimiterTest
 	@Test
 	public void testRangeLimiter() throws ArgumentException
 	{
-		Argument<Integer> limitedNumber = integerArgument().limitTo(Ranges.closed(0, 4)).build();
+		Argument<Integer> limitedNumber = integerArgument().limitTo(Range.closed(0, 4)).build();
 		try
 		{
 			limitedNumber.parse("5");
@@ -56,7 +56,7 @@ public class LimiterTest
 		}
 		assertThat(limitedNumber.parse("4")).isEqualTo(4);
 
-		assertThat(integerArgument().limitTo(Ranges.closed(1, 3)).defaultValue(1).parse("2")).isEqualTo(2);
+		assertThat(integerArgument().limitTo(Range.closed(1, 3)).defaultValue(1).parse("2")).isEqualTo(2);
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class LimiterTest
 	public void testThatRangeLimiterDoesNotCallToStringOnComparedObjectsInVain() throws ArgumentException
 	{
 		Port min = new Port(1);
-		Argument<Port> portArgument = withParser(new PortParser()).limitTo(Ranges.closed(min, Port.MAX)).build();
+		Argument<Port> portArgument = withParser(new PortParser()).limitTo(Range.closed(min, Port.MAX)).build();
 		try
 		{
 			portArgument.parse("-1");

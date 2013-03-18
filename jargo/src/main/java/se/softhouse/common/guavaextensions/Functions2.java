@@ -248,7 +248,7 @@ public final class Functions2
 		private static final Function<File, String> INSTANCE = new FileToString();
 
 		@Override
-		public String apply(File input)
+		public String apply(@Nonnull File input)
 		{
 			if(input.isDirectory())
 				throw new IllegalArgumentException(input.getAbsolutePath() + " is a directory, not a file");

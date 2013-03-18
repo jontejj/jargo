@@ -14,6 +14,9 @@
  */
 package se.softhouse.common.strings;
 
+/**
+ * Utilities for working with {@link StringBuilder}s
+ */
 public final class StringBuilders
 {
 	private StringBuilders()
@@ -23,6 +26,14 @@ public final class StringBuilders
 	// TODO: write an API for reusing StringBuilders, a ThreadLocal<StringBuilder> perhaps? callers
 	// must free the StringBuilder when they're done
 
+	/**
+	 * <pre>
+	 * Creates a {@link StringBuilder} with a pre-allocated array of {@code expectedSize}.
+	 * 
+	 * This method is suitable to exclude when running mutation tests as it's rather hard to test
+	 * the calculation of expectedSize in unit tests without it affecting run time to much.
+	 * </pre>
+	 */
 	public static StringBuilder withExpectedSize(int expectedSize)
 	{
 		return new StringBuilder(expectedSize);

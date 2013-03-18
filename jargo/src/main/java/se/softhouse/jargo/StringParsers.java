@@ -718,7 +718,7 @@ public final class StringParsers
 				catch(MissingParameterException exception)
 				{
 					// Wrap exception to more clearly specify which parameter that is missing
-					throw forMissingNthParameter(exception.parameterDescription(), i).andCause(exception);
+					throw forMissingNthParameter(exception, i);
 				}
 			}
 			return parsedArguments;

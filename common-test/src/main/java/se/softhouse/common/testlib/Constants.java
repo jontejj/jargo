@@ -11,16 +11,27 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+/**
+ * Useful constants to use in tests
+ */
 public final class Constants
 {
 	private Constants()
 	{
 	}
 
-	public static final long ONE_SECOND_IN_MILLIS = SECONDS.toMillis(1);
+	/**
+	 * One second in milliseconds
+	 */
+	public static final long ONE_SECOND = SECONDS.toMillis(1);
+
+	/**
+	 * One minute in milliseconds
+	 */
+	public static final long ONE_MINUTE = SECONDS.toMillis(60);
 }

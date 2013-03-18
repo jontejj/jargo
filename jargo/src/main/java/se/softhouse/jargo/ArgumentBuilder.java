@@ -64,7 +64,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 /**
  * <pre>
@@ -480,7 +480,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Limits values parsed so that they conform to some specific rule.
 	 * Only values for which {@link Predicate#apply(Object)} returns true, will be accepted.
 	 * Other values will cause an {@link ArgumentException}.
-	 * For example {@link Ranges#closed(Comparable, Comparable)} only allows values within a range.
+	 * For example {@link Range#closed(Comparable, Comparable)} only allows values within a range.
 	 * 
 	 * To override the default error message that is generated with {@link UserErrors#DISALLOWED_VALUE}
 	 * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail
@@ -974,7 +974,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 				defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));
 			}
 			// TODO: should meta description <foo> be expanded to <foo> <foo>?
-		};
+		}
 	}
 
 	/**

@@ -52,7 +52,7 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -106,7 +106,7 @@ public class DefaultValueTest
 	public void testThatDefaultValueSupplierIsNotUsedWhenArgumentIsGiven() throws ArgumentException
 	{
 		ProfilingSupplier profiler = new ProfilingSupplier();
-		int one = integerArgument().defaultValueSupplier(profiler).limitTo(Ranges.closed(0, 10)).parse("1");
+		int one = integerArgument().defaultValueSupplier(profiler).limitTo(Range.closed(0, 10)).parse("1");
 		assertThat(one).isEqualTo(1);
 		assertThat(profiler.callsToGet).isZero();
 	}

@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.strings;
 
 import static java.util.Arrays.asList;
@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.common.testlib.Explanation;
 import se.softhouse.common.testlib.UtilityClassTester;
 
@@ -131,6 +130,19 @@ public class StringsUtilTest
 	public void testThatNegativeNumberCantBePositional()
 	{
 		numberToPositionalString(-1);
+	}
+
+	@Test
+	public void testThatFindingNeedleInHaystackReturnsTheCorrectStartingIndex() throws Exception
+	{
+		// Find the 1st "b" in "abba"
+		assertThat(StringsUtil.indexOfNth(1, "b", "abba")).isEqualTo(1);
+		assertThat(StringsUtil.indexOfNth(2, "a", "abba")).isEqualTo(3);
+		assertThat(StringsUtil.indexOfNth(3, "ab", "abcabcabc")).isEqualTo(6);
+		// Trying to find more occurrences than there exists
+		assertThat(StringsUtil.indexOfNth(4, "ab", "ababab")).isEqualTo(-1);
+		// Missing the string altogether
+		assertThat(StringsUtil.indexOfNth(3, "abc", "ababab")).isEqualTo(-1);
 	}
 
 	@Test

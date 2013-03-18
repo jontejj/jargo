@@ -136,7 +136,7 @@ public final class ArgumentExceptions
 		 * For {@link Serializable}
 		 */
 		private static final long serialVersionUID = 1L;
-	};
+	}
 
 	/**
 	 * @param cause the checked exception that will be used as the cause (and message) of the
@@ -168,7 +168,7 @@ public final class ArgumentExceptions
 		 * For {@link Serializable}
 		 */
 		private static final long serialVersionUID = 1L;
-	};
+	}
 
 	/**
 	 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
@@ -273,15 +273,15 @@ public final class ArgumentExceptions
 	 * "-p 8080" is given<br>
 	 * Prints "Missing second <Integer> parameter for -p"
 	 * 
-	 * @param parameterDescription the <Integer> argument in this case
+	 * @param cause with a {@link MissingParameterException#parameterDescription()
+	 *            parameterDescription} such as "&lt;Integer&gt;" in this case
 	 * @param missingIndex 1 in this case
 	 */
 	@CheckReturnValue
 	@Nonnull
-	static ArgumentException forMissingNthParameter(String parameterDescription, int missingIndex)
+	static ArgumentException forMissingNthParameter(MissingParameterException cause, int missingIndex)
 	{
-		checkNotNull(parameterDescription);
-		return new MissingNthParameterException(parameterDescription, missingIndex);
+		return new MissingNthParameterException(cause.parameterDescription(), missingIndex).andCause(cause);
 	}
 
 	private static final class MissingNthParameterException extends ArgumentException

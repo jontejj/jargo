@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.api;
 
 import static se.softhouse.jargo.Arguments.integerArgument;
@@ -34,7 +34,7 @@ import se.softhouse.jargo.ParsedArguments;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.Charsets;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 public class GreetingServer
 {
@@ -42,7 +42,7 @@ public class GreetingServer
 	static final Argument<Boolean> ENABLE_LOGGING = optionArgument("-l", "--enable-logging").description("Output debug information to standard out")
 			.build();
 
-	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(Ranges.closed(0, 65536)).defaultValue(10000)
+	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(Range.closed(0, 65536)).defaultValue(10000)
 			.defaultValueDescriber(Describers.toStringDescriber()).repeated().description("The port clients should connect to")
 			.metaDescription("port").build();
 

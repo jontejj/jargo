@@ -69,6 +69,10 @@ public final class StringsUtil
 		return spaces(indexToPointAt) + "^";
 	}
 
+	/**
+	 * Returns <code>true</code> iff {@code input} {@link String#startsWith(String) starts with}
+	 * {@code toStartWith} and has more characters after that match
+	 */
 	public static boolean startsWithAndHasMore(String input, String toStartWith)
 	{
 		return input.startsWith(toStartWith) && input.length() > toStartWith.length();
@@ -274,22 +278,27 @@ public final class StringsUtil
 	/**
 	 * Finds the {@code nth} occurrence of {@code needle} in {@code haystack}
 	 * 
-	 * @param haystack the string to search within
-	 * @param needle the string to search for
 	 * @param nth how many occurrences of {@code needle} that should occur before the returned index
+	 * @param needle the string to search for
+	 * @param haystack the string to search within
 	 * @return the starting index of the {@code nth} occurrence of {@code needle} within
 	 *         {@code haystack}, -1 if {@code nth} occurrences couldn't be found
 	 */
-	public static int indexOfNth(String haystack, String needle, int nth)
+	public static int indexOfNth(int nth, String needle, String haystack)
 	{
 		checkNotNull(haystack);
 		checkNotNull(needle);
 		checkArgument(nth > 0, "nth must be at least 1");
+		int occurencesFound = 0;
 		int index = -1;
-		while(nth > 0)
+		while(occurencesFound < nth)
 		{
 			index = haystack.indexOf(needle, index + 1);
-			nth--;
+			occurencesFound++;
+			if(index == -1)
+			{
+				break;
+			}
 		}
 		return index;
 	}

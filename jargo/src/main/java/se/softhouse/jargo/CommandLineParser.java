@@ -316,7 +316,7 @@ public final class CommandLineParser
 	public String toString()
 	{
 		return usage().toString();
-	};
+	}
 
 	CommandLineParser(Iterable<Argument<?>> argumentDefinitions)
 	{

@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import se.softhouse.common.testlib.Launcher;
-import se.softhouse.common.testlib.UtilityClassTester;
 import se.softhouse.common.testlib.Launcher.LaunchedProgram;
 
 import com.google.common.testing.NullPointerTester;
@@ -37,8 +35,8 @@ public class LauncherTest
 	public void testThatOutputAndErrorIsCapturedFromLaunchedProgram() throws IOException, InterruptedException
 	{
 		LaunchedProgram program = Launcher.launch(HelloWorldProgram.class);
-		assertThat(program.errors).isEqualTo("FooBar");
-		assertThat(program.output).isEqualTo("HelloWorld");
+		assertThat(program.errors()).isEqualTo("FooBar");
+		assertThat(program.output()).isEqualTo("HelloWorld");
 	}
 
 	private static class HelloWorldProgram
@@ -94,24 +92,35 @@ public class LauncherTest
 	}
 
 	@Test
-	public void testThatClassWithoutStaticMainIsInvalidated() throws IOException, InterruptedException
+	public void testThatClassesWithoutCorrectModifiersOnMainMethodAreInvalidated() throws IOException, InterruptedException
 	{
-		try
+		for(Class<?> clazz : new Class<?>[]{NotStaticMainClass.class, PrivateMainMethod.class})
 		{
-			Launcher.launch(InvalidModifierMainClass.class);
-			fail("InvalidModifierMainClass should have to have a static main method to be launchable");
-		}
-		catch(IllegalArgumentException expected)
-		{
-			assertThat(expected).hasMessage(InvalidModifierMainClass.class.getName()
-													+ "'s main method needs to be static and public for it to be launchable");
+			try
+			{
+				Launcher.launch(clazz);
+				fail(clazz.getSimpleName() + " should have to have a static & public main method to be launchable");
+			}
+			catch(IllegalArgumentException expected)
+			{
+				assertThat(expected).hasMessage(clazz.getName() + "'s main method needs to be static and public for it to be launchable");
+			}
 		}
 	}
 
-	private static class InvalidModifierMainClass
+	private static class NotStaticMainClass
 	{
 		@SuppressWarnings("unused")
 		public void main(String[] args) // No static modifier
+		{
+
+		}
+	}
+
+	private static class PrivateMainMethod
+	{
+		@SuppressWarnings("unused")
+		static private void main(String[] args) // No public modifier
 		{
 
 		}

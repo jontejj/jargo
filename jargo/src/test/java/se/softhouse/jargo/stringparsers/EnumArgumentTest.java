@@ -94,7 +94,7 @@ public class EnumArgumentTest
 		static
 		{
 			staticEnumCodeHaveBeenRun = true;
-		};
+		}
 	}
 
 	static boolean staticEnumCodeHaveBeenRun = false;
@@ -151,6 +151,6 @@ public class EnumArgumentTest
 		public String toString()
 		{
 			throw new IllegalStateException("Nefarious behavior not avoided");
-		};
+		}
 	}
 }

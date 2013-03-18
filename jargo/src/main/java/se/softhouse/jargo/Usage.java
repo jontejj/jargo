@@ -154,7 +154,7 @@ public final class Usage
 	public String toString()
 	{
 		return mainUsage() + buildArgumentDescriptions();
-	};
+	}
 
 	private String mainUsage()
 	{

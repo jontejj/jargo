@@ -42,6 +42,8 @@ public final class Describers
 	{
 	}
 
+	private static final String NULL = "null";
+
 	/**
 	 * Always describes any value of type {@code T} with the given {@code constant}. For instance,
 	 * if you have implemented a time related parser and don't want different times in the
@@ -120,7 +122,7 @@ public final class Describers
 		public String describe(Character value, Locale inLocale)
 		{
 			if(value == null)
-				return "null";
+				return NULL;
 			// TODO: describe more characters? All ASCII characters perhaps?
 			// Character.isISOControl...
 			return ((int) value == 0) ? "the Null character" : value.toString();
@@ -146,7 +148,7 @@ public final class Describers
 		public String describe(File file, Locale inLocale)
 		{
 			if(file == null)
-				return "null";
+				return NULL;
 			return file.getAbsolutePath();
 		}
 	}
@@ -208,7 +210,7 @@ public final class Describers
 		public String describe(Number number, Locale locale)
 		{
 			if(number == null)
-				return "null";
+				return NULL;
 			return NumberFormat.getInstance(locale).format(number);
 		}
 
@@ -372,7 +374,7 @@ public final class Describers
 		public String describe(Map<K, V> values, Locale inLocale)
 		{
 			if(values == null)
-				return "null";
+				return NULL;
 			Iterator<Entry<K, V>> iterator = values.entrySet().iterator();
 			if(!iterator.hasNext())
 				return "Empty map";
@@ -406,7 +408,7 @@ public final class Describers
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
 	 * 
 	 * @param describer the describer to convert to a {@link Function}
-	 * @return a {@link Function} that applies {@link Describer#describe(Object, Locale)} to input values.
+	 * @return a {@link Function} that uses {@link Describer#describe(Object, Locale) describe(input, Locale.getDefault()}.
 	 * </pre>
 	 */
 	@Beta
@@ -419,8 +421,27 @@ public final class Describers
 			@Override
 			public String apply(@Nonnull T input)
 			{
-				// TODO: document locale
 				return describer.describe(input, Locale.getDefault());
+			}
+		};
+	}
+
+	/**
+	 * Like {@link #asFunction(Describer)} but with {@code locale} instead of
+	 * {@link Locale#getDefault()}.
+	 */
+	@Beta
+	@Nonnull
+	@CheckReturnValue
+	public static <T> Function<? super T, String> asFunction(final Describer<T> describer, final Locale locale)
+	{
+		checkNotNull(describer);
+		checkNotNull(locale);
+		return new Function<T, String>(){
+			@Override
+			public String apply(@Nonnull T input)
+			{
+				return describer.describe(input, locale);
 			}
 		};
 	}

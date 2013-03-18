@@ -346,33 +346,33 @@ public final class Argument<T>
 		AT_LEAST_ONE_ARGUMENT
 	}
 
-	public static Predicate<Argument<?>> IS_INDEXED = new Predicate<Argument<?>>(){
+	static final Predicate<Argument<?>> IS_INDEXED = new Predicate<Argument<?>>(){
 		@Override
-		public boolean apply(Argument<?> input)
+		public boolean apply(@Nonnull Argument<?> input)
 		{
 			return input.isIndexed();
 		}
 	};
 
-	public static Predicate<Argument<?>> IS_REQUIRED = new Predicate<Argument<?>>(){
+	static final Predicate<Argument<?>> IS_REQUIRED = new Predicate<Argument<?>>(){
 		@Override
-		public boolean apply(Argument<?> input)
+		public boolean apply(@Nonnull Argument<?> input)
 		{
 			return input.isRequired();
 		}
 	};
 
-	public static Predicate<Argument<?>> IS_VISIBLE = new Predicate<Argument<?>>(){
+	static final Predicate<Argument<?>> IS_VISIBLE = new Predicate<Argument<?>>(){
 		@Override
-		public boolean apply(Argument<?> input)
+		public boolean apply(@Nonnull Argument<?> input)
 		{
 			return !input.hideFromUsage;
 		}
 	};
 
-	public static Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = new Predicate<Argument<?>>(){
+	static final Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = new Predicate<Argument<?>>(){
 		@Override
-		public boolean apply(Argument<?> input)
+		public boolean apply(@Nonnull Argument<?> input)
 		{
 			return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 		}

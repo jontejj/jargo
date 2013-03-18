@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.exceptions;
 
 import static org.junit.Assert.fail;
@@ -20,13 +20,13 @@ import static se.softhouse.jargo.Arguments.integerArgument;
 import org.junit.Test;
 
 import se.softhouse.jargo.Argument;
+import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ArgumentExceptions;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.StringParsers;
-import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;

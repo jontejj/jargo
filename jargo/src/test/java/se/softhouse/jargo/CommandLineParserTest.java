@@ -383,7 +383,7 @@ public class CommandLineParserTest
 			public void run()
 			{
 				toInvoke.invoke(parser, nonnullValue);
-			};
+			}
 		};
 		otherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler(){
 

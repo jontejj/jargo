@@ -42,7 +42,7 @@ import se.softhouse.jargo.stringparsers.custom.LimitedKeyParser;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -152,7 +152,7 @@ public class PropertyMapTest
 	@Test
 	public void testLimitationOfPropertyMapKeysAndValues()
 	{
-		Predicate<Integer> zeroToTen = Ranges.closed(0, 10);
+		Predicate<Integer> zeroToTen = Range.closed(0, 10);
 		Argument<Map<String, Integer>> argument = integerArgument("-I").limitTo(zeroToTen)
 				.asKeyValuesWithKeyParser(new LimitedKeyParser("foo", "bar")).build();
 

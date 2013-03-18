@@ -11,13 +11,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static se.softhouse.common.testlib.Constants.ONE_MINUTE;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +34,10 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public final class Locales
 {
+	private Locales()
+	{
+	}
+
 	/**
 	 * The {@link Locale} representing Sweden
 	 */
@@ -47,16 +51,17 @@ public final class Locales
 	 */
 	public static final Locale TURKISH = new Locale("tr", "TR");
 
-	private static final Lock defaultLocaleLock = new ReentrantLock();
+	private static final Lock LOCK = new ReentrantLock();
 
 	private static volatile Locale defaultLocale = Locale.getDefault();
 
 	private static volatile Thread threadUsingIt = null;
 
 	/**
-	 * How long the previous caller said he wanted to use {@link Locale#getDefault()} for
+	 * How long the previous caller said he wanted to use {@link Locale#getDefault()} for in
+	 * milliseconds
 	 */
-	private static volatile long maximumUsageTime = SECONDS.toMillis(60);
+	private static volatile long maximumUsageTime = ONE_MINUTE;
 
 	/**
 	 * <pre>
@@ -78,7 +83,7 @@ public final class Locales
 	 */
 	public static void setDefault(Locale locale) throws InterruptedException
 	{
-		setDefault(locale, 60, SECONDS);
+		setDefault(locale, 60, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -107,7 +112,9 @@ public final class Locales
 		// Allow the same thread to change the locale during his "period" without locking
 		if(!Thread.currentThread().equals(threadUsingIt))
 		{
-			defaultLocaleLock.tryLock(maximumUsageTime, MILLISECONDS);
+			if(!LOCK.tryLock(maximumUsageTime, TimeUnit.MILLISECONDS))
+				throw new InterruptedException("Waited for " + MILLISECONDS.toSeconds(maximumUsageTime) + " seconds on " + threadUsingIt
+						+ " to finish using " + Locale.getDefault() + " but timed out");
 			threadUsingIt = Thread.currentThread();
 			maximumUsageTime = unit.toMillis(time);
 			defaultLocale = Locale.getDefault();
@@ -119,7 +126,7 @@ public final class Locales
 		}
 		catch(SecurityException e)
 		{
-			defaultLocaleLock.unlock(); // Let someone else try again
+			LOCK.unlock(); // Let someone else try again
 			throw e;
 		}
 	}
@@ -139,6 +146,6 @@ public final class Locales
 		checkState(Thread.currentThread().equals(threadUsingIt), Thread.currentThread() + " tried to unlock Locale while " + threadUsingIt
 				+ " was using it");
 		Locale.setDefault(defaultLocale);
-		defaultLocaleLock.unlock();
+		LOCK.unlock();
 	}
 }

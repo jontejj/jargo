@@ -11,12 +11,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.io.ByteStreams.toByteArray;
+import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 
 import java.io.File;
@@ -27,18 +28,19 @@ import java.util.List;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
+/**
+ * Can launch java programs for a {@link Class} with a main method. Output is captured in the
+ * returned {@link LaunchedProgram}.
+ */
 public final class Launcher
 {
-	public static class LaunchedProgram
+	/**
+	 * Result from a {@link Launcher#launch(Class, String...) launched program}
+	 */
+	public static final class LaunchedProgram
 	{
-		/**
-		 * The {@link System#err} in {@link Charsets#UTF_8 UTF-8} from the launched program
-		 */
-		public String errors;
-		/**
-		 * The {@link System#out} in {@link Charsets#UTF_8 UTF-8} from the launched program
-		 */
-		public String output;
+		private final String errors;
+		private final String output;
 		private final String jvm;
 		private final String classPath;
 
@@ -50,6 +52,25 @@ public final class Launcher
 			this.jvm = jvm;
 		}
 
+		/**
+		 * The {@link System#out} in {@link Charsets#UTF_8 UTF-8} from the launched program
+		 */
+		public String output()
+		{
+			return output;
+		}
+
+		/**
+		 * The {@link System#err} in {@link Charsets#UTF_8 UTF-8} from the launched program
+		 */
+		public String errors()
+		{
+			return errors;
+		}
+
+		/**
+		 * Returns information suitable to print in case of errors on a debug level
+		 */
 		public String debugInformation()
 		{
 			return "\njvm: " + jvm + "\nclasspath: " + classPath;
@@ -85,12 +106,12 @@ public final class Launcher
 		{
 
 			int modifiers = classWithMainMethod.getDeclaredMethod("main", String[].class).getModifiers();
-			boolean validModifiers = isStatic(modifiers);// && isPublic(modifiers);
+			boolean validModifiers = isStatic(modifiers) && isPublic(modifiers);
 			checkArgument(validModifiers, "%s's main method needs to be static and public for it to be launchable", classWithMainMethod.getName());
 		}
 		catch(NoSuchMethodException e)
 		{
-			throw new IllegalArgumentException("No main method found on: " + classWithMainMethod.getName());
+			throw new IllegalArgumentException("No main method found on: " + classWithMainMethod.getName(), e);
 		}
 		String jvm = new File(new File(System.getProperty("java.home"), "bin"), "java").getAbsolutePath();
 		String classPath = System.getProperty("java.class.path");

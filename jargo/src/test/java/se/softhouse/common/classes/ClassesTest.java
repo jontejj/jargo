@@ -21,8 +21,8 @@ import java.io.IOException;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.Launcher;
-import se.softhouse.common.testlib.UtilityClassTester;
 import se.softhouse.common.testlib.Launcher.LaunchedProgram;
+import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -34,9 +34,9 @@ public class ClassesTest
 	{
 		LaunchedProgram threadedProgram = Launcher.launch(ExampleProgram.class);
 
-		assertThat(threadedProgram.errors).as(	"Errors detected in subprogram: " + threadedProgram.errors + ". Debuginfo:"
+		assertThat(threadedProgram.errors()).as("Errors detected in subprogram: " + threadedProgram.errors() + ". Debuginfo:"
 														+ threadedProgram.debugInformation()).isEmpty();
-		assertThat(threadedProgram.output).isEqualTo("ExampleProgram");
+		assertThat(threadedProgram.output()).isEqualTo("ExampleProgram");
 	}
 
 	@Test
@@ -44,16 +44,16 @@ public class ClassesTest
 	{
 		LaunchedProgram threadedProgram = Launcher.launch(ThreadedProgram.class);
 
-		assertThat(threadedProgram.errors).as(	"Errors detected in subprogram: " + threadedProgram.errors + ". Debuginfo:"
+		assertThat(threadedProgram.errors()).as("Errors detected in subprogram: " + threadedProgram.errors() + ". Debuginfo:"
 														+ threadedProgram.debugInformation()).isEmpty();
-		assertThat(threadedProgram.output).isEqualTo("ThreadedProgram");
+		assertThat(threadedProgram.output()).isEqualTo("ThreadedProgram");
 	}
 
 	@Test
 	public void testThatProgramWithDeadMainThreadCausesException() throws IOException, InterruptedException
 	{
 		LaunchedProgram noMain = Launcher.launch(NoMainAvailable.class);
-		assertThat(noMain.errors).isEqualTo("No main method found in the stack traces, could it be that the main thread has been terminated?");
+		assertThat(noMain.errors()).isEqualTo("No main method found in the stack traces, could it be that the main thread has been terminated?");
 	}
 
 	@Test
