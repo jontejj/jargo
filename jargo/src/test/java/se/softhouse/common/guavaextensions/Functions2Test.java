@@ -11,11 +11,16 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.guavaextensions;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.guavaextensions.Functions2.unmodifiableList;
+import static se.softhouse.common.guavaextensions.Functions2.unmodifiableMap;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,13 +28,13 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.common.guavaextensions.Functions2;
 import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
@@ -107,6 +112,53 @@ public class Functions2Test
 		assertThat(Functions2.mapValueTransformer(Functions.identity())).isSameAs(Functions.identity());
 	}
 
+	@Test
+	public void testThatFileToStringReturnsFileInUTF8() throws Exception
+	{
+		String text = "\u1234\u5678";
+		File testFile = File.createTempFile("fileToStringTest", ".txt");
+		Files.write(text, testFile, UTF_8);
+
+		assertThat(Functions2.fileToString().apply(testFile)).isEqualTo(text);
+	}
+
+	@Test
+	public void testThatReadingFromDirectoryIsIllegal() throws Exception
+	{
+		File directory = new File(".");
+		try
+		{
+			assertThat(Functions2.fileToString().apply(directory));
+			fail("It should not be possible to convert a directory to a string");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage(directory.getAbsolutePath() + " is a directory, not a file");
+		}
+	}
+
+	@Test
+	public void testThatNonExistingFileGivesGoodErrorMessage() throws Exception
+	{
+		File nonExistingFile = new File("file_that_does_not_exist");
+		try
+		{
+			assertThat(Functions2.fileToString().apply(nonExistingFile));
+			fail("A non existing file should lead to an error");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage("I/O error occured while reading: " + nonExistingFile.getAbsolutePath());
+		}
+	}
+
+	@Test
+	public void testThatNullInputGivesNullOutput() throws Exception
+	{
+		assertThat(Functions2.listTransformer(unmodifiableList()).apply(null)).isNull();
+		assertThat(Functions2.mapValueTransformer(unmodifiableMap()).apply(null)).isNull();
+	}
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testUnmodifiableListMaker()
 	{
@@ -120,9 +172,14 @@ public class Functions2Test
 	}
 
 	@Test
-	public void testUtilityClassDesign()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Functions2.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
 		UtilityClassTester.testUtilityClassDesign(Functions2.class);
 	}
 }

@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.guavaextensions;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.base.Supplier;
@@ -72,10 +71,21 @@ public class Suppliers2Test
 		assertThat(listSupplier.get()).isEqualTo(Arrays.asList("foo", "foo", "foo"));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testThatNegativeRepeatsIsIllegal()
+	{
+		Suppliers2.ofRepeatedElements(FOO_SUPPLIER, -1);
+	}
+
 	@Test
-	public void testUtilityClassDesign()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Suppliers2.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
 		UtilityClassTester.testUtilityClassDesign(Suppliers2.class);
 	}
 }

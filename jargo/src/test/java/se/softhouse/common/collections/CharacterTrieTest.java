@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.collections;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Test;
-
-import se.softhouse.common.collections.CharacterTrie;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -266,7 +264,7 @@ public class CharacterTrieTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed()
 	{
 		NullPointerTester npeTester = new NullPointerTester();
 		npeTester.testStaticMethods(CharacterTrie.class, Visibility.PACKAGE);

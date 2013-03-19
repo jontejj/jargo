@@ -133,7 +133,7 @@ public class EnumTesterTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(EnumTester.class, Visibility.PACKAGE);
 	}

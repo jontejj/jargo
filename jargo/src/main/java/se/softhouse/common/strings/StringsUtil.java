@@ -288,7 +288,7 @@ public final class StringsUtil
 	{
 		checkNotNull(haystack);
 		checkNotNull(needle);
-		checkArgument(nth > 0, "nth must be at least 1");
+		checkArgument(nth > 0, "nth must be at least 1 (was %s)", nth);
 		int occurencesFound = 0;
 		int index = -1;
 		while(occurencesFound < nth)

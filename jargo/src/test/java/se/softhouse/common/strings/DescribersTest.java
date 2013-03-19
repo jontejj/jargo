@@ -42,9 +42,11 @@ import java.util.Map;
 import org.junit.Test;
 
 import se.softhouse.common.strings.Describers.BooleanDescribers;
+import se.softhouse.common.testlib.Locales;
 import se.softhouse.common.testlib.ResourceLoader;
 import se.softhouse.common.testlib.UtilityClassTester;
 
+import com.google.common.collect.Lists;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
@@ -114,6 +116,17 @@ public class DescribersTest
 		List<Boolean> booleans = asList(true, false);
 		List<String> describedBooleans = transform(booleans, asFunction(booleanAsEnabledDisabled()));
 		assertThat(describedBooleans).isEqualTo(asList("enabled", "disabled"));
+	}
+
+	@Test
+	public void testDescriberAsAFunctionWithSpecificLocale() throws InterruptedException
+	{
+		Locales.setDefault(Locales.SWEDISH);
+		List<Integer> numbers = Arrays.asList(1000, 2000);
+
+		List<String> describedNumbers = Lists.transform(numbers, asFunction(numberDescriber(), Locale.US));
+		assertThat(describedNumbers).isEqualTo(asList("1,000", "2,000"));
+		Locales.resetDefaultLocale();
 	}
 
 	@Test
@@ -226,9 +239,14 @@ public class DescribersTest
 	}
 
 	@Test
-	public void testUtilityClassDesign()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Describers.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
 		UtilityClassTester.testUtilityClassDesign(Describers.class);
 	}
 }

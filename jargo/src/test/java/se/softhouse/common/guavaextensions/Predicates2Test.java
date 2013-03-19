@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.guavaextensions;
 
 import static com.google.common.base.Predicates.alwaysTrue;
@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.common.guavaextensions.Predicates2;
 import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.base.Predicate;
@@ -82,9 +81,14 @@ public class Predicates2Test
 	}
 
 	@Test
-	public void testUtilityClassDesign()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Predicates2.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
 		UtilityClassTester.testUtilityClassDesign(Predicates2.class);
 	}
 }

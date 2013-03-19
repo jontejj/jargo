@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.strings;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -19,8 +19,6 @@ import static se.softhouse.common.strings.Descriptions.cache;
 
 import org.junit.Test;
 
-import se.softhouse.common.strings.Description;
-import se.softhouse.common.strings.Descriptions;
 import se.softhouse.common.testlib.Serializer;
 import se.softhouse.common.testlib.UtilityClassTester;
 
@@ -105,9 +103,14 @@ public class DescriptionsTest
 	}
 
 	@Test
-	public void testUtilityClassDesign()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Descriptions.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
 		UtilityClassTester.testUtilityClassDesign(Descriptions.class);
 	}
 }

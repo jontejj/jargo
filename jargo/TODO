@@ -7,11 +7,11 @@ Deploy javadoc to gh-pages automatically when release is performed, execute:
     git clone https://github.com/Softhouse/jargo.git jargo-gh-pages
     cd jargo-gh-pages/
     git checkout --orphan gh-pages
+    rm -r javadoc/jargo/*
+    rm -r javadoc/common-test/*
     cp -r ../jargo/jargo/target/site/apidocs/ javadoc/jargo/
     cp -r ../jargo/common-test/target/site/apidocs/ javadoc/common-test/
-    git add -u
-    git commit -m "Updated javadocs"
-    git push origin gh-pages
+    git add -u && git commit -m "Updated javadocs" && git push origin gh-pages
 
 Features:
 

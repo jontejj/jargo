@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.Locales;
@@ -61,6 +60,7 @@ public class LocaleTest
 		assertThat(n.parse("1")).isEqualTo(1);
 		assertThat(CommandLineParser.withArguments(n).parse("1").get(n)).isEqualTo(1);
 		assertThat(n.usage()).contains("1");
+		Locales.resetDefaultLocale();
 	}
 
 	@Test
@@ -89,6 +89,7 @@ public class LocaleTest
 		assertThat(results.get(integer)).isEqualTo(1);
 
 		assertThat(results.get(asPropertyMap).get("i")).isEqualTo(2);
+		Locales.resetDefaultLocale();
 	}
 
 	@Test
@@ -105,6 +106,7 @@ public class LocaleTest
 		assertThat(results.get(integer)).isEqualTo(1);
 
 		assertThat(results.get(asPropertyMap).get("i")).isEqualTo(2);
+		Locales.resetDefaultLocale();
 	}
 
 	@Test
@@ -117,11 +119,5 @@ public class LocaleTest
 
 		assertThat(result.get(usNumber)).isEqualTo(BigDecimal.valueOf(1000));
 		assertThat(result.get(swedishNumber)).isEqualTo(new BigDecimal("1.000"));
-	}
-
-	@AfterClass
-	public static void resetDefaultLocale()
-	{
-		Locales.resetDefaultLocale();
 	}
 }

@@ -146,9 +146,28 @@ public class StringsUtilTest
 	}
 
 	@Test
-	public void testUtilityClassDesign()
+	public void testThatAtLeastOneOccurenceIsMinimum()
+	{
+		try
+		{
+			StringsUtil.indexOfNth(0, "b", "abba");
+			fail("0 should be an invalid nth parameter");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage("nth must be at least 1 (was 0)");
+		}
+	}
+
+	@Test
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(StringsUtil.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
 		UtilityClassTester.testUtilityClassDesign(StringsUtil.class);
 	}
 }

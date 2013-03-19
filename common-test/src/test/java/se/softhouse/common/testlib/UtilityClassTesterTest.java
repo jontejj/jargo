@@ -28,7 +28,7 @@ public class UtilityClassTesterTest
 	public void testThatContructorNeedsToBePrivate()
 	{
 		UtilityClassTester.testUtilityClassDesign(	UtilityClassTester.class, EnumTester.class, Explanation.class, ResourceLoader.class,
-													Serializer.class, Constants.class);
+													Serializer.class, Constants.class, Launcher.class, Locales.class);
 	}
 
 	@Test
@@ -93,8 +93,14 @@ public class UtilityClassTesterTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(UtilityClassTester.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
+		UtilityClassTester.testUtilityClassDesign(UtilityClassTester.class);
 	}
 }

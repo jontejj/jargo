@@ -46,7 +46,7 @@ public class ResourceLoaderTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(ResourceLoader.class, Visibility.PACKAGE);
 	}

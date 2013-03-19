@@ -12,28 +12,26 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.common.testlib;
+package se.softhouse.common.strings;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.junit.Test;
 
-/**
- * Useful constants to use in tests
- */
-public final class Constants
+import se.softhouse.common.testlib.UtilityClassTester;
+
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
+public class StringBuildersTest
 {
-	private Constants()
+	@Test
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
+		new NullPointerTester().testStaticMethods(StringBuilders.class, Visibility.PACKAGE);
 	}
 
-	/**
-	 * One second in milliseconds
-	 */
-	public static final long ONE_SECOND = SECONDS.toMillis(1);
-
-	/**
-	 * One minute in milliseconds
-	 */
-	public static final long ONE_MINUTE = SECONDS.toMillis(60);
-
-	static final int EXPECTED_TEST_TIME_FOR_THIS_SUITE = 2000;
+	@Test
+	public void testThatUtilityClassDesignIsCorrect()
+	{
+		UtilityClassTester.testUtilityClassDesign(StringBuilders.class);
+	}
 }

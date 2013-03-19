@@ -300,9 +300,9 @@ public class NumberTypeTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed()
 	{
-		new NullPointerTester().testInstanceMethods(NumberType.LONG, Visibility.PUBLIC);
+		new NullPointerTester().testInstanceMethods(NumberType.INTEGER, Visibility.PACKAGE);
 		new NullPointerTester().testStaticMethods(NumberType.class, Visibility.PACKAGE);
 	}
 

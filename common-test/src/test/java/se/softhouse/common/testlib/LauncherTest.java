@@ -134,14 +134,8 @@ public class LauncherTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Launcher.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testUtilityClassDesign()
-	{
-		UtilityClassTester.testUtilityClassDesign(Launcher.class);
 	}
 }

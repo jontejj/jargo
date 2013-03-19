@@ -125,7 +125,7 @@ public class SerializerTest
 	}
 
 	@Test
-	public void testNullContracts()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Serializer.class, Visibility.PACKAGE);
 	}
