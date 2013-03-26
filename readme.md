@@ -41,14 +41,14 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
      <dependency>
        <groupId>se.softhouse</groupId>
        <artifactId>jargo</artifactId>
-       <version>0.0.3</version>
+       <version>0.0.4</version>
      </dependency>
   
 #### Common-test (optional) [Javadoc](http://softhouse.github.com/jargo/javadoc/common-test/)
      <dependency>
       <groupId>se.softhouse</groupId>
       <artifactId>common-test</artifactId>
-      <version>0.0.3</version>
+      <version>0.0.4</version>
   </dependency>
 
 # Rationale
