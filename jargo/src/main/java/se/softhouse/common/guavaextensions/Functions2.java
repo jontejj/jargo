@@ -254,7 +254,6 @@ public final class Functions2
 				throw new IllegalArgumentException(input.getAbsolutePath() + " is a directory, not a file");
 			try
 			{
-				// TODO: test error message when input is a dir
 				return Files.toString(input, Charsets.UTF_8);
 			}
 			catch(IOException e)

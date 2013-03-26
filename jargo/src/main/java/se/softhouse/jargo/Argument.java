@@ -32,6 +32,7 @@ import javax.annotation.concurrent.Immutable;
 import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Description;
+import se.softhouse.jargo.StringParsers.HelpParser;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -153,7 +154,7 @@ public final class Argument<T>
 	@CheckReturnValue
 	public Usage usage()
 	{
-		return new Usage(commandLineParser().allArguments(), locale(US_BY_DEFAULT), ProgramInformation.AUTO);
+		return new Usage(commandLineParser().allArguments(), locale(US_BY_DEFAULT), ProgramInformation.AUTO, false);
 	}
 
 	/**
@@ -176,6 +177,7 @@ public final class Argument<T>
 
 	String descriptionOfValidValues(Locale localeToDescribeValuesWith)
 	{
+		// TODO: What if several different limiters?
 		if(limiter != alwaysTrue())
 			return limiter.toString();
 
@@ -377,4 +379,9 @@ public final class Argument<T>
 			return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 		}
 	};
+
+	boolean isHelpArgument()
+	{
+		return parser().equals(HelpParser.INSTANCE);
+	}
 }

@@ -69,7 +69,7 @@ import com.google.common.collect.Range;
 /**
  * <pre>
  * Responsible for configuring and building {@link Argument} instances.
- * Example builders can be created through the {@link Arguments}.
+ * Example builders can be created with {@link Arguments}.
  * 
  * <b>Note:</b>The code examples (for each method) assumes that all methods in {@link Arguments} have been statically imported.
  * 
@@ -96,10 +96,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Nonnull private String separator = DEFAULT_SEPARATOR;
 	@Nonnull private Optional<Locale> localeOverride = Optional.absent();
 	private boolean ignoreCase = false;
-	private boolean isPropertyMap = false;
 	private boolean isAllowedToRepeat = false;
 	@Nonnull private Optional<String> metaDescription = Optional.absent();
 	private boolean hideFromUsage = false;
+
+	private boolean isPropertyMap = false;
 	private ParameterArity parameterArity = ParameterArity.AT_LEAST_ONE_ARGUMENT;
 
 	// Members that uses the T type, think about
@@ -123,7 +124,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <li>uses {@link Object#toString()} to describe the default value</li>
 	 * <li>uses {@link StringParser#metaDescription()} on {@link #parser()} to produce meta
 	 * descriptions</li>
-	 * <li>doesn't have any {@link #limitTo(Predicate)} set</li>
+	 * <li>doesn't have any {@link #limitTo(Predicate) limits}</li>
 	 * </ul>
 	 * Typically invoked implicitly by subclasses.
 	 */
@@ -233,9 +234,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Specifies the argument names that triggers the argument being built. As commands sometimes
 	 * gets long and hard to understand it's recommended to also support long named arguments,
 	 * making the commands even longer but more readable instead <br>
-	 * <b>Note</b>: If you choose to use multiple {@link #required()} indexed arguments all of them
-	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages better
-	 * can point out erroneous arguments
 	 * 
 	 * @param argumentNames <ul>
 	 *            <li>"-o" for a short named option/argument</li>
@@ -329,14 +327,18 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <pre>
 	 * Makes {@link CommandLineParser#parse(String...)} throw
 	 * {@link ArgumentException} if this argument isn't given.
-	 * It's however preferred to use {@link #defaultValue(Object)} instead.
+	 * If possible, it's preferred to use a {@link #defaultValue(Object) default value} instead.
 	 * 
 	 * The {@link Argument#toString()} will be used to print each missing argument.
+	 * 
+	 * <b>Note</b>: If you choose to use multiple {@link #required()} indexed arguments all of them
+	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages better
+	 * can point out erroneous arguments
 	 * 
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #defaultValue(Object)} (or
 	 *             {@link #defaultValueSupplier(Supplier)}) has been
-	 *             called, because these two methods are mutually exclusive
+	 *             called, because these are mutually exclusive with {@link #required()}
 	 * </pre>
 	 */
 	public SELF required()
@@ -349,7 +351,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * <pre>
 	 * Sets a default value to use for this argument. Overrides {@link StringParser#defaultValue()} which is used by default.
-	 * Returned by {@link ParsedArguments#get(Argument)} when no argument was given.
+	 * Returned by {@link ParsedArguments#get(Argument)} when no argument {@link ParsedArguments#wasGiven(Argument) was given}.
 	 * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.
 	 * 
 	 * <b>Mutability</b>:Remember that as {@link Argument} is {@link Immutable}
@@ -369,7 +371,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * <pre>
-	 * Sets a supplier that can supply default values in the absence of this argument
+	 * Sets a {@link Supplier} that can supply default values in the absence of this argument
 	 * 
 	 * <b>Note:</b> Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
 	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
@@ -846,6 +848,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		protected StringParser<T> parser()
 		{
 			return (StringParser<T>) MARKER;
+		}
+	}
+
+	static final class SimpleArgumentBuilder<T> extends InternalArgumentBuilder<SimpleArgumentBuilder<T>, T>
+	{
+		SimpleArgumentBuilder(InternalStringParser<T> parser)
+		{
+			super(parser);
 		}
 	}
 

@@ -88,7 +88,8 @@ public class PackagePrivateTests
 	@Test
 	public void testArgumentIteratorToString()
 	{
-		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar")).toString()).isEqualTo("[foobar]");
+		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar"), Collections.<String, Argument<?>>emptyMap()).toString())
+				.isEqualTo("[foobar]");
 	}
 
 	@Test
@@ -107,7 +108,7 @@ public class PackagePrivateTests
 	@Test
 	public void testUsageToString()
 	{
-		assertThat(new Usage(Collections.<Argument<?>>emptySet(), Locale.getDefault(), withProgramName("Program")).toString())
+		assertThat(new Usage(Collections.<Argument<?>>emptySet(), Locale.getDefault(), withProgramName("Program"), false).toString())
 				.isEqualTo("Usage: Program" + NEWLINE);
 	}
 

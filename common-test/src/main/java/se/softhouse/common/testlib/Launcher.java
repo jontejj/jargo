@@ -92,7 +92,7 @@ public final class Launcher
 	 * @throws IOException if an I/O error occurs while starting {@code classWithMainMethod} as a
 	 *             process
 	 * @throws InterruptedException if the thread starting the program is
-	 *             {@link Thread#interrupted()}
+	 *             {@link Thread#interrupted()} while waiting for the program to finish
 	 * @throws IllegalArgumentException if {@code classWithMainMethod} doesn't have a static main
 	 *             method
 	 * @throws SecurityException if it's not possible to validate the existence of a main method in

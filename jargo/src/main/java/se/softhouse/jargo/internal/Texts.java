@@ -191,6 +191,14 @@ public final class Texts
 		 * </pre>
 		 */
 		public static final String MISSING_KEY_VALUE_SEPARATOR = "'%s%s' is missing an assignment operator(%s)";
+
+		/**
+		 * <pre>
+		 * Parameters
+		 * %s = the unknown argument
+		 * </pre>
+		 */
+		public static final String UNKNOWN_ARGUMENT = "'%s' is not a supported argument/option/command";
 	}
 
 	/**

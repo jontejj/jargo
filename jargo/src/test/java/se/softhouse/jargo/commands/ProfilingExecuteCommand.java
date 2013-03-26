@@ -17,9 +17,9 @@ package se.softhouse.jargo.commands;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 
-final class ProfilingExecuteCommand extends Command
+public final class ProfilingExecuteCommand extends Command
 {
-	int numberOfCallsToExecute;
+	public int numberOfCallsToExecute;
 
 	@Override
 	public String commandName()

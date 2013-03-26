@@ -2,23 +2,37 @@
 A tool to ease the handling of program arguments/options
 
 # Most basic usage
-    String[] argv = {"--enable-logging", "--port", "8090", "Hello World!"};
-
-    Argument<Boolean> enableLogging = Arguments.optionArgument("-l", "--enable-logging")
-            									 .description("Output debug information to standard out").build();
-
-    Argument<Integer> port = Arguments.integerArgument("-p", "--port")
-    									.defaultValue(8080)
-            							.description("The port to start the server on.").build();
-
-    Argument<String> greetingPhrase = Arguments.stringArgument()
-    									.description("A greeting phrase to greet new connections with").build();
-
-    ParsedArguments args = CommandLineParser.withArguments(greetingPhrase, enableLogging, port).parse(args);
-
-    System.out.println("Logging enabled: " + args.get(enableLogging));
-    System.out.println("Port: " + args.get(port));
-    System.out.println("Greeting visitors with: " + args.get(greetingPhrase));
+    import static se.softhouse.jargo.Arguments.*;
+    ...
+    String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
+ 
+    Argument<?> helpArgument = helpArgument("-h", "--help"); //Will throw when -h is encountered
+    Argument<Boolean> enableLogging = optionArgument("-l", "--enable-logging")
+                                        .description("Output debug information to standard out").build();
+    Argument<String> greetingPhrase = stringArgument()
+                                        .description("A greeting phrase to greet new connections with").build();
+    Argument<List<Integer>> ports = integerArgument("-p", "--listen-port")
+                                        .defaultValue(8080)
+                                        .description("The port clients should connect to.")
+                                        .metaDescription("<port>")
+                                        .limitTo(Range.closed(0, 65536))
+                                        .repeated().build();
+ 
+    try
+    {
+        ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, ports)
+                                                        .andArguments(helpArgument)
+                                                        .parse(args);
+                                                        
+        System.out.println("Logging enabled: " + arguments.get(enableLogging));
+        System.out.println("Ports: " + arguments.get(port));
+        System.out.println("Greeting visitors with: " + arguments.get(greetingPhrase));
+    }
+    catch(ArgumentException exception)
+    {
+        System.out.println(exception.getMessageAndUsage());
+        System.exit(1);
+    }
 
 For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/jargo/)
 
@@ -30,7 +44,7 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
        <version>0.0.3</version>
      </dependency>
   
-#### Common-test (optional)
+#### Common-test (optional) [Javadoc](http://softhouse.github.com/jargo/javadoc/common-test/)
      <dependency>
       <groupId>se.softhouse</groupId>
       <artifactId>common-test</artifactId>

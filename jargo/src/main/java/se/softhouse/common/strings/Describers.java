@@ -58,6 +58,8 @@ public final class Describers
 		return new ConstantStringDescriber<T>(constant);
 	}
 
+	// TODO: provide isConstant(Describer<?> describer) to ease optimizations?
+
 	private static final class ConstantStringDescriber<T> implements Describer<T>
 	{
 		private final String constant;

@@ -48,18 +48,19 @@ import com.google.common.util.concurrent.Atomics;
  * ...
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
  * 
+ * Argument&lt;?&gt; helpArgument = helpArgument("-h", "--help"); //Will throw when -h is encountered
  * Argument&lt;Boolean&gt; enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
  * Argument&lt;String&gt; greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
  * Argument&lt;List&lt;Integer&gt;&gt; ports = integerArgument("-p", "--listen-port")
  * 						.defaultValue(8080)
  * 						.description("The port clients should connect to.")
  * 						.metaDescription("&lt;port&gt;")
- * 						.limitTo(Ranges.closed(0, 65536)
+ * 						.limitTo(Range.closed(0, 65536))
  * 						.repeated().build();
  * 
  * try
  * {
- *   ParsedArguments arguments = CommandLineParser.withArguments(greetingPhrase, enableLogging, ports).parse(args);
+ *   ParsedArguments arguments = CommandLineParser.withArguments(helpArgument, greetingPhrase, enableLogging, ports).parse(args);
  *   assertThat(arguments.get(enableLogging)).isTrue();
  *   assertThat(arguments.get(ports)).isEqualTo(Arrays.asList(8090));
  *   assertThat(arguments.get(greetingPhrase)).isEqualTo("Hello");
@@ -193,7 +194,7 @@ public final class CommandLineParser
 	@Nonnull
 	public Usage usage()
 	{
-		return new Usage(parser().allArguments(), locale(), programInformation());
+		return new Usage(parser().allArguments(), locale(), programInformation(), false);
 	}
 
 	/**

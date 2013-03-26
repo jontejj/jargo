@@ -44,6 +44,8 @@ import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;
 import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.ArgumentBuilder.OptionArgumentBuilder;
+import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
+import se.softhouse.jargo.StringParsers.HelpParser;
 
 /**
  * <pre>
@@ -59,6 +61,37 @@ public final class Arguments
 {
 	private Arguments()
 	{
+	}
+
+	/**
+	 * <pre>
+	 * Makes the {@link CommandLineParser} it's passed to throw a helpful {@link ArgumentException}
+	 * with usage explaining either the full program or a specific {@link Argument}/{@link Command}.
+	 * The resulting {@link Usage} is currently only accessible through the {@link ArgumentException#getMessageAndUsage()} method.
+	 * This suits most use-cases as there's usually a catch block for {@link ArgumentException} anyway where the {@link Usage} is printed
+	 * 
+	 * Supported usages:
+	 * <ul>
+	 * <li>"program -h" - Gives {@link Usage} for the whole program</li>
+	 * <li>"program -h --number" Gives {@link Usage} for the "--number"{@link Argument}</li>
+	 * <li>"program commit -h" Gives {@link Usage} for the <code>commit</code> {@link Command}</li>
+	 * <li>"program -h commit" Also gives {@link Usage} for the <code>commit</code> {@link Command}</li>
+	 * <li>"program commit -h --amend" Gives {@link Usage} for the <code>--amend</code> {@link Argument} for the <code>commit</code> {@link Command}</li>
+	 * 
+	 * </ul>
+	 * 
+	 * If given an unknown argument name, an {@link ArgumentException} is thrown.
+	 * 
+	 * @param mandatoryName "-h" in the above example
+	 * @param optionalNames for example "--help"
+	 * @return an {@link Argument} that can be passed to {@link CommandLineParser#withArguments(Argument...)}
+	 * </pre>
+	 */
+	public static Argument<?> helpArgument(final String mandatoryName, final String ... optionalNames)
+	{
+		// TODO: instead of throwing, this could be an Argument<Usage> instead, where the user would
+		// have to query ParsedArguments#wasGiven to know whether or not to print help texts
+		return new SimpleArgumentBuilder<String>(HelpParser.INSTANCE).names(asList(mandatoryName, optionalNames)).build();
 	}
 
 	/**

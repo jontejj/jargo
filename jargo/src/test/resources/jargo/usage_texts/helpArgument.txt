@@ -1,0 +1,9 @@
+Help requested with -h. See usage below:
+
+Usage: helpArgument [Arguments]
+
+Arguments:
+--number <integer>                 <integer>: -2,147,483,648 to 2,147,483,647
+                                   Default: 0
+-h <argument-to-print-help-for>    <argument-to-print-help-for>: an argument to print help for
+                                   Default: If no specific parameter is given the whole usage text is given

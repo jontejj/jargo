@@ -112,6 +112,8 @@ public abstract class ArgumentException extends Exception
 
 	final ArgumentException withUsage(final Usage usage)
 	{
+		if(usageText != null)
+			return this; // Don't overwrite if the user has specified a custom Usage
 		usageText = Descriptions.asSerializable(new Description(){
 			@Override
 			public String description()
@@ -128,15 +130,28 @@ public abstract class ArgumentException extends Exception
 		return this;
 	}
 
-	final ArgumentException originatedFrom(final Argument<?> argument)
+	/**
+	 * By default ". See usage for --author for proper values." is appended to the end of the error
+	 * message if {@link #getMessageAndUsage()} is used. This method overrides that to be
+	 * {@code usageReference} instead.
+	 */
+	public ArgumentException withUsageReference(final String usageReference)
 	{
-		usageReferenceName = argument.toString();
+		usageReferenceName = checkNotNull(usageReference);
+		return this;
+	}
+
+	ArgumentException withUsageReference(final Argument<?> usageReference)
+	{
+		if(usageReferenceName != null)
+			return this; // Don't overwrite if the user has specified a custom reference
+		usageReferenceName = String.format(UsageTexts.USAGE_REFERENCE, usageReference);
 		return this;
 	}
 
 	private String usageReference()
 	{
-		return String.format(UsageTexts.USAGE_REFERENCE, usageReferenceName);
+		return usageReferenceName;
 	}
 
 	/**

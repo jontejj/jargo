@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
@@ -35,6 +36,7 @@ import static se.softhouse.jargo.ArgumentExceptions.forUnallowedRepetitionArgume
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.ArgumentExceptions.wrapException;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,8 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import se.softhouse.common.collections.CharacterTrie;
 import se.softhouse.common.strings.StringsUtil;
@@ -82,6 +86,13 @@ final class CommandLineParserInstance
 	 */
 	@Nonnull private final SpecialArguments specialArguments;
 
+	/**
+	 * Stored separately (as well) as {@link Command}s need access to them through the
+	 * {@link ArgumentIterator}. This avoids traversing all named arguments for each parse
+	 * checking for help argument definitions
+	 */
+	@Nonnull private final Map<String, Argument<?>> helpArguments;
+
 	@Nonnull private final Set<Argument<?>> allArguments;
 
 	/**
@@ -93,10 +104,12 @@ final class CommandLineParserInstance
 
 	CommandLineParserInstance(List<Argument<?>> argumentDefinitions, ProgramInformation information, boolean isCommandParser)
 	{
+		this.indexedArguments = newArrayListWithCapacity(argumentDefinitions.size());
 		this.namedArguments = new NamedArguments(argumentDefinitions.size());
 		this.specialArguments = new SpecialArguments();
-		this.indexedArguments = newArrayListWithCapacity(argumentDefinitions.size());
+		this.helpArguments = newHashMap();
 		this.allArguments = newLinkedHashSetWithExpectedSize(argumentDefinitions.size());
+
 		this.programInformation = information;
 		this.isCommandParser = isCommandParser;
 		for(Argument<?> definition : argumentDefinitions)
@@ -146,6 +159,10 @@ final class CommandLineParserInstance
 		{
 			oldDefinition = specialArguments.put(name + separator, definition);
 		}
+		if(definition.isHelpArgument())
+		{
+			helpArguments.put(name, definition);
+		}
 		checkArgument(oldDefinition == null, ProgrammaticErrors.NAME_COLLISION, name);
 	}
 
@@ -193,7 +210,7 @@ final class CommandLineParserInstance
 	@Nonnull
 	ParsedArguments parse(final List<String> actualArguments, Locale localeToParseWith) throws ArgumentException
 	{
-		return parse(ArgumentIterator.forArguments(actualArguments), localeToParseWith);
+		return parse(ArgumentIterator.forArguments(actualArguments, helpArguments), localeToParseWith);
 	}
 
 	@Nonnull
@@ -219,8 +236,11 @@ final class CommandLineParserInstance
 		return holder;
 	}
 
+	// TODO: write toString...
+
 	private void parseArguments(final ArgumentIterator actualArguments, final ParsedArguments holder, Locale locale) throws ArgumentException
 	{
+		actualArguments.setCurrentParser(this);
 		while(actualArguments.hasNext())
 		{
 			Argument<?> definition = null;
@@ -238,7 +258,7 @@ final class CommandLineParserInstance
 				e.originatedFromArgumentName(actualArguments.getCurrentArgumentName());
 				if(definition != null)
 				{
-					e.originatedFrom(definition);
+					e.withUsageReference(definition);
 				}
 				throw e.withUsage(usage(locale));
 			}
@@ -268,15 +288,14 @@ final class CommandLineParserInstance
 	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator arguments, final ParsedArguments holder, Locale locale)
 			throws ArgumentException
 	{
-		String currentArgument = checkNotNull(arguments.next(), "Argument strings may not be null");
-
+		String currentArgument = arguments.next();
 		arguments.setCurrentArgumentName(currentArgument);
 
-		Argument<?> byName = lookupByName(currentArgument, arguments);
+		Argument<?> byName = lookupByName(arguments);
 		if(byName != null)
 			return byName;
 
-		Argument<?> option = batchOfShortNamedArguments(currentArgument, arguments, holder, locale);
+		Argument<?> option = batchOfShortNamedArguments(arguments, holder, locale);
 		if(option != null)
 			return option;
 
@@ -292,14 +311,15 @@ final class CommandLineParserInstance
 			return null;
 		}
 
-		guessAndSuggestIfCloseMatch(currentArgument, holder, arguments);
+		guessAndSuggestIfCloseMatch(arguments, holder);
 
 		// We're out of order, tell the user what we didn't like
 		throw ArgumentExceptions.forUnexpectedArgument(arguments);
 	}
 
-	private Argument<?> lookupByName(String currentArgument, ArgumentIterator arguments)
+	private Argument<?> lookupByName(ArgumentIterator arguments)
 	{
+		String currentArgument = arguments.current();
 		// Ordinary, named, arguments that directly matches the argument
 		Argument<?> definition = namedArguments.get(currentArgument);
 		if(definition != null)
@@ -314,16 +334,17 @@ final class CommandLineParserInstance
 			arguments.setNextArgumentTo(valueAfterSeparator);
 			return entry.getValue();
 		}
-		return null;
+		definition = arguments.helpArgument(currentArgument);
+		return definition;
 	}
 
 	/**
 	 * Batch of short-named optional arguments
 	 * For instance, "-fs" was used instead of "-f -s"
 	 */
-	private Argument<?> batchOfShortNamedArguments(String currentArgument, ArgumentIterator arguments, ParsedArguments holder, Locale locale)
-			throws ArgumentException
+	private Argument<?> batchOfShortNamedArguments(ArgumentIterator arguments, ParsedArguments holder, Locale locale) throws ArgumentException
 	{
+		String currentArgument = arguments.current();
 		if(startsWithAndHasMore(currentArgument, "-"))
 		{
 			List<Character> givenCharacters = Lists.charactersOf(currentArgument.substring(1));
@@ -383,24 +404,26 @@ final class CommandLineParserInstance
 	 * Suggests probable, valid, alternatives for a faulty argument, based on the
 	 * {@link StringsUtil#levenshteinDistance(String, String)}
 	 */
-	private void guessAndSuggestIfCloseMatch(String currentArgument, final ParsedArguments holder, ArgumentIterator arguments)
-			throws ArgumentException
+	private void guessAndSuggestIfCloseMatch(ArgumentIterator arguments, ParsedArguments holder) throws ArgumentException
 	{
 		Set<String> availableArguments = Sets.union(holder.nonParsedArguments(), arguments.nonParsedArguments());
 
 		if(!availableArguments.isEmpty())
 		{
-			List<String> suggestions = StringsUtil.closestMatches(currentArgument, availableArguments, ONLY_REALLY_CLOSE_MATCHES);
+			List<String> suggestions = StringsUtil.closestMatches(arguments.current(), availableArguments, ONLY_REALLY_CLOSE_MATCHES);
 			// TODO: offer yes or no and continue the parsing on yes instead of throwing, only if
 			// one match?
 			if(!suggestions.isEmpty())
-				throw withMessage(format(UserErrors.SUGGESTION, currentArgument, NEW_LINE_AND_TAB.join(suggestions)));
+				throw withMessage(format(UserErrors.SUGGESTION, arguments.current(), NEW_LINE_AND_TAB.join(suggestions)));
 		}
 	}
 
 	private static final int ONLY_REALLY_CLOSE_MATCHES = 4;
 	private static final Joiner NEW_LINE_AND_TAB = Joiner.on(NEWLINE + TAB);
 
+	/**
+	 * Returns <code>true</code> if this is a parser for a specific {@link Command}
+	 */
 	boolean isCommandParser()
 	{
 		return isCommandParser;
@@ -414,11 +437,11 @@ final class CommandLineParserInstance
 		}
 		catch(IllegalArgumentException e)
 		{
-			throw wrapException(e).originatedFrom(arg).originatedFromArgumentName(arg.toString()).withUsage(usage(locale));
+			throw wrapException(e).withUsageReference(arg).originatedFromArgumentName(arg.toString()).withUsage(usage(locale));
 		}
 		catch(ArgumentException e)
 		{
-			throw e.originatedFrom(arg).withUsage(usage(locale));
+			throw e.withUsageReference(arg).withUsage(usage(locale));
 		}
 	}
 
@@ -429,27 +452,58 @@ final class CommandLineParserInstance
 
 	@CheckReturnValue
 	@Nonnull
-	String commandUsage(Locale locale)
-	{
-		return new Usage(allArguments(), locale).forCommand();
-	}
-
 	Usage usage(Locale locale)
 	{
-		return new Usage(allArguments(), locale, programInformation);
+		return new Usage(allArguments(), locale, programInformation, isCommandParser());
+	}
+
+	@CheckReturnValue
+	@Nonnull
+	ArgumentException helpFor(ArgumentIterator arguments, Locale locale) throws ArgumentException
+	{
+		ArgumentException e = withMessage("Help requested with " + arguments.current());
+		Usage usage = null;
+		if(arguments.hasNext())
+		{
+			arguments.next();
+			Argument<?> argument = lookupByName(arguments);
+			if(argument == null)
+				throw withMessage(format(UserErrors.UNKNOWN_ARGUMENT, arguments.current()));
+			usage = new Usage(Arrays.<Argument<?>>asList(argument), locale, programInformation, isCommandParser());
+			if(isCommandParser())
+			{
+				String withCommandReference = ". Usage for " + argument + " (argument to " + arguments.usedCommandName() + "):";
+				e.withUsageReference(withCommandReference);
+			}
+			else
+			{
+				e.withUsageReference(argument);
+			}
+		}
+		else
+		{
+			usage = usage(locale);
+			if(isCommandParser())
+			{
+				e.withUsageReference(". See usage for " + arguments.usedCommandName() + " below:");
+			}
+			else
+			{
+				e.withUsageReference(". See usage below:");
+			}
+		}
+		return e.withUsage(usage);
 	}
 
 	/**
 	 * Wraps a list of given arguments and remembers
-	 * which argument that is currently being parsed.
+	 * which argument that is currently being parsed. Plays a key role in making
+	 * {@link CommandLineParserInstance} {@link ThreadSafe}.
 	 */
+	@NotThreadSafe
 	static final class ArgumentIterator extends UnmodifiableIterator<String>
 	{
-		private static final int NONE = -1;
 		private final List<String> arguments;
-		private int currentArgumentIndex;
-		private Command lastCommandParsed;
-		private ParsedArguments argumentsToLastCommand;
 
 		/**
 		 * Corresponds to one of the {@link Argument#names()} that has been given from the command
@@ -458,15 +512,41 @@ final class CommandLineParserInstance
 		 * For indexed arguments this will be the meta description instead.
 		 */
 		private String currentArgumentName;
+		private int currentArgumentIndex;
 
-		private int indexOfLastCommand = NONE;
+		private int indexOfLastCommand = -1;
+		private Command lastCommandParsed;
+		private ParsedArguments argumentsToLastCommand;
+
+		/**
+		 * In case of {@link Command}s this may be the parser for a specific {@link Command} or just
+		 * simply the main parser
+		 */
+		private CommandLineParserInstance currentParser;
+		private final Map<String, Argument<?>> helpArguments;
 
 		/**
 		 * @param actualArguments a list of arguments, will be modified
 		 */
-		private ArgumentIterator(List<String> actualArguments)
+		private ArgumentIterator(List<String> actualArguments, Map<String, Argument<?>> helpArguments)
 		{
 			this.arguments = actualArguments;
+			this.helpArguments = helpArguments;
+		}
+
+		Argument<?> helpArgument(String currentArgument)
+		{
+			return helpArguments.get(currentArgument);
+		}
+
+		Map<String, Argument<?>> helpArguments()
+		{
+			return helpArguments;
+		}
+
+		void setCurrentParser(CommandLineParserInstance instance)
+		{
+			currentParser = instance;
 		}
 
 		void rememberAsCommand()
@@ -513,11 +593,11 @@ final class CommandLineParserInstance
 			return arguments.get(indexOfLastCommand);
 		}
 
-		static ArgumentIterator forArguments(List<String> actualArguments)
+		static ArgumentIterator forArguments(List<String> actualArguments, Map<String, Argument<?>> helpArguments)
 		{
 			// specialSeparatorArguments, KeyValueParser etc may modify the list
 			// so it should be a private copy
-			return new ArgumentIterator(actualArguments);
+			return new ArgumentIterator(actualArguments, helpArguments);
 		}
 
 		/**
@@ -537,7 +617,14 @@ final class CommandLineParserInstance
 		@Override
 		public String next()
 		{
-			return arguments.get(currentArgumentIndex++);
+			String nextArgument = checkNotNull(arguments.get(currentArgumentIndex++), "Argument strings may not be null");
+			return nextArgument;
+		}
+
+		@Override
+		public String toString()
+		{
+			return arguments.subList(currentArgumentIndex, arguments.size()).toString();
 		}
 
 		String previous()
@@ -570,10 +657,9 @@ final class CommandLineParserInstance
 			return currentArgumentName;
 		}
 
-		@Override
-		public String toString()
+		CommandLineParserInstance currentParser()
 		{
-			return arguments.subList(currentArgumentIndex, arguments.size()).toString();
+			return currentParser;
 		}
 	}
 

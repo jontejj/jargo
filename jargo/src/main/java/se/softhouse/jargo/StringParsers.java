@@ -48,6 +48,7 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Ascii;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -63,6 +64,10 @@ import com.google.common.collect.Maps;
  * All methods return {@link Immutable} parsers.
  * Most methods here even return the same instance for every call.
  * If you want to customize one of these parsers you can use a {@link ForwardingStringParser}.
+ * 
+ * By {@link StringParser#defaultValue() default} most parsers return <code>zero</code> or otherwise
+ * sane defaults. The only exception being {@link #enumParser(Class)} which returns null instead
+ * of the first enum constant available.
  * </pre>
  */
 @Immutable
@@ -119,7 +124,10 @@ public final class StringParsers
 	}
 
 	/**
+	 * <pre>
 	 * A parser that parse strings with {@link Boolean#valueOf(String)}
+	 * The {@link StringParser#defaultValue() default value} is <code>false</code>
+	 * </pre>
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -200,9 +208,12 @@ public final class StringParsers
 	}
 
 	/**
+	 * <pre>
 	 * A parser that returns the first character in a {@link String} as a {@link Character} and that
 	 * throws {@link ArgumentException} for any given {@link String} with more than
-	 * one {@link Character}
+	 * one {@link Character}.
+	 * The {@link StringParser#defaultValue()} is the {@link Ascii#NUL} character.
+	 * </pre>
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -258,7 +269,7 @@ public final class StringParsers
 	 * not any of the enum values in {@code enumToHandle}
 	 * 
 	 * @param enumToHandle the {@link Class} literal for the {@link Enum} to parse strings into
-	 * @return a {@link StringParser} that parse strings into enum values of the type {@code T}
+	 * @return a {@link StringParser} that parses strings into enum values of the type {@code T}
 	 */
 	@CheckReturnValue
 	@Nonnull
@@ -441,6 +452,10 @@ public final class StringParsers
 		{
 			return '<' + type.name() + '>';
 		}
+
+		// TODO: checkCompatibilityWith(ArgumentBuilder<?, ?> builder), could make sure splitter is
+		// something else than "," (or the locale dependent decimal separator) if splitWith(",") is
+		// used
 
 		@Override
 		public String toString()
@@ -632,6 +647,35 @@ public final class StringParsers
 		}
 	}
 
+	static final class HelpParser extends InternalStringParser<String>
+	{
+		static final HelpParser INSTANCE = new HelpParser();
+
+		@Override
+		String parse(ArgumentIterator arguments, String previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
+		{
+			throw arguments.currentParser().helpFor(arguments, locale);
+		}
+
+		@Override
+		String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
+		{
+			return "an argument to print help for";
+		}
+
+		@Override
+		String defaultValue()
+		{
+			return "If no specific parameter is given the whole usage text is given";
+		}
+
+		@Override
+		String metaDescription(Argument<?> argumentSettings)
+		{
+			return "<argument-to-print-help-for>";
+		}
+	}
+
 	/**
 	 * Base class for {@link StringParser}s that uses a sub parser to parse element values and puts
 	 * them into a {@link List}
@@ -804,7 +848,7 @@ public final class StringParsers
 
 			for(String value : splitter.split(values))
 			{
-				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value));
+				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value), arguments.helpArguments());
 				T parsedValue = elementParser().parse(argument, null, argumentSettings, locale);
 				result.add(parsedValue);
 			}

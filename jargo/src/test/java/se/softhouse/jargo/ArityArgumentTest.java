@@ -122,7 +122,7 @@ public class ArityArgumentTest
 	@Test
 	public void testThatNrOfRemainingArgumentsGivesTheCorrectCapacity()
 	{
-		ArgumentIterator args = ArgumentIterator.forArguments(Arrays.asList("foo"));
+		ArgumentIterator args = ArgumentIterator.forArguments(Arrays.asList("foo"), Collections.<String, Argument<?>>emptyMap());
 		assertThat(args.nrOfRemainingArguments()).isEqualTo(1);
 		args.next(); // Consume one argument
 		assertThat(args.nrOfRemainingArguments()).isEqualTo(0);

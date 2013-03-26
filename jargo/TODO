@@ -25,8 +25,6 @@ CommandLineParser#interactiveMode() - For failed arguments offer an option to co
  * Can auto complete be provided?
  * Repeat reading for invalid values
 
-ArgumentFactory#helpArgument() - "-h", "--help" print usage, alternatively take an argument/command and describe only that
-
 DefaultArgumentBuilder<T> Arguments#withFunction(Function<String, T> stringParser)
     How to require a choice between required() and defaultValue(), meta description?
 
@@ -49,6 +47,8 @@ ArgumentBuilder#transformWith(Function<F, T> function)
         runs function.apply(parsedValue) so that Argument<F> switches type to Argument<T> such a function would be extremely
         reusable in other scenarios as well, i.e convert this list of integers to Port objects
         How should limiters be called? If they are called before function.apply(), what if it's modifiable and the limiter may change the value?
+
+        An argument with two parameters could then be implemented with Arguments.stringArgument().arity(2).transformWith(myFunction) (put in readme)
 
 ArgumentException#getLocalizedMessage(Locale locale)
 

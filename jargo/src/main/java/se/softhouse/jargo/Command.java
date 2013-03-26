@@ -99,6 +99,14 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 {
 	@Nonnull private final ImmutableList<Argument<?>> commandArguments;
 
+	@Nonnull private final Supplier<CommandLineParserInstance> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParserInstance>(){
+		@Override
+		public CommandLineParserInstance get()
+		{
+			return CommandLineParserInstance.createCommandParser(commandArguments);
+		}
+	});
+
 	/**
 	 * @param commandArguments the arguments that this command supports.
 	 */
@@ -165,14 +173,6 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 		return commandArgumentParser.get();
 	}
 
-	@Nonnull private final Supplier<CommandLineParserInstance> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParserInstance>(){
-		@Override
-		public CommandLineParserInstance get()
-		{
-			return CommandLineParserInstance.createCommandParser(commandArguments);
-		}
-	});
-
 	@Override
 	final ParsedArguments defaultValue()
 	{
@@ -182,7 +182,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	@Override
 	final String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 	{
-		return parser().commandUsage(locale);
+		return parser().usage(locale).toString();
 	}
 
 	@Override

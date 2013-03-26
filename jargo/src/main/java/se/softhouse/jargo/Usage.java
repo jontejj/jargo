@@ -41,7 +41,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 /**
- * Responsible for formatting usage texts for {@link CommandLineParser#usage()}.
+ * Responsible for formatting usage texts for {@link CommandLineParser#usage()} and
+ * {@link Arguments#helpArgument(String, String...)}.
  * Using it is often as simple as:
  * 
  * <pre class="prettyprint">
@@ -60,7 +61,7 @@ public final class Usage
 	private final ImmutableList<Argument<?>> argumentsToPrint;
 	private final Locale locale;
 	private final ProgramInformation program;
-
+	private final boolean forCommand;
 	/**
 	 * <pre>
 	 * For:
@@ -74,23 +75,15 @@ public final class Usage
 	private boolean needsNewline = false;
 	private StringBuilder builder = null;
 
-	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program)
+	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program, boolean forCommand)
 	{
+		// TODO: don't do any of this in the constructor
 		Collection<Argument<?>> visibleArguments = filter(arguments, IS_VISIBLE);
 		this.locale = locale;
 		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
 		this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 		this.program = program;
-	}
-
-	Usage(Collection<Argument<?>> arguments, Locale locale)
-	{
-		this(arguments, locale, ProgramInformation.AUTO);
-	}
-
-	String forCommand()
-	{
-		return commandUsage() + buildArgumentDescriptions();
+		this.forCommand = forCommand;
 	}
 
 	private Iterable<Argument<?>> sortedArguments(Collection<Argument<?>> arguments)
@@ -153,7 +146,16 @@ public final class Usage
 	@Override
 	public String toString()
 	{
-		return mainUsage() + buildArgumentDescriptions();
+		String header = "";
+		if(forCommand)
+		{
+			header = commandUsage();
+		}
+		else
+		{
+			header = mainUsage();
+		}
+		return header + buildArgumentDescriptions();
 	}
 
 	private String mainUsage()

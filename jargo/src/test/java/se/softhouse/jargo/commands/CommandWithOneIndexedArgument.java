@@ -53,7 +53,7 @@ public class CommandWithOneIndexedArgument extends Command
 		this.executedCommands = executedCommands;
 	}
 
-	CommandWithOneIndexedArgument()
+	public CommandWithOneIndexedArgument()
 	{
 		this(Lists.<Command>newArrayList());
 	}
