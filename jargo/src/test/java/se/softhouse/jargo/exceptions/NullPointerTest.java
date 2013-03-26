@@ -14,9 +14,12 @@
  */
 package se.softhouse.jargo.exceptions;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.Arguments.integerArgument;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.jargo.Argument;
@@ -27,6 +30,7 @@ import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.StringParsers;
+import se.softhouse.jargo.commands.ProfilingExecuteCommand;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -63,6 +67,23 @@ public class NullPointerTest
 		catch(ArgumentException expected)
 		{
 			npeTester.testAllPublicInstanceMethods(expected);
+		}
+	}
+
+	@Ignore
+	@Test
+	public void testThatArgumentsAreCheckedForNullBeforeFirstParseTakesPlace() throws Exception
+	{
+		// TODO: fix
+		ProfilingExecuteCommand profiler = new ProfilingExecuteCommand();
+		try
+		{
+			CommandLineParser.withArguments(command(profiler).repeated().build()).parse("profile", "profile", null);
+			fail("null arguments should not be allowed");
+		}
+		catch(NullPointerException expected)
+		{
+			assertThat(profiler.numberOfCallsToExecute).as("null wasn't checked before commands were executed").isZero();
 		}
 	}
 }

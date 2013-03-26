@@ -49,6 +49,7 @@ import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
+import se.softhouse.jargo.stringparsers.custom.NullReturningParser;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
@@ -194,8 +195,8 @@ public class DefaultValueTest
 	@Test
 	public void testThatDefaultValueIsNotUsedWhenParserReturnsNull() throws ArgumentException
 	{
+		Object actualValue = withParser(new NullReturningParser()).names("-n").defaultValue("defaultValue").parse("-n", "bar");
 		// TODO: fix so that null can't be passed as an argument? Keep test at least.
-		Object actualValue = objectArgument().names("-n").defaultValue("defaultValue").parse("-n", null);
 		assertThat(actualValue).isNull();
 	}
 
