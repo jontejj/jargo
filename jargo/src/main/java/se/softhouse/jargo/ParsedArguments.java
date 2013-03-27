@@ -70,8 +70,6 @@ public final class ParsedArguments
 	@CheckReturnValue
 	public <T> T get(final Argument<T> argumentToFetch)
 	{
-		checkNotNull(argumentToFetch);
-
 		if(!wasGiven(argumentToFetch))
 		{
 			checkArgument(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);

@@ -100,7 +100,6 @@ public final class Launcher
 	 */
 	public static LaunchedProgram launch(Class<?> classWithMainMethod, String ... programArguments) throws IOException, InterruptedException
 	{
-		checkNotNull(classWithMainMethod);
 		checkNotNull(programArguments);
 		try
 		{

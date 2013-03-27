@@ -14,7 +14,6 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.asList;
 import static se.softhouse.common.strings.Describers.booleanAsEnabledDisabled;
 import static se.softhouse.common.strings.Describers.characterDescriber;
@@ -281,7 +280,6 @@ public final class Arguments
 	@Nonnull
 	public static <T> DefaultArgumentBuilder<T> withParser(final StringParser<T> parser)
 	{
-		checkNotNull(parser);
 		return new DefaultArgumentBuilder<T>(parser);
 	}
 }

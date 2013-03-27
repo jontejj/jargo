@@ -275,7 +275,6 @@ public final class StringParsers
 	@Nonnull
 	public static <T extends Enum<T>> StringParser<T> enumParser(final Class<T> enumToHandle)
 	{
-		checkNotNull(enumToHandle);
 		return new EnumParser<T>(enumToHandle);
 	}
 
@@ -285,7 +284,7 @@ public final class StringParsers
 
 		private EnumParser(final Class<E> enumToHandle)
 		{
-			enumType = enumToHandle;
+			enumType = checkNotNull(enumToHandle);
 		}
 
 		@Override
@@ -841,7 +840,7 @@ public final class StringParsers
 				throws ArgumentException
 		{
 			if(!arguments.hasNext())
-				return emptyList();
+				throw forMissingParameter(argumentSettings);
 
 			String values = arguments.next();
 			List<T> result = new ArrayList<T>();

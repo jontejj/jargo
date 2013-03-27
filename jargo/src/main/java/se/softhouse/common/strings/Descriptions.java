@@ -46,7 +46,6 @@ public final class Descriptions
 	@CheckReturnValue
 	public static Description withString(String description)
 	{
-		checkNotNull(description);
 		return new NonLazyDescription(description);
 	}
 
@@ -56,7 +55,7 @@ public final class Descriptions
 
 		private NonLazyDescription(String description)
 		{
-			this.description = description;
+			this.description = checkNotNull(description);
 		}
 
 		@Override
@@ -79,8 +78,6 @@ public final class Descriptions
 	@CheckReturnValue
 	public static Description format(String formatTemplate, Object ... args)
 	{
-		checkNotNull(formatTemplate);
-		checkNotNull(args);
 		return new FormatDescription(formatTemplate, args);
 	}
 
@@ -91,8 +88,8 @@ public final class Descriptions
 
 		private FormatDescription(String formattingTemplate, Object ... args)
 		{
-			this.formattingTemplate = formattingTemplate;
-			this.args = args;
+			this.formattingTemplate = checkNotNull(formattingTemplate);
+			this.args = checkNotNull(args);
 		}
 
 		@Override
@@ -114,8 +111,7 @@ public final class Descriptions
 	 */
 	public static Description cache(Description description)
 	{
-		checkNotNull(description);
-		return new CachingDescription(description);
+		return new CachingDescription(checkNotNull(description));
 	}
 
 	private static final class CachingDescription implements Description
@@ -155,7 +151,6 @@ public final class Descriptions
 	@CheckReturnValue
 	public static Description toString(Object value)
 	{
-		checkNotNull(value);
 		return new ToStringDescription(value);
 	}
 
@@ -165,7 +160,7 @@ public final class Descriptions
 
 		private ToStringDescription(Object value)
 		{
-			this.value = value;
+			this.value = checkNotNull(value);
 		}
 
 		@Override
@@ -189,7 +184,6 @@ public final class Descriptions
 	@CheckReturnValue
 	public static IllegalArgumentException illegalArgument(Description message)
 	{
-		checkNotNull(message);
 		return new DescriptionException(message);
 	}
 
@@ -201,8 +195,6 @@ public final class Descriptions
 	@CheckReturnValue
 	public static IllegalArgumentException illegalArgument(Description message, Throwable cause)
 	{
-		checkNotNull(message);
-		checkNotNull(cause);
 		return new DescriptionException(message, cause);
 	}
 
@@ -212,13 +204,13 @@ public final class Descriptions
 
 		private DescriptionException(final Description message)
 		{
-			this.message = Descriptions.asSerializable(message);
+			this.message = checkNotNull(Descriptions.asSerializable(message));
 		}
 
 		private DescriptionException(final Description message, Throwable cause)
 		{
-			this.message = Descriptions.asSerializable(message);
-			initCause(cause);
+			this(message);
+			initCause(checkNotNull(cause));
 		}
 
 		@Override
@@ -242,7 +234,6 @@ public final class Descriptions
 	@CheckReturnValue
 	public static SerializableDescription asSerializable(Description description)
 	{
-		checkNotNull(description);
 		return new SerializableDescription(description);
 	}
 
@@ -255,7 +246,7 @@ public final class Descriptions
 
 		private SerializableDescription(Description descriptionToSerialize)
 		{
-			description = descriptionToSerialize;
+			description = checkNotNull(descriptionToSerialize);
 		}
 
 		private static final class SerializationProxy implements Serializable

@@ -58,11 +58,11 @@ public final class Argument<T>
 {
 	@Nonnull private final List<String> names;
 	@Nonnull private final Description description;
-	@Nullable private final Optional<String> metaDescription;
+	@Nonnull private final Optional<String> metaDescription;
 	private final boolean hideFromUsage;
 
-	@Nullable private final String separator;
-	private final Optional<Locale> localeOveride;
+	@Nonnull private final String separator;
+	@Nonnull private final Optional<Locale> localeOveride;
 	private final boolean required;
 	private final boolean ignoreCase;
 	private final boolean isAllowedToRepeat;
@@ -325,6 +325,11 @@ public final class Argument<T>
 		return names().isEmpty();
 	}
 
+	boolean isHelpArgument()
+	{
+		return parser().equals(HelpParser.INSTANCE);
+	}
+
 	private CommandLineParserInstance commandLineParser()
 	{
 		// Not cached to save memory, users should use CommandLineParser.withArguments if they are
@@ -379,9 +384,4 @@ public final class Argument<T>
 			return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 		}
 	};
-
-	boolean isHelpArgument()
-	{
-		return parser().equals(HelpParser.INSTANCE);
-	}
 }

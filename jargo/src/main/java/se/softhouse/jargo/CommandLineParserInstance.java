@@ -726,7 +726,7 @@ final class CommandLineParserInstance
 	static CommandLineParserInstance createCommandParser(List<Argument<?>> commandArguments)
 	{
 		if(commandArguments.isEmpty())
-			return ParserCache.NO_ARG_COMMAND_PARSER;
+			return ParserCache.NO_ARGS;
 		return new CommandLineParserInstance(commandArguments, ProgramInformation.AUTO, true);
 	}
 
@@ -740,7 +740,7 @@ final class CommandLineParserInstance
 		{
 		}
 
-		static final CommandLineParserInstance NO_ARG_COMMAND_PARSER = new CommandLineParserInstance(Collections.<Argument<?>>emptyList(),
+		static final CommandLineParserInstance NO_ARGS = new CommandLineParserInstance(Collections.<Argument<?>>emptyList(),
 				ProgramInformation.AUTO,
 				true);
 	}

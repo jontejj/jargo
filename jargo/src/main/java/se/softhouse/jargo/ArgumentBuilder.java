@@ -332,8 +332,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * The {@link Argument#toString()} will be used to print each missing argument.
 	 * 
 	 * <b>Note</b>: If you choose to use multiple {@link #required()} indexed arguments all of them
-	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages better
-	 * can point out erroneous arguments
+	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages
+	 * can point out erroneous arguments better
 	 * 
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #defaultValue(Object)} (or
@@ -608,7 +608,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * 
 	 * <b>Note:</b> if {@link #defaultValue(Object) default value} has been set before
 	 * {@link #variableArity()} is called the {@link #defaultValue(Object) default value} will be a
-	 * one element list with that value in it, otherwise it will be empty.
+	 * list with that one element in it, otherwise it will be empty.
 	 * 
 	 * @return a new (more specific) builder
 	 */
@@ -665,9 +665,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
-	 * String[] arguments = "--numbers", "1", "2", "--numbers", "3", "4"};
-	 * List&lt;List&lt;Integer&gt;&gt; numberLists =
-	 * integerArgument("--numbers").arity(2).repeated().parse(arguments);
+	 * String[] arguments = {"--numbers", "1", "2", "--numbers", "3", "4"};
+	 * List&lt;List&lt;Integer&gt;&gt; numberLists = integerArgument("--numbers").arity(2).repeated().parse(arguments);
 	 * assertThat(numberLists).isEqualTo(asList(asList(1, 2), asList(3, 4)));
 	 * </code>
 	 * </pre>
@@ -676,7 +675,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * 
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
-	 * String[] arguments = "-Nnumber=1", "-Nnumber=2"};
+	 * String[] arguments = {"-Nnumber=1", "-Nnumber=2"};
 	 * Map&lt;String, List&lt;Integer&gt;&gt; numberMap = integerArgument("-N").repeated().asPropertyMap().parse(arguments);
 	 * assertThat(numberMap.get("number")).isEqualTo(asList(1, 2));
 	 * </code>
@@ -747,7 +746,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	final SELF finalizeWith(Function<T, T> aFinalizer)
 	{
-		finalizer = Functions2.compound(finalizer, checkNotNull(aFinalizer));
+		finalizer = Functions2.compound(finalizer, aFinalizer);
 		return myself;
 	}
 
@@ -813,7 +812,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		DefaultArgumentBuilder(final StringParser<T> aParser)
 		{
-			parser = aParser;
+			parser = checkNotNull(aParser);
 		}
 
 		@Override

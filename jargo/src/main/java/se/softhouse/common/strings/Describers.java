@@ -54,7 +54,6 @@ public final class Describers
 	@CheckReturnValue
 	public static <T> Describer<T> withConstantString(final String constant)
 	{
-		checkNotNull(constant);
 		return new ConstantStringDescriber<T>(constant);
 	}
 
@@ -66,7 +65,7 @@ public final class Describers
 
 		private ConstantStringDescriber(final String constant)
 		{
-			this.constant = constant;
+			this.constant = checkNotNull(constant);
 		}
 
 		@Override
@@ -481,7 +480,6 @@ public final class Describers
 	@CheckReturnValue
 	public static <T> Describer<List<? extends T>> listDescriber(Describer<T> valueDescriber)
 	{
-		checkNotNull(valueDescriber);
 		return new ListDescriber<T>(valueDescriber, ", ");
 	}
 
@@ -494,8 +492,6 @@ public final class Describers
 	@CheckReturnValue
 	public static <T> Describer<List<? extends T>> listDescriber(Describer<T> valueDescriber, String valueSeparator)
 	{
-		checkNotNull(valueDescriber);
-		checkNotNull(valueSeparator);
 		return new ListDescriber<T>(valueDescriber, valueSeparator);
 	}
 
@@ -506,8 +502,8 @@ public final class Describers
 
 		ListDescriber(Describer<T> valueDescriber, String valueSeparator)
 		{
-			this.valueDescriber = valueDescriber;
-			this.valueSeparator = valueSeparator;
+			this.valueDescriber = checkNotNull(valueDescriber);
+			this.valueSeparator = checkNotNull(valueSeparator);
 		}
 
 		@Override

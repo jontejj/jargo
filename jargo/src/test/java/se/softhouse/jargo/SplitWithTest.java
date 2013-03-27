@@ -29,6 +29,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.Explanation;
+import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
+import se.softhouse.jargo.internal.Texts.UserErrors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -90,7 +92,15 @@ public class SplitWithTest
 	@Test
 	public void testSplittingWithNoArg() throws ArgumentException
 	{
-		assertThat(integerArgument("-n").splitWith(",").parse("-n")).isEqualTo(emptyList());
+		try
+		{
+			integerArgument("-n").splitWith(",").parse("-n");
+			fail("no parameter to splitted argument should not be allowed, user must use \"\" to specify an empty list of values");
+		}
+		catch(MissingParameterException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.MISSING_PARAMETER, "<integer>", "-n"));
+		}
 	}
 
 	@Test

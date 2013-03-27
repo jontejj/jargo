@@ -112,7 +112,6 @@ public final class ArgumentExceptions
 	@Nonnull
 	public static ArgumentException wrapException(final Throwable exceptionToWrap)
 	{
-		checkNotNull(exceptionToWrap);
 		return new WrappedArgumentException(exceptionToWrap);
 	}
 
@@ -122,7 +121,7 @@ public final class ArgumentExceptions
 
 		WrappedArgumentException(final Throwable wrappedException)
 		{
-			this.wrappedException = wrappedException;
+			this.wrappedException = checkNotNull(wrappedException);
 			initCause(wrappedException);
 		}
 
@@ -147,7 +146,6 @@ public final class ArgumentExceptions
 	@Nonnull
 	static IllegalArgumentException asUnchecked(final ArgumentException cause)
 	{
-		checkNotNull(cause);
 		return new UncheckedArgumentException(cause);
 	}
 
@@ -155,7 +153,7 @@ public final class ArgumentExceptions
 	{
 		UncheckedArgumentException(final ArgumentException cause)
 		{
-			super(cause);
+			super(checkNotNull(cause));
 		}
 
 		@Override
