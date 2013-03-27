@@ -15,7 +15,6 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMap;
@@ -23,6 +22,7 @@ import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
 import static java.util.Collections.emptySet;
+import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
 import static se.softhouse.common.strings.Descriptions.format;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
@@ -208,9 +208,10 @@ final class CommandLineParserInstance
 	}
 
 	@Nonnull
-	ParsedArguments parse(final List<String> actualArguments, Locale localeToParseWith) throws ArgumentException
+	ParsedArguments parse(final Iterable<String> actualArguments, Locale localeToParseWith) throws ArgumentException
 	{
-		return parse(ArgumentIterator.forArguments(actualArguments, helpArguments), localeToParseWith);
+		ArgumentIterator arguments = ArgumentIterator.forArguments(actualArguments, helpArguments);
+		return parse(arguments, localeToParseWith);
 	}
 
 	@Nonnull
@@ -528,9 +529,9 @@ final class CommandLineParserInstance
 		/**
 		 * @param actualArguments a list of arguments, will be modified
 		 */
-		private ArgumentIterator(List<String> actualArguments, Map<String, Argument<?>> helpArguments)
+		private ArgumentIterator(Iterable<String> actualArguments, Map<String, Argument<?>> helpArguments)
 		{
-			this.arguments = actualArguments;
+			this.arguments = checkNulls(actualArguments, "Argument strings may not be null");
 			this.helpArguments = helpArguments;
 		}
 
@@ -593,11 +594,9 @@ final class CommandLineParserInstance
 			return arguments.get(indexOfLastCommand);
 		}
 
-		static ArgumentIterator forArguments(List<String> actualArguments, Map<String, Argument<?>> helpArguments)
+		static ArgumentIterator forArguments(Iterable<String> arguments, Map<String, Argument<?>> helpArguments)
 		{
-			// specialSeparatorArguments, KeyValueParser etc may modify the list
-			// so it should be a private copy
-			return new ArgumentIterator(actualArguments, helpArguments);
+			return new ArgumentIterator(arguments, helpArguments);
 		}
 
 		/**
@@ -617,7 +616,7 @@ final class CommandLineParserInstance
 		@Override
 		public String next()
 		{
-			String nextArgument = checkNotNull(arguments.get(currentArgumentIndex++), "Argument strings may not be null");
+			String nextArgument = arguments.get(currentArgumentIndex++);
 			return nextArgument;
 		}
 

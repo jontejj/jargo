@@ -174,7 +174,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final String ... actualArguments) throws ArgumentException
 	{
-		return parser().parse(Lists.newArrayList(actualArguments), locale());
+		return parser().parse(asList(actualArguments), locale());
 	}
 
 	/**
@@ -183,7 +183,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final Iterable<String> actualArguments) throws ArgumentException
 	{
-		return parser().parse(Lists.newArrayList(actualArguments), locale());
+		return parser().parse(actualArguments, locale());
 	}
 
 	/**

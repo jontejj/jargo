@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.Arguments.integerArgument;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.jargo.Argument;
@@ -70,11 +69,9 @@ public class NullPointerTest
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testThatArgumentsAreCheckedForNullBeforeFirstParseTakesPlace() throws Exception
 	{
-		// TODO: fix
 		ProfilingExecuteCommand profiler = new ProfilingExecuteCommand();
 		try
 		{
@@ -84,6 +81,7 @@ public class NullPointerTest
 		catch(NullPointerException expected)
 		{
 			assertThat(profiler.numberOfCallsToExecute).as("null wasn't checked before commands were executed").isZero();
+			assertThat(expected).hasMessage("Argument strings may not be null (discovered one at index 2)");
 		}
 	}
 }

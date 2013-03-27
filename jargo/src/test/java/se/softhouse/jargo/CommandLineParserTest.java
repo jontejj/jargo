@@ -253,7 +253,7 @@ public class CommandLineParserTest
 		}
 		catch(NullPointerException expected)
 		{
-			assertThat(expected).hasMessage("Argument strings may not be null");
+			assertThat(expected).hasMessage("Argument strings may not be null (discovered one at index 0)");
 		}
 	}
 
