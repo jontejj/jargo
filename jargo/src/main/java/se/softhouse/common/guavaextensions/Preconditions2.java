@@ -14,6 +14,8 @@
  */
 package se.softhouse.common.guavaextensions;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -37,6 +39,7 @@ public final class Preconditions2
 	 */
 	public static <T> List<T> checkNulls(Iterable<T> items, String message)
 	{
+		checkNotNull(message, "a message describing what it is that is containing the elements must be given");
 		List<T> nullCheckedList = Lists.newArrayList(items);
 		int index = 0;
 		for(T element : nullCheckedList)
