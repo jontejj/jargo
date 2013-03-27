@@ -17,6 +17,7 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
@@ -120,7 +121,7 @@ public class UsageTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "--namr", "--name\n\t--number"));
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "--namr", "--name" + NEWLINE + TAB + "--number"));
 		}
 	}
 

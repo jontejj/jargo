@@ -196,7 +196,6 @@ public final class StringParsers
 		@Override
 		public File defaultValue()
 		{
-			// TODO: does this work in Windows?
 			return new File(".");
 		}
 
