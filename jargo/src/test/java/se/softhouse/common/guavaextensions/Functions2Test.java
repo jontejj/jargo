@@ -52,7 +52,7 @@ public class Functions2Test
 	};
 
 	@Test
-	public void testRepeatThreeTimes()
+	public void testRepeatTwoTimes()
 	{
 		assertThat(Functions2.repeat(ADD_ONE, 2).apply(0)).isEqualTo(2);
 	}
@@ -61,6 +61,12 @@ public class Functions2Test
 	public void testThatNegativeRepitionsIsIllegal()
 	{
 		Functions2.repeat(ADD_ONE, -1);
+	}
+
+	@Test
+	public void testThatZeroRepitionsReturnsTheSameObjectAsInput()
+	{
+		assertThat(Functions2.repeat(ADD_ONE, 0).apply(1)).isEqualTo(1);
 	}
 
 	@Test

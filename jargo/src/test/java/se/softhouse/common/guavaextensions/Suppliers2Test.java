@@ -14,6 +14,7 @@
  */
 package se.softhouse.common.guavaextensions;
 
+import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -75,6 +76,12 @@ public class Suppliers2Test
 	public void testThatNegativeRepeatsIsIllegal()
 	{
 		Suppliers2.ofRepeatedElements(FOO_SUPPLIER, -1);
+	}
+
+	@Test
+	public void testThatZeroRepeatsIsReturnsEmptyList()
+	{
+		assertThat(Suppliers2.ofRepeatedElements(FOO_SUPPLIER, 0).get()).isEqualTo(emptyList());
 	}
 
 	@Test

@@ -540,11 +540,6 @@ final class CommandLineParserInstance
 			return helpArguments.get(currentArgument);
 		}
 
-		Map<String, Argument<?>> helpArguments()
-		{
-			return helpArguments;
-		}
-
 		void setCurrentParser(CommandLineParserInstance instance)
 		{
 			currentParser = instance;
@@ -597,6 +592,11 @@ final class CommandLineParserInstance
 		static ArgumentIterator forArguments(Iterable<String> arguments, Map<String, Argument<?>> helpArguments)
 		{
 			return new ArgumentIterator(arguments, helpArguments);
+		}
+
+		static ArgumentIterator forArguments(Iterable<String> arguments)
+		{
+			return new ArgumentIterator(arguments, Collections.<String, Argument<?>>emptyMap());
 		}
 
 		/**

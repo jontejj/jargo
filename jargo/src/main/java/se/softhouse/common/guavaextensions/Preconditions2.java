@@ -18,7 +18,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -31,12 +34,17 @@ public final class Preconditions2
 	}
 
 	/**
+	 * <pre>
 	 * Returns {@code items} as a <i>modifiable</i> {@link List} that's guaranteed not to contain
 	 * any nulls.
+	 * Use {@link ImmutableList#copyOf(Iterable)} if the returned list doesn't have to be
+	 * <i>modifiable</i> and a {@code message} isn't needed.
 	 * 
 	 * @throws NullPointerException with {@code message} (plus the index of the first
 	 *             <code>null</code> element) if any element in {@code items} is <code>null</code>
+	 * </pre>
 	 */
+	@Nonnull
 	public static <T> List<T> checkNulls(Iterable<T> items, String message)
 	{
 		checkNotNull(message, "a message describing what it is that is containing the elements must be given");

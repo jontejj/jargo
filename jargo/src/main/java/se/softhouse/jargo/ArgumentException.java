@@ -135,10 +135,9 @@ public abstract class ArgumentException extends Exception
 	 * message if {@link #getMessageAndUsage()} is used. This method overrides that to be
 	 * {@code usageReference} instead.
 	 */
-	ArgumentException withUsageReference(final String usageReference)
+	void withUsageReference(final String usageReference)
 	{
 		usageReferenceName = checkNotNull(usageReference);
-		return this;
 	}
 
 	ArgumentException withUsageReference(final Argument<?> usageReference)

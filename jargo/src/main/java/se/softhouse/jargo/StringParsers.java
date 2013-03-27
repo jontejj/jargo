@@ -846,7 +846,7 @@ public final class StringParsers
 
 			for(String value : splitter.split(values))
 			{
-				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value), arguments.helpArguments());
+				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value));
 				T parsedValue = elementParser().parse(argument, null, argumentSettings, locale);
 				result.add(parsedValue);
 			}

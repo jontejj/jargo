@@ -207,7 +207,7 @@ public final class Functions2
 	public static <T> Function<T, T> repeat(Function<T, T> function, long times)
 	{
 		checkNotNull(function);
-		checkArgument(times > 0, "Useless to repeat something zero times");
+		checkArgument(times >= 0, "times (%s) must be positive", times);
 		return new FunctionRepeater<T>(function, times);
 	}
 

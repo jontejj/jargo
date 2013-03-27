@@ -18,6 +18,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesign;
 import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.ProgramInformation.withProgramName;
 import static se.softhouse.jargo.StringParsers.optionParser;
 
@@ -117,6 +118,17 @@ public class PackagePrivateTests
 	{
 		assertThat(optionParser(true).defaultValue()).isTrue();
 		assertThat(optionParser(false).defaultValue()).isFalse();
+	}
+
+	@Test
+	public void testThatUsageReferenceCanOnlyBeSetOneTime()
+	{
+		ArgumentException e = ArgumentExceptions.withMessage("");
+		e = e.withUsageReference(integerArgument().build());
+		e = e.withUsageReference(stringArgument().build());
+		e.withUsage(new Usage(Collections.<Argument<?>>emptyList(), Locale.US, ProgramInformation.AUTO, false));
+		assertThat(e.getMessageAndUsage()).as("string should not be able to override integer")
+				.startsWith(String.format(UsageTexts.USAGE_REFERENCE, "<integer>"));
 	}
 
 	@Test

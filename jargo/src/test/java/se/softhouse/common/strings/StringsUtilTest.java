@@ -74,6 +74,13 @@ public class StringsUtilTest
 	}
 
 	@Test
+	public void testThatTheFirstOfTwoEquallyGoodMatchesIsChosen()
+	{
+		List<String> strings = asList("logg", "kogg", "sogg");
+		assertThat(closestMatch("bogg", strings)).isEqualTo("logg");
+	}
+
+	@Test
 	public void testThatEmptyStringIsReturnedForSmallInput()
 	{
 		List<String> strings = asList("--logging", "--help", "");
@@ -157,6 +164,14 @@ public class StringsUtilTest
 		{
 			assertThat(expected).hasMessage("nth must be at least 1 (was 0)");
 		}
+	}
+
+	@Test
+	public void testStartsWithAndMore() throws Exception
+	{
+		assertThat(StringsUtil.startsWithAndHasMore("foo", "foo")).as("foo is equal to foo so should not have more").isFalse();
+		assertThat(StringsUtil.startsWithAndHasMore("foos", "foo")).as("foos starts with foo and should have more (the s)").isTrue();
+		assertThat(StringsUtil.startsWithAndHasMore("bar", "foo")).isFalse();
 	}
 
 	@Test
