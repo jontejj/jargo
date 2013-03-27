@@ -50,6 +50,7 @@ public class FileArgumentTest
 	public void testThatFileArgumentsDefaultsToCurrentDirectory() throws ArgumentException
 	{
 		File defaultFile = fileArgument("-f").parse();
-		assertThat(defaultFile).isEqualTo(new File("."));
+		assertThat(defaultFile).exists().isDirectory().isEqualTo(new File("."));
+
 	}
 }
