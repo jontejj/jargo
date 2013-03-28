@@ -62,18 +62,23 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
 3. The generics on Argument gives you compile-time errors when switching types
 
     In JCommander:  
+    ```java
     @Parameter(names = "-file", converter = FileConverter.class)  
     File file; //Oops, changing this to int would not work very well with FileConverter
+    ```
 
     In jargo:  
+    ```java
     Arguments.fileArgument("-file").parse("-file", "filename.txt").createNewFile();
+    ```
 
     if fileArgument would change to being integerArgument, trying to call createNewFile() would generate a compile-time error
 
 4. Because JCommander doesn't support repeated arguments other than List&lt;String&gt;
-
+    ```java
     String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};  
     Argument&lt;List&lt;List&lt;Integer&gt;&gt;&gt; numbers = Arguments.integerArgument("--numbers").arity(2).repeated().build();
+    ```
 
 5. Because I love [Guava](https://code.google.com/p/guava-libraries/) and wanted an argument parsing
     library well integrated with it (more to come in this department)
