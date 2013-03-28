@@ -71,7 +71,7 @@ public abstract class ArgumentException extends Exception
 	 */
 	public final String getMessageAndUsage()
 	{
-		// TODO: jack into the uncaughtExceptionHandler and remove stacktraces?
+		// TODO(jontejj): jack into the uncaughtExceptionHandler and remove stacktraces?
 		String message = getMessage(usedArgumentName);
 		return message + usageReference() + NEWLINE + NEWLINE + getUsage();
 	}
@@ -96,7 +96,6 @@ public abstract class ArgumentException extends Exception
 	@Override
 	public final String getMessage()
 	{
-		// TODO: Reference to usageReference even without usage?
 		return getMessage(usedArgumentName);
 	}
 

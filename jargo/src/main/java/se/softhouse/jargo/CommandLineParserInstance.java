@@ -35,6 +35,7 @@ import static se.softhouse.jargo.ArgumentExceptions.forMissingArguments;
 import static se.softhouse.jargo.ArgumentExceptions.forUnallowedRepetitionArgument;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.ArgumentExceptions.wrapException;
+import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -237,7 +238,11 @@ final class CommandLineParserInstance
 		return holder;
 	}
 
-	// TODO: write toString...
+	@Override
+	public String toString()
+	{
+		return usage(US_BY_DEFAULT).toString();
+	}
 
 	private void parseArguments(final ArgumentIterator actualArguments, final ParsedArguments holder, Locale locale) throws ArgumentException
 	{
@@ -382,7 +387,6 @@ final class CommandLineParserInstance
 
 	private Argument<?> indexedArgument(ArgumentIterator arguments, ParsedArguments holder)
 	{
-		// TODO: Support -- to indicate end of options and start of indexed options
 		if(holder.indexedArgumentsParsed() < indexedArguments.size())
 		{
 			Argument<?> definition = indexedArguments.get(holder.indexedArgumentsParsed());
@@ -412,8 +416,6 @@ final class CommandLineParserInstance
 		if(!availableArguments.isEmpty())
 		{
 			List<String> suggestions = StringsUtil.closestMatches(arguments.current(), availableArguments, ONLY_REALLY_CLOSE_MATCHES);
-			// TODO: offer yes or no and continue the parsing on yes instead of throwing, only if
-			// one match?
 			if(!suggestions.isEmpty())
 				throw withMessage(format(UserErrors.SUGGESTION, arguments.current(), NEW_LINE_AND_TAB.join(suggestions)));
 		}

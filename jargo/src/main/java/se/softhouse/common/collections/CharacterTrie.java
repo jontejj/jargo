@@ -42,7 +42,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * If you're iterating over the whole trie more often than you do simple lookups like
  * {@link #getEntriesWithPrefix(CharSequence)} you're probably better off using a {@link TreeMap}.
  * 
- * TODO: Implement SortedMap instead of Map
+ * TODO(jontejj): Implement SortedMap instead of Map
  * 
  * @param <V> the type of values stored in the trie
  * </pre>
@@ -66,8 +66,8 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 
 		/**
 		 * If true this node represents a value.
-		 * TODO: This could have been optimized so that all entries have values. I.e there's not a
-		 * level for each character if there's no other string that shares the prefix.
+		 * TODO(jontejj): This could have been optimized so that all entries have values. I.e
+		 * there's not a level for each character if there's no other string that shares the prefix.
 		 */
 		private boolean isValue;
 

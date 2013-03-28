@@ -118,9 +118,6 @@ public class SplitWithTest
 	@Test
 	public void testSplittingWithOnlyWhitespaceInInputString() throws ArgumentException
 	{
-		// TODO: how to handle -s --numbers 1,2, should a direct lookup be made for --numbers?
-		// I.e throw something like:
-		// ArgumentExceptions.withMessage("--numbers matches an argument, did you really mean to use it as input to -s? If so, surround it with quotes.")
 		assertThat(integerArgument("-n").splitWith(",").parse("-n", " 	\n\r")).isEqualTo(emptyList());
 	}
 

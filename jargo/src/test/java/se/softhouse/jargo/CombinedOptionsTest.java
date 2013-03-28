@@ -45,8 +45,6 @@ public class CombinedOptionsTest
 		Argument<Boolean> logging = optionArgument("-l").build();
 		Argument<Integer> number = integerArgument("-n").build();
 
-		// TODO: allow -ln 100 ?
-
 		CommandLineParser.withArguments(logging, number).parse("-ln");
 	}
 

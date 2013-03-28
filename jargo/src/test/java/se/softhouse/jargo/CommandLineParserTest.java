@@ -274,7 +274,7 @@ public class CommandLineParserTest
 	}
 
 	/**
-	 * TODO: Supporting @/path/to/arguments style arguments has the obvious
+	 * TODO(jontejj): Supporting @/path/to/arguments style arguments has the obvious
 	 * limitation that arguments starting with @ and that don't want the
 	 * argument to be parsed as a filename can't be accepted,
 	 * can quotes be used to circumvent this?
@@ -468,6 +468,6 @@ public class CommandLineParserTest
 		assertThat(integerArgument("hidden-argument").hideFromUsage().arity(2).usage()).doesNotContain("hidden-argument");
 	}
 
-	// TODO: Test for memory leaks by parsing a gigantic string and System.gc -
+	// TODO(jontejj): Test for memory leaks by parsing a gigantic string and System.gc -
 	// MemoryTester#allocateLargeString
 }

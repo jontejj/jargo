@@ -77,7 +77,7 @@ public final class Usage
 
 	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program, boolean forCommand)
 	{
-		// TODO: don't do any of this in the constructor
+		// TODO(jontejj): don't do any of this in the constructor
 		Collection<Argument<?>> visibleArguments = filter(arguments, IS_VISIBLE);
 		this.locale = locale;
 		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
@@ -206,8 +206,6 @@ public final class Usage
 		int lengthOfFirstColumn = builder.length() - lengthBeforeCurrentArgument;
 		builder.append(spaces(indexOfDescriptionColumn - lengthOfFirstColumn));
 
-		// TODO: handle long descriptions, names, meta descriptions, default value
-		// descriptions
 		String description = arg.description();
 		if(!description.isEmpty())
 		{
@@ -250,8 +248,6 @@ public final class Usage
 
 	private <T> void valueExplanation(final Argument<T> arg)
 	{
-		// TODO: handle long value explanations, replace each newline with enough spaces,
-		// split up long lines, Use BreakIterator.getLineInstance()?
 		String description = arg.descriptionOfValidValues(locale);
 		if(!description.isEmpty())
 		{

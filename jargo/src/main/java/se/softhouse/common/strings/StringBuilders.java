@@ -23,9 +23,6 @@ public final class StringBuilders
 	{
 	}
 
-	// TODO: write an API for reusing StringBuilders, a ThreadLocal<StringBuilder> perhaps? callers
-	// must free the StringBuilder when they're done
-
 	/**
 	 * <pre>
 	 * Creates a {@link StringBuilder} with a pre-allocated array of {@code expectedSize}.

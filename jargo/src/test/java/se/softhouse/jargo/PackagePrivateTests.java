@@ -82,8 +82,15 @@ public class PackagePrivateTests
 	public void testCommandLineParserToString() throws ArgumentException
 	{
 		CommandLineParser parser = CommandLineParser.withArguments(integerArgument().build());
-		assertThat(parser.toString()).contains("Usage: ");
+		assertThat(parser.toString()).startsWith("Usage: ");
 		assertThat(parser.parse().toString()).isEqualTo("{}");
+	}
+
+	@Test
+	public void testCommandLineParserInstanceToString()
+	{
+		CommandLineParserInstance parser = CommandLineParser.withArguments(integerArgument().build()).parser();
+		assertThat(parser.toString()).startsWith("Usage: ");
 	}
 
 	@Test

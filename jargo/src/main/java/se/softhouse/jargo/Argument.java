@@ -177,7 +177,6 @@ public final class Argument<T>
 
 	String descriptionOfValidValues(Locale localeToDescribeValuesWith)
 	{
-		// TODO: What if several different limiters?
 		if(limiter != alwaysTrue())
 			return limiter.toString();
 

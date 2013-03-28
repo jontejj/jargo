@@ -223,8 +223,6 @@ public final class CommandLineParser
 	@Nonnull
 	public CommandLineParser andArguments(final Argument<?> ... argumentsToAlsoSupport)
 	{
-		// TODO: test thread safety, sleep long in a parser and, add argument and verify that the
-		// second parse uses the added argument
 		verifiedAdd(asList(argumentsToAlsoSupport));
 		return this;
 	}

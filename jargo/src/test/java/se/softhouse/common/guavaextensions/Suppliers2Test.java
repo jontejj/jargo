@@ -79,7 +79,7 @@ public class Suppliers2Test
 	}
 
 	@Test
-	public void testThatZeroRepeatsIsReturnsEmptyList()
+	public void testThatZeroRepeatsReturnsEmptyList()
 	{
 		assertThat(Suppliers2.ofRepeatedElements(FOO_SUPPLIER, 0).get()).isEqualTo(emptyList());
 	}

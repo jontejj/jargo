@@ -31,7 +31,7 @@ public class SecurityManagerDependencyTest
 {
 	public static void main(String[] args) throws Throwable
 	{
-		// TODO: introduce this as a security test
+		// TODO(jontejj): introduce this as a security test
 		System.setSecurityManager(new SecurityManager(){
 			@Override
 			public void checkPermission(Permission perm)

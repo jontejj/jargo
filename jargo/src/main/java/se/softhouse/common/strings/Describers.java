@@ -57,8 +57,6 @@ public final class Describers
 		return new ConstantStringDescriber<T>(constant);
 	}
 
-	// TODO: provide isConstant(Describer<?> describer) to ease optimizations?
-
 	private static final class ConstantStringDescriber<T> implements Describer<T>
 	{
 		private final String constant;
@@ -124,7 +122,7 @@ public final class Describers
 		{
 			if(value == null)
 				return NULL;
-			// TODO: describe more characters? All ASCII characters perhaps?
+			// TODO(jontejj): describe more characters? All ASCII characters perhaps?
 			// Character.isISOControl...
 			return ((int) value == 0) ? "the Null character" : value.toString();
 		}
@@ -383,7 +381,6 @@ public final class Describers
 			StringBuilder firstKeyValue = new StringBuilder();
 			describeEntry(iterator.next(), inLocale, firstKeyValue);
 
-			// TODO: what if it's expensive to call size()?
 			StringBuilder result = StringBuilders.withExpectedSize(firstKeyValue.length() * values.size());
 			result.append(firstKeyValue);
 

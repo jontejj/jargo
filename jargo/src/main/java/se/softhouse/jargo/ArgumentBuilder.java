@@ -290,10 +290,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * TODO: support resource bundles with i18n texts
-	 */
-
-	/**
 	 * <pre>
 	 * Sets {@code theDescription} of what this argument does/means. Printed with
 	 * {@link CommandLineParser#usage()}.
@@ -502,6 +498,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Beta
 	public SELF limitTo(Predicate<? super T> aLimiter)
 	{
+		// TODO(jontejj): Add support for several different limiters?
 		limiter = checkNotNull(aLimiter);
 		return myself;
 	}
@@ -869,6 +866,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			super(command);
 		}
 
+		// TODO(jontejj): add aliases(String ...aliases) method that delegates to names (keep main
+		// name)
+
 		/**
 		 * @deprecated Commands shouldn't be required
 		 */
@@ -982,7 +982,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			{
 				defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));
 			}
-			// TODO: should meta description <foo> be expanded to <foo> <foo>?
+			// TODO(jontejj): should meta description <foo> be expanded to <foo> <foo>?
 		}
 	}
 

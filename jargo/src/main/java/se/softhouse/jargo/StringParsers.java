@@ -451,9 +451,9 @@ public final class StringParsers
 			return '<' + type.name() + '>';
 		}
 
-		// TODO: checkCompatibilityWith(ArgumentBuilder<?, ?> builder), could make sure splitter is
-		// something else than "," (or the locale dependent decimal separator) if splitWith(",") is
-		// used
+		// TODO(jontejj): checkCompatibilityWith(ArgumentBuilder<?, ?> builder), could make sure
+		// splitter is something else than "," (or the locale dependent decimal separator) if
+		// splitWith(",") is used
 
 		@Override
 		public String toString()

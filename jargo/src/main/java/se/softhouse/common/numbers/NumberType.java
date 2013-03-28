@@ -168,7 +168,7 @@ public abstract class NumberType<T extends Number>
 	public final T parse(String value, Locale inLocale)
 	{
 		ParsePosition parsePosition = new ParsePosition(0);
-		// TODO: maybe remove spaces here? refer to
+		// TODO(jontejj): maybe remove spaces here? refer to
 		// http://bugs.sun.com/view_bug.do?bug_id=4510618
 		Number result = parser(inLocale).parse(value, parsePosition);
 
@@ -201,12 +201,12 @@ public abstract class NumberType<T extends Number>
 
 	NumberFormat parser(Locale inLocale)
 	{
-		// TODO: NumberType.INTEGER.parse("1.5); should not work, specify isDiscreet and set
-		// parseIntegerOnly on formatter, what about longs?
+		// TODO(jontejj): NumberType.INTEGER.parse("1.5); should not work, specify isDiscreet and
+		// set parseIntegerOnly on formatter, what about longs?
 		return NumberFormat.getInstance(inLocale);
 	}
 
-	// TODO: make this public once I figure out how to validate double/float
+	// TODO(jontejj): make this public once I figure out how to validate double/float
 	boolean inRange(Number number)
 	{
 		Long value = number.longValue();
@@ -230,7 +230,6 @@ public abstract class NumberType<T extends Number>
 	@Nonnull
 	public String descriptionOfValidValues(Locale inLocale)
 	{
-		// TODO: mention decimal separator here?
 		return format(minValue(), inLocale) + " to " + format(maxValue(), inLocale);
 	}
 
@@ -525,7 +524,6 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public String descriptionOfValidValues(Locale inLocale)
 		{
-			// TODO: put in resource bundle?
 			return "an arbitrary decimal number (practically no limits)";
 		}
 	}
