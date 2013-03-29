@@ -275,7 +275,9 @@ public final class Arguments
 
 	/**
 	 * Used to create {@link Argument} instances with a custom {@link StringParser}.
-	 * A custom {@link StringParser} is one which isn't available through {@link StringParsers}
+	 * A custom {@link StringParser} is one which isn't available through {@link StringParsers}.
+	 * Consider setting {@link ArgumentBuilder#names(String...) names} on the returned
+	 * {@link ArgumentBuilder builder}.
 	 */
 	@CheckReturnValue
 	@Nonnull

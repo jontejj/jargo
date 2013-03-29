@@ -628,6 +628,12 @@ final class CommandLineParserInstance
 			return arguments.subList(currentArgumentIndex, arguments.size()).toString();
 		}
 
+		/**
+		 * The opposite of {@link #next()}. In short it makes this iterator return what
+		 * {@link #next()} returned last time once again.
+		 * 
+		 * @return the {@link #current()} argument
+		 */
 		String previous()
 		{
 			return arguments.get(--currentArgumentIndex);

@@ -58,7 +58,9 @@ public final class Usage
 	private static final int SPACES_BETWEEN_COLUMNS = 4;
 	private static final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
 
-	private final ImmutableList<Argument<?>> argumentsToPrint;
+	private final Collection<Argument<?>> unfilteredArguments;
+
+	private ImmutableList<Argument<?>> argumentsToPrint;
 	private final Locale locale;
 	private final ProgramInformation program;
 	private final boolean forCommand;
@@ -71,19 +73,26 @@ public final class Usage
 	 * This would be 20.
 	 * </pre>
 	 */
-	private final int indexOfDescriptionColumn;
+	private int indexOfDescriptionColumn;
 	private boolean needsNewline = false;
 	private StringBuilder builder = null;
 
 	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program, boolean forCommand)
 	{
-		// TODO(jontejj): don't do any of this in the constructor
-		Collection<Argument<?>> visibleArguments = filter(arguments, IS_VISIBLE);
+		this.unfilteredArguments = arguments;
 		this.locale = locale;
-		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
-		this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 		this.program = program;
 		this.forCommand = forCommand;
+	}
+
+	private void init()
+	{
+		if(argumentsToPrint == null)
+		{
+			Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
+			this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
+			this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
+		}
 	}
 
 	private Iterable<Argument<?>> sortedArguments(Collection<Argument<?>> arguments)
@@ -146,6 +155,7 @@ public final class Usage
 	@Override
 	public String toString()
 	{
+		init();
 		String header = "";
 		if(forCommand)
 		{

@@ -16,19 +16,21 @@ package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static org.fest.assertions.Fail.failure;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
-import org.fest.assertions.Fail;
 import org.junit.Test;
 
 import se.softhouse.common.classes.Classes;
 import se.softhouse.common.strings.Description;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
+import se.softhouse.jargo.ForwardingStringParser.SimpleForwardingStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -210,6 +212,30 @@ public class UsageTest
 	}
 
 	@Test
+	public void testThatUsageInformationIsLazilyInitialized() throws ArgumentException
+	{
+		Argument<String> argument = withParser(new FailingMetaDescription()).names("-n").build();
+		CommandLineParser parser = CommandLineParser.withArguments(argument);
+		parser.usage(); // Should not cause meta description to be called as the usage isn't printed
+
+		assertThat(parser.parse("-n", "foo").get(argument)).isEqualTo("foo");
+	}
+
+	private static class FailingMetaDescription extends SimpleForwardingStringParser<String>
+	{
+		protected FailingMetaDescription()
+		{
+			super(StringParsers.stringParser());
+		}
+
+		@Override
+		public String metaDescription()
+		{
+			throw failure("meta description should not be called unless needed");
+		}
+	}
+
+	@Test
 	public void testThatDescriptionsAreNotLazilyInitializedWhenNotNeeded()
 	{
 		try
@@ -227,8 +253,7 @@ public class UsageTest
 		@Override
 		public String description()
 		{
-			Fail.fail("Description should not be called as no usage was printed");
-			return "";
+			throw failure("Description should not be called as no usage was printed");
 		}
 
 	}
