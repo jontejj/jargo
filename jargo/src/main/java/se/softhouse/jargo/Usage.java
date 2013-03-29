@@ -18,7 +18,6 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Ordering.usingToString;
 import static java.lang.Math.max;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.spaces;
@@ -49,6 +48,15 @@ import com.google.common.collect.Iterables;
  * <code class="language-java">
  * System.out.print(CommandLineParser.withArguments(someArguments).usage());
  * </code>
+ * </pre>
+ * 
+ * <pre>
+ * Sorts {@link Argument}s in the following order:
+ * <ol>
+ *   <li>{@link ArgumentBuilder#names(String...) indexed arguments} without a {@link ArgumentBuilder#variableArity() variable arity}</li>
+ * 	 <li>By their {@link ArgumentBuilder#names(String...) first name}  in a <a href="http://weblog.masukomi.org/2007/12/10/alphabetical-asciibetical">alphabetical</a> order</li>
+ * 	 <li>The remaining {@link ArgumentBuilder#names(String...) indexed arguments} that are of {@link ArgumentBuilder#variableArity() variable arity}</li>
+ * </ol>
  * </pre>
  */
 @NotThreadSafe
@@ -102,8 +110,7 @@ public final class Usage
 		Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
 
 		List<Argument<?>> sortedArgumentsByName = newArrayList(filter(arguments, not(IS_INDEXED)));
-
-		Collections.sort(sortedArgumentsByName, usingToString());
+		Collections.sort(sortedArgumentsByName, Argument.NAME_COMPARATOR);
 
 		return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
 	}

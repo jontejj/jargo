@@ -1,0 +1,9 @@
+Usage: alphabeticalOrder [Arguments]
+
+Arguments:
+-å <string>    <string>: any string
+               Default: 
+-ä <string>    <string>: any string
+               Default: 
+-ö <string>    <string>: any string
+               Default: 

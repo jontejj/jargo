@@ -20,7 +20,10 @@ import static se.softhouse.common.strings.Descriptions.format;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
+import java.text.CollationKey;
+import java.text.Collator;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,6 +79,9 @@ public final class Argument<T>
 	@Nonnull private final Function<T, T> finalizer;
 	private final ParameterArity parameterArity;
 	private final boolean isPropertyMap;
+	private final CollationKey sortingKey;
+
+	private static final Collator linguisticOrder = Collator.getInstance(Locale.ROOT);
 
 	/**
 	 * <pre>
@@ -123,6 +129,10 @@ public final class Argument<T>
 			// Calling this makes sure that the default value is within the limits of any limiter
 			defaultValue();
 		}
+
+		// Better to take the hit up front than to lazy load and experience latency when usage is
+		// requested for the first time
+		this.sortingKey = linguisticOrder.getCollationKey(toString());
 	}
 
 	/**
@@ -381,6 +391,15 @@ public final class Argument<T>
 		public boolean apply(@Nonnull Argument<?> input)
 		{
 			return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
+		}
+	};
+
+	static final Comparator<Argument<?>> NAME_COMPARATOR = new Comparator<Argument<?>>(){
+
+		@Override
+		public int compare(Argument<?> lhs, Argument<?> rhs)
+		{
+			return lhs.sortingKey.compareTo(rhs.sortingKey);
 		}
 	};
 }

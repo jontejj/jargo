@@ -7,6 +7,8 @@ Arguments:
                                                                        <string>: any string
 --arity <boolean> <boolean> <boolean> <boolean> <boolean> <boolean>    <boolean>: true or false
                                                                        Default: false, false, false, false, false, false
+-B<string>=<boolean>                                                   <string>=<boolean>: where "<string>" is any string and "<boolean>" is true or false
+                                                                       Default: Empty map
 --big-decimal <big-decimal>                                            <big-decimal>: an arbitrary decimal number (practically no limits)
                                                                        Default: 0
 --big-integer <big-integer>                                            <big-integer>: an arbitrary integer number (practically no limits)
@@ -23,8 +25,12 @@ Arguments:
                                                                        Default: null
 --file <path>                                                          <path>: a file path
                                                                        Default: The current directory
+-l, --enable-logging                                                   Output debug information to standard out
+                                                                       Default: disabled
 --long <long>                                                          <long>: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
                                                                        Default: 0
+-p, --listen-port <integer>                                            The port to start the server on. [Required]
+                                                                       <integer>: -2,147,483,648 to 2,147,483,647
 --repeated <integer>                                                   <integer>: -2,147,483,648 to 2,147,483,647
                                                                        Default: Empty list [Supports Multiple occurrences]
 --short <short>                                                        <short>: -32,768 to 32,767
@@ -35,9 +41,3 @@ Arguments:
                                                                        Default: 
 --variableArity <integer> ...                                          <integer>: -2,147,483,648 to 2,147,483,647
                                                                        Default: Empty list
--B<string>=<boolean>                                                   <string>=<boolean>: where "<string>" is any string and "<boolean>" is true or false
-                                                                       Default: Empty map
--l, --enable-logging                                                   Output debug information to standard out
-                                                                       Default: disabled
--p, --listen-port <integer>                                            The port to start the server on. [Required]
-                                                                       <integer>: -2,147,483,648 to 2,147,483,647

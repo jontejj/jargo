@@ -1,16 +1,22 @@
 Usage: indexedArgumentsSortingOrder [Arguments]
 
 Arguments:
- <string>      IndexOne
-               <string>: any string
-               Default: 
- <string>      IndexTwo
-               <string>: any string
-               Default: 
- <string>      IndexThree
-               <string>: any string
-               Default: 
--S <string>    <string>: any string
-               Default: 
--T <string>    <string>: any string
-               Default: 
+ <string>          IndexOne
+                   <string>: any string
+                   Default: 
+ <string>          IndexTwo
+                   <string>: any string
+                   Default: 
+ <string>          IndexThree
+                   <string>: any string
+                   Default: 
+-n <string> ...    NamedVariableArity
+                   <string>: any string
+                   Default: Empty list
+-S <string>        <string>: any string
+                   Default: 
+-T <string>        <string>: any string
+                   Default: 
+ <string> ...      VariableArity
+                   <string>: any string
+                   Default: Empty list

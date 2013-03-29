@@ -25,6 +25,8 @@ import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import se.softhouse.common.classes.Classes;
@@ -154,9 +156,14 @@ public class UsageTest
 		Argument<String> indexOne = stringArgument().description("IndexOne").build();
 		Argument<String> indexTwo = stringArgument().description("IndexTwo").build();
 		Argument<String> indexThree = stringArgument().description("IndexThree").build();
+		Argument<List<String>> variableArity = stringArgument().description("VariableArity").variableArity().build();
+		Argument<List<String>> namedVariableArity = stringArgument("-n").description("NamedVariableArity").variableArity().build();
 		Argument<String> namedOne = stringArgument("-S").build();
 		Argument<String> namedTwo = stringArgument("-T").build();
-		Usage usage = CommandLineParser.withArguments(indexOne, indexTwo, namedOne, indexThree, namedTwo).usage();
+		Usage usage = CommandLineParser.withArguments(namedOne, namedTwo)//
+				.andArguments(variableArity, namedVariableArity) //
+				.andArguments(indexOne, indexTwo, indexThree) //
+				.usage();
 
 		assertThat(usage).isEqualTo(expected("indexedArgumentsSortingOrder"));
 	}
@@ -255,6 +262,18 @@ public class UsageTest
 		{
 			throw failure("Description should not be called as no usage was printed");
 		}
+	}
 
+	/**
+	 * @see Usage
+	 */
+	@Test
+	public void testThatArgumentsAreSortedInLinguisticOrder()
+	{
+		// Unicode sorts å,ä,ö as ä,å,ö but in swedish it's actually å,ä,ö
+		Argument<String> first = stringArgument("-å").build();
+		Argument<String> second = stringArgument("-ä").build();
+		Argument<String> third = stringArgument("-ö").build();
+		assertThat(CommandLineParser.withArguments(first, second, third).usage()).isEqualTo(expected("alphabeticalOrder"));
 	}
 }

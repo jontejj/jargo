@@ -213,11 +213,14 @@ public final class CommandLineParser
 	}
 
 	/**
-	 * Adds support for {@code argumentsToAlsoSupport} in this {@link CommandLineParser}. Typically
-	 * used in a chained fashion when faced with many supported arguments.
+	 * <pre>
+	 * Adds support for {@code argumentsToAlsoSupport} in this {@link CommandLineParser}.
+	 * Typically used in a chained fashion when faced with many supported arguments.
+	 * Another usage is simply for readability: group arguments by logical groups
 	 * 
 	 * @param argumentsToAlsoSupport the arguments to add support for
 	 * @return this {@link CommandLineParser} to allow for chained calls
+	 * </pre>
 	 */
 	@CheckReturnValue
 	@Nonnull
