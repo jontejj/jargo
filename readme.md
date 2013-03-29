@@ -35,7 +35,7 @@ catch(ArgumentException exception)
 	System.exit(1);
 }
 ```
-For more examples see the [Javadoc](javadoc/jargo/)
+For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/jargo/)
 
 # Dependency
 #### Jargo
@@ -45,7 +45,7 @@ For more examples see the [Javadoc](javadoc/jargo/)
        <version>0.0.4</version>
      </dependency>
   
-#### Common-test (optional) [Javadoc](javadoc/common-test/)
+#### Common-test (optional) [Javadoc](http://softhouse.github.com/jargo/javadoc/common-test/)
      <dependency>
       <groupId>se.softhouse</groupId>
       <artifactId>common-test</artifactId>
@@ -59,7 +59,7 @@ For more examples see the [Javadoc](javadoc/jargo/)
 
 2. Compared to annotation based solutions (like [JCommander](http://www.jcommander.org)) jargo can be updated at runtime to support more arguments
 
-3. The generics on [Argument](javadoc/jargo/se/softhouse/jargo/Argument.html) gives you compile-time errors when switching types
+3. The generics on [Argument](http://softhouse.github.com/jargo/javadoc/jargo/se/softhouse/jargo/Argument.html) gives you compile-time errors when switching types
 
     In JCommander:  
     ```java
