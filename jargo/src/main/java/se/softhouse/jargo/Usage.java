@@ -54,7 +54,7 @@ import com.google.common.collect.Iterables;
  * Sorts {@link Argument}s in the following order:
  * <ol>
  *   <li>{@link ArgumentBuilder#names(String...) indexed arguments} without a {@link ArgumentBuilder#variableArity() variable arity}</li>
- * 	 <li>By their {@link ArgumentBuilder#names(String...) first name}  in a <a href="http://weblog.masukomi.org/2007/12/10/alphabetical-asciibetical">alphabetical</a> order</li>
+ * 	 <li>By their {@link ArgumentBuilder#names(String...) first name}  in an alphabetical order</li>
  * 	 <li>The remaining {@link ArgumentBuilder#names(String...) indexed arguments} that are of {@link ArgumentBuilder#variableArity() variable arity}</li>
  * </ol>
  * </pre>
