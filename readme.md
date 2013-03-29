@@ -35,7 +35,7 @@ catch(ArgumentException exception)
 	System.exit(1);
 }
 ```
-For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/jargo/)
+For more examples see the [Javadoc](javadoc/jargo/)
 
 # Dependency
 #### Jargo
@@ -45,7 +45,7 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
        <version>0.0.4</version>
      </dependency>
   
-#### Common-test (optional) [Javadoc](http://softhouse.github.com/jargo/javadoc/common-test/)
+#### Common-test (optional) [Javadoc](javadoc/common-test/)
      <dependency>
       <groupId>se.softhouse</groupId>
       <artifactId>common-test</artifactId>
@@ -59,7 +59,7 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
 
 2. Compared to annotation based solutions (like [JCommander](http://www.jcommander.org)) jargo can be updated at runtime to support more arguments
 
-3. The generics on Argument gives you compile-time errors when switching types
+3. The generics on [Argument](javadoc/jargo/se/softhouse/jargo/Argument.html) gives you compile-time errors when switching types
 
     In JCommander:  
     ```java
@@ -77,7 +77,7 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
 4. Because JCommander doesn't support repeated arguments other than List&lt;String&gt;
     ```java
     String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};  
-    Argument&lt;List&lt;List&lt;Integer&gt;&gt;&gt; numbers = Arguments.integerArgument("--numbers").arity(2).repeated().build();
+    Argument<List<List>Integer>>> numbers = Arguments.integerArgument("--numbers").arity(2).repeated().build();
     ```
 
 5. Because I love [Guava](https://code.google.com/p/guava-libraries/) and wanted an argument parsing
