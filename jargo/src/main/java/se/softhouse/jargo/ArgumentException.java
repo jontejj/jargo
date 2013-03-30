@@ -28,14 +28,27 @@ import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
 /**
- * Indicates that something went wrong in a {@link CommandLineParser}. The typical remedy action is
- * to present {@link #getMessageAndUsage()} to the user so he is informed about what he did
- * wrong. As all {@link Exception}s should be, {@link ArgumentException} is {@link Serializable} so
- * usage is available after deserialization.
+ * Indicates that something went wrong in a {@link CommandLineParser#parse(String...) parsing}.
+ * Typical causes include:
+ * <ul>
+ * <li>Missing parameters</li>
+ * <li>Unknown arguments, if it's close to a known argument the error message will contain
+ * suggestions</li>
+ * <li>Missing required arguments</li>
+ * <li>Invalid arguments, thrown from {@link StringParser#parse(String, java.util.Locale) parse}</li>
+ * <li>Repetition of argument that hasn't specified {@link ArgumentBuilder#repeated() repeated}</li>
+ * </ul>
+ * The typical remedy action is to present {@link #getMessageAndUsage()} to the user so he is
+ * informed about what he did wrong. <br>
+ * As all {@link Exception}s should be, {@link ArgumentException} is {@link Serializable} so usage
+ * is available after deserialization.
  */
 @NotThreadSafe
 public abstract class ArgumentException extends Exception
 {
+	/**
+	 * The {@link Usage} explaining how to avoid this exception
+	 */
 	private SerializableDescription usageText = null;
 
 	/**
@@ -71,7 +84,8 @@ public abstract class ArgumentException extends Exception
 	 */
 	public final String getMessageAndUsage()
 	{
-		// TODO(jontejj): jack into the uncaughtExceptionHandler and remove stacktraces?
+		// TODO(jontejj): jack into the uncaughtExceptionHandler and remove stacktraces? Potentially
+		// very annoying feature...
 		String message = getMessage(usedArgumentName);
 		return message + usageReference() + NEWLINE + NEWLINE + getUsage();
 	}
@@ -123,7 +137,7 @@ public abstract class ArgumentException extends Exception
 		return this;
 	}
 
-	final ArgumentException originatedFromArgumentName(String argumentNameThatTriggeredMe)
+	final ArgumentException withUsedArgumentName(String argumentNameThatTriggeredMe)
 	{
 		usedArgumentName = argumentNameThatTriggeredMe;
 		return this;

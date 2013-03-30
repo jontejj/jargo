@@ -79,8 +79,8 @@ public final class Argument<T>
 	@Nonnull private final Function<T, T> finalizer;
 	private final ParameterArity parameterArity;
 	private final boolean isPropertyMap;
-	private final CollationKey sortingKey;
 
+	private final CollationKey sortingKey;
 	private static final Collator linguisticOrder = Collator.getInstance(Locale.ROOT);
 
 	/**
@@ -395,7 +395,8 @@ public final class Argument<T>
 	};
 
 	static final Comparator<Argument<?>> NAME_COMPARATOR = new Comparator<Argument<?>>(){
-
+		// TODO(jontejj): replace this with a comparator that uses the Usage.locale instead of
+		// Locale.ROOT?
 		@Override
 		public int compare(Argument<?> lhs, Argument<?> rhs)
 		{

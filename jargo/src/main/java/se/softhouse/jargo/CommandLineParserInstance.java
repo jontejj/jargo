@@ -261,7 +261,7 @@ final class CommandLineParserInstance
 			}
 			catch(ArgumentException e)
 			{
-				e.originatedFromArgumentName(actualArguments.getCurrentArgumentName());
+				e.withUsedArgumentName(actualArguments.getCurrentArgumentName());
 				if(definition != null)
 				{
 					e.withUsageReference(definition);
@@ -440,7 +440,8 @@ final class CommandLineParserInstance
 		}
 		catch(IllegalArgumentException e)
 		{
-			throw wrapException(e).withUsageReference(arg).originatedFromArgumentName(arg.toString()).withUsage(usage(locale));
+			// TODO(jontejj): use the used argument name instead of arg.toString()
+			throw wrapException(e).withUsageReference(arg).withUsedArgumentName(arg.toString()).withUsage(usage(locale));
 		}
 		catch(ArgumentException e)
 		{
