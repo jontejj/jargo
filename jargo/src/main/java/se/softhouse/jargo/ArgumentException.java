@@ -21,9 +21,7 @@ import java.io.Serializable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import se.softhouse.common.strings.Description;
-import se.softhouse.common.strings.Descriptions;
-import se.softhouse.common.strings.Descriptions.SerializableDescription;
+import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
@@ -32,8 +30,8 @@ import se.softhouse.jargo.internal.Texts.UsageTexts;
  * Typical causes include:
  * <ul>
  * <li>Missing parameters</li>
- * <li>Unknown arguments, if it's close to a known argument the error message will contain
- * suggestions</li>
+ * <li>Unknown arguments, if it's {@link StringsUtil#closestMatches(String, Iterable, int) close
+ * enough} to a known argument the error message will contain suggestions</li>
  * <li>Missing required arguments</li>
  * <li>Invalid arguments, thrown from {@link StringParser#parse(String, java.util.Locale) parse}</li>
  * <li>Repetition of argument that hasn't specified {@link ArgumentBuilder#repeated() repeated}</li>
@@ -49,7 +47,7 @@ public abstract class ArgumentException extends Exception
 	/**
 	 * The {@link Usage} explaining how to avoid this exception
 	 */
-	private SerializableDescription usageText = null;
+	private Usage usage = null;
 
 	/**
 	 * The used name, one of the strings passed to {@link ArgumentBuilder#names(String...)}
@@ -82,12 +80,12 @@ public abstract class ArgumentException extends Exception
 	 * caused this exception, prepended with an error message detailing the erroneous argument and,
 	 * if applicable, a reference to the usage where the user can read about acceptable input.
 	 */
-	public final String getMessageAndUsage()
+	public final Usage getMessageAndUsage()
 	{
 		// TODO(jontejj): jack into the uncaughtExceptionHandler and remove stacktraces? Potentially
 		// very annoying feature...
-		String message = getMessage(usedArgumentName);
-		return message + usageReference() + NEWLINE + NEWLINE + getUsage();
+		String message = getMessage(usedArgumentName) + usageReference() + NEWLINE + NEWLINE;
+		return getUsage().withMessage(message);
 	}
 
 	/**
@@ -114,26 +112,20 @@ public abstract class ArgumentException extends Exception
 	}
 
 	/**
-	 * Returns a usage string explaining how to use the {@link CommandLineParser} that
+	 * Returns the usage explaining how to use the {@link CommandLineParser} that
 	 * caused this exception.
 	 */
-	private String getUsage()
+	private Usage getUsage()
 	{
-		checkNotNull(usageText, ProgrammaticErrors.NO_USAGE_AVAILABLE);
-		return usageText.description();
+		checkNotNull(usage, ProgrammaticErrors.NO_USAGE_AVAILABLE);
+		return usage;
 	}
 
-	final ArgumentException withUsage(final Usage usage)
+	final ArgumentException withUsage(final Usage theUsage)
 	{
-		if(usageText != null)
+		if(usage != null)
 			return this; // Don't overwrite if the user has specified a custom Usage
-		usageText = Descriptions.asSerializable(new Description(){
-			@Override
-			public String description()
-			{
-				return usage.toString();
-			}
-		});
+		usage = theUsage;
 		return this;
 	}
 

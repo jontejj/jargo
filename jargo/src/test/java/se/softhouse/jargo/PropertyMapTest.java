@@ -165,7 +165,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException expected)
 		{
-			String usage = expected.getMessageAndUsage();
+			Usage usage = expected.getMessageAndUsage();
 			assertThat(usage).isEqualTo(expected("limiterUsageForBothValueLimiterAndKeyLimiter"));
 		}
 

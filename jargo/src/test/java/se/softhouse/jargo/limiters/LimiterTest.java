@@ -20,6 +20,7 @@ import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import org.junit.Test;
@@ -28,6 +29,7 @@ import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.stringparsers.custom.Port;
 import se.softhouse.jargo.stringparsers.custom.PortParser;
 
@@ -84,7 +86,7 @@ public class LimiterTest
 		}
 		catch(ArgumentException expected)
 		{
-			String usage = expected.getMessageAndUsage();
+			Usage usage = expected.getMessageAndUsage();
 			assertThat(usage).isEqualTo(expected("arityWithLimitedValues"));
 		}
 	}

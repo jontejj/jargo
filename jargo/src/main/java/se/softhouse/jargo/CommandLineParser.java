@@ -109,6 +109,8 @@ public final class CommandLineParser
 
 	static final Locale US_BY_DEFAULT = Locale.US;
 
+	// TODO(jontejj): use getAndSet instead of set on Atomics
+
 	@GuardedBy("modifyGuard") private final List<Argument<?>> argumentDefinitions;
 	@GuardedBy("modifyGuard") private final AtomicReference<ProgramInformation> programInformation = Atomics.newReference(ProgramInformation.AUTO);
 

@@ -97,6 +97,8 @@ public final class StringsUtil
 	 * 
 	 * @throws IllegalArgumentException if {@code validOptions} is empty
 	 * </pre>
+	 * 
+	 * @see #closestMatches(String, Iterable, int)
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -122,12 +124,14 @@ public final class StringsUtil
 	/**
 	 * <pre>
 	 * Returns a sorted {@link List} where the first entry is the {@link String} in {@code validOptions} that's closest in terms of
-	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to {@code input}.
+	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to {@code input}, or an empty list if no options within distance can be found.
 	 * 
 	 * For example when given "stats" as input and "status", "staging",
 	 * "stage" as validOptions, and 4 as maximumDistance, "status", "stage", "staging" is returned.
 	 * 
 	 * Only values with a distance less than or equal to {@code maximumDistance} will be included in the result.
+	 * 
+	 * The returned list is <i>modifiable</i>.
 	 * 
 	 * </pre>
 	 */

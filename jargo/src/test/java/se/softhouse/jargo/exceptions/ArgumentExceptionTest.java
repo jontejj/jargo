@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import org.junit.Test;
 
@@ -105,7 +106,7 @@ public class ArgumentExceptionTest
 		}
 		catch(ArgumentException expected)
 		{
-			String usageBeforeSerialization = expected.getMessageAndUsage();
+			String usageBeforeSerialization = expected.getMessageAndUsage().toString();
 			ArgumentException revivedException = Serializer.clone(expected);
 			assertThat(revivedException.getMessageAndUsage()).isEqualTo(usageBeforeSerialization);
 		}

@@ -26,7 +26,9 @@ import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.common.classes.Classes;
@@ -275,5 +277,41 @@ public class UsageTest
 		Argument<String> second = stringArgument("-ä").build();
 		Argument<String> third = stringArgument("-ö").build();
 		assertThat(CommandLineParser.withArguments(first, second, third).usage()).isEqualTo(expected("alphabeticalOrder"));
+	}
+
+	/**
+	 * Tests long descriptions, names, meta descriptions, default value descriptions, valid value
+	 * explanations
+	 */
+	@Test
+	@Ignore
+	public void testThatLongStringsAreLineBreakedAndPaddedWithSpacesEvenWhenTheyDontHaveNewlines()
+	{
+		Argument<String> longWindedArgument = withParser(new LongWindedParser()) //
+				.description(longTextWithoutNewlines) //
+				.defaultValueDescription(longTextWithoutNewlines).build();
+		assertThat(longWindedArgument.usage()).isEqualTo("Expect something nice when the usage looks nice");
+	}
+
+	// TODO(jontejj): test long strings with some new lines in them
+
+	private static final String longTextWithoutNewlines = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
+			+ "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+			+ "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+			+ "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+			+ "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+	private static class LongWindedParser extends SimpleForwardingStringParser<String>
+	{
+		protected LongWindedParser()
+		{
+			super(StringParsers.stringParser());
+		}
+
+		@Override
+		public String descriptionOfValidValues(Locale locale)
+		{
+			return longTextWithoutNewlines;
+		}
 	}
 }

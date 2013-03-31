@@ -21,6 +21,7 @@ import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.ProgramInformation.withProgramName;
 import static se.softhouse.jargo.StringParsers.optionParser;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;

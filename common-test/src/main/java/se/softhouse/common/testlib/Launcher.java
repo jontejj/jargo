@@ -41,15 +41,13 @@ public final class Launcher
 	{
 		private final String errors;
 		private final String output;
-		private final String jvm;
-		private final String classPath;
+		private final String debugInformation;
 
-		private LaunchedProgram(String errors, String output, String jvm, String classPath)
+		private LaunchedProgram(String errors, String output, String debugInformation)
 		{
 			this.errors = errors;
 			this.output = output;
-			this.classPath = classPath;
-			this.jvm = jvm;
+			this.debugInformation = debugInformation;
 		}
 
 		/**
@@ -73,7 +71,13 @@ public final class Launcher
 		 */
 		public String debugInformation()
 		{
-			return "\njvm: " + jvm + "\nclasspath: " + classPath;
+			return debugInformation;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "Output: " + output() + "\nErrors: " + errors();
 		}
 	}
 
@@ -93,10 +97,11 @@ public final class Launcher
 	 *             process
 	 * @throws InterruptedException if the thread starting the program is
 	 *             {@link Thread#interrupted()} while waiting for the program to finish
-	 * @throws IllegalArgumentException if {@code classWithMainMethod} doesn't have a static main
-	 *             method
+	 * @throws IllegalArgumentException if {@code classWithMainMethod} doesn't have a public static
+	 *             main method
 	 * @throws SecurityException if it's not possible to validate the existence of a main method in
-	 *             {@code classWithMainMethod}
+	 *             {@code classWithMainMethod} (or if {@link SecurityManager#checkExec checkExec}
+	 *             fails)
 	 */
 	public static LaunchedProgram launch(Class<?> classWithMainMethod, String ... programArguments) throws IOException, InterruptedException
 	{
@@ -118,11 +123,36 @@ public final class Launcher
 		List<String> args = Lists.newArrayList(jvm, "-cp", classPath, classWithMainMethod.getName());
 		args.addAll(Arrays.asList(programArguments));
 
+		String debugInformation = "\njvm: " + jvm + "\nclasspath: " + classPath;
+		return execute(args, debugInformation);
+	}
+
+	/**
+	 * Runs {@code program} with {@code programArguments} as arguments. This method
+	 * will wait until program execution has finished.
+	 * 
+	 * @param program the executable to run
+	 * @param programArguments optional arguments to pass to the program
+	 * @return output/errors from the executed program
+	 * @throws IOException if an I/O error occurs while starting {@code program}
+	 * @throws InterruptedException if the thread starting the program is
+	 *             {@link Thread#interrupted()} while waiting for the program to finish
+	 * @throws SecurityException if {@link SecurityManager#checkExec checkExec} fails
+	 */
+	public static LaunchedProgram launch(String program, String ... programArguments) throws IOException, InterruptedException
+	{
+		return execute(Lists.asList(program, programArguments), "Failed to launch " + program);
+	}
+
+	private static LaunchedProgram execute(List<String> args, String debugInformation) throws IOException, InterruptedException
+	{
 		Process program = new ProcessBuilder().command(args).start();
+		// TODO(jontejj): read streams simultaneously to avoid deadlock in the launched program
+		// http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=4
 		String output = new String(toByteArray(program.getInputStream()), Charsets.UTF_8);
 		String errors = new String(toByteArray(program.getErrorStream()), Charsets.UTF_8);
 
 		program.waitFor();
-		return new LaunchedProgram(errors, output, jvm, classPath);
+		return new LaunchedProgram(errors, output, debugInformation);
 	}
 }

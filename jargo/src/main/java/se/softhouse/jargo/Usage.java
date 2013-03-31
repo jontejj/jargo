@@ -25,6 +25,7 @@ import static se.softhouse.jargo.Argument.IS_INDEXED;
 import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
 import static se.softhouse.jargo.Argument.IS_VISIBLE;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -60,18 +61,21 @@ import com.google.common.collect.Iterables;
  * </pre>
  */
 @NotThreadSafe
-public final class Usage
+public final class Usage implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
 	private static final int SPACES_BETWEEN_COLUMNS = 4;
 	private static final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
 
-	private final Collection<Argument<?>> unfilteredArguments;
+	private transient final Collection<Argument<?>> unfilteredArguments;
 
-	private ImmutableList<Argument<?>> argumentsToPrint;
-	private final Locale locale;
-	private final ProgramInformation program;
-	private final boolean forCommand;
+	private transient String message = "";
+	private transient ImmutableList<Argument<?>> argumentsToPrint;
+	private transient final Locale locale;
+	private transient final ProgramInformation program;
+	private transient final boolean forCommand;
 	/**
 	 * <pre>
 	 * For:
@@ -81,9 +85,12 @@ public final class Usage
 	 * This would be 20.
 	 * </pre>
 	 */
-	private int indexOfDescriptionColumn;
-	private boolean needsNewline = false;
-	private StringBuilder builder = null;
+	private transient int indexOfDescriptionColumn;
+	private transient boolean needsNewline = false;
+	private transient StringBuilder builder = null;
+	private transient String fromSerializedUsage = null;
+	// TODO(jontejj): try getting the correct value automatically, if not possible fall back to 80
+	private transient int columnWidth = 80;
 
 	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program, boolean forCommand)
 	{
@@ -91,6 +98,43 @@ public final class Usage
 		this.locale = locale;
 		this.program = program;
 		this.forCommand = forCommand;
+	}
+
+	private Usage(String fromSerializedUsage)
+	{
+		// All these are unused as the usage is already constructed
+		this(null, null, null, false);
+		this.fromSerializedUsage = fromSerializedUsage;
+	}
+
+	/**
+	 * Returns the usage text that's suitable to print on {@link System#out}.
+	 */
+	@Override
+	public String toString()
+	{
+		return message + usage();
+	}
+
+	private String usage()
+	{
+		if(fromSerializedUsage != null)
+			return fromSerializedUsage;
+		init();
+		builder = newStringBuilder();
+		if(forCommand)
+		{
+			builder.append(commandUsage());
+		}
+		else
+		{
+			builder.append(mainUsage());
+		}
+		for(Argument<?> arg : argumentsToPrint)
+		{
+			usageForArgument(arg);
+		}
+		return builder.toString();
 	}
 
 	private void init()
@@ -140,16 +184,6 @@ public final class Usage
 		return namesLength + separatorLength + metaLength;
 	}
 
-	private String buildArgumentDescriptions()
-	{
-		builder = newStringBuilder();
-		for(Argument<?> arg : argumentsToPrint)
-		{
-			usageForArgument(arg);
-		}
-		return builder.toString();
-	}
-
 	private StringBuilder newStringBuilder()
 	{
 		// Two lines for each argument
@@ -157,22 +191,12 @@ public final class Usage
 	}
 
 	/**
-	 * Returns the usage text that's suitable to print on {@link System#out}.
+	 * An optional message to print before any usage
 	 */
-	@Override
-	public String toString()
+	Usage withMessage(String aMessage)
 	{
-		init();
-		String header = "";
-		if(forCommand)
-		{
-			header = commandUsage();
-		}
-		else
-		{
-			header = mainUsage();
-		}
-		return header + buildArgumentDescriptions();
+		this.message = aMessage;
+		return this;
 	}
 
 	private String mainUsage()
@@ -226,7 +250,7 @@ public final class Usage
 		String description = arg.description();
 		if(!description.isEmpty())
 		{
-			builder.append(description);
+			append(description);
 			addIndicators(arg);
 			needsNewline = true;
 			newlineWithIndentation();
@@ -255,11 +279,11 @@ public final class Usage
 	{
 		if(arg.isRequired())
 		{
-			builder.append(UsageTexts.REQUIRED);
+			append(UsageTexts.REQUIRED);
 		}
 		if(arg.isAllowedToRepeat())
 		{
-			builder.append(UsageTexts.ALLOWS_REPETITIONS);
+			append(UsageTexts.ALLOWS_REPETITIONS);
 		}
 	}
 
@@ -282,7 +306,7 @@ public final class Usage
 				builder.append(meta + ": ");
 			}
 
-			builder.append(description);
+			append(description);
 			needsNewline = true;
 		}
 		if(arg.isRequired())
@@ -295,7 +319,41 @@ public final class Usage
 			String spaces = spaces(indexOfDescriptionColumn + UsageTexts.DEFAULT_VALUE_START.length());
 			descriptionOfDefaultValue = descriptionOfDefaultValue.replace(NEWLINE, NEWLINE + spaces);
 
-			builder.append(UsageTexts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
+			builder.append(UsageTexts.DEFAULT_VALUE_START);
+			append(descriptionOfDefaultValue);
 		}
+	}
+
+	private Usage append(String value)
+	{
+		builder.append(value);
+		return this;
+	}
+
+	private static final class SerializationProxy implements Serializable
+	{
+		/**
+		 * @serial all arguments described. Constructed lazily when serialized.
+		 */
+		private final String serializedUsage;
+
+		private static final long serialVersionUID = 1L;
+
+		private SerializationProxy(Usage usage)
+		{
+			// TODO(jontejj): how to support calling withConsoleWidth() after serialization? Some
+			// kind of marker where the break iterator did something?
+			serializedUsage = usage.usage();
+		}
+
+		private Object readResolve()
+		{
+			return new Usage(serializedUsage);
+		}
+	}
+
+	private Object writeReplace()
+	{
+		return new SerializationProxy(this);
 	}
 }
