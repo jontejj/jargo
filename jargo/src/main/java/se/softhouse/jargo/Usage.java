@@ -18,6 +18,7 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static java.lang.Math.max;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.spaces;
@@ -26,8 +27,10 @@ import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
 import static se.softhouse.jargo.Argument.IS_VISIBLE;
 
 import java.io.Serializable;
+import java.text.BreakIterator;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,6 +40,7 @@ import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
@@ -65,17 +69,29 @@ public final class Usage implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static final int CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION = 40;
-	private static final int SPACES_BETWEEN_COLUMNS = 4;
-	private static final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
+	private static final class Row
+	{
+		StringBuilder nameColumn = new StringBuilder();
+		StringBuilder descriptionColumn = new StringBuilder();
+
+		@Override
+		public String toString()
+		{
+			return nameColumn.toString() + " " + descriptionColumn.toString();
+		}
+	}
 
 	private transient final Collection<Argument<?>> unfilteredArguments;
-
 	private transient String message = "";
-	private transient ImmutableList<Argument<?>> argumentsToPrint;
 	private transient final Locale locale;
 	private transient final ProgramInformation program;
 	private transient final boolean forCommand;
+	private transient String fromSerializedUsage = null;
+	// TODO(jontejj): try getting the correct value automatically, if not possible fall back to 80
+	private transient int columnWidth = 80;
+
+	// Lazily initialized members (for performance)
+
 	/**
 	 * <pre>
 	 * For:
@@ -86,11 +102,7 @@ public final class Usage implements Serializable
 	 * </pre>
 	 */
 	private transient int indexOfDescriptionColumn;
-	private transient boolean needsNewline = false;
-	private transient StringBuilder builder = null;
-	private transient String fromSerializedUsage = null;
-	// TODO(jontejj): try getting the correct value automatically, if not possible fall back to 80
-	private transient int columnWidth = 80;
+	private transient ImmutableList<Argument<?>> argumentsToPrint;
 
 	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program, boolean forCommand)
 	{
@@ -108,6 +120,15 @@ public final class Usage implements Serializable
 	}
 
 	/**
+	 * An optional message to print before any usage
+	 */
+	Usage withMessage(String aMessage)
+	{
+		this.message = aMessage;
+		return this;
+	}
+
+	/**
 	 * Returns the usage text that's suitable to print on {@link System#out}.
 	 */
 	@Override
@@ -121,30 +142,49 @@ public final class Usage implements Serializable
 		if(fromSerializedUsage != null)
 			return fromSerializedUsage;
 		init();
-		builder = newStringBuilder();
-		if(forCommand)
-		{
-			builder.append(commandUsage());
-		}
-		else
-		{
-			builder.append(mainUsage());
-		}
+
+		StringBuilder builder = newStringBuilder();
+		builder.append(header());
+
+		List<Row> rows = newArrayListWithExpectedSize(argumentsToPrint.size());
 		for(Argument<?> arg : argumentsToPrint)
 		{
-			usageForArgument(arg);
+			Row forArgument = usageForArgument(arg);
+			rows.add(forArgument);
 		}
+		printRowsOn(rows, builder);
 		return builder.toString();
 	}
 
+	private String header()
+	{
+		if(forCommand) // Commands get their header from their meta description
+			return hasArguments() ? NEWLINE : "";
+
+		String mainUsage = UsageTexts.USAGE_HEADER + program.programName();
+
+		if(hasArguments())
+		{
+			mainUsage += UsageTexts.ARGUMENT_INDICATOR;
+		}
+
+		mainUsage += NEWLINE + wordWrap(program.programDescription(), 0, columnWidth);
+
+		if(hasArguments())
+		{
+			mainUsage += NEWLINE + UsageTexts.ARGUMENT_HEADER + ":" + NEWLINE;
+		}
+
+		return mainUsage;
+	}
+
+	private static final int SPACES_BETWEEN_COLUMNS = 4;
+
 	private void init()
 	{
-		if(argumentsToPrint == null)
-		{
-			Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
-			this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
-			this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
-		}
+		Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
+		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
+		this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 	}
 
 	private Iterable<Argument<?>> sortedArguments(Collection<Argument<?>> arguments)
@@ -166,10 +206,10 @@ public final class Usage implements Serializable
 		{
 			longestNameSoFar = max(longestNameSoFar, lengthOfNameColumn(arg));
 		}
-		return longestNameSoFar;
+		return Math.min(longestNameSoFar, maxNameColumnWidth());
 	}
 
-	private static int lengthOfNameColumn(final Argument<?> argument)
+	private int lengthOfNameColumn(final Argument<?> argument)
 	{
 		int namesLength = 0;
 
@@ -184,49 +224,26 @@ public final class Usage implements Serializable
 		return namesLength + separatorLength + metaLength;
 	}
 
+	/**
+	 * A minimum of 1 third must be available to print descriptions on
+	 */
+	private int maxNameColumnWidth()
+	{
+		return columnWidth / 3 * 2;
+	}
+
 	private StringBuilder newStringBuilder()
 	{
 		// Two lines for each argument
-		return StringBuilders.withExpectedSize(2 * argumentsToPrint.size() * (indexOfDescriptionColumn + CHARACTERS_IN_AVERAGE_ARGUMENT_DESCRIPTION));
-	}
-
-	/**
-	 * An optional message to print before any usage
-	 */
-	Usage withMessage(String aMessage)
-	{
-		this.message = aMessage;
-		return this;
-	}
-
-	private String mainUsage()
-	{
-		String mainUsage = UsageTexts.USAGE_HEADER + program.programName();
-
-		if(hasArguments())
-		{
-			mainUsage += UsageTexts.ARGUMENT_INDICATOR;
-		}
-
-		mainUsage += NEWLINE + program.programDescription();
-
-		if(hasArguments())
-		{
-			mainUsage += NEWLINE + UsageTexts.ARGUMENT_HEADER + NEWLINE;
-		}
-
-		return mainUsage;
-	}
-
-	private String commandUsage()
-	{
-		return hasArguments() ? UsageTexts.ARGUMENT_HEADER + NEWLINE : "";
+		return StringBuilders.withExpectedSize(2 * argumentsToPrint.size() * columnWidth);
 	}
 
 	private boolean hasArguments()
 	{
 		return !argumentsToPrint.isEmpty();
 	}
+
+	private static final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
 
 	/**
 	 * <pre>
@@ -236,78 +253,52 @@ public final class Usage implements Serializable
 	 *         	Default: 0
 	 * </pre>
 	 */
-	private void usageForArgument(final Argument<?> arg)
+	private Row usageForArgument(final Argument<?> arg)
 	{
-		int lengthBeforeCurrentArgument = builder.length();
+		Row row = new Row();
 
-		NAME_JOINER.appendTo(builder, arg.names());
+		// Left column: name <meta>
+		NAME_JOINER.appendTo(row.nameColumn, arg.names());
+		row.nameColumn.append(arg.metaDescriptionInLeftColumn());
 
-		builder.append(arg.metaDescriptionInLeftColumn());
-
-		int lengthOfFirstColumn = builder.length() - lengthBeforeCurrentArgument;
-		builder.append(spaces(indexOfDescriptionColumn - lengthOfFirstColumn));
-
+		// Right column: description of what the argument means [indicators]
+		// <meta>: description of valid values
+		// Default: default value
 		String description = arg.description();
 		if(!description.isEmpty())
 		{
-			append(description);
-			addIndicators(arg);
-			needsNewline = true;
-			newlineWithIndentation();
-			valueExplanation(arg);
+			row.descriptionColumn.append(wordWrap(description, indexOfDescriptionColumn, columnWidth));
+			addIndicators(arg, row.descriptionColumn);
+			row.descriptionColumn.append(NEWLINE);
+			valueExplanation(arg, row.descriptionColumn);
 		}
 		else
 		{
-			valueExplanation(arg);
-			addIndicators(arg);
+			valueExplanation(arg, row.descriptionColumn);
+			addIndicators(arg, row.descriptionColumn);
 		}
-		builder.append(NEWLINE);
-		needsNewline = false;
+		return row;
 	}
 
-	private void newlineWithIndentation()
-	{
-		if(needsNewline)
-		{
-			builder.append(NEWLINE);
-			builder.append(spaces(indexOfDescriptionColumn));
-			needsNewline = false;
-		}
-	}
-
-	private <T> void addIndicators(final Argument<T> arg)
+	private <T> void addIndicators(final Argument<T> arg, StringBuilder target)
 	{
 		if(arg.isRequired())
 		{
-			append(UsageTexts.REQUIRED);
+			target.append(UsageTexts.REQUIRED);
 		}
 		if(arg.isAllowedToRepeat())
 		{
-			append(UsageTexts.ALLOWS_REPETITIONS);
+			target.append(UsageTexts.ALLOWS_REPETITIONS);
 		}
 	}
 
-	private <T> void valueExplanation(final Argument<T> arg)
+	private <T> void valueExplanation(final Argument<T> arg, StringBuilder target)
 	{
-		String description = arg.descriptionOfValidValues(locale);
-		if(!description.isEmpty())
+		String validValuesDescription = arg.descriptionOfValidValues(locale);
+		if(!validValuesDescription.isEmpty())
 		{
-			boolean isCommand = arg.parser() instanceof Command;
-			if(isCommand)
-			{
-				// For commands the validValues is a usage text itself for the command arguments
-				// +1 = indentation so that command options are tucked under the command
-				String spaces = spaces(indexOfDescriptionColumn + 1);
-				description = description.replace(NEWLINE, NEWLINE + spaces);
-			}
-			else
-			{
-				String meta = arg.metaDescriptionInRightColumn();
-				builder.append(meta + ": ");
-			}
-
-			append(description);
-			needsNewline = true;
+			String meta = arg.metaDescriptionInRightColumn();
+			target.append(meta + ": ").append(validValuesDescription);
 		}
 		if(arg.isRequired())
 			return;
@@ -315,19 +306,70 @@ public final class Usage implements Serializable
 		String descriptionOfDefaultValue = arg.defaultValueDescription(locale);
 		if(descriptionOfDefaultValue != null)
 		{
-			newlineWithIndentation();
-			String spaces = spaces(indexOfDescriptionColumn + UsageTexts.DEFAULT_VALUE_START.length());
+			if(!validValuesDescription.isEmpty())
+			{
+				target.append(NEWLINE);
+			}
+			String spaces = spaces(UsageTexts.DEFAULT_VALUE_START.length());
 			descriptionOfDefaultValue = descriptionOfDefaultValue.replace(NEWLINE, NEWLINE + spaces);
-
-			builder.append(UsageTexts.DEFAULT_VALUE_START);
-			append(descriptionOfDefaultValue);
+			target.append(UsageTexts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
 		}
 	}
 
-	private Usage append(String value)
+	private StringBuilder wordWrap(String value, int startingLength, int maxLength)
 	{
-		builder.append(value);
-		return this;
+		// TODO(jontejj): move into StringsUtil?
+		StringBuilder result = new StringBuilder(value.length());
+		BreakIterator boundary = BreakIterator.getLineInstance(locale);
+		boundary.setText(value);
+		int start = boundary.first();
+		int end = boundary.next();
+		int lineLength = startingLength;
+
+		while(end != BreakIterator.DONE)
+		{
+			String word = value.substring(start, end);
+			lineLength = lineLength + word.length();
+			if(lineLength >= maxLength)
+			{
+				result.append(NEWLINE);
+				lineLength = startingLength;
+			}
+			result.append(word);
+			start = end;
+			end = boundary.next();
+		}
+		return result;
+	}
+
+	// TODO: refactor and expose Appendable alternative
+	private void printRowsOn(Iterable<Row> rows, StringBuilder target)
+	{
+		for(Row row : rows)
+		{
+			StringBuilder nameColumn = wordWrap(row.nameColumn.toString(), 0, indexOfDescriptionColumn);
+			String descriptionColumn = row.descriptionColumn.toString();
+			Iterable<String> nameLines = Splitter.on(NEWLINE).split(nameColumn);
+			Iterator<String> descriptionLines = Splitter.on(NEWLINE).split(descriptionColumn).iterator();
+			for(String nameLine : nameLines)
+			{
+				target.append(nameLine);
+				if(descriptionLines.hasNext())
+				{
+					int lengthOfNameColumn = nameLine.length();
+					target.append(spaces(indexOfDescriptionColumn - lengthOfNameColumn));
+					target.append(descriptionLines.next());
+				}
+				target.append(NEWLINE);
+			}
+			while(descriptionLines.hasNext())
+			{
+				target.append(spaces(indexOfDescriptionColumn));
+				target.append(descriptionLines.next());
+				target.append(NEWLINE);
+			}
+
+		}
 	}
 
 	private static final class SerializationProxy implements Serializable

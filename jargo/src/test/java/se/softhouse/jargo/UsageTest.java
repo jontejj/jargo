@@ -28,7 +28,6 @@ import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.common.classes.Classes;
@@ -284,16 +283,14 @@ public class UsageTest
 	 * explanations
 	 */
 	@Test
-	@Ignore
 	public void testThatLongStringsAreLineBreakedAndPaddedWithSpacesEvenWhenTheyDontHaveNewlines()
 	{
 		Argument<String> longWindedArgument = withParser(new LongWindedParser()) //
 				.description(longTextWithoutNewlines) //
 				.defaultValueDescription(longTextWithoutNewlines).build();
-		assertThat(longWindedArgument.usage()).isEqualTo("Expect something nice when the usage looks nice");
+		Usage usage = CommandLineParser.withArguments(longWindedArgument).programDescription(longTextWithoutNewlines).usage();
+		assertThat(usage).isEqualTo(expected("wordwrapping"));
 	}
-
-	// TODO(jontejj): test long strings with some new lines in them
 
 	private static final String longTextWithoutNewlines = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
 			+ "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
@@ -311,7 +308,7 @@ public class UsageTest
 		@Override
 		public String descriptionOfValidValues(Locale locale)
 		{
-			return longTextWithoutNewlines;
+			return "Not wordwrapped as that could lead to invalid description strings. " + longTextWithoutNewlines;
 		}
 	}
 }

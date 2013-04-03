@@ -23,6 +23,7 @@ import javax.annotation.concurrent.Immutable;
 import se.softhouse.common.strings.Description;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
+import se.softhouse.jargo.internal.Texts.UsageTexts;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -182,6 +183,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	@Override
 	final String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
 	{
+		// For commands the validValues is a usage text itself for the command arguments
 		return parser().usage(locale).toString();
 	}
 
@@ -195,5 +197,11 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	final String metaDescription(Argument<?> argumentSettings)
 	{
 		return "";
+	}
+
+	@Override
+	String metaDescriptionInRightColumn(Argument<?> argumentSettings)
+	{
+		return UsageTexts.ARGUMENT_HEADER;
 	}
 }

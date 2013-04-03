@@ -44,7 +44,7 @@ public final class Texts
 
 		public static final String USAGE_HEADER = "Usage: ";
 		public static final String ARGUMENT_INDICATOR = " [Arguments]";
-		public static final String ARGUMENT_HEADER = "Arguments:";
+		public static final String ARGUMENT_HEADER = "Arguments";
 
 		public static final String ALLOWS_REPETITIONS = " [Supports Multiple occurrences]";
 		public static final String REQUIRED = " [Required]";

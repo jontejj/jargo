@@ -10,6 +10,6 @@ Arguments:
 --zoo <integer> ...                 MetaDescShouldIndicateVariableAmount
                                     <integer>: -2,147,483,648 to 2,147,483,647
                                     Default: Empty list
- <integer> ...                      MetaDescShouldIndicateVariableAmount
+<integer> ...                       MetaDescShouldIndicateVariableAmount
                                     <integer>: -2,147,483,648 to 2,147,483,647
                                     Default: Empty list

@@ -3,5 +3,5 @@
 Usage: limiterOutOfRange [Arguments]
 
 Arguments:
- <integer>    <integer>: [0‥4]
-              Default: 0
+<integer>    <integer>: [0‥4]
+             Default: 0

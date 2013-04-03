@@ -1,13 +1,13 @@
 Usage: indexedArgumentsSortingOrder [Arguments]
 
 Arguments:
- <string>          IndexOne
+<string>           IndexOne
                    <string>: any string
                    Default: 
- <string>          IndexTwo
+<string>           IndexTwo
                    <string>: any string
                    Default: 
- <string>          IndexThree
+<string>           IndexThree
                    <string>: any string
                    Default: 
 -n <string> ...    NamedVariableArity
@@ -17,6 +17,6 @@ Arguments:
                    Default: 
 -T <string>        <string>: any string
                    Default: 
- <string> ...      VariableArity
+<string> ...       VariableArity
                    <string>: any string
                    Default: Empty list

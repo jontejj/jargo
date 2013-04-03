@@ -214,6 +214,7 @@ public final class Argument<T>
 	String defaultValueDescription(Locale inLocale)
 	{
 		T value = defaultValue();
+		// TODO(jontejj): use locale(inLocale) here
 		if(defaultValueDescriber != null)
 			return defaultValueDescriber.describe(value, inLocale);
 		return parser().describeValue(value);
@@ -235,7 +236,7 @@ public final class Argument<T>
 			meta = parser.metaDescriptionInLeftColumn(this);
 		}
 
-		if(!isPropertyMap())
+		if(!isPropertyMap() && !isIndexed())
 		{
 			meta = separator + meta;
 		}
