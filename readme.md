@@ -26,7 +26,7 @@ try
 													.parse(args);
 													
 	System.out.println("Logging enabled: " + arguments.get(enableLogging));
-	System.out.println("Ports: " + arguments.get(port));
+	System.out.println("Ports: " + arguments.get(ports));
 	System.out.println("Greeting visitors with: " + arguments.get(greetingPhrase));
 }
 catch(ArgumentException exception)
