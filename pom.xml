@@ -75,6 +75,7 @@
 					<links>
 						<link>http://docs.guava-libraries.googlecode.com/git/javadoc/</link>
 						<link>http://jsr-305.googlecode.com/svn/trunk/javadoc/</link>
+						<link>http://easytesting.org/assert/apidocs/</link>
 					</links>
 					<tags>
 						<tag>

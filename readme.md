@@ -77,7 +77,7 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
 4. Because JCommander doesn't support repeated arguments other than List&lt;String&gt;
     ```java
     String[] args = {"--numbers", "5", "6", "--numbers", "3", "4"};  
-    Argument<List<List>Integer>>> numbers = Arguments.integerArgument("--numbers").arity(2).repeated().build();
+    Argument<List<List<Integer>>> numbers = Arguments.integerArgument("--numbers").arity(2).repeated().build();
     ```
 
 5. Because I love [Guava](https://code.google.com/p/guava-libraries/) and wanted an argument parsing
