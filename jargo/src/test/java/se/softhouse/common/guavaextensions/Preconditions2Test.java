@@ -53,7 +53,8 @@ public class Preconditions2Test
 		List<String> foos = Arrays.asList("foo", "bar");
 		List<String> checkedFoos = Preconditions2.checkNulls(foos, "foos may not be null");
 		checkedFoos.set(0, "new-value");
-		assertThat(checkedFoos).isNotEqualTo(foos);
+		assertThat(checkedFoos).containsExactly("new-value", "bar");
+		assertThat(foos).excludes("new-value");
 	}
 
 	@Test

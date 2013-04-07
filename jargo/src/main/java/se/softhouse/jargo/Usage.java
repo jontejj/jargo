@@ -18,7 +18,6 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static java.lang.Math.max;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.spaces;
@@ -26,6 +25,8 @@ import static se.softhouse.jargo.Argument.IS_INDEXED;
 import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
 import static se.softhouse.jargo.Argument.IS_VISIBLE;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.text.BreakIterator;
 import java.util.Collection;
@@ -39,6 +40,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -69,10 +71,14 @@ public final class Usage implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static final class Row
+	/**
+	 * Corresponds to usage for a single {@link Argument}
+	 */
+	@VisibleForTesting
+	static final class Row
 	{
-		StringBuilder nameColumn = new StringBuilder();
-		StringBuilder descriptionColumn = new StringBuilder();
+		private final StringBuilder nameColumn = new StringBuilder();
+		private final StringBuilder descriptionColumn = new StringBuilder();
 
 		@Override
 		public String toString()
@@ -81,16 +87,15 @@ public final class Usage implements Serializable
 		}
 	}
 
-	private transient final Collection<Argument<?>> unfilteredArguments;
-	private transient String message = "";
-	private transient final Locale locale;
-	private transient final ProgramInformation program;
-	private transient final boolean forCommand;
-	private transient String fromSerializedUsage = null;
+	private final transient Collection<Argument<?>> unfilteredArguments;
+	private transient String errorMessage = "";
+	private final transient Locale locale;
+	private final transient ProgramInformation program;
+	private final transient boolean forCommand;
 	// TODO(jontejj): try getting the correct value automatically, if not possible fall back to 80
 	private transient int columnWidth = 80;
 
-	// Lazily initialized members (for performance)
+	private transient String fromSerializedUsage = null;
 
 	/**
 	 * <pre>
@@ -120,11 +125,11 @@ public final class Usage implements Serializable
 	}
 
 	/**
-	 * An optional message to print before any usage
+	 * An optional errorMessage to print before any usage
 	 */
-	Usage withMessage(String aMessage)
+	Usage withErrorMessage(String message)
 	{
-		this.message = aMessage;
+		this.errorMessage = message;
 		return this;
 	}
 
@@ -134,26 +139,87 @@ public final class Usage implements Serializable
 	@Override
 	public String toString()
 	{
-		return message + usage();
+		return usage();
 	}
 
 	private String usage()
 	{
 		if(fromSerializedUsage != null)
 			return fromSerializedUsage;
-		init();
 
+		init();
 		StringBuilder builder = newStringBuilder();
+
+		printOn(builder);
+
+		return builder.toString();
+	}
+
+	/**
+	 * Appends usage to {@code target}. An alternative to {@link #toString()} when the usage is very
+	 * large and needs to be flushed from time to time.
+	 * 
+	 * @throws IOException If an I/O error occurs while appending usage
+	 */
+	public void printOn(Appendable target) throws IOException
+	{
+		if(fromSerializedUsage != null)
+		{
+			target.append(fromSerializedUsage);
+		}
+		else
+		{
+			init();
+			appendUsageTo(target);
+		}
+	}
+
+	/**
+	 * Appends usage to {@code target}, just like {@link #printOn(Appendable)} but for a
+	 * {@link PrintStream} instead. The reason for this overload is that {@link Appendable} declares
+	 * {@link IOException} to be thrown while {@link PrintStream} handles it internally through the
+	 * use of the {@link PrintStream#checkError()} method.
+	 * 
+	 * @param target a {@link PrintStream} such as {@link System#out} or {@link System#err}.
+	 */
+	public void printOn(PrintStream target)
+	{
+		try
+		{
+			printOn((Appendable) target);
+		}
+		catch(IOException impossible)
+		{
+			throw new AssertionError(impossible);
+		}
+	}
+
+	/**
+	 * Appends usage to {@code target}, just like {@link #printOn(Appendable)} but for a
+	 * {@link StringBuilder} instead
+	 */
+	public void printOn(StringBuilder target)
+	{
+		try
+		{
+			printOn((Appendable) target);
+		}
+		catch(IOException impossible)
+		{
+			throw new AssertionError(impossible);
+		}
+	}
+
+	private void appendUsageTo(Appendable builder) throws IOException
+	{
+		builder.append(errorMessage);
 		builder.append(header());
 
-		List<Row> rows = newArrayListWithExpectedSize(argumentsToPrint.size());
 		for(Argument<?> arg : argumentsToPrint)
 		{
 			Row forArgument = usageForArgument(arg);
-			rows.add(forArgument);
+			appendRowTo(forArgument, builder);
 		}
-		printRowsOn(rows, builder);
-		return builder.toString();
 	}
 
 	private String header()
@@ -182,9 +248,12 @@ public final class Usage implements Serializable
 
 	private void init()
 	{
-		Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
-		this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
-		this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
+		if(argumentsToPrint == null)
+		{
+			Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
+			this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
+			this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
+		}
 	}
 
 	private Iterable<Argument<?>> sortedArguments(Collection<Argument<?>> arguments)
@@ -342,33 +411,28 @@ public final class Usage implements Serializable
 		return result;
 	}
 
-	// TODO: refactor and expose Appendable alternative
-	private void printRowsOn(Iterable<Row> rows, StringBuilder target)
+	private void appendRowTo(Row row, Appendable target) throws IOException
 	{
-		for(Row row : rows)
+		StringBuilder nameColumn = wordWrap(row.nameColumn.toString(), 0, indexOfDescriptionColumn);
+		String descriptionColumn = row.descriptionColumn.toString();
+		Iterable<String> nameLines = Splitter.on(NEWLINE).split(nameColumn);
+		Iterator<String> descriptionLines = Splitter.on(NEWLINE).split(descriptionColumn).iterator();
+		for(String nameLine : nameLines)
 		{
-			StringBuilder nameColumn = wordWrap(row.nameColumn.toString(), 0, indexOfDescriptionColumn);
-			String descriptionColumn = row.descriptionColumn.toString();
-			Iterable<String> nameLines = Splitter.on(NEWLINE).split(nameColumn);
-			Iterator<String> descriptionLines = Splitter.on(NEWLINE).split(descriptionColumn).iterator();
-			for(String nameLine : nameLines)
+			target.append(nameLine);
+			if(descriptionLines.hasNext())
 			{
-				target.append(nameLine);
-				if(descriptionLines.hasNext())
-				{
-					int lengthOfNameColumn = nameLine.length();
-					target.append(spaces(indexOfDescriptionColumn - lengthOfNameColumn));
-					target.append(descriptionLines.next());
-				}
-				target.append(NEWLINE);
-			}
-			while(descriptionLines.hasNext())
-			{
-				target.append(spaces(indexOfDescriptionColumn));
+				int lengthOfNameColumn = nameLine.length();
+				target.append(spaces(indexOfDescriptionColumn - lengthOfNameColumn));
 				target.append(descriptionLines.next());
-				target.append(NEWLINE);
 			}
-
+			target.append(NEWLINE);
+		}
+		while(descriptionLines.hasNext())
+		{
+			target.append(spaces(indexOfDescriptionColumn));
+			target.append(descriptionLines.next());
+			target.append(NEWLINE);
 		}
 	}
 

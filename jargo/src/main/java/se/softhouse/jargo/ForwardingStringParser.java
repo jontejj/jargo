@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo;
 
 import java.util.Locale;
@@ -29,7 +29,7 @@ import javax.annotation.concurrent.Immutable;
  * 
  * <pre class="prettyprint">
  * <code class="language-java">
- * private static final class WateringParser extends SimpleForwardingStringParser<Integer>
+ * private static final class WateringParser extends SimpleForwardingStringParser&lt;Integer&gt;
  * {
  *   WateringParser()
  *   {

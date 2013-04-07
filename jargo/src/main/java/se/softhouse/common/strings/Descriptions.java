@@ -242,7 +242,7 @@ public final class Descriptions
 	 */
 	public static final class SerializableDescription implements Serializable, Description
 	{
-		private final Description description;
+		private final transient Description description;
 
 		private SerializableDescription(Description descriptionToSerialize)
 		{

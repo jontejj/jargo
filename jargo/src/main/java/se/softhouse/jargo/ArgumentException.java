@@ -76,17 +76,20 @@ public abstract class ArgumentException extends Exception
 	}
 
 	/**
-	 * Returns a usage string explaining how to use the {@link CommandLineParser} that
-	 * caused this exception, prepended with an error message detailing the erroneous argument and,
-	 * if applicable, a reference to the usage where the user can read about acceptable input.
+	 * Returns usage detailing how to use the {@link CommandLineParser} that caused this
+	 * {@link ArgumentException exception}, prepended with an error message detailing the erroneous
+	 * argument and, if applicable, a reference to the usage where the user can read about
+	 * acceptable input.
 	 */
 	public final Usage getMessageAndUsage()
 	{
 		// TODO(jontejj): jack into the uncaughtExceptionHandler and remove stacktraces? Potentially
 		// very annoying feature...
 		String message = getMessage(usedArgumentName) + usageReference() + NEWLINE + NEWLINE;
-		return getUsage().withMessage(message);
+		return getUsage().withErrorMessage(message);
 	}
+
+	// TODO(jontejj): use getMessageAndUsage in toString()
 
 	/**
 	 * Returns why this exception occurred.
@@ -104,6 +107,8 @@ public abstract class ArgumentException extends Exception
 	 * 
 	 * Marked as final as the {@link #getMessage(String)} should be implemented instead
 	 * </pre>
+	 * 
+	 * @see #getMessageAndUsage()
 	 */
 	@Override
 	public final String getMessage()

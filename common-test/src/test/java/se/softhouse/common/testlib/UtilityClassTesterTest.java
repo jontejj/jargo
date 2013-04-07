@@ -27,8 +27,8 @@ public class UtilityClassTesterTest
 	@Test
 	public void testThatContructorNeedsToBePrivate()
 	{
-		UtilityClassTester.testUtilityClassDesign(	UtilityClassTester.class, EnumTester.class, Explanation.class, ResourceLoader.class,
-													Serializer.class, Constants.class, Launcher.class, Locales.class);
+		UtilityClassTester.testUtilityClassDesign(	EnumTester.class, Explanation.class, ResourceLoader.class, Serializer.class, Constants.class,
+													Launcher.class, Locales.class, Thrower.class);
 	}
 
 	@Test

@@ -38,6 +38,7 @@ import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.CommandLineParserInstance.ParserCache;
 import se.softhouse.jargo.StringParsers.StringStringParser;
+import se.softhouse.jargo.Usage.Row;
 import se.softhouse.jargo.commands.Build;
 import se.softhouse.jargo.internal.Texts;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
@@ -152,5 +153,11 @@ public class PackagePrivateTests
 	{
 		EnumTester.testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(StringStringParser.class);
 		EnumTester.testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(ParameterArity.class);
+	}
+
+	@Test
+	public void testRowToString() throws Exception
+	{
+		assertThat(new Row().toString()).isEqualTo(" ");
 	}
 }

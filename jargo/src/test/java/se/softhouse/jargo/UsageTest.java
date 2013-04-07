@@ -17,21 +17,38 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static org.fest.assertions.Fail.failure;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
+import static se.softhouse.common.testlib.Thrower.asUnchecked;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.Arguments.withParser;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import se.softhouse.common.classes.Classes;
 import se.softhouse.common.strings.Description;
+import se.softhouse.common.testlib.Serializer;
+import se.softhouse.common.testlib.SimulatedException;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.ForwardingStringParser.SimpleForwardingStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
@@ -44,6 +61,8 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
  * 
  * @formatter:off
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({UsageTest.class, StringBuilder.class})
 public class UsageTest
 {
 	@Test
@@ -51,6 +70,36 @@ public class UsageTest
 	{
 		Usage usage = integerArgument("-n").usage();
 		assertThat(usage).startsWith(UsageTexts.USAGE_HEADER + Classes.mainClassName());
+	}
+
+	@Test
+	public void testThatPrintOnFlushesInBetweenEachArgument()
+	{
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(output, true);
+		try
+		{
+			Argument<String> willFailWhenPrinted = stringArgument().description(new InvalidDescription()).build();
+			CommandLineParser.withArguments(integerArgument().build(), willFailWhenPrinted).usage().printOn(stream);
+			fail("Printing faulty descriptions should not work");
+		}
+		catch(SimulatedException expected)
+		{
+			String usageSoFar = output.toString();
+			// Verifies that the flush was made
+			assertThat(usageSoFar).contains("<integer>");
+			// Verifies that the usage doesn't contain any arguments that can't be fully printed
+			assertThat(usageSoFar).doesNotContain("<string>");
+		}
+	}
+
+	private static class InvalidDescription implements Description
+	{
+		@Override
+		public String description()
+		{
+			throw new SimulatedException();
+		}
 	}
 
 	@Test
@@ -309,6 +358,113 @@ public class UsageTest
 		public String descriptionOfValidValues(Locale locale)
 		{
 			return "Not wordwrapped as that could lead to invalid description strings. " + longTextWithoutNewlines;
+		}
+	}
+
+	@Test
+	public void testPrintOnPrintStream()
+	{
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(output, true);
+		CommandLineParser.withArguments(integerArgument().build()).usage().printOn(stream);
+		assertThat(output.toString()).contains("<integer>");
+		assertThat(stream.checkError()).isFalse();
+	}
+
+	@Test
+	public void testPrintOnStringBuilder()
+	{
+		StringBuilder builder = new StringBuilder();
+		CommandLineParser.withArguments(integerArgument().build()).usage().printOn(builder);
+		assertThat(builder.toString()).contains("<integer>");
+	}
+
+	@Test
+	public void testPrintOnAppendable() throws IOException
+	{
+		Appendable appendable = new StringWriter();
+		CommandLineParser.withArguments(integerArgument().build()).usage().printOn(appendable);
+		assertThat(appendable.toString()).contains("<integer>");
+	}
+
+	@Test
+	public void testThatSerializedUsageIsPrintedOnAppendable() throws IOException
+	{
+		Usage before = CommandLineParser.withArguments(integerArgument().build()).usage();
+		Usage after = Serializer.clone(before);
+
+		Appendable appendable = new StringWriter();
+		after.printOn(appendable);
+		assertThat(appendable.toString()).contains("<integer>");
+	}
+
+	@Test
+	public void testThatIOExceptionIsPropagatedWhenThrownFromNastyAppendable()
+	{
+		final IOException thrown = new IOException();
+		Appendable nastyAppendable = new BufferedWriter(new StringWriter()){
+			@Override
+			public BufferedWriter append(CharSequence csq) throws IOException
+			{
+				throw thrown;
+			}
+		};
+		try
+		{
+			CommandLineParser.withArguments(integerArgument().build()).usage().printOn(nastyAppendable);
+			fail("IOException wasn't propagated correctly");
+		}
+		catch(IOException propagatedVersion)
+		{
+			assertThat(propagatedVersion).isSameAs(thrown);
+		}
+	}
+
+	@Test
+	public void testThatIOExceptionIsPropagatedAsAssertionErrorForImpossibleCase_PrintStream()
+	{
+		final IOException thrown = new IOException();
+		PrintStream nastyStream = new PrintStream(new ByteArrayOutputStream()){
+			@Override
+			public PrintStream append(CharSequence csq)
+			{
+				throw asUnchecked(thrown);
+			}
+		};
+
+		try
+		{
+			CommandLineParser.withArguments(integerArgument().build()).usage().printOn(nastyStream);
+			fail("IOException wasn't propagated correctly");
+		}
+		catch(AssertionError expected)
+		{
+			assertThat(expected.getCause()).isSameAs(thrown);
+		}
+	}
+
+	@Test
+	@Ignore("Enable when https://code.google.com/p/powermock/issues/detail?id=135 has been fixed")
+	public void testThatIOExceptionIsPropagatedAsAssertionErrorForImpossibleCase_StringBuilder()
+	{
+		final IOException thrown = new IOException();
+		StringBuilder nastyBuilder = mock(StringBuilder.class);
+		when(nastyBuilder.append((CharSequence) any())).thenAnswer(new Answer<StringBuilder>(){
+			@Override
+			public StringBuilder answer(InvocationOnMock invocation) throws Throwable
+			{
+				throw asUnchecked(thrown);
+			}
+		});
+
+		try
+		{
+			CommandLineParser.withArguments(integerArgument().build()).usage().printOn(nastyBuilder);
+			fail("IOException wasn't propagated correctly");
+		}
+		catch(AssertionError expected)
+		{
+			assertThat(expected.getCause()).isSameAs(thrown);
 		}
 	}
 }

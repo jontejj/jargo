@@ -81,7 +81,7 @@ public final class Argument<T>
 	private final boolean isPropertyMap;
 
 	private final CollationKey sortingKey;
-	private static final Collator linguisticOrder = Collator.getInstance(Locale.ROOT);
+	private static final Collator LINGUISTIC_ORDER = Collator.getInstance(Locale.ROOT);
 
 	/**
 	 * <pre>
@@ -132,7 +132,7 @@ public final class Argument<T>
 
 		// Better to take the hit up front than to lazy load and experience latency when usage is
 		// requested for the first time
-		this.sortingKey = linguisticOrder.getCollationKey(toString());
+		this.sortingKey = LINGUISTIC_ORDER.getCollationKey(toString());
 	}
 
 	/**
