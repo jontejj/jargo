@@ -20,7 +20,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Describable;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
@@ -96,7 +96,7 @@ import com.google.common.collect.ImmutableList;
  * </pre>
  */
 @Immutable
-public abstract class Command extends InternalStringParser<ParsedArguments> implements Description
+public abstract class Command extends InternalStringParser<ParsedArguments> implements Describable
 {
 	@Nonnull private final ImmutableList<Argument<?>> commandArguments;
 
@@ -136,7 +136,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 
 	/**
 	 * Override to provide a description to print in the usage text for this command.
-	 * This is essentially an alternative to {@link ArgumentBuilder#description(Description)}
+	 * This is essentially an alternative to {@link ArgumentBuilder#description(Describable)}
 	 * 
 	 * @return the description to use in the usage text
 	 */

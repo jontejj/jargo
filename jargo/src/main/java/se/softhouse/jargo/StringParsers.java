@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static java.util.Collections.emptyList;
-import static se.softhouse.common.strings.Descriptions.format;
+import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.jargo.ArgumentExceptions.asUnchecked;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingNthParameter;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingParameter;

@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import se.softhouse.common.numbers.NumberType;
 import se.softhouse.common.strings.Describers;
-import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Describables;
 import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.common.testlib.EnumTester;
 import se.softhouse.jargo.Argument.ParameterArity;
@@ -143,7 +143,7 @@ public class PackagePrivateTests
 	@Test
 	public void testConstructorsForUtilityClasses()
 	{
-		testUtilityClassDesign(	Arguments.class, StringsUtil.class, Descriptions.class, StringParsers.class, ArgumentExceptions.class,
+		testUtilityClassDesign(	Arguments.class, StringsUtil.class, Describables.class, StringParsers.class, ArgumentExceptions.class,
 								Describers.class, Texts.class, ParserCache.class, Texts.class, UserErrors.class, UsageTexts.class,
 								ProgrammaticErrors.class);
 	}

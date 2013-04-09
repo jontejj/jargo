@@ -450,7 +450,7 @@ public class CommandTest
 		@Override
 		public String description()
 		{
-			fail("Description should only be called if usage is printed");
+			fail("Describable should only be called if usage is printed");
 			return "Unreachable description";
 		}
 	}

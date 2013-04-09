@@ -15,7 +15,7 @@
 package se.softhouse.common.numbers;
 
 import static se.softhouse.common.strings.Describers.numberDescriber;
-import static se.softhouse.common.strings.Descriptions.illegalArgument;
+import static se.softhouse.common.strings.Describables.illegalArgument;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.pointingAtIndex;
 
@@ -31,8 +31,8 @@ import java.util.Locale;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
-import se.softhouse.common.strings.Description;
-import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describables;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -176,7 +176,7 @@ public abstract class NumberType<T extends Number>
 			throw illegalArgument(formatError(value, inLocale, parsePosition));
 
 		if(!inRange(result))
-			throw illegalArgument(Descriptions.format(OUT_OF_RANGE, value, format(minValue(), inLocale), format(maxValue(), inLocale)));
+			throw illegalArgument(Describables.format(OUT_OF_RANGE, value, format(minValue(), inLocale), format(maxValue(), inLocale)));
 
 		return from(result);
 	}
@@ -215,10 +215,10 @@ public abstract class NumberType<T extends Number>
 
 	private static final String TEMPLATE = "'%s' is not a valid %s (Localization: %s)" + NEWLINE + " %s";
 
-	private Description formatError(String invalidValue, Locale locale, ParsePosition positionForInvalidCharacter)
+	private Describable formatError(String invalidValue, Locale locale, ParsePosition positionForInvalidCharacter)
 	{
 		String localeInformation = locale.getDisplayName(locale);
-		return Descriptions.format(TEMPLATE, invalidValue, name(), localeInformation, pointingAtIndex(positionForInvalidCharacter.getIndex()));
+		return Describables.format(TEMPLATE, invalidValue, name(), localeInformation, pointingAtIndex(positionForInvalidCharacter.getIndex()));
 	}
 
 	/**

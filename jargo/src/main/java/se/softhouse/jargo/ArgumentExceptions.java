@@ -24,9 +24,9 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import se.softhouse.common.strings.Description;
-import se.softhouse.common.strings.Descriptions;
-import se.softhouse.common.strings.Descriptions.SerializableDescription;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describables;
+import se.softhouse.common.strings.Describables.SerializableDescription;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
@@ -49,7 +49,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	public static ArgumentException withMessage(final Object message)
 	{
-		return new SimpleArgumentException(Descriptions.toString(message));
+		return new SimpleArgumentException(Describables.toString(message));
 	}
 
 	/**
@@ -59,25 +59,25 @@ public final class ArgumentExceptions
 	@Nonnull
 	public static ArgumentException withMessage(final Object message, Throwable cause)
 	{
-		return new SimpleArgumentException(Descriptions.toString(message)).andCause(cause);
+		return new SimpleArgumentException(Describables.toString(message)).andCause(cause);
 	}
 
 	/**
-	 * {@link Description} based version of {@link #withMessage(Object)}
+	 * {@link Describable} based version of {@link #withMessage(Object)}
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static ArgumentException withMessage(Description message)
+	public static ArgumentException withMessage(Describable message)
 	{
 		return new SimpleArgumentException(message);
 	}
 
 	/**
-	 * Like {@link #withMessage(Description)} but with a {@code cause}
+	 * Like {@link #withMessage(Describable)} but with a {@code cause}
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public static ArgumentException withMessage(Description message, Throwable cause)
+	public static ArgumentException withMessage(Describable message, Throwable cause)
 	{
 		return new SimpleArgumentException(message).andCause(cause);
 	}
@@ -86,9 +86,9 @@ public final class ArgumentExceptions
 	{
 		private final SerializableDescription message;
 
-		private SimpleArgumentException(final Description message)
+		private SimpleArgumentException(final Describable message)
 		{
-			this.message = Descriptions.asSerializable(message);
+			this.message = Describables.asSerializable(message);
 		}
 
 		@Override
@@ -221,7 +221,7 @@ public final class ArgumentExceptions
 	static ArgumentException forUnallowedRepetitionArgument(final String unhandledArgument)
 	{
 		checkNotNull(unhandledArgument);
-		return new SimpleArgumentException(Descriptions.format(UserErrors.DISALLOWED_REPETITION, unhandledArgument));
+		return new SimpleArgumentException(Describables.format(UserErrors.DISALLOWED_REPETITION, unhandledArgument));
 	}
 
 	/**

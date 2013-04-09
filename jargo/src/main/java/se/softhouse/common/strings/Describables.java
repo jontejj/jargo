@@ -25,31 +25,31 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
 /**
- * Gives you static access to implementations of the {@link Description} interface.
+ * Gives you static access to implementations of the {@link Describable} interface.
  */
-public final class Descriptions
+public final class Describables
 {
-	private Descriptions()
+	private Describables()
 	{
 	}
 
 	/**
-	 * Returns an empty string as a description.
+	 * Returns an empty string as a describable.
 	 */
 	@Nonnull public static final SerializableDescription EMPTY_STRING = asSerializable(withString(""));
 
 	/**
-	 * Supplies an already created {@link String} as a {@link Description}.
-	 * Also useful for caching {@link Description}s that won't change.
+	 * Supplies an already created {@link String} as a {@link Describable}.
+	 * Also useful for caching {@link Describable}s that won't change.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static Description withString(String description)
+	public static Describable withString(String description)
 	{
 		return new NonLazyDescription(description);
 	}
 
-	private static final class NonLazyDescription implements Description
+	private static final class NonLazyDescription implements Describable
 	{
 		private final String description;
 
@@ -76,12 +76,12 @@ public final class Descriptions
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static Description format(String formatTemplate, Object ... args)
+	public static Describable format(String formatTemplate, Object ... args)
 	{
 		return new FormatDescription(formatTemplate, args);
 	}
 
-	private static final class FormatDescription implements Description
+	private static final class FormatDescription implements Describable
 	{
 		private final String formattingTemplate;
 		private final Object[] args;
@@ -106,25 +106,25 @@ public final class Descriptions
 	}
 
 	/**
-	 * Lazily caches the result of running {@link Description#description()} on {@code description}
+	 * Lazily caches the result of running {@link Describable#description()} on {@code describable}
 	 * so that it's only run once.
 	 */
-	public static Description cache(Description description)
+	public static Describable cache(Describable describable)
 	{
-		return new CachingDescription(checkNotNull(description));
+		return new CachingDescription(checkNotNull(describable));
 	}
 
-	private static final class CachingDescription implements Description
+	private static final class CachingDescription implements Describable
 	{
 		private final Supplier<String> description;
 
-		private CachingDescription(final Description description)
+		private CachingDescription(final Describable describable)
 		{
 			this.description = Suppliers.memoize(new Supplier<String>(){
 				@Override
 				public String get()
 				{
-					return description.description();
+					return describable.description();
 				}
 			});
 		}
@@ -143,18 +143,18 @@ public final class Descriptions
 	}
 
 	/**
-	 * Lazily calls the {@link #toString()} of {@code value} as a description
+	 * Lazily calls the {@link #toString()} of {@code value} as a describable
 	 * 
 	 * @param value the object to call {@link #toString()} on
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static Description toString(Object value)
+	public static Describable toString(Object value)
 	{
 		return new ToStringDescription(value);
 	}
 
-	private static final class ToStringDescription implements Description
+	private static final class ToStringDescription implements Describable
 	{
 		private final Object value;
 
@@ -177,23 +177,23 @@ public final class Descriptions
 	}
 
 	/**
-	 * Creates an {@link IllegalArgumentException} where the {@link Description#description()} of
+	 * Creates an {@link IllegalArgumentException} where the {@link Describable#description()} of
 	 * {@code message} is used as the detail message.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static IllegalArgumentException illegalArgument(Description message)
+	public static IllegalArgumentException illegalArgument(Describable message)
 	{
 		return new DescriptionException(message);
 	}
 
 	/**
-	 * Creates an {@link IllegalArgumentException} where the {@link Description#description()} of
+	 * Creates an {@link IllegalArgumentException} where the {@link Describable#description()} of
 	 * {@code message} is used as the detail message. {@code cause} is set as the cause.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static IllegalArgumentException illegalArgument(Description message, Throwable cause)
+	public static IllegalArgumentException illegalArgument(Describable message, Throwable cause)
 	{
 		return new DescriptionException(message, cause);
 	}
@@ -202,12 +202,12 @@ public final class Descriptions
 	{
 		private final SerializableDescription message;
 
-		private DescriptionException(final Description message)
+		private DescriptionException(final Describable message)
 		{
-			this.message = checkNotNull(Descriptions.asSerializable(message));
+			this.message = checkNotNull(Describables.asSerializable(message));
 		}
 
-		private DescriptionException(final Description message, Throwable cause)
+		private DescriptionException(final Describable message, Throwable cause)
 		{
 			this(message);
 			initCause(checkNotNull(cause));
@@ -226,46 +226,46 @@ public final class Descriptions
 	}
 
 	/**
-	 * Returns a version of {@code description} that is serializable. Note that after serialization
-	 * the description is fixed, that is {@link Description#description()} won't be called on
-	 * {@code description} any more.
+	 * Returns a version of {@code describable} that is serializable. Note that after serialization
+	 * the describable is fixed, that is {@link Describable#description()} won't be called on
+	 * {@code describable} any more.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	public static SerializableDescription asSerializable(Description description)
+	public static SerializableDescription asSerializable(Describable describable)
 	{
-		return new SerializableDescription(description);
+		return new SerializableDescription(describable);
 	}
 
 	/**
-	 * A {@link Serializable} wrapper for {@link Description}s
+	 * A {@link Serializable} wrapper for {@link Describable}s
 	 */
-	public static final class SerializableDescription implements Serializable, Description
+	public static final class SerializableDescription implements Serializable, Describable
 	{
-		private final transient Description description;
+		private final transient Describable describable;
 
-		private SerializableDescription(Description descriptionToSerialize)
+		private SerializableDescription(Describable descriptionToSerialize)
 		{
-			description = checkNotNull(descriptionToSerialize);
+			describable = checkNotNull(descriptionToSerialize);
 		}
 
 		private static final class SerializationProxy implements Serializable
 		{
 			/**
-			 * @serial the detail message for this description. Constructed lazily when serialized.
+			 * @serial the detail message for this describable. Constructed lazily when serialized.
 			 */
 			private final String message;
 
 			private static final long serialVersionUID = 1L;
 
-			private SerializationProxy(Description descriptionToSerialize)
+			private SerializationProxy(Describable descriptionToSerialize)
 			{
 				message = descriptionToSerialize.description();
 			}
 
 			private Object readResolve()
 			{
-				return new SerializableDescription(Descriptions.withString(message));
+				return new SerializableDescription(Describables.withString(message));
 			}
 		}
 
@@ -277,7 +277,7 @@ public final class Descriptions
 		@Override
 		public String description()
 		{
-			return description.description();
+			return describable.description();
 		}
 
 		@Override

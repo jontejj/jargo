@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Describables;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -87,7 +87,7 @@ public final class Predicates2
 			for(E value : values)
 			{
 				if(!elementLimiter.apply(value))
-					throw Descriptions.illegalArgument(Descriptions.format("'%s' is not %s", value, elementLimiter));
+					throw Describables.illegalArgument(Describables.format("'%s' is not %s", value, elementLimiter));
 			}
 			return true;
 		}

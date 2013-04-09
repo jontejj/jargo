@@ -24,10 +24,10 @@ import javax.annotation.concurrent.Immutable;
  * If you already have a created {@link String} it's recommended to just use that instead.
  * This interface is typically implemented using an anonymous class.
  * 
- * @see Descriptions
+ * @see Describables
  */
 @Immutable
-public interface Description
+public interface Describable
 {
 	/**
 	 * @return a description

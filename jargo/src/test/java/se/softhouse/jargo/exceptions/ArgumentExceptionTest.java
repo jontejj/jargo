@@ -23,8 +23,8 @@ import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import org.junit.Test;
 
-import se.softhouse.common.strings.Description;
-import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describables;
 import se.softhouse.common.testlib.Serializer;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentException;
@@ -57,7 +57,7 @@ public class ArgumentExceptionTest
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Testing that invocation doesn't call description")
 	public void testThatDescriptionIsNotCalledWhenNotNeeded()
 	{
-		withMessage(new Description(){
+		withMessage(new Describable(){
 			@Override
 			public String description()
 			{
@@ -71,7 +71,7 @@ public class ArgumentExceptionTest
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Testing that argument exceptions lazily loads the description")
 	public void testThatToStringIsNotRunWhenItIsNotNeeded()
 	{
-		withMessage(Descriptions.format("%s", new FailingToString()));
+		withMessage(Describables.format("%s", new FailingToString()));
 	}
 
 	@Test

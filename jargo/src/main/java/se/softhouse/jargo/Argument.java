@@ -16,7 +16,7 @@ package se.softhouse.jargo;
 
 import static com.google.common.base.Predicates.alwaysTrue;
 import static java.util.Arrays.asList;
-import static se.softhouse.common.strings.Descriptions.format;
+import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
@@ -33,8 +33,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.guavaextensions.Suppliers2;
+import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describer;
-import se.softhouse.common.strings.Description;
 import se.softhouse.jargo.StringParsers.HelpParser;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
@@ -60,7 +60,7 @@ import com.google.common.base.Supplier;
 public final class Argument<T>
 {
 	@Nonnull private final List<String> names;
-	@Nonnull private final Description description;
+	@Nonnull private final Describable description;
 	@Nonnull private final Optional<String> metaDescription;
 	private final boolean hideFromUsage;
 

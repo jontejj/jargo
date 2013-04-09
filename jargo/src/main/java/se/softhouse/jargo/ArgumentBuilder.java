@@ -23,8 +23,8 @@ import static com.google.common.collect.Iterables.isEmpty;
 import static java.util.Collections.emptyList;
 import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
 import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
-import static se.softhouse.common.strings.Descriptions.EMPTY_STRING;
-import static se.softhouse.common.strings.Descriptions.withString;
+import static se.softhouse.common.strings.Describables.EMPTY_STRING;
+import static se.softhouse.common.strings.Describables.withString;
 import static se.softhouse.jargo.StringParsers.optionParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
 
@@ -43,7 +43,7 @@ import se.softhouse.common.guavaextensions.Functions2;
 import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
-import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Describable;
 import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.ForwardingStringParser.SimpleForwardingStringParser;
 import se.softhouse.jargo.StringParsers.FixedArityParser;
@@ -91,7 +91,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	static final String DEFAULT_SEPARATOR = " ";
 	// ArgumentSetting variables, think about #copy() when adding new ones
 	@Nonnull private List<String> names = emptyList();
-	@Nonnull private Description description = EMPTY_STRING;
+	@Nonnull private Describable description = EMPTY_STRING;
 	private boolean required = false;
 	@Nonnull private String separator = DEFAULT_SEPARATOR;
 	@Nonnull private Optional<Locale> localeOverride = Optional.absent();
@@ -309,11 +309,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * <pre>
-	 * {@link Description} version of {@link #description(String)}.
+	 * {@link Describable} version of {@link #description(String)}.
 	 * @return this builder
 	 * </pre>
 	 */
-	public final SELF description(final Description theDescription)
+	public final SELF description(final Describable theDescription)
 	{
 		description = checkNotNull(theDescription);
 		return myself;
@@ -769,7 +769,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	@Nullable Describer<? super T> defaultValueDescriber(){ return defaultValueDescriber; }
 
-	@Nonnull Description description(){ return description; }
+	@Nonnull Describable description(){ return description; }
 
 	final boolean isRequired(){ return required; }
 

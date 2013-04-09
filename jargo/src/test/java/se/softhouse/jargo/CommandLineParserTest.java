@@ -468,6 +468,6 @@ public class CommandLineParserTest
 		assertThat(integerArgument("hidden-argument").hideFromUsage().arity(2).usage()).doesNotContain("hidden-argument");
 	}
 
-	// TODO(jontejj): Test for memory leaks by parsing a gigantic string and System.gc -
+	// TODO(jontejj): Test for memory leaks by parsing a gigantic string and GcFinalization.await()
 	// MemoryTester#allocateLargeString
 }

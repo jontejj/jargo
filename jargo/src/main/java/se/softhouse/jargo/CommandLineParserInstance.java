@@ -23,7 +23,7 @@ import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static com.google.common.collect.Sets.newLinkedHashSetWithExpectedSize;
 import static java.util.Collections.emptySet;
 import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
-import static se.softhouse.common.strings.Descriptions.format;
+import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.common.strings.StringsUtil.startsWithAndHasMore;

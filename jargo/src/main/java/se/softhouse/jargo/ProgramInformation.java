@@ -15,15 +15,15 @@
 package se.softhouse.jargo;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static se.softhouse.common.strings.Descriptions.cache;
+import static se.softhouse.common.strings.Describables.cache;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.classes.Classes;
-import se.softhouse.common.strings.Description;
-import se.softhouse.common.strings.Descriptions;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describables;
 
 /**
  * Information about a program, printed in {@link Usage} before any {@link Argument}s are described.
@@ -31,10 +31,10 @@ import se.softhouse.common.strings.Descriptions;
 @Immutable
 final class ProgramInformation
 {
-	private final Description programName;
+	private final Describable programName;
 	private final String programDescription;
 
-	private ProgramInformation(Description programName, String programDescription)
+	private ProgramInformation(Describable programName, String programDescription)
 	{
 		this.programName = programName;
 		this.programDescription = programDescription;
@@ -48,7 +48,7 @@ final class ProgramInformation
 	 * "ProgramName" with {@link CommandLineParser#programName(String)}
 	 * </pre>
 	 */
-	static final ProgramInformation AUTO = new ProgramInformation(cache(new Description(){
+	static final ProgramInformation AUTO = new ProgramInformation(cache(new Describable(){
 		@Override
 		public String description()
 		{
@@ -67,7 +67,7 @@ final class ProgramInformation
 	@CheckReturnValue
 	static ProgramInformation withProgramName(String programName)
 	{
-		return new ProgramInformation(Descriptions.withString(programName), "");
+		return new ProgramInformation(Describables.withString(programName), "");
 	}
 
 	/**
@@ -94,7 +94,7 @@ final class ProgramInformation
 	@CheckReturnValue
 	ProgramInformation programName(String aProgramName)
 	{
-		return new ProgramInformation(Descriptions.withString(aProgramName), programDescription);
+		return new ProgramInformation(Describables.withString(aProgramName), programDescription);
 	}
 
 	String programName()

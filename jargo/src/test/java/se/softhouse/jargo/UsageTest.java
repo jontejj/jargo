@@ -39,14 +39,11 @@ import java.util.Locale;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import se.softhouse.common.classes.Classes;
-import se.softhouse.common.strings.Description;
+import se.softhouse.common.strings.Describable;
 import se.softhouse.common.testlib.Serializer;
 import se.softhouse.common.testlib.SimulatedException;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
@@ -61,8 +58,6 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
  * 
  * @formatter:off
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({UsageTest.class, StringBuilder.class})
 public class UsageTest
 {
 	@Test
@@ -93,7 +88,7 @@ public class UsageTest
 		}
 	}
 
-	private static class InvalidDescription implements Description
+	private static class InvalidDescription implements Describable
 	{
 		@Override
 		public String description()
@@ -258,7 +253,7 @@ public class UsageTest
 	@Test
 	public void testThatDescriptionsAreLazilyInitialized()
 	{
-		Usage usage = integerArgument("-n").description(new Description(){
+		Usage usage = integerArgument("-n").description(new Describable(){
 			@Override
 			public String description()
 			{
@@ -305,12 +300,12 @@ public class UsageTest
 		}
 	}
 
-	private static final class FailingDescription implements Description
+	private static final class FailingDescription implements Describable
 	{
 		@Override
 		public String description()
 		{
-			throw failure("Description should not be called as no usage was printed");
+			throw failure("Describable should not be called as no usage was printed");
 		}
 	}
 
@@ -443,6 +438,12 @@ public class UsageTest
 		}
 	}
 
+	/**
+	 * TODO: Move these to the class level and enable test
+	 * 
+	 * @RunWith(PowerMockRunner.class)
+	 * @PrepareForTest({UsageTest.class, StringBuilder.class})
+	 */
 	@Test
 	@Ignore("Enable when https://code.google.com/p/powermock/issues/detail?id=135 has been fixed")
 	public void testThatIOExceptionIsPropagatedAsAssertionErrorForImpossibleCase_StringBuilder()
