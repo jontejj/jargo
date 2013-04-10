@@ -63,7 +63,7 @@ public class SecurityManagerDependencyTest
 			}
 		});
 		ConcurrencyTest test = new ConcurrencyTest();
-		test.test();
+		test.testThatDifferentArgumentsCanBeParsedConcurrently();
 	}
 
 	static final Set<String> READABLE_PROPERTIES = Sets.newHashSet(	"user.timezone", "user.country", "java.home",

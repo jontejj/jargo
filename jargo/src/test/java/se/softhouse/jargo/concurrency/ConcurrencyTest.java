@@ -131,7 +131,7 @@ public class ConcurrencyTest
 	private static final int cleanupTime = 5;
 
 	@Test(timeout = (timeoutInSeconds + cleanupTime) * 1000)
-	public void test() throws Throwable
+	public void testThatDifferentArgumentsCanBeParsedConcurrently() throws Throwable
 	{
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nrOfConcurrentRunners);
 		for(int i = 0; i < nrOfConcurrentRunners; i++)
@@ -178,7 +178,7 @@ public class ConcurrencyTest
 
 			String greetingPhrase = "Hello" + offset;
 			DateTime time = DateTime.parse(new DateTime("2010-01-01").plusMillis(offset).toString());
-			char c = (char) (offset % Character.MAX_VALUE);
+			char c = charForOffset();
 			boolean bool = offset % 2 == 0;
 			String enableLogging = bool ? "-l " : "";
 			short shortNumber = (short) (1232 + offset);
@@ -250,11 +250,21 @@ public class ConcurrencyTest
 			}
 			catch(Throwable e)
 			{
-				failure.set(e);
-				originThread.interrupt();
+				// Don't report secondary failures
+				if(failure.compareAndSet(null, e))
+				{
+					originThread.interrupt();
+				}
 				return;
 			}
 			activeWorkers.countDown();
+		}
+
+		private char charForOffset()
+		{
+			char c = (char) (offset % Character.MAX_VALUE);
+			// char charToReceive = c == ' ' ? '.' : c; // A space would be trimmed to nothing
+			return c;
 		}
 
 		/**

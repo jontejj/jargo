@@ -439,7 +439,7 @@ public class UsageTest
 	}
 
 	/**
-	 * TODO: Move these to the class level and enable test
+	 * TODO(jontejj): Move these to the class level and enable test
 	 * 
 	 * @RunWith(PowerMockRunner.class)
 	 * @PrepareForTest({UsageTest.class, StringBuilder.class})
