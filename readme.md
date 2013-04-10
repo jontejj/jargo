@@ -1,6 +1,6 @@
 # Jargo
-A tool to ease the handling of program arguments/options
-
+A tool to ease the handling of program arguments/options  
+[![Build Status](https://travis-ci.org/Softhouse/jargo.png)](https://travis-ci.org/Softhouse/jargo)  
 # Most basic usage
 ```java
 import static se.softhouse.jargo.Arguments.*;
