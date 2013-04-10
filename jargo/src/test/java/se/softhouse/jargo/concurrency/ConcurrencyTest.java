@@ -263,8 +263,7 @@ public class ConcurrencyTest
 		private char charForOffset()
 		{
 			char c = (char) (offset % Character.MAX_VALUE);
-			// char charToReceive = c == ' ' ? '.' : c; // A space would be trimmed to nothing
-			return c;
+			return c == ' ' ? '.' : c; // A space would be trimmed to nothing
 		}
 
 		/**
