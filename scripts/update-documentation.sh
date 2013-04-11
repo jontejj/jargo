@@ -3,6 +3,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   #Generate documentation
   mvn --quiet "javadoc:javadoc"
   #TODO(jontejj): don't specify these manually
+  mkdir -p $HOME/javadoc/jargo
+  mkdir -p $HOME/javadoc/common-test
   cp -R jargo/target/site/apidocs $HOME/javadoc/jargo
   cp -R common-test/target/site/apidocs $HOME/javadoc/common-test
   #Setup git
