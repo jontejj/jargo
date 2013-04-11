@@ -17,4 +17,32 @@
 			<version>1.4</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.6.2.201302030002</version>
+				<executions>
+					<execution>
+						<id>check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<check>
+								<!-- Not as strict requirements for test helping code -->
+								<classRatio>100</classRatio>
+								<instructionRatio>90</instructionRatio>
+								<methodRatio>90</methodRatio>
+								<branchRatio>90</branchRatio>
+								<complexityRatio>90</complexityRatio>
+								<lineRatio>90</lineRatio>
+							</check>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
