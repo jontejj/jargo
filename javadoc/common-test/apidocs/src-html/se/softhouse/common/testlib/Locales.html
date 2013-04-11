@@ -1,163 +1,158 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en">
-<head>
-<title>Source code</title>
-<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
-</head>
-<body>
-<div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>/* Copyright 2013 Jonatan Jönsson<a name="line.1"></a>
-<span class="sourceLineNo">002</span> *<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *    Licensed under the Apache License, Version 2.0 (the "License");<a name="line.3"></a>
-<span class="sourceLineNo">004</span> *    you may not use this file except in compliance with the License.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> *    You may obtain a copy of the License at<a name="line.5"></a>
-<span class="sourceLineNo">006</span> *<a name="line.6"></a>
-<span class="sourceLineNo">007</span> *        http://www.apache.org/licenses/LICENSE-2.0<a name="line.7"></a>
-<span class="sourceLineNo">008</span> *<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *    Unless required by applicable law or agreed to in writing, software<a name="line.9"></a>
-<span class="sourceLineNo">010</span> *    distributed under the License is distributed on an "AS IS" BASIS,<a name="line.10"></a>
-<span class="sourceLineNo">011</span> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.11"></a>
-<span class="sourceLineNo">012</span> *    See the License for the specific language governing permissions and<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *    limitations under the License.<a name="line.13"></a>
-<span class="sourceLineNo">014</span> */<a name="line.14"></a>
-<span class="sourceLineNo">015</span>package se.softhouse.common.testlib;<a name="line.15"></a>
-<span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>import static com.google.common.base.Preconditions.checkNotNull;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>import static java.lang.Thread.currentThread;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>import static java.util.concurrent.TimeUnit.MILLISECONDS;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import static se.softhouse.common.testlib.Constants.ONE_MINUTE;<a name="line.20"></a>
-<span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.util.Locale;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.util.concurrent.TimeUnit;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.util.concurrent.locks.ReentrantLock;<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>import javax.annotation.concurrent.ThreadSafe;<a name="line.26"></a>
-<span class="sourceLineNo">027</span><a name="line.27"></a>
-<span class="sourceLineNo">028</span>/**<a name="line.28"></a>
-<span class="sourceLineNo">029</span> * &lt;pre&gt;<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * Utilities for testing different {@link Locale}s.<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * &lt;/pre&gt;<a name="line.31"></a>
-<span class="sourceLineNo">032</span> */<a name="line.32"></a>
-<span class="sourceLineNo">033</span>@ThreadSafe<a name="line.33"></a>
-<span class="sourceLineNo">034</span>public final class Locales<a name="line.34"></a>
-<span class="sourceLineNo">035</span>{<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        private Locales()<a name="line.36"></a>
-<span class="sourceLineNo">037</span>        {<a name="line.37"></a>
-<span class="sourceLineNo">038</span>        }<a name="line.38"></a>
-<span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>        /**<a name="line.40"></a>
-<span class="sourceLineNo">041</span>         * The {@link Locale} representing Sweden<a name="line.41"></a>
-<span class="sourceLineNo">042</span>         */<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        public static final Locale SWEDISH = new Locale("sv", "SE");<a name="line.43"></a>
-<span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>        /**<a name="line.45"></a>
-<span class="sourceLineNo">046</span>         * See &lt;a href="http://java.sys-con.com/node/46241"&gt;Turkish Java Needs Special Brewing&lt;/a&gt; and<a name="line.46"></a>
-<span class="sourceLineNo">047</span>         * &lt;a href="http://www.codinghorror.com/blog/2008/03/whats-wrong-with-turkey.html"&gt;What's Wrong<a name="line.47"></a>
-<span class="sourceLineNo">048</span>         * With Turkey?&lt;/a&gt; for more details about why the Turkish {@link Locale} is suitable for<a name="line.48"></a>
-<span class="sourceLineNo">049</span>         * testing purposes.<a name="line.49"></a>
-<span class="sourceLineNo">050</span>         */<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        public static final Locale TURKISH = new Locale("tr", "TR");<a name="line.51"></a>
-<span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>        private static final ReentrantLock LOCK = new ReentrantLock();<a name="line.53"></a>
-<span class="sourceLineNo">054</span><a name="line.54"></a>
-<span class="sourceLineNo">055</span>        private static volatile Locale defaultLocale = Locale.getDefault();<a name="line.55"></a>
-<span class="sourceLineNo">056</span><a name="line.56"></a>
-<span class="sourceLineNo">057</span>        /**<a name="line.57"></a>
-<span class="sourceLineNo">058</span>         * How long the previous caller said he wanted to use {@link Locale#getDefault()} for in<a name="line.58"></a>
-<span class="sourceLineNo">059</span>         * milliseconds<a name="line.59"></a>
-<span class="sourceLineNo">060</span>         */<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        private static volatile long maximumUsageTime = ONE_MINUTE;<a name="line.61"></a>
-<span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>        /**<a name="line.63"></a>
-<span class="sourceLineNo">064</span>         * &lt;pre&gt;<a name="line.64"></a>
-<span class="sourceLineNo">065</span>         *  Makes it possible to test invalid usages of {@link Locale#getDefault()} in a synchronized<a name="line.65"></a>
-<span class="sourceLineNo">066</span>         *  manner making sure that test cases don't fail suddenly when they are run concurrently.<a name="line.66"></a>
-<span class="sourceLineNo">067</span>         *  I.e a pipelined version of {@link Locale#getDefault()}.<a name="line.67"></a>
-<span class="sourceLineNo">068</span>         * <a name="line.68"></a>
-<span class="sourceLineNo">069</span>         * You're allowed to use {@link Locale#getDefault()} for 60 seconds then other threads<a name="line.69"></a>
-<span class="sourceLineNo">070</span>         * will start to receive {@link InterruptedException} because they can't get access to it.<a name="line.70"></a>
-<span class="sourceLineNo">071</span>         * If you need more than 60 seconds use {@link #setDefault(Locale, long, TimeUnit)} instead.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>         * &lt;b&gt;Note:&lt;/b&gt; Don't forget to call {@link #resetDefaultLocale()} when you're done with using<a name="line.72"></a>
-<span class="sourceLineNo">073</span>         * the {@link Locale#getDefault()} method.<a name="line.73"></a>
-<span class="sourceLineNo">074</span>         * <a name="line.74"></a>
-<span class="sourceLineNo">075</span>         * @param locale the locale {@link Locale#getDefault()} should return<a name="line.75"></a>
-<span class="sourceLineNo">076</span>         * @throws InterruptedException if it wasn't possible to invoke<a name="line.76"></a>
-<span class="sourceLineNo">077</span>         *             {@link Locale#setDefault(Locale)} due to another thread using the default<a name="line.77"></a>
-<span class="sourceLineNo">078</span>         *             locale for longer than he specified (default 60 seconds)<a name="line.78"></a>
-<span class="sourceLineNo">079</span>         * &lt;/pre&gt;<a name="line.79"></a>
-<span class="sourceLineNo">080</span>         */<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        public static void setDefault(Locale locale) throws InterruptedException<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        {<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                setDefault(locale, 60, TimeUnit.SECONDS);<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        }<a name="line.84"></a>
-<span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span>        /**<a name="line.86"></a>
-<span class="sourceLineNo">087</span>         * &lt;pre&gt;<a name="line.87"></a>
-<span class="sourceLineNo">088</span>         * Works like {@link #setDefault(Locale)} but it allows you to use {@link Locale#getDefault()}<a name="line.88"></a>
-<span class="sourceLineNo">089</span>         * for the time specified by {@code time} and {@code unit}.<a name="line.89"></a>
-<span class="sourceLineNo">090</span>         * &lt;b&gt;Note:&lt;/b&gt; if the current thread already "owns" the default locale (by having called<a name="line.90"></a>
-<span class="sourceLineNo">091</span>         * {@link #setDefault(Locale, long, TimeUnit)} before) {@code time} and {@code unit} will be<a name="line.91"></a>
-<span class="sourceLineNo">092</span>         * ignored.<a name="line.92"></a>
-<span class="sourceLineNo">093</span>         * <a name="line.93"></a>
-<span class="sourceLineNo">094</span>         * @param locale the locale {@link Locale#getDefault()} should return<a name="line.94"></a>
-<span class="sourceLineNo">095</span>         * @param time the maximum time to use {@link Locale#getDefault()}<a name="line.95"></a>
-<span class="sourceLineNo">096</span>         * @param unit the {@link TimeUnit} of the time argument<a name="line.96"></a>
-<span class="sourceLineNo">097</span>         * @throws InterruptedException if it wasn't possible to invoke<a name="line.97"></a>
-<span class="sourceLineNo">098</span>         *             {@link Locale#setDefault(Locale)} due to another thread using the default<a name="line.98"></a>
-<span class="sourceLineNo">099</span>         *             locale for longer than he specified (default 60 seconds)<a name="line.99"></a>
-<span class="sourceLineNo">100</span>         * &lt;/pre&gt;<a name="line.100"></a>
-<span class="sourceLineNo">101</span>         */<a name="line.101"></a>
-<span class="sourceLineNo">102</span>        public static void setDefault(Locale locale, long time, TimeUnit unit) throws InterruptedException<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        {<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                checkNotNull(locale);<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                checkNotNull(unit);<a name="line.105"></a>
-<span class="sourceLineNo">106</span><a name="line.106"></a>
-<span class="sourceLineNo">107</span>                // Allow the same thread to change the locale during his "period" without locking<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                if(!LOCK.isHeldByCurrentThread())<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                {<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                        if(!LOCK.tryLock(maximumUsageTime, TimeUnit.MILLISECONDS))<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                                throw new InterruptedException("Thread (" + currentThread().getName() + ") Waited for " + MILLISECONDS.toSeconds(maximumUsageTime)<a name="line.111"></a>
-<span class="sourceLineNo">112</span>                                                + " seconds on " + LOCK + " to finish using " + Locale.getDefault() + " but timed out");<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                        maximumUsageTime = unit.toMillis(time);<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                        defaultLocale = Locale.getDefault();<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                }<a name="line.115"></a>
-<span class="sourceLineNo">116</span><a name="line.116"></a>
-<span class="sourceLineNo">117</span>                try<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                {<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                        Locale.setDefault(locale);<a name="line.119"></a>
-<span class="sourceLineNo">120</span>                }<a name="line.120"></a>
-<span class="sourceLineNo">121</span>                catch(SecurityException e)<a name="line.121"></a>
-<span class="sourceLineNo">122</span>                {<a name="line.122"></a>
-<span class="sourceLineNo">123</span>                        LOCK.unlock(); // Let someone else try again<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                        throw e;<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                }<a name="line.125"></a>
-<span class="sourceLineNo">126</span>        }<a name="line.126"></a>
-<span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span>        /**<a name="line.128"></a>
-<span class="sourceLineNo">129</span>         * Resets {@link Locale#getDefault()} to what it was when {@link #setDefault(Locale)} was<a name="line.129"></a>
-<span class="sourceLineNo">130</span>         * called. Should be called after you're done with using {@link Locale#getDefault()}, typically<a name="line.130"></a>
-<span class="sourceLineNo">131</span>         * called in a "tear down" method.<a name="line.131"></a>
-<span class="sourceLineNo">132</span>         * <a name="line.132"></a>
-<span class="sourceLineNo">133</span>         * @return the default {@link Locale} that was set, or null if it wasn't this thread that owned<a name="line.133"></a>
-<span class="sourceLineNo">134</span>         *         the default locale<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         */<a name="line.135"></a>
-<span class="sourceLineNo">136</span>        public static Locale resetDefaultLocale()<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        {<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                if(LOCK.isHeldByCurrentThread())<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                {<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                        try<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                        {<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                                Locale.setDefault(defaultLocale);<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                                return defaultLocale;<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                        }<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                        finally<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                        {<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                                LOCK.unlock();<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                        }<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                }<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                return null;<a name="line.150"></a>
-<span class="sourceLineNo">151</span>        }<a name="line.151"></a>
-<span class="sourceLineNo">152</span>}<a name="line.152"></a>
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    /* Copyright 2013 Jonatan Jönsson<a name="line.1"></a>
+<FONT color="green">002</FONT>     *<a name="line.2"></a>
+<FONT color="green">003</FONT>     *    Licensed under the Apache License, Version 2.0 (the "License");<a name="line.3"></a>
+<FONT color="green">004</FONT>     *    you may not use this file except in compliance with the License.<a name="line.4"></a>
+<FONT color="green">005</FONT>     *    You may obtain a copy of the License at<a name="line.5"></a>
+<FONT color="green">006</FONT>     *<a name="line.6"></a>
+<FONT color="green">007</FONT>     *        http://www.apache.org/licenses/LICENSE-2.0<a name="line.7"></a>
+<FONT color="green">008</FONT>     *<a name="line.8"></a>
+<FONT color="green">009</FONT>     *    Unless required by applicable law or agreed to in writing, software<a name="line.9"></a>
+<FONT color="green">010</FONT>     *    distributed under the License is distributed on an "AS IS" BASIS,<a name="line.10"></a>
+<FONT color="green">011</FONT>     *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.11"></a>
+<FONT color="green">012</FONT>     *    See the License for the specific language governing permissions and<a name="line.12"></a>
+<FONT color="green">013</FONT>     *    limitations under the License.<a name="line.13"></a>
+<FONT color="green">014</FONT>     */<a name="line.14"></a>
+<FONT color="green">015</FONT>    package se.softhouse.common.testlib;<a name="line.15"></a>
+<FONT color="green">016</FONT>    <a name="line.16"></a>
+<FONT color="green">017</FONT>    import static com.google.common.base.Preconditions.checkNotNull;<a name="line.17"></a>
+<FONT color="green">018</FONT>    import static java.lang.Thread.currentThread;<a name="line.18"></a>
+<FONT color="green">019</FONT>    import static java.util.concurrent.TimeUnit.MILLISECONDS;<a name="line.19"></a>
+<FONT color="green">020</FONT>    import static se.softhouse.common.testlib.Constants.ONE_MINUTE;<a name="line.20"></a>
+<FONT color="green">021</FONT>    <a name="line.21"></a>
+<FONT color="green">022</FONT>    import java.util.Locale;<a name="line.22"></a>
+<FONT color="green">023</FONT>    import java.util.concurrent.TimeUnit;<a name="line.23"></a>
+<FONT color="green">024</FONT>    import java.util.concurrent.locks.ReentrantLock;<a name="line.24"></a>
+<FONT color="green">025</FONT>    <a name="line.25"></a>
+<FONT color="green">026</FONT>    import javax.annotation.concurrent.ThreadSafe;<a name="line.26"></a>
+<FONT color="green">027</FONT>    <a name="line.27"></a>
+<FONT color="green">028</FONT>    /**<a name="line.28"></a>
+<FONT color="green">029</FONT>     * &lt;pre&gt;<a name="line.29"></a>
+<FONT color="green">030</FONT>     * Utilities for testing different {@link Locale}s.<a name="line.30"></a>
+<FONT color="green">031</FONT>     * &lt;/pre&gt;<a name="line.31"></a>
+<FONT color="green">032</FONT>     */<a name="line.32"></a>
+<FONT color="green">033</FONT>    @ThreadSafe<a name="line.33"></a>
+<FONT color="green">034</FONT>    public final class Locales<a name="line.34"></a>
+<FONT color="green">035</FONT>    {<a name="line.35"></a>
+<FONT color="green">036</FONT>            private Locales()<a name="line.36"></a>
+<FONT color="green">037</FONT>            {<a name="line.37"></a>
+<FONT color="green">038</FONT>            }<a name="line.38"></a>
+<FONT color="green">039</FONT>    <a name="line.39"></a>
+<FONT color="green">040</FONT>            /**<a name="line.40"></a>
+<FONT color="green">041</FONT>             * The {@link Locale} representing Sweden<a name="line.41"></a>
+<FONT color="green">042</FONT>             */<a name="line.42"></a>
+<FONT color="green">043</FONT>            public static final Locale SWEDISH = new Locale("sv", "SE");<a name="line.43"></a>
+<FONT color="green">044</FONT>    <a name="line.44"></a>
+<FONT color="green">045</FONT>            /**<a name="line.45"></a>
+<FONT color="green">046</FONT>             * See &lt;a href="http://java.sys-con.com/node/46241"&gt;Turkish Java Needs Special Brewing&lt;/a&gt; and<a name="line.46"></a>
+<FONT color="green">047</FONT>             * &lt;a href="http://www.codinghorror.com/blog/2008/03/whats-wrong-with-turkey.html"&gt;What's Wrong<a name="line.47"></a>
+<FONT color="green">048</FONT>             * With Turkey?&lt;/a&gt; for more details about why the Turkish {@link Locale} is suitable for<a name="line.48"></a>
+<FONT color="green">049</FONT>             * testing purposes.<a name="line.49"></a>
+<FONT color="green">050</FONT>             */<a name="line.50"></a>
+<FONT color="green">051</FONT>            public static final Locale TURKISH = new Locale("tr", "TR");<a name="line.51"></a>
+<FONT color="green">052</FONT>    <a name="line.52"></a>
+<FONT color="green">053</FONT>            private static final ReentrantLock LOCK = new ReentrantLock();<a name="line.53"></a>
+<FONT color="green">054</FONT>    <a name="line.54"></a>
+<FONT color="green">055</FONT>            private static volatile Locale defaultLocale = Locale.getDefault();<a name="line.55"></a>
+<FONT color="green">056</FONT>    <a name="line.56"></a>
+<FONT color="green">057</FONT>            /**<a name="line.57"></a>
+<FONT color="green">058</FONT>             * How long the previous caller said he wanted to use {@link Locale#getDefault()} for in<a name="line.58"></a>
+<FONT color="green">059</FONT>             * milliseconds<a name="line.59"></a>
+<FONT color="green">060</FONT>             */<a name="line.60"></a>
+<FONT color="green">061</FONT>            private static volatile long maximumUsageTime = ONE_MINUTE;<a name="line.61"></a>
+<FONT color="green">062</FONT>    <a name="line.62"></a>
+<FONT color="green">063</FONT>            /**<a name="line.63"></a>
+<FONT color="green">064</FONT>             * &lt;pre&gt;<a name="line.64"></a>
+<FONT color="green">065</FONT>             *  Makes it possible to test invalid usages of {@link Locale#getDefault()} in a synchronized<a name="line.65"></a>
+<FONT color="green">066</FONT>             *  manner making sure that test cases don't fail suddenly when they are run concurrently.<a name="line.66"></a>
+<FONT color="green">067</FONT>             *  I.e a pipelined version of {@link Locale#getDefault()}.<a name="line.67"></a>
+<FONT color="green">068</FONT>             * <a name="line.68"></a>
+<FONT color="green">069</FONT>             * You're allowed to use {@link Locale#getDefault()} for 60 seconds then other threads<a name="line.69"></a>
+<FONT color="green">070</FONT>             * will start to receive {@link InterruptedException} because they can't get access to it.<a name="line.70"></a>
+<FONT color="green">071</FONT>             * If you need more than 60 seconds use {@link #setDefault(Locale, long, TimeUnit)} instead.<a name="line.71"></a>
+<FONT color="green">072</FONT>             * &lt;b&gt;Note:&lt;/b&gt; Don't forget to call {@link #resetDefaultLocale()} when you're done with using<a name="line.72"></a>
+<FONT color="green">073</FONT>             * the {@link Locale#getDefault()} method.<a name="line.73"></a>
+<FONT color="green">074</FONT>             * <a name="line.74"></a>
+<FONT color="green">075</FONT>             * @param locale the locale {@link Locale#getDefault()} should return<a name="line.75"></a>
+<FONT color="green">076</FONT>             * @throws InterruptedException if it wasn't possible to invoke<a name="line.76"></a>
+<FONT color="green">077</FONT>             *             {@link Locale#setDefault(Locale)} due to another thread using the default<a name="line.77"></a>
+<FONT color="green">078</FONT>             *             locale for longer than he specified (default 60 seconds)<a name="line.78"></a>
+<FONT color="green">079</FONT>             * &lt;/pre&gt;<a name="line.79"></a>
+<FONT color="green">080</FONT>             */<a name="line.80"></a>
+<FONT color="green">081</FONT>            public static void setDefault(Locale locale) throws InterruptedException<a name="line.81"></a>
+<FONT color="green">082</FONT>            {<a name="line.82"></a>
+<FONT color="green">083</FONT>                    setDefault(locale, 60, TimeUnit.SECONDS);<a name="line.83"></a>
+<FONT color="green">084</FONT>            }<a name="line.84"></a>
+<FONT color="green">085</FONT>    <a name="line.85"></a>
+<FONT color="green">086</FONT>            /**<a name="line.86"></a>
+<FONT color="green">087</FONT>             * &lt;pre&gt;<a name="line.87"></a>
+<FONT color="green">088</FONT>             * Works like {@link #setDefault(Locale)} but it allows you to use {@link Locale#getDefault()}<a name="line.88"></a>
+<FONT color="green">089</FONT>             * for the time specified by {@code time} and {@code unit}.<a name="line.89"></a>
+<FONT color="green">090</FONT>             * &lt;b&gt;Note:&lt;/b&gt; if the current thread already "owns" the default locale (by having called<a name="line.90"></a>
+<FONT color="green">091</FONT>             * {@link #setDefault(Locale, long, TimeUnit)} before) {@code time} and {@code unit} will be<a name="line.91"></a>
+<FONT color="green">092</FONT>             * ignored.<a name="line.92"></a>
+<FONT color="green">093</FONT>             * <a name="line.93"></a>
+<FONT color="green">094</FONT>             * @param locale the locale {@link Locale#getDefault()} should return<a name="line.94"></a>
+<FONT color="green">095</FONT>             * @param time the maximum time to use {@link Locale#getDefault()}<a name="line.95"></a>
+<FONT color="green">096</FONT>             * @param unit the {@link TimeUnit} of the time argument<a name="line.96"></a>
+<FONT color="green">097</FONT>             * @throws InterruptedException if it wasn't possible to invoke<a name="line.97"></a>
+<FONT color="green">098</FONT>             *             {@link Locale#setDefault(Locale)} due to another thread using the default<a name="line.98"></a>
+<FONT color="green">099</FONT>             *             locale for longer than he specified (default 60 seconds)<a name="line.99"></a>
+<FONT color="green">100</FONT>             * &lt;/pre&gt;<a name="line.100"></a>
+<FONT color="green">101</FONT>             */<a name="line.101"></a>
+<FONT color="green">102</FONT>            public static void setDefault(Locale locale, long time, TimeUnit unit) throws InterruptedException<a name="line.102"></a>
+<FONT color="green">103</FONT>            {<a name="line.103"></a>
+<FONT color="green">104</FONT>                    checkNotNull(locale);<a name="line.104"></a>
+<FONT color="green">105</FONT>                    checkNotNull(unit);<a name="line.105"></a>
+<FONT color="green">106</FONT>    <a name="line.106"></a>
+<FONT color="green">107</FONT>                    // Allow the same thread to change the locale during his "period" without locking<a name="line.107"></a>
+<FONT color="green">108</FONT>                    if(!LOCK.isHeldByCurrentThread())<a name="line.108"></a>
+<FONT color="green">109</FONT>                    {<a name="line.109"></a>
+<FONT color="green">110</FONT>                            if(!LOCK.tryLock(maximumUsageTime, TimeUnit.MILLISECONDS))<a name="line.110"></a>
+<FONT color="green">111</FONT>                                    throw new InterruptedException("Thread (" + currentThread().getName() + ") Waited for " + MILLISECONDS.toSeconds(maximumUsageTime)<a name="line.111"></a>
+<FONT color="green">112</FONT>                                                    + " seconds on " + LOCK + " to finish using " + Locale.getDefault() + " but timed out");<a name="line.112"></a>
+<FONT color="green">113</FONT>                            maximumUsageTime = unit.toMillis(time);<a name="line.113"></a>
+<FONT color="green">114</FONT>                            defaultLocale = Locale.getDefault();<a name="line.114"></a>
+<FONT color="green">115</FONT>                    }<a name="line.115"></a>
+<FONT color="green">116</FONT>    <a name="line.116"></a>
+<FONT color="green">117</FONT>                    try<a name="line.117"></a>
+<FONT color="green">118</FONT>                    {<a name="line.118"></a>
+<FONT color="green">119</FONT>                            Locale.setDefault(locale);<a name="line.119"></a>
+<FONT color="green">120</FONT>                    }<a name="line.120"></a>
+<FONT color="green">121</FONT>                    catch(SecurityException e)<a name="line.121"></a>
+<FONT color="green">122</FONT>                    {<a name="line.122"></a>
+<FONT color="green">123</FONT>                            LOCK.unlock(); // Let someone else try again<a name="line.123"></a>
+<FONT color="green">124</FONT>                            throw e;<a name="line.124"></a>
+<FONT color="green">125</FONT>                    }<a name="line.125"></a>
+<FONT color="green">126</FONT>            }<a name="line.126"></a>
+<FONT color="green">127</FONT>    <a name="line.127"></a>
+<FONT color="green">128</FONT>            /**<a name="line.128"></a>
+<FONT color="green">129</FONT>             * Resets {@link Locale#getDefault()} to what it was when {@link #setDefault(Locale)} was<a name="line.129"></a>
+<FONT color="green">130</FONT>             * called. Should be called after you're done with using {@link Locale#getDefault()}, typically<a name="line.130"></a>
+<FONT color="green">131</FONT>             * called in a "tear down" method.<a name="line.131"></a>
+<FONT color="green">132</FONT>             * <a name="line.132"></a>
+<FONT color="green">133</FONT>             * @return the default {@link Locale} that was set, or null if it wasn't this thread that owned<a name="line.133"></a>
+<FONT color="green">134</FONT>             *         the default locale<a name="line.134"></a>
+<FONT color="green">135</FONT>             */<a name="line.135"></a>
+<FONT color="green">136</FONT>            public static Locale resetDefaultLocale()<a name="line.136"></a>
+<FONT color="green">137</FONT>            {<a name="line.137"></a>
+<FONT color="green">138</FONT>                    if(LOCK.isHeldByCurrentThread())<a name="line.138"></a>
+<FONT color="green">139</FONT>                    {<a name="line.139"></a>
+<FONT color="green">140</FONT>                            try<a name="line.140"></a>
+<FONT color="green">141</FONT>                            {<a name="line.141"></a>
+<FONT color="green">142</FONT>                                    Locale.setDefault(defaultLocale);<a name="line.142"></a>
+<FONT color="green">143</FONT>                                    return defaultLocale;<a name="line.143"></a>
+<FONT color="green">144</FONT>                            }<a name="line.144"></a>
+<FONT color="green">145</FONT>                            finally<a name="line.145"></a>
+<FONT color="green">146</FONT>                            {<a name="line.146"></a>
+<FONT color="green">147</FONT>                                    LOCK.unlock();<a name="line.147"></a>
+<FONT color="green">148</FONT>                            }<a name="line.148"></a>
+<FONT color="green">149</FONT>                    }<a name="line.149"></a>
+<FONT color="green">150</FONT>                    return null;<a name="line.150"></a>
+<FONT color="green">151</FONT>            }<a name="line.151"></a>
+<FONT color="green">152</FONT>    }<a name="line.152"></a>
 
 
 
@@ -218,7 +213,6 @@
 
 
 
-</pre>
-</div>
-</body>
-</html>
+</PRE>
+</BODY>
+</HTML>
