@@ -1,0 +1,142 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    /* Copyright 2013 Jonatan Jönsson<a name="line.1"></a>
+<FONT color="green">002</FONT>     *<a name="line.2"></a>
+<FONT color="green">003</FONT>     *    Licensed under the Apache License, Version 2.0 (the "License");<a name="line.3"></a>
+<FONT color="green">004</FONT>     *    you may not use this file except in compliance with the License.<a name="line.4"></a>
+<FONT color="green">005</FONT>     *    You may obtain a copy of the License at<a name="line.5"></a>
+<FONT color="green">006</FONT>     *<a name="line.6"></a>
+<FONT color="green">007</FONT>     *        http://www.apache.org/licenses/LICENSE-2.0<a name="line.7"></a>
+<FONT color="green">008</FONT>     *<a name="line.8"></a>
+<FONT color="green">009</FONT>     *    Unless required by applicable law or agreed to in writing, software<a name="line.9"></a>
+<FONT color="green">010</FONT>     *    distributed under the License is distributed on an "AS IS" BASIS,<a name="line.10"></a>
+<FONT color="green">011</FONT>     *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.11"></a>
+<FONT color="green">012</FONT>     *    See the License for the specific language governing permissions and<a name="line.12"></a>
+<FONT color="green">013</FONT>     *    limitations under the License.<a name="line.13"></a>
+<FONT color="green">014</FONT>    */<a name="line.14"></a>
+<FONT color="green">015</FONT>    package se.softhouse.common.testlib;<a name="line.15"></a>
+<FONT color="green">016</FONT>    <a name="line.16"></a>
+<FONT color="green">017</FONT>    import static org.fest.assertions.Assertions.assertThat;<a name="line.17"></a>
+<FONT color="green">018</FONT>    <a name="line.18"></a>
+<FONT color="green">019</FONT>    import java.lang.reflect.Constructor;<a name="line.19"></a>
+<FONT color="green">020</FONT>    import java.lang.reflect.InvocationTargetException;<a name="line.20"></a>
+<FONT color="green">021</FONT>    import java.lang.reflect.Modifier;<a name="line.21"></a>
+<FONT color="green">022</FONT>    <a name="line.22"></a>
+<FONT color="green">023</FONT>    /**<a name="line.23"></a>
+<FONT color="green">024</FONT>     * The reasoning behind testing code that doesn't do anything is to achieve 100%<a name="line.24"></a>
+<FONT color="green">025</FONT>     * code coverage and to notice when the code<a name="line.25"></a>
+<FONT color="green">026</FONT>     * coverage drops. Otherwise one could always think, hey I don't have 100% code<a name="line.26"></a>
+<FONT color="green">027</FONT>     * coverage anymore but it's PROBABLY because of my private constructors<a name="line.27"></a>
+<FONT color="green">028</FONT>     * (or any other code that's not used but preferred to have).<a name="line.28"></a>
+<FONT color="green">029</FONT>     * This makes it easy to spot untested methods without having to check that it<a name="line.29"></a>
+<FONT color="green">030</FONT>     * only was a private constructor etc.<a name="line.30"></a>
+<FONT color="green">031</FONT>     */<a name="line.31"></a>
+<FONT color="green">032</FONT>    public final class UtilityClassTester<a name="line.32"></a>
+<FONT color="green">033</FONT>    {<a name="line.33"></a>
+<FONT color="green">034</FONT>            private UtilityClassTester()<a name="line.34"></a>
+<FONT color="green">035</FONT>            {<a name="line.35"></a>
+<FONT color="green">036</FONT>            }<a name="line.36"></a>
+<FONT color="green">037</FONT>    <a name="line.37"></a>
+<FONT color="green">038</FONT>            /**<a name="line.38"></a>
+<FONT color="green">039</FONT>             * Detects if a utility class isn't final or if its no-args constructor<a name="line.39"></a>
+<FONT color="green">040</FONT>             * isn't private. Also calls the constructor to get code coverage for it.<a name="line.40"></a>
+<FONT color="green">041</FONT>             * The constructor is allowed to throw exceptions.<a name="line.41"></a>
+<FONT color="green">042</FONT>             */<a name="line.42"></a>
+<FONT color="green">043</FONT>            public static void testUtilityClassDesign(Class&lt;?&gt; ... utilityClasses)<a name="line.43"></a>
+<FONT color="green">044</FONT>            {<a name="line.44"></a>
+<FONT color="green">045</FONT>                    for(Class&lt;?&gt; clazz : utilityClasses)<a name="line.45"></a>
+<FONT color="green">046</FONT>                    {<a name="line.46"></a>
+<FONT color="green">047</FONT>                            try<a name="line.47"></a>
+<FONT color="green">048</FONT>                            {<a name="line.48"></a>
+<FONT color="green">049</FONT>                                    Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor();<a name="line.49"></a>
+<FONT color="green">050</FONT>                                    assertThat(constructor.getModifiers() &amp; Modifier.PRIVATE).as("Constructor for " + clazz + " should be private.")<a name="line.50"></a>
+<FONT color="green">051</FONT>                                                    .isEqualTo(Modifier.PRIVATE);<a name="line.51"></a>
+<FONT color="green">052</FONT>                                    constructor.setAccessible(true);<a name="line.52"></a>
+<FONT color="green">053</FONT>                                    assertThat(constructor.newInstance()).isNotNull();<a name="line.53"></a>
+<FONT color="green">054</FONT>                                    assertThat(clazz.getModifiers() &amp; Modifier.FINAL).as("Utility class " + clazz + " not final").isEqualTo(Modifier.FINAL);<a name="line.54"></a>
+<FONT color="green">055</FONT>                            }<a name="line.55"></a>
+<FONT color="green">056</FONT>                            catch(NoSuchMethodException e)<a name="line.56"></a>
+<FONT color="green">057</FONT>                            {<a name="line.57"></a>
+<FONT color="green">058</FONT>                                    throw new IllegalArgumentException("No no-arg constructor found for: " + clazz.getName(), e);<a name="line.58"></a>
+<FONT color="green">059</FONT>                            }<a name="line.59"></a>
+<FONT color="green">060</FONT>                            catch(InvocationTargetException e)<a name="line.60"></a>
+<FONT color="green">061</FONT>                            {<a name="line.61"></a>
+<FONT color="green">062</FONT>                                    // Some utility classes like to throw from their private constructor just to be on<a name="line.62"></a>
+<FONT color="green">063</FONT>                                    // the safe side, let's accept that<a name="line.63"></a>
+<FONT color="green">064</FONT>                            }<a name="line.64"></a>
+<FONT color="green">065</FONT>                            catch(InstantiationException e)<a name="line.65"></a>
+<FONT color="green">066</FONT>                            {<a name="line.66"></a>
+<FONT color="green">067</FONT>                                    throw new IllegalArgumentException("Utility class " + clazz.getName() + " may not be abstract", e);<a name="line.67"></a>
+<FONT color="green">068</FONT>                            }<a name="line.68"></a>
+<FONT color="green">069</FONT>                            catch(IllegalAccessException e)<a name="line.69"></a>
+<FONT color="green">070</FONT>                            {<a name="line.70"></a>
+<FONT color="green">071</FONT>                                    // Let's just say that if we're not able to create an instance it's fine, after all<a name="line.71"></a>
+<FONT color="green">072</FONT>                                    // that's what we're testing here<a name="line.72"></a>
+<FONT color="green">073</FONT>                            }<a name="line.73"></a>
+<FONT color="green">074</FONT>                    }<a name="line.74"></a>
+<FONT color="green">075</FONT>            }<a name="line.75"></a>
+<FONT color="green">076</FONT>    }<a name="line.76"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>

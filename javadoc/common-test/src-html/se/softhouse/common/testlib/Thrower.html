@@ -1,0 +1,114 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    /* Copyright 2013 Jonatan Jönsson<a name="line.1"></a>
+<FONT color="green">002</FONT>     *<a name="line.2"></a>
+<FONT color="green">003</FONT>     *    Licensed under the Apache License, Version 2.0 (the "License");<a name="line.3"></a>
+<FONT color="green">004</FONT>     *    you may not use this file except in compliance with the License.<a name="line.4"></a>
+<FONT color="green">005</FONT>     *    You may obtain a copy of the License at<a name="line.5"></a>
+<FONT color="green">006</FONT>     *<a name="line.6"></a>
+<FONT color="green">007</FONT>     *        http://www.apache.org/licenses/LICENSE-2.0<a name="line.7"></a>
+<FONT color="green">008</FONT>     *<a name="line.8"></a>
+<FONT color="green">009</FONT>     *    Unless required by applicable law or agreed to in writing, software<a name="line.9"></a>
+<FONT color="green">010</FONT>     *    distributed under the License is distributed on an "AS IS" BASIS,<a name="line.10"></a>
+<FONT color="green">011</FONT>     *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.11"></a>
+<FONT color="green">012</FONT>     *    See the License for the specific language governing permissions and<a name="line.12"></a>
+<FONT color="green">013</FONT>     *    limitations under the License.<a name="line.13"></a>
+<FONT color="green">014</FONT>     */<a name="line.14"></a>
+<FONT color="green">015</FONT>    package se.softhouse.common.testlib;<a name="line.15"></a>
+<FONT color="green">016</FONT>    <a name="line.16"></a>
+<FONT color="green">017</FONT>    /**<a name="line.17"></a>
+<FONT color="green">018</FONT>     * &lt;pre&gt;<a name="line.18"></a>
+<FONT color="green">019</FONT>     * Makes it possible to throw checked exceptions from methods that don't declare them. See<a name="line.19"></a>
+<FONT color="green">020</FONT>     * &lt;a href="http://java.dzone.com/articles/throwing-undeclared-checked"&gt;throwing-undeclared-checked&lt;/a&gt; for a more thorough discussion.<a name="line.20"></a>
+<FONT color="green">021</FONT>     * Used in tests to reach places where 3rd party code forces you to catch exceptions that<a name="line.21"></a>
+<FONT color="green">022</FONT>     * &lt;a href="https://code.google.com/p/guava-libraries/wiki/StringsExplained#Charsets"&gt;can't happen&lt;/a&gt;.<a name="line.22"></a>
+<FONT color="green">023</FONT>     * &lt;/pre&gt;<a name="line.23"></a>
+<FONT color="green">024</FONT>     */<a name="line.24"></a>
+<FONT color="green">025</FONT>    public final class Thrower&lt;E extends Exception&gt;<a name="line.25"></a>
+<FONT color="green">026</FONT>    {<a name="line.26"></a>
+<FONT color="green">027</FONT>            /**<a name="line.27"></a>
+<FONT color="green">028</FONT>             * Re-throws {@code checkedException} without declaring that it throws it<a name="line.28"></a>
+<FONT color="green">029</FONT>             * <a name="line.29"></a>
+<FONT color="green">030</FONT>             * @return doesn't actually return the exception to throw but removes the need to have<a name="line.30"></a>
+<FONT color="green">031</FONT>             *         {@code return null;} if the calling code have a return type<a name="line.31"></a>
+<FONT color="green">032</FONT>             */<a name="line.32"></a>
+<FONT color="green">033</FONT>            public static RuntimeException asUnchecked(final Exception checkedException)<a name="line.33"></a>
+<FONT color="green">034</FONT>            {<a name="line.34"></a>
+<FONT color="green">035</FONT>                    return new Thrower&lt;RuntimeException&gt;().sneakyThrow(checkedException);<a name="line.35"></a>
+<FONT color="green">036</FONT>            }<a name="line.36"></a>
+<FONT color="green">037</FONT>    <a name="line.37"></a>
+<FONT color="green">038</FONT>            private Thrower()<a name="line.38"></a>
+<FONT color="green">039</FONT>            {<a name="line.39"></a>
+<FONT color="green">040</FONT>            }<a name="line.40"></a>
+<FONT color="green">041</FONT>    <a name="line.41"></a>
+<FONT color="green">042</FONT>            @SuppressWarnings("unchecked")<a name="line.42"></a>
+<FONT color="green">043</FONT>            // Takes advantage of the fact that the JVM allows any exceptions to be thrown<a name="line.43"></a>
+<FONT color="green">044</FONT>            private E sneakyThrow(Exception exception) throws E<a name="line.44"></a>
+<FONT color="green">045</FONT>            {<a name="line.45"></a>
+<FONT color="green">046</FONT>                    throw (E) exception;<a name="line.46"></a>
+<FONT color="green">047</FONT>            }<a name="line.47"></a>
+<FONT color="green">048</FONT>    }<a name="line.48"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
