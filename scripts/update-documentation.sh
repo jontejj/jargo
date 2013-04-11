@@ -13,11 +13,12 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   git config --global user.name "Travis"
   #clone gh-pages branch using encrypted gh-token
   git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages > /dev/null
+  mkdir -p gh-pages/javadoc
   cd gh-pages/javadoc
   #Update files
   rm -rf jargo/*
   rm -rf common-test/*
-  cp -Rf $HOME/javadoc/ .
+  cp -Rf $HOME/javadoc/* .
   #Publish
   git add --all .
   git commit -m "Automatic javadoc update due to $TRAVIS_COMMIT"
