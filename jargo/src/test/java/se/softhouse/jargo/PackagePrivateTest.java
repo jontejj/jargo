@@ -50,7 +50,7 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
  * such as to ease debugging. These tests can't reside in the internal package for (obvious)
  * visibility problems. They are mostly for code coverage.
  */
-public class PackagePrivateTests
+public class PackagePrivateTest
 {
 	@Test
 	public void testArgumentToString()
