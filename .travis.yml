@@ -1,5 +1,13 @@
 language: java
 jdk:
-  - oraclejdk7
-  - openjdk7
-  - openjdk6
+- oraclejdk7
+- openjdk7
+- openjdk6
+env:
+  global:
+  - secure: |-
+      h2sSUzcvpKz1uBExVK3pYNFiprg+rxzkfM5bW+DsYbkN685W4/AHgH3mYfQH
+      +PT4IvuiZxJZw7SgO+WplbN0MqIvKVZqbZA6VPu10R0kK+6GzxI41Q0zV3Re
+      3lDLkGAOupmNd8RXY7dCypacgCMhvG/jIQLfmfXsdGcwVP1Q4+Y=
+
+after_success: ./scripts/update-documentation.sh
