@@ -5,8 +5,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   #TODO(jontejj): don't specify these manually
   mkdir -p $HOME/javadoc/jargo
   mkdir -p $HOME/javadoc/common-test
-  cp -R jargo/target/site/apidocs $HOME/javadoc/jargo
-  cp -R common-test/target/site/apidocs $HOME/javadoc/common-test
+  cp -R jargo/target/site/apidocs/* $HOME/javadoc/jargo/
+  cp -R common-test/target/site/apidocs/* $HOME/javadoc/common-test/
   #Setup git
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
