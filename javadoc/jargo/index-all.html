@@ -101,9 +101,9 @@ Constructor for class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ArgumentB
  doesn't have any <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A>
  has an empty <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><CODE>ArgumentBuilder.description(String)</CODE></A>
  isn't <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>ArgumentBuilder.required()</CODE></A>
- uses <A HREF="./se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce default values
+ uses <A HREF="./se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>defaultValue()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce default values
  uses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> to describe the default value
- uses <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce meta
+ uses <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>metaDescription()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce meta
  descriptions
  doesn't have any <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#limitTo(com.google.common.base.Predicate)"><CODE>limits</CODE></A>
  
@@ -189,14 +189,14 @@ Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Argument
 <DT><A HREF="./se/softhouse/jargo/StringParsers.html#bigDecimalParser()"><B>bigDecimalParser()</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/StringParsers.html" title="class in se.softhouse.jargo">StringParsers</A>
 <DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math"><CODE>BigDecimal</CODE></A>s using
- <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>parse(String, Locale)</CODE></A>
+ <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/Arguments.html#bigIntegerArgument(java.lang.String...)"><B>bigIntegerArgument(String...)</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Arguments.html" title="class in se.softhouse.jargo">Arguments</A>
 <DD>Creates an <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="./se/softhouse/jargo/StringParsers.html#bigIntegerParser()"><CODE>StringParsers.bigIntegerParser()</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/StringParsers.html#bigIntegerParser()"><B>bigIntegerParser()</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/StringParsers.html" title="class in se.softhouse.jargo">StringParsers</A>
 <DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math"><CODE>BigInteger</CODE></A>s using
- <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>parse(String, Locale)</CODE></A>
+ <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/Arguments.html#booleanArgument(java.lang.String...)"><B>booleanArgument(String...)</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Arguments.html" title="class in se.softhouse.jargo">Arguments</A>
 <DD>Creates an <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="./se/softhouse/jargo/StringParsers.html#booleanParser()"><CODE>StringParsers.booleanParser()</CODE></A>
@@ -225,7 +225,7 @@ Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Argument
 <DD>Creates an <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="./se/softhouse/jargo/StringParsers.html#byteParser()"><CODE>StringParsers.byteParser()</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/StringParsers.html#byteParser()"><B>byteParser()</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/StringParsers.html" title="class in se.softhouse.jargo">StringParsers</A>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang"><CODE>Byte</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>parse(String, Locale)</CODE></A>
+<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang"><CODE>Byte</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
 </DL>
 <HR>
 <A NAME="_C_"><!-- --></A><H2>
@@ -366,7 +366,7 @@ Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Command.html" t
 <DD>Override to provide a description to print in the usage text for this command.
 <DT><A HREF="./se/softhouse/common/numbers/NumberType.html#descriptionOfValidValues(java.util.Locale)"><B>descriptionOfValidValues(Locale)</B></A> - 
 Method in class se.softhouse.common.numbers.<A HREF="./se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers">NumberType</A>
-<DD>Returns a descriptive string of the range this <A HREF="./se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers"><CODE>NumberType</CODE></A> can <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String)"><CODE>parse(String)</CODE></A>
+<DD>Returns a descriptive string of the range this <A HREF="./se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers"><CODE>NumberType</CODE></A> can <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String)"><CODE>NumberType.parse(String)</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/ForwardingStringParser.html#descriptionOfValidValues(java.util.Locale)"><B>descriptionOfValidValues(Locale)</B></A> - 
 Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo">ForwardingStringParser</A>
 <DD>&nbsp;
@@ -522,7 +522,7 @@ Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Argument
 <DD>Creates an <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="./se/softhouse/jargo/StringParsers.html#integerParser()"><CODE>StringParsers.integerParser()</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/StringParsers.html#integerParser()"><B>integerParser()</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/StringParsers.html" title="class in se.softhouse.jargo">StringParsers</A>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><CODE>Integer</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>parse(String, Locale)</CODE></A>
+<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><CODE>Integer</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
 <DT><A HREF="./se/softhouse/common/guavaextensions/Suppliers2.html#isSuppliedAlready(com.google.common.base.Supplier)"><B>isSuppliedAlready(Supplier&lt;?&gt;)</B></A> - 
 Static method in class se.softhouse.common.guavaextensions.<A HREF="./se/softhouse/common/guavaextensions/Suppliers2.html" title="class in se.softhouse.common.guavaextensions">Suppliers2</A>
 <DD>Returns true if <code>Supplier</code> is likely to supply values very fast
@@ -574,7 +574,7 @@ Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Argument
 <DD>Creates an <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="./se/softhouse/jargo/StringParsers.html#longParser()"><CODE>StringParsers.longParser()</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/StringParsers.html#longParser()"><B>longParser()</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/StringParsers.html" title="class in se.softhouse.jargo">StringParsers</A>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang"><CODE>Long</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>parse(String, Locale)</CODE></A>
+<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang"><CODE>Long</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
 </DL>
 <HR>
 <A NAME="_M_"><!-- --></A><H2>
@@ -613,7 +613,7 @@ Method in class se.softhouse.common.numbers.<A HREF="./se/softhouse/common/numbe
 <DT><A HREF="./se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)"><B>metaDescription(String)</B></A> - 
 Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</A>
 <DD>
- By default <A HREF="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>
+ By default <A HREF="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>metaDescription()</CODE></A>
  that describes the type of data they expect.
 <DT><A HREF="./se/softhouse/jargo/ForwardingStringParser.html#metaDescription()"><B>metaDescription()</B></A> - 
 Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo">ForwardingStringParser</A>
@@ -792,7 +792,7 @@ Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/Argument
 <DD>Creates an <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="./se/softhouse/jargo/StringParsers.html#shortParser()"><CODE>StringParsers.shortParser()</CODE></A>
 <DT><A HREF="./se/softhouse/jargo/StringParsers.html#shortParser()"><B>shortParser()</B></A> - 
 Static method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/StringParsers.html" title="class in se.softhouse.jargo">StringParsers</A>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang"><CODE>Short</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>parse(String, Locale)</CODE></A>
+<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang"><CODE>Short</CODE></A>s using <A HREF="./se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
 <DT><A HREF="./se/softhouse/common/collections/CharacterTrie.html#size()"><B>size()</B></A> - 
 Method in class se.softhouse.common.collections.<A HREF="./se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</A>
 <DD>&nbsp;
@@ -891,7 +891,7 @@ Static variable in class se.softhouse.common.numbers.<A HREF="./se/softhouse/com
 <DL>
 <DT><A HREF="./se/softhouse/common/numbers/NumberType.html#UNLIMITED_TYPES"><B>UNLIMITED_TYPES</B></A> - 
 Static variable in class se.softhouse.common.numbers.<A HREF="./se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers">NumberType</A>
-<DD><A HREF="./se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers"><CODE>NumberType</CODE></A>s that doesn't have any <A HREF="./se/softhouse/common/numbers/NumberType.html#minValue()"><CODE>minValue()</CODE></A> or <A HREF="./se/softhouse/common/numbers/NumberType.html#maxValue()"><CODE>maxValue()</CODE></A>
+<DD><A HREF="./se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers"><CODE>NumberType</CODE></A>s that doesn't have any <A HREF="./se/softhouse/common/numbers/NumberType.html#minValue()"><CODE>NumberType.minValue()</CODE></A> or <A HREF="./se/softhouse/common/numbers/NumberType.html#maxValue()"><CODE>NumberType.maxValue()</CODE></A>
 <DT><A HREF="./se/softhouse/common/guavaextensions/Functions2.html#unmodifiableList()"><B>unmodifiableList()</B></A> - 
 Static method in class se.softhouse.common.guavaextensions.<A HREF="./se/softhouse/common/guavaextensions/Functions2.html" title="class in se.softhouse.common.guavaextensions">Functions2</A>
 <DD>Creates a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that wraps <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util"><CODE>List</CODE></A>s with
