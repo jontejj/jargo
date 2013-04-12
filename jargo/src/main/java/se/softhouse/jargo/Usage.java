@@ -423,7 +423,8 @@ public final class Usage implements Serializable
 			if(descriptionLines.hasNext())
 			{
 				int lengthOfNameColumn = nameLine.length();
-				target.append(spaces(indexOfDescriptionColumn - lengthOfNameColumn));
+				int paddingWidth = Math.max(1, indexOfDescriptionColumn - lengthOfNameColumn);
+				target.append(spaces(paddingWidth));
 				target.append(descriptionLines.next());
 			}
 			target.append(NEWLINE);

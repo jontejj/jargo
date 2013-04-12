@@ -468,6 +468,20 @@ public class CommandLineParserTest
 		assertThat(integerArgument("hidden-argument").hideFromUsage().arity(2).usage()).doesNotContain("hidden-argument");
 	}
 
+	@Test
+	public void testThatNamesAreNotAllowedToHaveSpacesInThem() throws Exception
+	{
+		try
+		{
+			integerArgument("foo bar");
+			fail("a space should not be allowed in argument names as it would not be possible to trigger such an argument from the command line");
+		}
+		catch(IllegalArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Detected a space in foo bar, argument names must not have spaces in them");
+		}
+	}
+
 	// TODO(jontejj): Test for memory leaks by parsing a gigantic string and GcFinalization.await()
 	// MemoryTester#allocateLargeString
 }

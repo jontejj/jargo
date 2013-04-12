@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Iterables.isEmpty;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
 import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
@@ -41,9 +42,9 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import se.softhouse.common.guavaextensions.Functions2;
 import se.softhouse.common.guavaextensions.Suppliers2;
+import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
-import se.softhouse.common.strings.Describable;
 import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.ForwardingStringParser.SimpleForwardingStringParser;
 import se.softhouse.jargo.StringParsers.FixedArityParser;
@@ -248,6 +249,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF names(final String ... argumentNames)
 	{
+		checkNoSpaces(asList(argumentNames));
 		names = copyOf(argumentNames);
 		return myself;
 	}
@@ -260,6 +262,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF names(final Iterable<String> argumentNames)
 	{
+		checkNoSpaces(argumentNames);
 		names = copyOf(argumentNames);
 		return myself;
 	}
@@ -793,6 +796,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	@Nonnull final Function<T, T> finalizer(){ return finalizer; }
 	@Nonnull final Predicate<? super T> limiter(){ return limiter; }
+
+	private void checkNoSpaces(Iterable<String> argumentNames)
+	{
+		for(String name : argumentNames)
+		{
+			checkArgument(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);
+		}
+	}
 
 	/**
 	 * @formatter.on
