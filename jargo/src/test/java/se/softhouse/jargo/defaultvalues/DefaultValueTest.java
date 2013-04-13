@@ -195,7 +195,7 @@ public class DefaultValueTest
 	@Test
 	public void testThatDefaultValueIsNotUsedWhenParserReturnsNull() throws ArgumentException
 	{
-		Object actualValue = withParser(new NullReturningParser()).names("-n").defaultValue("defaultValue").parse("-n", "bar");
+		Object actualValue = withParser(new NullReturningParser()).defaultValue("defaultValue").parse("bar");
 		assertThat(actualValue).isNull();
 	}
 

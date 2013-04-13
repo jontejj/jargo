@@ -23,15 +23,18 @@ import static se.softhouse.common.testlib.Locales.TURKISH;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.google.code.tempusfugit.concurrency.ConcurrentTestRunner;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 import com.google.common.util.concurrent.Atomics;
 
+@RunWith(ConcurrentTestRunner.class)
 public class LocalesTest
 {
 	@Test
@@ -47,38 +50,43 @@ public class LocalesTest
 	public void testThatInterruptedExceptionIsThrownForTimeoutsWhenWaitingForThreadToBeDoneWithLocale() throws Throwable
 	{
 		final String ownerThread = Thread.currentThread().getName();
-		// A gross underestimation of how long the locale will be used
-		Locales.setDefault(SWEDISH, 1, TimeUnit.NANOSECONDS);
+		final Semaphore greenSignal = new Semaphore(1);
+
+		final AtomicReference<Throwable> failure = Atomics.newReference();
 		Thread thread = new Thread(){
 			@Override
 			public void run()
 			{
 				try
 				{
+					greenSignal.release();
 					Locales.setDefault(TURKISH);
+
 					fail("Should timeout as other thread isn't finished with using the default locale");
 				}
 				catch(InterruptedException expectedException)
 				{
 					String currentThreadDescription = Thread.currentThread().getName();
-					String startOfMessage = "Thread (" + currentThreadDescription + ") " + "Waited for 0 seconds on";
-
-					String endOfMessage = "[Locked by thread " + ownerThread + "] " + "to finish using " + CANADA + " but timed out";
+					String startOfMessage = currentThreadDescription + " waited on";
+					String endOfMessage = "[Locked by thread " + ownerThread + "] to finish using " + CANADA + " but got interrupted";
 					assertThat(expectedException.getMessage()).startsWith(startOfMessage).endsWith(endOfMessage);
 					// Verify that this thread can't reset the locale
-					assertThat(Locales.resetDefaultLocale()).isNull();
+					try
+					{
+						Locales.resetDefaultLocale();
+						fail("Current thread: " + Thread.currentThread() + " should not own lock and therefore be forbidden to release it");
+					}
+					catch(IllegalStateException expected)
+					{
+						startOfMessage = "Current thread: " + currentThreadDescription + " may not unlock: ";
+						endOfMessage = "[Locked by thread " + ownerThread + "]";
+						assertThat(expected.getMessage()).startsWith(startOfMessage).endsWith(endOfMessage);
+					}
 					assertThat(Locale.getDefault()).isEqualTo(CANADA);
 				}
 			}
 		};
-
-		// This thread should be allowed to set the locale several times during his "period"
-		Locales.setDefault(CANADA);
-
-		final AtomicReference<Throwable> failure = Atomics.newReference();
-
 		thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler(){
-
 			@Override
 			public void uncaughtException(Thread t, Throwable e)
 			{
@@ -86,10 +94,17 @@ public class LocalesTest
 			}
 		});
 
+		Locales.setDefault(SWEDISH);
+		// This thread should be allowed to set the locale several times during its "period"
+		Locales.setDefault(CANADA);
+
 		thread.start();
+		greenSignal.acquireUninterruptibly();
+		thread.interrupt();
 		thread.join(EXPECTED_TEST_TIME_FOR_THIS_SUITE);
 		if(failure.get() != null)
 			throw failure.get();
+		Locales.resetDefaultLocale();
 	}
 
 	@Test

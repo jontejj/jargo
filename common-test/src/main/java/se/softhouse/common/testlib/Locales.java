@@ -15,12 +15,11 @@
 package se.softhouse.common.testlib;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static se.softhouse.common.testlib.Constants.ONE_MINUTE;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -55,63 +54,34 @@ public final class Locales
 	private static volatile Locale defaultLocale = Locale.getDefault();
 
 	/**
-	 * How long the previous caller said he wanted to use {@link Locale#getDefault()} for in
-	 * milliseconds
-	 */
-	private static volatile long maximumUsageTime = ONE_MINUTE;
-
-	/**
 	 * <pre>
 	 *  Makes it possible to test invalid usages of {@link Locale#getDefault()} in a synchronized
 	 *  manner making sure that test cases don't fail suddenly when they are run concurrently.
 	 *  I.e a pipelined version of {@link Locale#getDefault()}.
 	 * 
-	 * You're allowed to use {@link Locale#getDefault()} for 60 seconds then other threads
-	 * will start to receive {@link InterruptedException} because they can't get access to it.
-	 * If you need more than 60 seconds use {@link #setDefault(Locale, long, TimeUnit)} instead.
 	 * <b>Note:</b> Don't forget to call {@link #resetDefaultLocale()} when you're done with using
-	 * the {@link Locale#getDefault()} method.
+	 * the {@link Locale#getDefault()} method. Otherwise other threads waiting to use it may starve.
 	 * 
 	 * @param locale the locale {@link Locale#getDefault()} should return
-	 * @throws InterruptedException if it wasn't possible to invoke
-	 *             {@link Locale#setDefault(Locale)} due to another thread using the default
-	 *             locale for longer than he specified (default 60 seconds)
+	 * @throws InterruptedException if the current thread is interrupted
 	 * </pre>
 	 */
 	public static void setDefault(Locale locale) throws InterruptedException
 	{
-		setDefault(locale, 60, TimeUnit.SECONDS);
-	}
-
-	/**
-	 * <pre>
-	 * Works like {@link #setDefault(Locale)} but it allows you to use {@link Locale#getDefault()}
-	 * for the time specified by {@code time} and {@code unit}.
-	 * <b>Note:</b> if the current thread already "owns" the default locale (by having called
-	 * {@link #setDefault(Locale, long, TimeUnit)} before) {@code time} and {@code unit} will be
-	 * ignored.
-	 * 
-	 * @param locale the locale {@link Locale#getDefault()} should return
-	 * @param time the maximum time to use {@link Locale#getDefault()}
-	 * @param unit the {@link TimeUnit} of the time argument
-	 * @throws InterruptedException if it wasn't possible to invoke
-	 *             {@link Locale#setDefault(Locale)} due to another thread using the default
-	 *             locale for longer than he specified (default 60 seconds)
-	 * </pre>
-	 */
-	public static void setDefault(Locale locale, long time, TimeUnit unit) throws InterruptedException
-	{
 		checkNotNull(locale);
-		checkNotNull(unit);
-
-		// Allow the same thread to change the locale during his "period" without locking
+		// Allow the same thread to change the locale during its "period" without locking
 		if(!LOCK.isHeldByCurrentThread())
 		{
-			if(!LOCK.tryLock(maximumUsageTime, TimeUnit.MILLISECONDS))
-				throw new InterruptedException("Thread (" + currentThread().getName() + ") Waited for " + MILLISECONDS.toSeconds(maximumUsageTime)
-						+ " seconds on " + LOCK + " to finish using " + Locale.getDefault() + " but timed out");
-			maximumUsageTime = unit.toMillis(time);
-			defaultLocale = Locale.getDefault();
+			try
+			{
+				LOCK.lockInterruptibly();
+				defaultLocale = Locale.getDefault();
+			}
+			catch(InterruptedException interrupt)
+			{
+				throw new InterruptedException(format(	"%s waited on %s to finish using %s but got interrupted", currentThread().getName(), LOCK,
+														Locale.getDefault()));
+			}
 		}
 
 		try
@@ -127,26 +97,23 @@ public final class Locales
 
 	/**
 	 * Resets {@link Locale#getDefault()} to what it was when {@link #setDefault(Locale)} was
-	 * called. Should be called after you're done with using {@link Locale#getDefault()}, typically
-	 * called in a "tear down" method.
+	 * called. Should be called after you're done with using {@link Locale#getDefault()}.
 	 * 
-	 * @return the default {@link Locale} that was set, or null if it wasn't this thread that owned
-	 *         the default locale
+	 * @return the default {@link Locale} that was set
+	 * @throws IllegalStateException if this thread wasn't the last one to successfully call
+	 *             {@link #setDefault(Locale)}
 	 */
 	public static Locale resetDefaultLocale()
 	{
-		if(LOCK.isHeldByCurrentThread())
+		checkState(LOCK.isHeldByCurrentThread(), "Current thread: %s may not unlock: %s", Thread.currentThread().getName(), LOCK);
+		try
 		{
-			try
-			{
-				Locale.setDefault(defaultLocale);
-				return defaultLocale;
-			}
-			finally
-			{
-				LOCK.unlock();
-			}
+			Locale.setDefault(defaultLocale);
+			return defaultLocale;
 		}
-		return null;
+		finally
+		{
+			LOCK.unlock();
+		}
 	}
 }

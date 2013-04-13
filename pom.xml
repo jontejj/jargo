@@ -105,7 +105,8 @@
 				<version>2.9</version>
 				<configuration>
 					<useFile>false</useFile>
-					<forkCount>1C</forkCount>
+					<parallel>methods</parallel>
+					<forkCount>0</forkCount>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -122,9 +123,9 @@
 				<version>0.6.2.201302030002</version>
 				<executions>
 					<execution>
+						<id>prepare-agent</id>
 						<goals>
-							<goal>instrument</goal>
-							<goal>restore-instrumented-classes</goal>
+							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -141,9 +142,9 @@
 						</goals>
 						<configuration>
 							<check>
-								<classRatio>95</classRatio>
+								<classRatio>100</classRatio>
+								<methodRatio>100</methodRatio>
 								<instructionRatio>95</instructionRatio>
-								<methodRatio>95</methodRatio>
 								<branchRatio>95</branchRatio>
 								<complexityRatio>95</complexityRatio>
 								<lineRatio>95</lineRatio>
@@ -202,6 +203,12 @@
 			<artifactId>org.jacoco.agent</artifactId>
 			<classifier>runtime</classifier>
 			<version>0.6.2.201302030002</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.tempus-fugit</groupId>
+			<artifactId>tempus-fugit</artifactId>
+			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
