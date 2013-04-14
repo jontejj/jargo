@@ -105,7 +105,9 @@
 				<version>2.9</version>
 				<configuration>
 					<useFile>false</useFile>
-					<parallel>methods</parallel>
+					<!-- TODO(jontejj): enable when http://jira.codehaus.org/browse/SUREFIRE-797
+						is solved <parallel>methods</parallel> -->
+					<threadCount>1</threadCount>
 					<forkCount>0</forkCount>
 				</configuration>
 			</plugin>
