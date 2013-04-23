@@ -27,7 +27,7 @@ import se.softhouse.jargo.ParsedArguments;
 
 import com.google.common.collect.Lists;
 
-public class CommitCommand extends Command
+public class Commit extends Command
 {
 	public final Repository repository;
 
@@ -35,7 +35,7 @@ public class CommitCommand extends Command
 	static final Argument<String> AUTHOR = stringArgument("--author").required().separator("=").build();
 	private static final Argument<List<File>> FILES = fileArgument().variableArity().build();
 
-	public CommitCommand(final Repository repo)
+	public Commit(final Repository repo)
 	{
 		super(AMEND, AUTHOR, FILES);
 		repository = repo;
@@ -44,13 +44,7 @@ public class CommitCommand extends Command
 	@Override
 	protected void execute(final ParsedArguments parsedArguments)
 	{
-		repository.commits.add(new Commit(parsedArguments));
-	}
-
-	@Override
-	protected String commandName()
-	{
-		return "commit";
+		repository.commits.add(new Revision(parsedArguments));
 	}
 
 	@Override
@@ -61,18 +55,18 @@ public class CommitCommand extends Command
 
 	public static class Repository
 	{
-		List<Commit> commits = Lists.newArrayList();
+		List<Revision> commits = Lists.newArrayList();
 
 		int logLimit = 10;
 	}
 
-	public static class Commit
+	public static class Revision
 	{
 		final List<File> files;
 		final boolean amend;
 		final String author;
 
-		public Commit(final ParsedArguments arguments)
+		public Revision(final ParsedArguments arguments)
 		{
 			amend = arguments.get(AMEND);
 			files = arguments.get(FILES);

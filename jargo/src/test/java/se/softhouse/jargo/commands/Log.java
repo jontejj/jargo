@@ -11,31 +11,25 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.commands;
 
 import static se.softhouse.jargo.Arguments.integerArgument;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
-import se.softhouse.jargo.commands.CommitCommand.Repository;
+import se.softhouse.jargo.commands.Commit.Repository;
 
-public class LogCommand extends Command
+public class Log extends Command
 {
 	public final Repository repository;
 
 	private static final Argument<Integer> LIMIT = integerArgument("--limit", "-l").build();
 
-	public LogCommand(final Repository repo)
+	public Log(final Repository repo)
 	{
 		super(LIMIT);
 		repository = repo;
-	}
-
-	@Override
-	protected String commandName()
-	{
-		return "log";
 	}
 
 	@Override

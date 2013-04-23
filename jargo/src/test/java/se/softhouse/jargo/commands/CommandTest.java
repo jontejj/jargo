@@ -38,8 +38,8 @@ import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.commands.Build.BuildTarget;
-import se.softhouse.jargo.commands.CommitCommand.Commit;
-import se.softhouse.jargo.commands.CommitCommand.Repository;
+import se.softhouse.jargo.commands.Commit.Repository;
+import se.softhouse.jargo.commands.Commit.Revision;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
 import com.google.common.base.Predicates;
@@ -75,9 +75,9 @@ public class CommandTest
 		String[] commitArgs = {"commit", "--amend", "--author=jjonsson", "A.java", "B.java"};
 
 		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.withCommands(new CommitCommand(repo), new LogCommand(repo));
+		CommandLineParser parser = CommandLineParser.withCommands(new Commit(repo), new Log(repo));
 
-		// LogCommand
+		// Log
 		parser.parse(logArgs);
 
 		assertThat(repo.logLimit).isEqualTo(20);
@@ -85,10 +85,10 @@ public class CommandTest
 
 		repo.logLimit = 10;
 
-		// CommitCommand
+		// Commit
 		parser.parse(commitArgs);
 
-		Commit commit = repo.commits.get(0);
+		Revision commit = repo.commits.get(0);
 		assertThat(commit.amend).isTrue();
 		assertThat(commit.author).isEqualTo("jjonsson");
 		assertThat(commit.files).isEqualTo(Arrays.asList(new File("A.java"), new File("B.java")));
@@ -108,20 +108,20 @@ public class CommandTest
 	{
 		String[] combinedInvocation = {"log", "--limit", "30", "commit", "--author=jjonsson"};
 		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.withCommands(new CommitCommand(repo), new LogCommand(repo));
+		CommandLineParser parser = CommandLineParser.withCommands(new Commit(repo), new Log(repo));
 
 		parser.parse(combinedInvocation);
 
 		assertThat(repo.logLimit).isEqualTo(30);
 
-		Commit commit = repo.commits.get(0);
+		Revision commit = repo.commits.get(0);
 		assertThat(commit.amend).isFalse();
 		assertThat(commit.author).isEqualTo("jjonsson");
 		assertThat(commit.files).isEqualTo(emptyList());
 	}
 
-	static final Argument<ParsedArguments> COMMIT = command(new CommitCommand(new Repository())).build();
-	static final Argument<?> LOG = command(new LogCommand(new Repository())).build();
+	static final Argument<ParsedArguments> COMMIT = command(new Commit(new Repository())).build();
+	static final Argument<?> LOG = command(new Log(new Repository())).build();
 
 	@Test
 	public void testCommandWithMissingRequiredArgument()
@@ -182,7 +182,7 @@ public class CommandTest
 		String[] secondArgs = {"commit", "--author=nobody"};
 
 		Repository repo = new Repository();
-		CommandLineParser parser = CommandLineParser.withCommands(new CommitCommand(repo));
+		CommandLineParser parser = CommandLineParser.withCommands(new Commit(repo));
 
 		parser.parse(firstArgs);
 		parser.parse(secondArgs);
@@ -195,7 +195,7 @@ public class CommandTest
 	public void testUsageForCommands()
 	{
 		BuildTarget target = new BuildTarget();
-		CommandLineParser parser = CommandLineParser.withCommands(new Build(target), new Clean(target), new CommitCommand(new Repository()));
+		CommandLineParser parser = CommandLineParser.withCommands(new Build(target), new Clean(target), new Commit(new Repository()));
 		Usage usage = parser.usage();
 		assertThat(usage).isEqualTo(expected("commandsWithArguments"));
 	}
@@ -424,7 +424,7 @@ public class CommandTest
 	public void testThatCommandArgumentsCanBeFetchedAfterExecution() throws Exception
 	{
 		ParsedArguments commitArguments = COMMIT.parse("commit", "--author=joj");
-		assertThat(commitArguments.get(CommitCommand.AUTHOR)).isEqualTo("joj");
+		assertThat(commitArguments.get(Commit.AUTHOR)).isEqualTo("joj");
 	}
 
 	@Test

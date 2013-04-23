@@ -59,18 +59,13 @@ import com.google.common.collect.ImmutableList;
  * 
  * <pre class="prettyprint">
  * <code class="language-java">
- * public class BuildCommand extends Command
+ * public class Build extends Command
  * {
  *   private static final Argument&lt;File&gt; PATH = Arguments.fileArgument().description("the directory to build").build();
  * 
- *   public BuildCommand()
+ *   public Build()
  *   {
  *     super(PATH);
- *   }
- * 
- *   public String commandName()
- *   {
- *     return "build";
  *   }
  * 
  *   public String description()
@@ -87,13 +82,16 @@ import com.google.common.collect.ImmutableList;
  * </code>
  * </pre>
  * 
- * And the glue needed to integrate the BuildCommand with a {@link CommandLineParser}:
+ * And the glue needed to integrate the Build {@link Command} with a {@link CommandLineParser}:
  * 
  * <pre class="prettyprint">
  * <code class="language-java">
- * CommandLineParser.withCommands(new BuildCommand()).parse("build", "some_directory_that_needs_building");
+ * CommandLineParser.withCommands(new Build()).parse("build", "some_directory_that_needs_building");
  * </code>
  * </pre>
+ * 
+ * As can be seen in the example the command name is the class name in lower case by default. This
+ * may be overridden with {@link #commandName()}.
  */
 @Immutable
 public abstract class Command extends InternalStringParser<ParsedArguments> implements Describable
@@ -119,14 +117,16 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	// TODO(jontejj): support commandArguments() by a method as well
 
 	/**
-	 * The name that triggers this command. For several names override this with
-	 * {@link ArgumentBuilder#names(String...)}
+	 * The name that triggers this command. Defaults to {@link Class#getSimpleName()} in lower
+	 * case. For several names override this with {@link ArgumentBuilder#names(String...)}
 	 */
 	@Nonnull
 	@CheckReturnValue
-	protected abstract String commandName();
-
-	// TODO(jontejj): default commandName to getClass().getSimpleName().toLowerCase(CharSets.UTF_8);
+	protected String commandName()
+	{
+		// TODO(jontejj): perhaps prepend all upper case characters with a -
+		return getClass().getSimpleName().toLowerCase(Locale.ENGLISH);
+	}
 
 	/**
 	 * Called when this command is encountered on the command line

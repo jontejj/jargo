@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.commands;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -30,12 +30,6 @@ public class Build extends Command
 	public Build()
 	{
 		this.target = new BuildTarget();
-	}
-
-	@Override
-	public String commandName()
-	{
-		return "build";
 	}
 
 	@Override

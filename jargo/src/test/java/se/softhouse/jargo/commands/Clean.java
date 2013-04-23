@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.commands;
 
 import se.softhouse.jargo.Command;
@@ -30,12 +30,6 @@ public class Clean extends Command
 	public Clean(BuildTarget target)
 	{
 		this.target = target;
-	}
-
-	@Override
-	protected String commandName()
-	{
-		return "clean";
 	}
 
 	@Override
