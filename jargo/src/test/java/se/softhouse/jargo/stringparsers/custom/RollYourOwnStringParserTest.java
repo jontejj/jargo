@@ -26,8 +26,12 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.Usage;
 
+/**
+ * Tests for a custom {@link StringParser}
+ */
 public class RollYourOwnStringParserTest
 {
 	@Test

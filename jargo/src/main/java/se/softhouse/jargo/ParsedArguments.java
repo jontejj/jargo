@@ -124,6 +124,13 @@ public final class ParsedArguments
 		parsedArguments.put(definition, value);
 	}
 
+	<T> void finalize(final Argument<T> definition)
+	{
+		T value = getValue(definition);
+		T finalizedValue = definition.finalizer().apply(value);
+		put(definition, finalizedValue);
+	}
+
 	<T> T getValue(final Argument<T> definition)
 	{
 		// Safe because put guarantees that the map is heterogeneous

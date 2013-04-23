@@ -19,6 +19,9 @@ import static org.junit.Assert.fail;
 import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.Arguments.integerArgument;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.junit.Test;
 
 import se.softhouse.jargo.Argument;
@@ -34,6 +37,9 @@ import se.softhouse.jargo.commands.ProfilingExecuteCommand;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+/**
+ * Tests for {@link Nonnull} and {@link Nullable} arguments
+ */
 public class NullPointerTest
 {
 	@Test

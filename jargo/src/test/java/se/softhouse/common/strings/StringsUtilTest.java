@@ -37,6 +37,9 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link StringsUtil}
+ */
 public class StringsUtilTest
 {
 	@Test

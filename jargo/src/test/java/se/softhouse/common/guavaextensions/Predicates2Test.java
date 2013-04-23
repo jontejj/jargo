@@ -30,6 +30,9 @@ import com.google.common.base.Predicate;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+/**
+ * Tests for {@link Predicates2}
+ */
 public class Predicates2Test
 {
 	static final Predicate<Integer> ABOVE_ZERO = new Predicate<Integer>(){

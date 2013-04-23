@@ -179,20 +179,6 @@ public final class Argument<T>
 		return names().get(0);
 	}
 
-	@Nonnull
-	InternalStringParser<T> parser()
-	{
-		return parser;
-	}
-
-	String descriptionOfValidValues(Locale localeToDescribeValuesWith)
-	{
-		if(limiter != alwaysTrue())
-			return limiter.toString();
-
-		return parser().descriptionOfValidValues(this, locale(localeToDescribeValuesWith));
-	}
-
 	/**
 	 * @return the default value for this argument, defaults to {@link StringParser#defaultValue()}.
 	 *         Could also be set by {@link ArgumentBuilder#defaultValue(Object)} or
@@ -210,6 +196,14 @@ public final class Argument<T>
 		return value;
 	}
 
+	String descriptionOfValidValues(Locale localeToDescribeValuesWith)
+	{
+		if(limiter != alwaysTrue())
+			return limiter.toString();
+
+		return parser().descriptionOfValidValues(this, locale(localeToDescribeValuesWith));
+	}
+
 	@Nullable
 	String defaultValueDescription(Locale inLocale)
 	{
@@ -223,19 +217,7 @@ public final class Argument<T>
 	@Nonnull
 	String metaDescriptionInLeftColumn()
 	{
-		String meta;
-
-		if(metaDescription.isPresent())
-		{
-			meta = metaDescription.get();
-		}
-		else
-		{
-			// If the meta description hasn't been overridden we default to the one provided by
-			// the StringParser interface
-			meta = parser.metaDescriptionInLeftColumn(this);
-		}
-
+		String meta = metaDescription.or(parser.metaDescriptionInLeftColumn(this));
 		if(!isPropertyMap() && !isIndexed())
 		{
 			meta = separator + meta;
@@ -246,10 +228,7 @@ public final class Argument<T>
 	@Nonnull
 	String metaDescriptionInRightColumn()
 	{
-		// First check if the description has been overridden
-		if(metaDescription.isPresent())
-			return metaDescription.get();
-		return parser.metaDescriptionInRightColumn(this);
+		return metaDescription.or(parser.metaDescriptionInRightColumn(this));
 	}
 
 	void checkLimit(@Nullable final T value) throws ArgumentException
@@ -275,11 +254,10 @@ public final class Argument<T>
 		}
 	}
 
-	void finalizeValue(ParsedArguments holder)
+	@Nonnull
+	InternalStringParser<T> parser()
 	{
-		T value = holder.getValue(this);
-		T finalizedValue = finalizer.apply(value);
-		holder.put(this, finalizedValue);
+		return parser;
 	}
 
 	boolean isRequired()
@@ -328,6 +306,11 @@ public final class Argument<T>
 	Locale locale(Locale usualLocale)
 	{
 		return localeOveride.or(usualLocale);
+	}
+
+	Function<T, T> finalizer()
+	{
+		return finalizer;
 	}
 
 	boolean isIndexed()

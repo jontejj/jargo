@@ -28,7 +28,7 @@ import com.google.common.testing.NullPointerTester.Visibility;
 /**
  * Tests for {@link Describables}
  */
-public class DescriptionsTest
+public class DescribablesTest
 {
 	@Test
 	public void testStaticStringAsDescription()

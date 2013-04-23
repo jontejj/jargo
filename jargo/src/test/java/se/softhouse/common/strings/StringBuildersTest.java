@@ -21,6 +21,9 @@ import se.softhouse.common.testlib.UtilityClassTester;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+/**
+ * Tests for {@link StringBuilders}
+ */
 public class StringBuildersTest
 {
 	@Test

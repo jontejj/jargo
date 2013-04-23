@@ -39,6 +39,9 @@ import org.junit.Test;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+/**
+ * Tests for {@link NumberType}
+ */
 public class NumberTypeTest
 {
 	static final BigInteger biggerThanLong = BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE);

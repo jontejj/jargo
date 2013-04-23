@@ -27,6 +27,9 @@ import com.google.common.collect.Sets;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+/**
+ * Tests for {@link CharacterTrie}
+ */
 public class CharacterTrieTest
 {
 	static final String foo = "foo";

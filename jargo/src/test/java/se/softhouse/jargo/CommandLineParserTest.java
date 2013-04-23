@@ -61,6 +61,9 @@ import com.google.common.io.Files;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * Tests for {@link CommandLineParser}
+ */
 public class CommandLineParserTest
 {
 	/**

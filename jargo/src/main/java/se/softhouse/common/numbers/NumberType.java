@@ -14,8 +14,8 @@
  */
 package se.softhouse.common.numbers;
 
-import static se.softhouse.common.strings.Describers.numberDescriber;
 import static se.softhouse.common.strings.Describables.illegalArgument;
+import static se.softhouse.common.strings.Describers.numberDescriber;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.pointingAtIndex;
 

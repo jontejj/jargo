@@ -16,7 +16,11 @@ package se.softhouse.jargo.utils;
 
 import se.softhouse.common.classes.Classes;
 import se.softhouse.common.testlib.ResourceLoader;
+import se.softhouse.jargo.Usage;
 
+/**
+ * Helps to load saved {@link Usage} texts
+ */
 public class ExpectedTexts
 {
 	/**

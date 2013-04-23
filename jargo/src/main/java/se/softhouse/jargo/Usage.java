@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
@@ -66,7 +66,7 @@ import com.google.common.collect.Iterables;
  * </ol>
  * </pre>
  */
-@NotThreadSafe
+@ThreadSafe
 public final class Usage implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -200,6 +200,7 @@ public final class Usage implements Serializable
 	 */
 	public void printOn(StringBuilder target)
 	{
+		// TODO(jontejj): verify that this is threadsafe
 		try
 		{
 			printOn((Appendable) target);
@@ -250,6 +251,8 @@ public final class Usage implements Serializable
 	{
 		if(argumentsToPrint == null)
 		{
+			// The lack of synchronization is deliberate, repeated invocations will result in the
+			// same variables anyway
 			Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
 			this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
 			this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;

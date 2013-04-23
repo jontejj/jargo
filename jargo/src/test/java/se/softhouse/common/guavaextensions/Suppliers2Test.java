@@ -29,6 +29,9 @@ import com.google.common.base.Suppliers;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+/**
+ * Tests for {@link Suppliers2}
+ */
 public class Suppliers2Test
 {
 	@Test

@@ -167,10 +167,12 @@ final class CommandLineParserInstance
 		checkArgument(oldDefinition == null, ProgrammaticErrors.NAME_COLLISION, name);
 	}
 
+	/**
+	 * Specifying the optional argument before the required argument would make the optional
+	 * argument required
+	 */
 	private void verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments()
 	{
-		// Specifying the optional argument before the required argument would make the optional
-		// argument required
 		int lastRequiredIndexedArgument = 0;
 		int firstOptionalIndexedArgument = Integer.MAX_VALUE;
 		for(int i = 0; i < indexedArguments.size(); i++)
@@ -189,9 +191,11 @@ final class CommandLineParserInstance
 						firstOptionalIndexedArgument, lastRequiredIndexedArgument);
 	}
 
+	/**
+	 * Otherwise the error texts becomes ambiguous
+	 */
 	private void verifyUniqueMetasForRequiredAndIndexedArguments()
 	{
-		// Otherwise the error texts becomes ambiguous
 		Set<String> metasForRequiredAndIndexedArguments = newHashSetWithExpectedSize(indexedArguments.size());
 		for(Argument<?> indexedArgument : filter(indexedArguments, IS_REQUIRED))
 		{
@@ -201,9 +205,11 @@ final class CommandLineParserInstance
 		}
 	}
 
+	/**
+	 * How would one know when the first argument considers itself satisfied?
+	 */
 	private void verifyThatOnlyOneArgumentIsOfVariableArity()
 	{
-		// How would one know when the first argument considers itself satisfied?
 		Collection<Argument<?>> indexedVariableArityArguments = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
 		checkArgument(indexedVariableArityArguments.size() <= 1, ProgrammaticErrors.SEVERAL_VARIABLE_ARITY_PARSERS, indexedVariableArityArguments);
 	}
@@ -218,9 +224,7 @@ final class CommandLineParserInstance
 	@Nonnull
 	ParsedArguments parse(ArgumentIterator arguments, Locale locale) throws ArgumentException
 	{
-		ParsedArguments holder = new ParsedArguments(allArguments());
-
-		parseArguments(arguments, holder, locale);
+		ParsedArguments holder = parseArguments(arguments, locale);
 
 		Collection<Argument<?>> missingArguments = holder.requiredArgumentsLeft();
 		if(missingArguments.size() > 0)
@@ -228,7 +232,7 @@ final class CommandLineParserInstance
 
 		for(Argument<?> arg : holder.parsedArguments())
 		{
-			arg.finalizeValue(holder);
+			holder.finalize(arg);
 			limitArgument(arg, holder, locale);
 		}
 		if(!isCommandParser())
@@ -238,14 +242,9 @@ final class CommandLineParserInstance
 		return holder;
 	}
 
-	@Override
-	public String toString()
+	private ParsedArguments parseArguments(final ArgumentIterator actualArguments, Locale locale) throws ArgumentException
 	{
-		return usage(US_BY_DEFAULT).toString();
-	}
-
-	private void parseArguments(final ArgumentIterator actualArguments, final ParsedArguments holder, Locale locale) throws ArgumentException
-	{
+		ParsedArguments holder = new ParsedArguments(allArguments());
 		actualArguments.setCurrentParser(this);
 		while(actualArguments.hasNext())
 		{
@@ -269,6 +268,7 @@ final class CommandLineParserInstance
 				throw e.withUsage(usage(locale));
 			}
 		}
+		return holder;
 	}
 
 	private <T> void parseArgument(final ArgumentIterator arguments, final ParsedArguments parsedArguments, final Argument<T> definition,
@@ -499,10 +499,17 @@ final class CommandLineParserInstance
 		return e.withUsage(usage);
 	}
 
+	@Override
+	public String toString()
+	{
+		return usage(US_BY_DEFAULT).toString();
+	}
+
 	/**
 	 * Wraps a list of given arguments and remembers
 	 * which argument that is currently being parsed. Plays a key role in making
-	 * {@link CommandLineParserInstance} {@link ThreadSafe}.
+	 * {@link CommandLineParserInstance} {@link ThreadSafe} as it holds the current state of a parse
+	 * invocation.
 	 */
 	@NotThreadSafe
 	static final class ArgumentIterator extends UnmodifiableIterator<String>

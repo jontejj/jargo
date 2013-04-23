@@ -126,6 +126,8 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	@CheckReturnValue
 	protected abstract String commandName();
 
+	// TODO(jontejj): default commandName to getClass().getSimpleName().toLowerCase(CharSets.UTF_8);
+
 	/**
 	 * Called when this command is encountered on the command line
 	 * 
