@@ -158,7 +158,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>sonatype-nexus-staging</serverId>
-					<nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<description>Release of ${project.version}</description>
 				</configuration>
 			</plugin>
 		</plugins>
