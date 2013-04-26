@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;
@@ -118,6 +119,41 @@ public class CommandTest
 		assertThat(commit.amend).isFalse();
 		assertThat(commit.author).isEqualTo("jjonsson");
 		assertThat(commit.files).isEqualTo(emptyList());
+	}
+
+	private static boolean didStart = false;
+
+	/**
+	 * An alternative to {@link Command} that is based on interfaces instead
+	 */
+	public enum Service implements Runnable, Describable
+	{
+		START
+		{
+			@Override
+			public void run()
+			{
+				didStart = true;
+			}
+
+			@Override
+			public String description()
+			{
+				return "Starts the service";
+			}
+		};
+	}
+
+	@Test
+	public void testMapOfCommands() throws Exception
+	{
+		CommandLineParser parser = CommandLineParser.withCommands(Service.class);
+
+		parser.parse("start");
+		assertThat(didStart).isTrue();
+
+		Usage usage = parser.usage();
+		assertThat(usage).contains("start").contains("Starts the service");
 	}
 
 	static final Argument<ParsedArguments> COMMIT = command(new Commit(new Repository())).build();

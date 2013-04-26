@@ -858,6 +858,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 	}
 
+	/**
+	 * The {@link InternalStringParser} equivalent to
+	 * {@link se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder}
+	 */
 	static final class SimpleArgumentBuilder<T> extends InternalArgumentBuilder<SimpleArgumentBuilder<T>, T>
 	{
 		SimpleArgumentBuilder(InternalStringParser<T> parser)
@@ -999,7 +1003,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * An intermediate builder used by {@link #arity(int)} and {@link #variableArity()}. It's mainly
-	 * used to switch the T argument of the previous builder to List<T> and to indicate invalid call
+	 * used to switch the T argument of the previous builder to List&lt;T&gt; and to indicate
+	 * invalid call
 	 * orders.
 	 */
 	@NotThreadSafe
@@ -1042,7 +1047,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * An intermediate builder used by {@link #repeated()}. It's mainly used to switch the T
-	 * argument of the previous builder to List<T> and to indicate invalid call orders.
+	 * argument of the previous builder to List&lt;T&gt; and to indicate invalid call orders.
 	 */
 	@NotThreadSafe
 	public static final class RepeatedArgumentBuilder<T> extends ListArgumentBuilder<RepeatedArgumentBuilder<T>, T>
@@ -1179,7 +1184,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * An intermediate builder used by {@link #asPropertyMap()}. It's mainly used to switch the T
-	 * argument of the previous builder to Map<K, T> and to indicate invalid call orders.
+	 * argument of the previous builder to Map&lt;K, T&gt; and to indicate invalid call orders.
 	 */
 	@NotThreadSafe
 	public static final class MapArgumentBuilder<K, V> extends InternalArgumentBuilder<MapArgumentBuilder<K, V>, Map<K, V>>

@@ -675,6 +675,44 @@ public final class StringParsers
 	}
 
 	/**
+	 * Runs a {@link Runnable} when {@link StringParser#parse(String, Locale) parse} is invoked.
+	 */
+	static final class RunnableParser extends InternalStringParser<Object>
+	{
+		final Runnable target;
+
+		RunnableParser(Runnable target)
+		{
+			this.target = target;
+		}
+
+		@Override
+		Object parse(ArgumentIterator arguments, Object previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
+		{
+			target.run();
+			return null;
+		}
+
+		@Override
+		String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
+		{
+			return "";
+		}
+
+		@Override
+		Object defaultValue()
+		{
+			return null;
+		}
+
+		@Override
+		String metaDescription(Argument<?> argumentSettings)
+		{
+			return "";
+		}
+	}
+
+	/**
 	 * Base class for {@link StringParser}s that uses a sub parser to parse element values and puts
 	 * them into a {@link List}
 	 */

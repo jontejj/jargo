@@ -124,6 +124,9 @@ public final class ParsedArguments
 		parsedArguments.put(definition, value);
 	}
 
+	/**
+	 * Makes the parsed value for {@code definition} unmodifiable.
+	 */
 	<T> void finalize(final Argument<T> definition)
 	{
 		T value = getValue(definition);

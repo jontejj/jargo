@@ -31,6 +31,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
+import se.softhouse.common.strings.Describable;
+import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
+import se.softhouse.jargo.StringParsers.RunnableParser;
+
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Atomics;
 
@@ -164,6 +168,42 @@ public final class CommandLineParser
 	public static CommandLineParser withCommands(final Command ... commands)
 	{
 		return new CommandLineParser(commandsToArguments(commands));
+	}
+
+	/**
+	 * An alternative to {@link Command} that accepts an {@link Enum} following the <a
+	 * href="http://en.wikipedia.org/wiki/Command_pattern">Command
+	 * Pattern</a>. This alternative is viable if the commands don't accept any parameters.
+	 * Example enum:
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * public enum Service implements Runnable, Describable
+	 * {
+	 *   START{
+	 * 	   &#64;Override
+	 * 	   public void run(){
+	 * 	     //Start service here
+	 * 	   }
+	 * 
+	 * 	   &#64;Override
+	 * 	   public String description(){
+	 * 	     return "Starts the service";
+	 * 	   }
+	 *   };
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * The {@link ArgumentBuilder#names(String...) name} for each command will be the enum constants
+	 * {@link Enum#name() name} in {@link String#toLowerCase(Locale) lower case}.
+	 * 
+	 * @param commandEnum the {@link Class} <i>literal</i> for {@code Service} in the example above
+	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
+	 */
+	public static <E extends Enum<E> & Runnable & Describable> CommandLineParser withCommands(Class<E> commandEnum)
+	{
+		return new CommandLineParser(commandsToArguments(commandEnum));
 	}
 
 	/**
@@ -349,6 +389,20 @@ public final class CommandLineParser
 		for(Command c : commands)
 		{
 			commandsAsArguments.add(command(c).build());
+		}
+		return commandsAsArguments;
+	}
+
+	private static <E extends Enum<E> & Runnable & Describable> List<Argument<?>> commandsToArguments(Class<E> commandEnum)
+	{
+		List<Argument<?>> commandsAsArguments = Lists.newArrayList();
+		for(E command : commandEnum.getEnumConstants())
+		{
+			Argument<Object> commandAsArgument = new SimpleArgumentBuilder<Object>(new RunnableParser(command)) //
+					.names(command.name().toLowerCase(Locale.US)) //
+					.description(command) //
+					.build();
+			commandsAsArguments.add(commandAsArgument);
 		}
 		return commandsAsArguments;
 	}

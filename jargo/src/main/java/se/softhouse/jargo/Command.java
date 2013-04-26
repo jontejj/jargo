@@ -125,7 +125,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	protected String commandName()
 	{
 		// TODO(jontejj): perhaps prepend all upper case characters with a -
-		return getClass().getSimpleName().toLowerCase(Locale.ENGLISH);
+		return getClass().getSimpleName().toLowerCase(Locale.US);
 	}
 
 	/**
