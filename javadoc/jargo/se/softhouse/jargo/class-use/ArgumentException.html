@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Uses of Class se.softhouse.jargo.ArgumentException (jargo - an argument and options parser for java 0.0.5 API)
+Uses of Class se.softhouse.jargo.ArgumentException (jargo - an argument and options parser for java 0.1-SNAPSHOT API)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Uses of Class se.softhouse.jargo.ArgumentException (jargo - an argument and opti
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Uses of Class se.softhouse.jargo.ArgumentException (jargo - an argument and options parser for java 0.0.5 API)";
+        parent.document.title="Uses of Class se.softhouse.jargo.ArgumentException (jargo - an argument and options parser for java 0.1-SNAPSHOT API)";
     }
 }
 </SCRIPT>
@@ -179,12 +179,12 @@ Uses of <A HREF="../../../../se/softhouse/jargo/ArgumentException.html" title="c
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../se/softhouse/jargo/Argument.html" title="type parameter in Argument">T</A></CODE></FONT></TD>
-<TD><CODE><B>Argument.</B><B><A HREF="../../../../se/softhouse/jargo/Argument.html#parse(java.lang.String...)">parse</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)</CODE>
+<CODE>&nbsp;<A HREF="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</A></CODE></FONT></TD>
+<TD><CODE><B>CommandLineParser.</B><B><A HREF="../../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)">parse</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses command line arguments and returns the value of this argument.<br>
- This is a shorthand method that should be used if only one <A HREF="../../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is expected.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <code>actualArguments</code> (typically from the command line, i.e argv) and returns the
+ parsed values in a <A HREF="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo"><CODE>ParsedArguments</CODE></A> container.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -198,12 +198,12 @@ Uses of <A HREF="../../../../se/softhouse/jargo/ArgumentException.html" title="c
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</A></CODE></FONT></TD>
-<TD><CODE><B>CommandLineParser.</B><B><A HREF="../../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)">parse</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)</CODE>
+<CODE>&nbsp;<A HREF="../../../../se/softhouse/jargo/Argument.html" title="type parameter in Argument">T</A></CODE></FONT></TD>
+<TD><CODE><B>Argument.</B><B><A HREF="../../../../se/softhouse/jargo/Argument.html#parse(java.lang.String...)">parse</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <code>actualArguments</code> (typically from the command line, i.e argv) and returns the
- parsed values in a <A HREF="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo"><CODE>ParsedArguments</CODE></A> container.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses command line arguments and returns the value of this argument.<br>
+ This is a shorthand method that should be used if only one <A HREF="../../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is expected.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
