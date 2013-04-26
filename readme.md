@@ -86,3 +86,6 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
 6. Reflection makes it hard to analyze references to classes/methods and it
     often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted. No reflection is used in jargo.
 
+# Communication
+[Issues](https://github.com/Softhouse/jargo/issues)  
+[QA forum](https://groups.google.com/forum/?fromgroups=&hl=en#!forum/jargo)
