@@ -79,6 +79,7 @@
 					<!-- Avoid hefty javadoc differences -->
 					<notimestamp>true</notimestamp>
 					<encoding>UTF-8</encoding>
+					<locale>en_US</locale>
 					<failOnError>true</failOnError>
 					<nodeprecated>true</nodeprecated>
 					<linksource>true</linksource>
