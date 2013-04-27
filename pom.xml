@@ -177,6 +177,7 @@
 				<version>1.4.4</version>
 				<extensions>true</extensions>
 				<configuration>
+					<skipLocalStaging>true</skipLocalStaging>
 					<serverId>sonatype-nexus-staging</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<description>Release of ${project.version}</description>
