@@ -12,10 +12,25 @@
 	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>https://github.com/Softhouse/jargo</url>
+	<scm>
+		<url>https://github.com/Softhouse/jargo</url>
+		<connection>scm:git:git://github.com/Softhouse/jargo.git</connection>
+		<developerConnection>scm:git:git@github.com:Softhouse/jargo.git</developerConnection>
+	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/Softhouse/jargo/issues</url>
 	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://jontejj.ci.cloudbees.com/job/jargo/</url>
+	</ciManagement>
+	<mailingLists>
+		<mailingList>
+			<name>Google group QA forum</name>
+			<archive>https://groups.google.com/forum/?#!forum/jargo</archive>
+		</mailingList>
+	</mailingLists>
 	<inceptionYear>2013</inceptionYear>
 	<licenses>
 		<license>
@@ -24,14 +39,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<prerequisites>
-		<maven>3.0.3</maven>
-	</prerequisites>
-	<scm>
-		<url>https://github.com/Softhouse/jargo</url>
-		<connection>scm:git:git://github.com/Softhouse/jargo.git</connection>
-		<developerConnection>scm:git:git@github.com:Softhouse/jargo.git</developerConnection>
-	</scm>
 	<developers>
 		<developer>
 			<id>joj</id>
@@ -46,6 +53,9 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
 	<modules>
 		<module>common-test</module>
 		<module>jargo</module>
@@ -183,10 +193,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>https://jontejj.ci.cloudbees.com/job/jargo/</url>
-	</ciManagement>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -196,12 +202,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	<mailingLists>
-		<mailingList>
-			<name>Google group QA forum</name>
-			<archive>https://groups.google.com/forum/?#!forum/jargo</archive>
-		</mailingList>
-	</mailingLists>
 	<dependencies>
 		<dependency>
 			<!-- The stuff that java should have had from the start -->

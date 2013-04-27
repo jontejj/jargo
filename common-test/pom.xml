@@ -9,7 +9,6 @@
 	<artifactId>common-test</artifactId>
 	<name>common test</name>
 	<description>Reusable classes to use from tests.</description>
-	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<!-- Included as exposed test helper code uses fest assertions -->

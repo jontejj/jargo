@@ -6,7 +6,6 @@
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jargo</artifactId>
-	<packaging>jar</packaging>
 	<name>jargo</name>
 	<description>An argument and options parser for java</description>
 	<build>
