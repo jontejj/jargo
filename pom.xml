@@ -69,9 +69,10 @@
 					<!-- Avoid hefty javadoc differences -->
 					<notimestamp>true</notimestamp>
 					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<charset>UTF-8</charset>
+					<failOnError>true</failOnError>
+					<nodeprecated>true</nodeprecated>
 					<linksource>true</linksource>
+					<quiet>true</quiet>
 					<links>
 						<link>http://docs.guava-libraries.googlecode.com/git/javadoc/</link>
 						<link>http://jsr-305.googlecode.com/svn/trunk/javadoc/</link>
