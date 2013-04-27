@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/StringsUtil.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -274,48 +273,6 @@ public static final char <A HREF="../../../../src-html/se/softhouse/common/strin
 </TR>
 </TABLE>
 
-<A NAME="spaces(int)"><!-- --></A><H3>
-spaces</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.59"><B>spaces</B></A>(int&nbsp;numberOfSpaces)</PRE>
-<DL>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>numberOfSpaces</CODE> - to put in the created string
-<DT><B>Returns:</B><DD>a string with numberOfSpaces in it</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="pointingAtIndex(int)"><!-- --></A><H3>
-pointingAtIndex</H3>
-<PRE>
-public static <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.67"><B>pointingAtIndex</B></A>(int&nbsp;indexToPointAt)</PRE>
-<DL>
-<DD>Returns a "       ^" string pointing at the position indicated by <code>indexToPointAt</code>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="startsWithAndHasMore(java.lang.String, java.lang.String)"><!-- --></A><H3>
-startsWithAndHasMore</H3>
-<PRE>
-public static boolean <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.76"><B>startsWithAndHasMore</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;input,
-                                           <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;toStartWith)</PRE>
-<DL>
-<DD>Returns <code>true</code> iff <code>input</code> <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#startsWith(java.lang.String)" title="class or interface in java.lang"><CODE>starts with</CODE></A>
- <code>toStartWith</code> and has more characters after that match
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
 <A NAME="closestMatch(java.lang.String, java.lang.Iterable)"><!-- --></A><H3>
 closestMatch</H3>
 <PRE>
@@ -377,6 +334,23 @@ closestMatches</H3>
 </DL>
 <HR>
 
+<A NAME="indexOfNth(int, java.lang.String, java.lang.String)"><!-- --></A><H3>
+indexOfNth</H3>
+<PRE>
+public static int <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.291"><B>indexOfNth</B></A>(int&nbsp;nth,
+                             <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;needle,
+                             <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;haystack)</PRE>
+<DL>
+<DD>Finds the <code>nth</code> occurrence of <code>needle</code> in <code>haystack</code>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>nth</CODE> - how many occurrences of <code>needle</code> that should occur before the returned index<DD><CODE>needle</CODE> - the string to search for<DD><CODE>haystack</CODE> - the string to search within
+<DT><B>Returns:</B><DD>the starting index of the <code>nth</code> occurrence of <code>needle</code> within
+         <code>haystack</code>, -1 if <code>nth</code> occurrences couldn't be found</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="levenshteinDistance(java.lang.String, java.lang.String)"><!-- --></A><H3>
 levenshteinDistance</H3>
 <PRE>
@@ -411,19 +385,44 @@ numberToPositionalString</H3>
 </DL>
 <HR>
 
-<A NAME="indexOfNth(int, java.lang.String, java.lang.String)"><!-- --></A><H3>
-indexOfNth</H3>
+<A NAME="pointingAtIndex(int)"><!-- --></A><H3>
+pointingAtIndex</H3>
 <PRE>
-public static int <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.291"><B>indexOfNth</B></A>(int&nbsp;nth,
-                             <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;needle,
-                             <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;haystack)</PRE>
+public static <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.67"><B>pointingAtIndex</B></A>(int&nbsp;indexToPointAt)</PRE>
 <DL>
-<DD>Finds the <code>nth</code> occurrence of <code>needle</code> in <code>haystack</code>
+<DD>Returns a "       ^" string pointing at the position indicated by <code>indexToPointAt</code>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>nth</CODE> - how many occurrences of <code>needle</code> that should occur before the returned index<DD><CODE>needle</CODE> - the string to search for<DD><CODE>haystack</CODE> - the string to search within
-<DT><B>Returns:</B><DD>the starting index of the <code>nth</code> occurrence of <code>needle</code> within
-         <code>haystack</code>, -1 if <code>nth</code> occurrences couldn't be found</DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="spaces(int)"><!-- --></A><H3>
+spaces</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+</FONT>public static <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.59"><B>spaces</B></A>(int&nbsp;numberOfSpaces)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>numberOfSpaces</CODE> - to put in the created string
+<DT><B>Returns:</B><DD>a string with numberOfSpaces in it</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="startsWithAndHasMore(java.lang.String, java.lang.String)"><!-- --></A><H3>
+startsWithAndHasMore</H3>
+<PRE>
+public static boolean <A HREF="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.76"><B>startsWithAndHasMore</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;input,
+                                           <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;toStartWith)</PRE>
+<DL>
+<DD>Returns <code>true</code> iff <code>input</code> <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#startsWith(java.lang.String)" title="class or interface in java.lang"><CODE>starts with</CODE></A>
+ <code>toStartWith</code> and has more characters after that match
+<P>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -444,7 +443,6 @@ public static int <A HREF="../../../../src-html/se/softhouse/common/strings/Stri
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/StringsUtil.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/StringParser.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -218,22 +217,17 @@ Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.ht
 </TR>
 </TABLE>
 
-<A NAME="parse(java.lang.String, java.util.Locale)"><!-- --></A><H3>
-parse</H3>
+<A NAME="defaultValue()"><!-- --></A><H3>
+defaultValue</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT><A HREF="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</A> <A HREF="../../../src-html/se/softhouse/jargo/StringParser.html#line.92"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;argument,
-                <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;locale)
-        throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A>
+</FONT><A HREF="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</A> <A HREF="../../../src-html/se/softhouse/jargo/StringParser.html#line.108"><B>defaultValue</B></A>()</PRE>
 <DL>
-<DD>Parses the given <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> into the type <code>T</code>
+<DD>Used when the <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> this parser is connected to wasn't given.
+ Used as a fall-back mechanism when <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>ArgumentBuilder.defaultValue(Object)</CODE></A> isn't used.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>argument</CODE> - the string as given from the command line<DD><CODE>locale</CODE> - the locale to parse strings with, may matter when parsing numbers, dates etc
-<DT><B>Returns:</B><DD>the parsed value
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></CODE> - if the string isn't valid according to
-             <A HREF="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues(java.util.Locale)"><CODE>descriptionOfValidValues(Locale)</CODE></A></DL>
+</DL>
 </DD>
 </DL>
 <HR>
@@ -249,21 +243,6 @@ descriptionOfValidValues</H3>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>locale</CODE> - the locale to print the description with
 <DT><B>Returns:</B><DD>a description string to show in usage texts</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="defaultValue()"><!-- --></A><H3>
-defaultValue</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A>
-</FONT><A HREF="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</A> <A HREF="../../../src-html/se/softhouse/jargo/StringParser.html#line.108"><B>defaultValue</B></A>()</PRE>
-<DL>
-<DD>Used when the <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> this parser is connected to wasn't given.
- Used as a fall-back mechanism when <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>ArgumentBuilder.defaultValue(Object)</CODE></A> isn't used.
-<P>
-<DD><DL>
-</DL>
 </DD>
 </DL>
 <HR>
@@ -287,6 +266,26 @@ metaDescription</H3>
 <DT><B>Returns:</B><DD>a meta description that very briefly explains what value this parser expects</DL>
 </DD>
 </DL>
+<HR>
+
+<A NAME="parse(java.lang.String, java.util.Locale)"><!-- --></A><H3>
+parse</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT><A HREF="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</A> <A HREF="../../../src-html/se/softhouse/jargo/StringParser.html#line.92"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;argument,
+                <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;locale)
+        throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></PRE>
+<DL>
+<DD>Parses the given <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> into the type <code>T</code>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>argument</CODE> - the string as given from the command line<DD><CODE>locale</CODE> - the locale to parse strings with, may matter when parsing numbers, dates etc
+<DT><B>Returns:</B><DD>the parsed value
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></CODE> - if the string isn't valid according to
+             <A HREF="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues(java.util.Locale)"><CODE>descriptionOfValidValues(Locale)</CODE></A></DL>
+</DD>
+</DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
 
@@ -305,7 +304,6 @@ metaDescription</H3>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/StringParser.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

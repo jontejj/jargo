@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/ArgumentBuilder.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -541,441 +540,36 @@ protected <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#lin
 </TR>
 </TABLE>
 
-<A NAME="build()"><!-- --></A><H3>
-build</H3>
+<A NAME="arity(int)"><!-- --></A><H3>
+arity</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public final <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.162"><B>build</B></A>()</PRE>
-<DL>
-<DD>Returns an <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><CODE>Immutable</CODE></A> <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> which can be passed to
- <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> <br>
- When the parsing is done the parsed value for this
- argument can be fetched with <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A>.
-<P>
-<DD><DL>
-
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if it's not possible to construct an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> with the
-             current settings</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="parse(java.lang.String...)"><!-- --></A><H3>
-parse</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A>
-</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.193"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)
-              throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.645"><B>arity</B></A>(int&nbsp;numberOfParameters)</PRE>
 <DL>
 <DD><pre>
- Parses command line arguments and returns the value of the argument built
- by <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#build()"><CODE>build()</CODE></A>, providing a simple one liner shortcut when faced with only one argument.
+ Uses this argument to parse values but assumes that <code>numberOfParameters</code> of the
+ following parameters are of the same type.
+ 
+ <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><CODE>Integer</CODE></A> in the following example:
  </pre>
  
  <pre class="prettyprint">
  <code class="language-java">
- String[] args = {"--listen-port", "8090"};
- 
- int port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").parse(args);
- assertThat(port).isEqualTo(8090);
+ List&lt;Integer&gt; numbers = integerArgument("--numbers").arity(2).parse("--numbers", "1", "2");
+ assertThat(numbers).isEqualTo(asList(1, 2));
  </code>
  </pre>
  
- This is a shorthand method that should be used if only one <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is expected as it
- will throw if unexpected arguments are encountered. If several arguments are expected use
- <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> instead.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>actualArguments</CODE> - the arguments from the command line
-<DT><B>Returns:</B><DD>the parsed value from the <code>actualArguments</code>
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></CODE> - if actualArguments isn't compatible with this
-             argument
-             </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="usage()"><!-- --></A><H3>
-usage</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.203"><B>usage</B></A>()</PRE>
-<DL>
-<DD>Returns a usage string for the argument that this builder builds.
- Should only be used if one argument is supported,
- otherwise the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#usage()"><CODE>CommandLineParser.usage()</CODE></A> method should be used instead.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="parser()"><!-- --></A><H3>
-parser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>protected abstract <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.223"><B>parser</B></A>()</PRE>
-<DL>
-<DD><pre>
- Returns a customized parser that the <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> will use to parse values.
- 
- This is a suitable place to verify the configuration of your parser.
- 
- If your <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A> doesn't support any configuration you can use
- <A HREF="../../../se/softhouse/jargo/Arguments.html#withParser(se.softhouse.jargo.StringParser)"><CODE>Arguments.withParser(StringParser)</CODE></A> directly instead of subclassing
- <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo"><CODE>ArgumentBuilder.DefaultArgumentBuilder</CODE></A>
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A> that performs the actual parsing of an argument value
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if the parser have been configured wrongly
- </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="names(java.lang.String...)"><!-- --></A><H3>
-names</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.250"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;argumentNames)</PRE>
-<DL>
-<DD>Specifies the argument names that triggers the argument being built. As commands sometimes
- gets long and hard to understand it's recommended to also support long named arguments,
- making the commands even longer but more readable instead <br>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>argumentNames</CODE> - <ul>
-            <li>"-o" for a short named option/argument</li>
-            <li>"--option-name" for a long named option/argument</li>
-            <li>"-o", "--option-name" to give the user both choices</li>
-            <li>zero elements: makes this an indexed argument, meaning that the argument must
-            be given at the same position on the command line as it is given to
-            <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> (not counting named
-            arguments).</li>
-            </ul>
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="names(java.lang.Iterable)"><!-- --></A><H3>
-names</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.263"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt;&nbsp;argumentNames)</PRE>
-<DL>
-<DD>Works just like <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A> but it takes an <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><CODE>Iterable</CODE></A> instead.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>argumentNames</CODE> - the list to use as argument names
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ignoreCase()"><!-- --></A><H3>
-ignoreCase</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.275"><B>ignoreCase</B></A>()</PRE>
-<DL>
-<DD>Ignores the case of the argument names set by <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A>
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="locale(java.util.Locale)"><!-- --></A><H3>
-locale</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.288"><B>locale</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;localeToUseForThisArgument)</PRE>
-<DL>
-<DD>Uses <code>localeToUseForThisArgument</code> to handle this argument with instead of the one
- passed to <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#locale(java.util.Locale)"><CODE>CommandLineParser.locale(Locale)</CODE></A>, allowing different <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>s to
- use different <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>s.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="description(java.lang.String)"><!-- --></A><H3>
-description</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.307"><B>description</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;theDescription)</PRE>
-<DL>
-<DD><pre>
- Sets <code>theDescription</code> of what this argument does/means. Printed with
- <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#usage()"><CODE>CommandLineParser.usage()</CODE></A>.
- 
- For instance, in:
- -l, --enable-logging      Output debug information to standard out
-                           Default: disabled
- "Output debug information to standard out" is <code>theDescription</code>
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder
- </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="description(se.softhouse.common.strings.Describable)"><!-- --></A><H3>
-description</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.319"><B>description</B></A>(<A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A>&nbsp;theDescription)</PRE>
-<DL>
-<DD><pre>
- <A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A> version of <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><CODE>description(String)</CODE></A>.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder
- </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="required()"><!-- --></A><H3>
-required</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.343"><B>required</B></A>()</PRE>
-<DL>
-<DD><pre>
- Makes <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)"><CODE>CommandLineParser.parse(String...)</CODE></A> throw
- <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> if this argument isn't given.
- If possible, it's preferred to use a <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>default value</CODE></A> instead.
- 
- The <A HREF="../../../se/softhouse/jargo/Argument.html#toString()"><CODE>Argument.toString()</CODE></A> will be used to print each missing argument.
- 
- <b>Note</b>: If you choose to use multiple <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> indexed arguments all of them
- must have unique <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)"><CODE>metaDescription(String)</CODE></A>s. This ensures that error messages
- can point out erroneous arguments better
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> (or
-             <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>defaultValueSupplier(Supplier)</CODE></A>) has been
-             called, because these are mutually exclusive with <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A>
- </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="defaultValue(java.lang.Object)"><!-- --></A><A NAME="defaultValue(T)"><!-- --></A><H3>
-defaultValue</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.364"><B>defaultValue</B></A>(<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A></FONT>
-                         <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&nbsp;value)</PRE>
-<DL>
-<DD><pre>
- Sets a default value to use for this argument. Overrides <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A> which is used by default.
- Returned by <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A> when no argument <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#wasGiven(se.softhouse.jargo.Argument)"><CODE>was given</CODE></A>.
- To create default values lazily see <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>defaultValueSupplier(Supplier)</CODE></A>.
- 
- <b>Mutability</b>:Remember that as <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><CODE>Immutable</CODE></A>
- this value should be so too if multiple argument parsings is going to take place.
- If mutability is wanted <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>defaultValueSupplier(Supplier)</CODE></A> should be used instead.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> has been called,
- because these two methods are mutually exclusive</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="defaultValueSupplier(com.google.common.base.Supplier)"><!-- --></A><H3>
-defaultValueSupplier</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.388"><B>defaultValueSupplier</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base">Supplier</A>&lt;? extends <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aDefaultValueSupplier)</PRE>
-<DL>
-<DD><pre>
- Sets a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Supplier</CODE></A> that can supply default values in the absence of this argument
- 
- <b>Note:</b> Even if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#limitTo(com.google.common.base.Predicate)"><CODE>limitTo(Predicate)</CODE></A> is used, the <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true#get()" title="class or interface in com.google.common.base"><CODE>Supplier.get()</CODE></A> isn't called
- until the default value is actually needed (<A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A>. If the
- default value is deemed non-allowed at that point an <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang"><CODE>IllegalStateException</CODE></A> is thrown.
- 
- <b>Note:</b> May be removed in the future if Guava is removed as a dependency
- 
- Wrap your supplier with <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Suppliers.html?is-external=true#memoize(com.google.common.base.Supplier)" title="class or interface in com.google.common.base"><CODE>Suppliers.memoize(Supplier)</CODE></A> if you want to cache created values.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> has been called,
- because these two methods are mutually exclusive</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="defaultValueDescription(java.lang.String)"><!-- --></A><H3>
-defaultValueDescription</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.404"><B>defaultValueDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aDescription)</PRE>
-<DL>
-<DD>Provides a way to give the usage texts a better explanation of a default
- value than <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> provides. Always prints <code>aDescription</code> regardless
- of what the default value is.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>aDescription</CODE> - the description
-<DT><B>Returns:</B><DD>this builder<DT><B>See Also:</B><DD><A HREF="../../../se/softhouse/common/strings/Describers.html#withConstantString(java.lang.String)"><CODE>Describers.withConstantString(String)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="defaultValueDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
-defaultValueDescriber</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.416"><B>defaultValueDescriber</B></A>(<A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;describer)</PRE>
-<DL>
-<DD><A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> version of <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueDescription(java.lang.String)"><CODE>defaultValueDescription(String)</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>describer</CODE> - a describer
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="metaDescription(java.lang.String)"><!-- --></A><H3>
-metaDescription</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.446"><B>metaDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aMetaDescription)</PRE>
-<DL>
-<DD><pre>
- By default <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="../../../se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>
- that describes the type of data they expect. For instance, if you're writing a music player,
- a user of your application would (most probably) rather see:
- 
- --track-nr &lt;track nr&gt;    The track number to play (using <code>metaDescription("&lt;track nr&gt;") </code>)
- 
- instead of
- 
- --track-nr &lt;integer&gt;     The track number to play (the default provided by <A HREF="../../../se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>)
- 
- So when using general data type parsers such as <A HREF="../../../se/softhouse/jargo/StringParsers.html#integerParser()"><CODE>StringParsers.integerParser()</CODE></A> you're better of if
- you provide a meta description that explains what the <code>integer</code> represents in the context of this argument.
- 
- <b>Note:</b> empty meta descriptions aren't allowed
- <b>Note:</b> the surrounding < & > aren't enforced or added automatically but it's preferred
- to have them because it makes a clear distinction between <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>argument names</CODE></A> and their parameters.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>aMetaDescription</CODE> - "&lt;track nr&gt;" in the above example
-<DT><B>Returns:</B><DD>this builder
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</A></CODE> - if aMetaDescription is empty
- </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="hideFromUsage()"><!-- --></A><H3>
-hideFromUsage</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.460"><B>hideFromUsage</B></A>()</PRE>
-<DL>
-<DD>Hides this argument so that it's not displayed in the usage texts.<br>
- It's recommended that hidden arguments have a reasonable <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> and
- aren't <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A>, in fact this is recommended for all arguments.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="separator(java.lang.String)"><!-- --></A><H3>
-separator</H3>
-<PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.473"><B>separator</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aSeparator)</PRE>
-<DL>
-<DD>For instance, "=" in --author=jjonsson
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>aSeparator</CODE> - the character that separates the argument name and
-            argument value, defaults to a space
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="limitTo(com.google.common.base.Predicate)"><!-- --></A><H3>
-limitTo</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.502"><B>limitTo</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true" title="class or interface in com.google.common.base">Predicate</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aLimiter)</PRE>
-<DL>
-<DD><pre>
- Limits values parsed so that they conform to some specific rule.
- Only values for which <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true#apply(T)" title="class or interface in com.google.common.base"><CODE>Predicate.apply(Object)</CODE></A> returns true, will be accepted.
- Other values will cause an <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A>.
- For example <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/collect/Range.html?is-external=true#closed(C, C)" title="class or interface in com.google.common.collect"><CODE>Range.closed(Comparable, Comparable)</CODE></A> only allows values within a range.
- 
- To override the default error message that is generated with <CODE>Texts.UserErrors.DISALLOWED_VALUE</CODE>
- you can throw <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><CODE>IllegalArgumentException</CODE></A> from <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true#apply(T)" title="class or interface in com.google.common.base"><CODE>Predicate.apply(Object)</CODE></A>. The detail
- message of that exception will be used by <A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()"><CODE>ArgumentException.getMessageAndUsage()</CODE></A>.
- When this is needed it's generally recommended to write a parser of its own instead.
- 
- <b>Note:</b><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>toString()</CODE></A> on <code>aLimiter</code> will replace <A HREF="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues(java.util.Locale)"><CODE>StringParser.descriptionOfValidValues(Locale)</CODE></A> in the usage
- 
- <b>Note:</b>The validity of any <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>default value</CODE></A> isn't checked until
- it's actually needed when <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A> is called. This is so
- because <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true#get()" title="class or interface in com.google.common.base"><CODE>Supplier.get()</CODE></A> (or <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A>) could take an arbitrary long time.
- </pre>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>aLimiter</CODE> - a limiter
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asPropertyMap()"><!-- --></A><H3>
-asPropertyMap</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.532"><B>asPropertyMap</B></A>()</PRE>
-<DL>
-<DD><pre>
- Makes this argument handle "property like" arguments:
- -Dproperty_name=value
- where
- "-D" is the string supplied to <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A>,
- "property_name" is the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> key in the resulting <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>,
- "=" is the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#separator(java.lang.String)"><CODE>separator(String)</CODE></A> (set to "=" if it hasn't been overridden already),
- "value" is decoded by the previously set <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>.
- 
- 
- Tip: You can pass <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueDescriber(se.softhouse.common.strings.Describer)"><CODE>defaultValueDescriber(Describer)</CODE></A> a
- <A HREF="../../../se/softhouse/common/strings/Describers.html#mapDescriber(java.util.Map)"><CODE>Describers.mapDescriber(Map)</CODE></A> to describe each property that you
- support (given that you've used <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A>
- to use sane defaults for your properties).
+ <b>Note:</b>If the argument isn't <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> the default value
+ will be a list that contains <code>numberOfParameters</code> elements
+ of <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A>, in the above example that would be two zeros.
+ If this isn't wanted use <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> to override it.
 <P>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>a new (more specific) builder
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> has been set before <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#asPropertyMap()"><CODE>asPropertyMap()</CODE></A> is called<DT><B>See Also:</B><DD><A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#asKeyValuesWithKeyParser(se.softhouse.jargo.StringParser)"><CODE>to use other types as keys than {@link String}
- </pre></CODE></A></DL>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</A></CODE> - if <code>numberOfParameters</code> is less than 2</DL>
 </DD>
 </DL>
 <HR>
@@ -1019,91 +613,383 @@ asKeyValuesWithKeyParser</H3>
 </DL>
 <HR>
 
-<A NAME="splitWith(java.lang.String)"><!-- --></A><H3>
-splitWith</H3>
+<A NAME="asPropertyMap()"><!-- --></A><H3>
+asPropertyMap</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.587"><B>splitWith</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
+</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.532"><B>asPropertyMap</B></A>()</PRE>
 <DL>
 <DD><pre>
- When given a "," this allows for
- arguments such as:
- -numbers 1,2,3
- where the resulting <code>List&lt;Integer&gt;</code> would contain 1, 2 & 3.
+ Makes this argument handle "property like" arguments:
+ -Dproperty_name=value
+ where
+ "-D" is the string supplied to <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A>,
+ "property_name" is the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> key in the resulting <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>,
+ "=" is the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#separator(java.lang.String)"><CODE>separator(String)</CODE></A> (set to "=" if it hasn't been overridden already),
+ "value" is decoded by the previously set <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>.
  
- Doesn't allow empty lists.
- </pre>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>valueSeparator</CODE> - the string to split the input with
-<DT><B>Returns:</B><DD>a new (more specific) builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="variableArity()"><!-- --></A><H3>
-variableArity</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.616"><B>variableArity</B></A>()</PRE>
-<DL>
-<DD>Useful for handling a variable amount of parameters in the end of a
- command. Uses this argument to parse values but assumes that all the following
- parameters are of the same type, integer in the following example:
  
- <pre class="prettyprint">
- <code class="language-java">
- String[] threeArgs = {"--numbers", "1", "2", "3"};
- List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(threeArgs);
- assertThat(numbers).isEqualTo(asList(1, 2, 3));
- 
- String[] twoArgs = {"--numbers", "1", "2"};
- List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(twoArgs);
- assertThat(numbers).isEqualTo(asList(1, 2));
- </code>
- </pre>
- 
- <b>Note:</b> if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>default value</CODE></A> has been set before
- <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#variableArity()"><CODE>variableArity()</CODE></A> is called the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>default value</CODE></A> will be a
- list with that one element in it, otherwise it will be empty.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a new (more specific) builder</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="arity(int)"><!-- --></A><H3>
-arity</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.645"><B>arity</B></A>(int&nbsp;numberOfParameters)</PRE>
-<DL>
-<DD><pre>
- Uses this argument to parse values but assumes that <code>numberOfParameters</code> of the
- following parameters are of the same type.
- 
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><CODE>Integer</CODE></A> in the following example:
- </pre>
- 
- <pre class="prettyprint">
- <code class="language-java">
- List&lt;Integer&gt; numbers = integerArgument("--numbers").arity(2).parse("--numbers", "1", "2");
- assertThat(numbers).isEqualTo(asList(1, 2));
- </code>
- </pre>
- 
- <b>Note:</b>If the argument isn't <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> the default value
- will be a list that contains <code>numberOfParameters</code> elements
- of <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A>, in the above example that would be two zeros.
- If this isn't wanted use <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> to override it.
+ Tip: You can pass <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueDescriber(se.softhouse.common.strings.Describer)"><CODE>defaultValueDescriber(Describer)</CODE></A> a
+ <A HREF="../../../se/softhouse/common/strings/Describers.html#mapDescriber(java.util.Map)"><CODE>Describers.mapDescriber(Map)</CODE></A> to describe each property that you
+ support (given that you've used <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A>
+ to use sane defaults for your properties).
 <P>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>a new (more specific) builder
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</A></CODE> - if <code>numberOfParameters</code> is less than 2</DL>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> has been set before <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#asPropertyMap()"><CODE>asPropertyMap()</CODE></A> is called<DT><B>See Also:</B><DD><A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#asKeyValuesWithKeyParser(se.softhouse.jargo.StringParser)"><CODE>to use other types as keys than {@link String}
+ </pre></CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="build()"><!-- --></A><H3>
+build</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public final <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.162"><B>build</B></A>()</PRE>
+<DL>
+<DD>Returns an <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><CODE>Immutable</CODE></A> <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> which can be passed to
+ <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> <br>
+ When the parsing is done the parsed value for this
+ argument can be fetched with <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A>.
+<P>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if it's not possible to construct an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> with the
+             current settings</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="defaultValue(java.lang.Object)"><!-- --></A><A NAME="defaultValue(T)"><!-- --></A><H3>
+defaultValue</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.364"><B>defaultValue</B></A>(<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A></FONT>
+                         <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&nbsp;value)</PRE>
+<DL>
+<DD><pre>
+ Sets a default value to use for this argument. Overrides <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A> which is used by default.
+ Returned by <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A> when no argument <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#wasGiven(se.softhouse.jargo.Argument)"><CODE>was given</CODE></A>.
+ To create default values lazily see <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>defaultValueSupplier(Supplier)</CODE></A>.
+ 
+ <b>Mutability</b>:Remember that as <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><CODE>Immutable</CODE></A>
+ this value should be so too if multiple argument parsings is going to take place.
+ If mutability is wanted <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>defaultValueSupplier(Supplier)</CODE></A> should be used instead.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> has been called,
+ because these two methods are mutually exclusive</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="defaultValueDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
+defaultValueDescriber</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.416"><B>defaultValueDescriber</B></A>(<A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;describer)</PRE>
+<DL>
+<DD><A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> version of <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueDescription(java.lang.String)"><CODE>defaultValueDescription(String)</CODE></A>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>describer</CODE> - a describer
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="defaultValueDescription(java.lang.String)"><!-- --></A><H3>
+defaultValueDescription</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.404"><B>defaultValueDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aDescription)</PRE>
+<DL>
+<DD>Provides a way to give the usage texts a better explanation of a default
+ value than <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> provides. Always prints <code>aDescription</code> regardless
+ of what the default value is.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>aDescription</CODE> - the description
+<DT><B>Returns:</B><DD>this builder<DT><B>See Also:</B><DD><A HREF="../../../se/softhouse/common/strings/Describers.html#withConstantString(java.lang.String)"><CODE>Describers.withConstantString(String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="defaultValueSupplier(com.google.common.base.Supplier)"><!-- --></A><H3>
+defaultValueSupplier</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.388"><B>defaultValueSupplier</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base">Supplier</A>&lt;? extends <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aDefaultValueSupplier)</PRE>
+<DL>
+<DD><pre>
+ Sets a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Supplier</CODE></A> that can supply default values in the absence of this argument
+ 
+ <b>Note:</b> Even if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#limitTo(com.google.common.base.Predicate)"><CODE>limitTo(Predicate)</CODE></A> is used, the <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true#get()" title="class or interface in com.google.common.base"><CODE>Supplier.get()</CODE></A> isn't called
+ until the default value is actually needed (<A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A>. If the
+ default value is deemed non-allowed at that point an <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang"><CODE>IllegalStateException</CODE></A> is thrown.
+ 
+ <b>Note:</b> May be removed in the future if Guava is removed as a dependency
+ 
+ Wrap your supplier with <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Suppliers.html?is-external=true#memoize(com.google.common.base.Supplier)" title="class or interface in com.google.common.base"><CODE>Suppliers.memoize(Supplier)</CODE></A> if you want to cache created values.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> has been called,
+ because these two methods are mutually exclusive</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="description(se.softhouse.common.strings.Describable)"><!-- --></A><H3>
+description</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.319"><B>description</B></A>(<A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A>&nbsp;theDescription)</PRE>
+<DL>
+<DD><pre>
+ <A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A> version of <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><CODE>description(String)</CODE></A>.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder
+ </pre></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="description(java.lang.String)"><!-- --></A><H3>
+description</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.307"><B>description</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;theDescription)</PRE>
+<DL>
+<DD><pre>
+ Sets <code>theDescription</code> of what this argument does/means. Printed with
+ <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#usage()"><CODE>CommandLineParser.usage()</CODE></A>.
+ 
+ For instance, in:
+ -l, --enable-logging      Output debug information to standard out
+                           Default: disabled
+ "Output debug information to standard out" is <code>theDescription</code>
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder
+ </pre></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="hideFromUsage()"><!-- --></A><H3>
+hideFromUsage</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.460"><B>hideFromUsage</B></A>()</PRE>
+<DL>
+<DD>Hides this argument so that it's not displayed in the usage texts.<br>
+ It's recommended that hidden arguments have a reasonable <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> and
+ aren't <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A>, in fact this is recommended for all arguments.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="ignoreCase()"><!-- --></A><H3>
+ignoreCase</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.275"><B>ignoreCase</B></A>()</PRE>
+<DL>
+<DD>Ignores the case of the argument names set by <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A>
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="limitTo(com.google.common.base.Predicate)"><!-- --></A><H3>
+limitTo</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.502"><B>limitTo</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true" title="class or interface in com.google.common.base">Predicate</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aLimiter)</PRE>
+<DL>
+<DD><pre>
+ Limits values parsed so that they conform to some specific rule.
+ Only values for which <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true#apply(T)" title="class or interface in com.google.common.base"><CODE>Predicate.apply(Object)</CODE></A> returns true, will be accepted.
+ Other values will cause an <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A>.
+ For example <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/collect/Range.html?is-external=true#closed(C, C)" title="class or interface in com.google.common.collect"><CODE>Range.closed(Comparable, Comparable)</CODE></A> only allows values within a range.
+ 
+ To override the default error message that is generated with <CODE>Texts.UserErrors.DISALLOWED_VALUE</CODE>
+ you can throw <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><CODE>IllegalArgumentException</CODE></A> from <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true#apply(T)" title="class or interface in com.google.common.base"><CODE>Predicate.apply(Object)</CODE></A>. The detail
+ message of that exception will be used by <A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()"><CODE>ArgumentException.getMessageAndUsage()</CODE></A>.
+ When this is needed it's generally recommended to write a parser of its own instead.
+ 
+ <b>Note:</b><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>toString()</CODE></A> on <code>aLimiter</code> will replace <A HREF="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues(java.util.Locale)"><CODE>StringParser.descriptionOfValidValues(Locale)</CODE></A> in the usage
+ 
+ <b>Note:</b>The validity of any <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>default value</CODE></A> isn't checked until
+ it's actually needed when <A HREF="../../../se/softhouse/jargo/ParsedArguments.html#get(se.softhouse.jargo.Argument)"><CODE>ParsedArguments.get(Argument)</CODE></A> is called. This is so
+ because <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true#get()" title="class or interface in com.google.common.base"><CODE>Supplier.get()</CODE></A> (or <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A>) could take an arbitrary long time.
+ </pre>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>aLimiter</CODE> - a limiter
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="locale(java.util.Locale)"><!-- --></A><H3>
+locale</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.288"><B>locale</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;localeToUseForThisArgument)</PRE>
+<DL>
+<DD>Uses <code>localeToUseForThisArgument</code> to handle this argument with instead of the one
+ passed to <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#locale(java.util.Locale)"><CODE>CommandLineParser.locale(Locale)</CODE></A>, allowing different <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>s to
+ use different <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>s.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="metaDescription(java.lang.String)"><!-- --></A><H3>
+metaDescription</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.446"><B>metaDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aMetaDescription)</PRE>
+<DL>
+<DD><pre>
+ By default <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="../../../se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>
+ that describes the type of data they expect. For instance, if you're writing a music player,
+ a user of your application would (most probably) rather see:
+ 
+ --track-nr &lt;track nr&gt;    The track number to play (using <code>metaDescription("&lt;track nr&gt;") </code>)
+ 
+ instead of
+ 
+ --track-nr &lt;integer&gt;     The track number to play (the default provided by <A HREF="../../../se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>)
+ 
+ So when using general data type parsers such as <A HREF="../../../se/softhouse/jargo/StringParsers.html#integerParser()"><CODE>StringParsers.integerParser()</CODE></A> you're better of if
+ you provide a meta description that explains what the <code>integer</code> represents in the context of this argument.
+ 
+ <b>Note:</b> empty meta descriptions aren't allowed
+ <b>Note:</b> the surrounding < & > aren't enforced or added automatically but it's preferred
+ to have them because it makes a clear distinction between <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>argument names</CODE></A> and their parameters.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>aMetaDescription</CODE> - "&lt;track nr&gt;" in the above example
+<DT><B>Returns:</B><DD>this builder
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</A></CODE> - if aMetaDescription is empty
+ </pre></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="names(java.lang.Iterable)"><!-- --></A><H3>
+names</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.263"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt;&nbsp;argumentNames)</PRE>
+<DL>
+<DD>Works just like <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A> but it takes an <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><CODE>Iterable</CODE></A> instead.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>argumentNames</CODE> - the list to use as argument names
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="names(java.lang.String...)"><!-- --></A><H3>
+names</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.250"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;argumentNames)</PRE>
+<DL>
+<DD>Specifies the argument names that triggers the argument being built. As commands sometimes
+ gets long and hard to understand it's recommended to also support long named arguments,
+ making the commands even longer but more readable instead <br>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>argumentNames</CODE> - <ul>
+            <li>"-o" for a short named option/argument</li>
+            <li>"--option-name" for a long named option/argument</li>
+            <li>"-o", "--option-name" to give the user both choices</li>
+            <li>zero elements: makes this an indexed argument, meaning that the argument must
+            be given at the same position on the command line as it is given to
+            <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> (not counting named
+            arguments).</li>
+            </ul>
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="parse(java.lang.String...)"><!-- --></A><H3>
+parse</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A>
+</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.193"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)
+              throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></PRE>
+<DL>
+<DD><pre>
+ Parses command line arguments and returns the value of the argument built
+ by <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#build()"><CODE>build()</CODE></A>, providing a simple one liner shortcut when faced with only one argument.
+ </pre>
+ 
+ <pre class="prettyprint">
+ <code class="language-java">
+ String[] args = {"--listen-port", "8090"};
+ 
+ int port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").parse(args);
+ assertThat(port).isEqualTo(8090);
+ </code>
+ </pre>
+ 
+ This is a shorthand method that should be used if only one <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is expected as it
+ will throw if unexpected arguments are encountered. If several arguments are expected use
+ <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> instead.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>actualArguments</CODE> - the arguments from the command line
+<DT><B>Returns:</B><DD>the parsed value from the <code>actualArguments</code>
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></CODE> - if actualArguments isn't compatible with this
+             argument
+             </pre></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="parser()"><!-- --></A><H3>
+parser</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>protected abstract <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.223"><B>parser</B></A>()</PRE>
+<DL>
+<DD><pre>
+ Returns a customized parser that the <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> will use to parse values.
+ 
+ This is a suitable place to verify the configuration of your parser.
+ 
+ If your <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A> doesn't support any configuration you can use
+ <A HREF="../../../se/softhouse/jargo/Arguments.html#withParser(se.softhouse.jargo.StringParser)"><CODE>Arguments.withParser(StringParser)</CODE></A> directly instead of subclassing
+ <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo"><CODE>ArgumentBuilder.DefaultArgumentBuilder</CODE></A>
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>the <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A> that performs the actual parsing of an argument value
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if the parser have been configured wrongly
+ </pre></DL>
 </DD>
 </DL>
 <HR>
@@ -1157,6 +1043,71 @@ repeated</H3>
 </DL>
 <HR>
 
+<A NAME="required()"><!-- --></A><H3>
+required</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.343"><B>required</B></A>()</PRE>
+<DL>
+<DD><pre>
+ Makes <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)"><CODE>CommandLineParser.parse(String...)</CODE></A> throw
+ <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> if this argument isn't given.
+ If possible, it's preferred to use a <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>default value</CODE></A> instead.
+ 
+ The <A HREF="../../../se/softhouse/jargo/Argument.html#toString()"><CODE>Argument.toString()</CODE></A> will be used to print each missing argument.
+ 
+ <b>Note</b>: If you choose to use multiple <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A> indexed arguments all of them
+ must have unique <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)"><CODE>metaDescription(String)</CODE></A>s. This ensures that error messages
+ can point out erroneous arguments better
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>this builder
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> (or
+             <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier(com.google.common.base.Supplier)"><CODE>defaultValueSupplier(Supplier)</CODE></A>) has been
+             called, because these are mutually exclusive with <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>required()</CODE></A>
+ </pre></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="separator(java.lang.String)"><!-- --></A><H3>
+separator</H3>
+<PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.473"><B>separator</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aSeparator)</PRE>
+<DL>
+<DD>For instance, "=" in --author=jjonsson
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>aSeparator</CODE> - the character that separates the argument name and
+            argument value, defaults to a space
+<DT><B>Returns:</B><DD>this builder</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="splitWith(java.lang.String)"><!-- --></A><H3>
+splitWith</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.587"><B>splitWith</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
+<DL>
+<DD><pre>
+ When given a "," this allows for
+ arguments such as:
+ -numbers 1,2,3
+ where the resulting <code>List&lt;Integer&gt;</code> would contain 1, 2 & 3.
+ 
+ Doesn't allow empty lists.
+ </pre>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>valueSeparator</CODE> - the string to split the input with
+<DT><B>Returns:</B><DD>a new (more specific) builder</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="toString()"><!-- --></A><H3>
 toString</H3>
 <PRE>
@@ -1167,6 +1118,54 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.ht
 </DD>
 <DD><DL>
 </DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="usage()"><!-- --></A><H3>
+usage</H3>
+<PRE>
+public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.203"><B>usage</B></A>()</PRE>
+<DL>
+<DD>Returns a usage string for the argument that this builder builds.
+ Should only be used if one argument is supported,
+ otherwise the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#usage()"><CODE>CommandLineParser.usage()</CODE></A> method should be used instead.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="variableArity()"><!-- --></A><H3>
+variableArity</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.616"><B>variableArity</B></A>()</PRE>
+<DL>
+<DD>Useful for handling a variable amount of parameters in the end of a
+ command. Uses this argument to parse values but assumes that all the following
+ parameters are of the same type, integer in the following example:
+ 
+ <pre class="prettyprint">
+ <code class="language-java">
+ String[] threeArgs = {"--numbers", "1", "2", "3"};
+ List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(threeArgs);
+ assertThat(numbers).isEqualTo(asList(1, 2, 3));
+ 
+ String[] twoArgs = {"--numbers", "1", "2"};
+ List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(twoArgs);
+ assertThat(numbers).isEqualTo(asList(1, 2));
+ </code>
+ </pre>
+ 
+ <b>Note:</b> if <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>default value</CODE></A> has been set before
+ <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#variableArity()"><CODE>variableArity()</CODE></A> is called the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>default value</CODE></A> will be a
+ list with that one element in it, otherwise it will be empty.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>a new (more specific) builder</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -1187,7 +1186,6 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.ht
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/ArgumentBuilder.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

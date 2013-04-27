@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Describables.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -256,31 +255,16 @@ EMPTY_STRING</H3>
 </TR>
 </TABLE>
 
-<A NAME="withString(java.lang.String)"><!-- --></A><H3>
-withString</H3>
+<A NAME="asSerializable(se.softhouse.common.strings.Describable)"><!-- --></A><H3>
+asSerializable</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.47"><B>withString</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;description)</PRE>
+</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describables.SerializableDescription.html" title="class in se.softhouse.common.strings">Describables.SerializableDescription</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.235"><B>asSerializable</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A>&nbsp;describable)</PRE>
 <DL>
-<DD>Supplies an already created <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> as a <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A>.
- Also useful for caching <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A>s that won't change.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="format(java.lang.String, java.lang.Object...)"><!-- --></A><H3>
-format</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.79"><B>format</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;formatTemplate,
-                                                          <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>...&nbsp;args)</PRE>
-<DL>
-<DD>Lazily calls <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#format(java.lang.String, java.lang.Object...)" title="class or interface in java.lang"><CODE>String.format(String, Object...)</CODE></A>
+<DD>Returns a version of <code>describable</code> that is serializable. Note that after serialization
+ the describable is fixed, that is <A HREF="../../../../se/softhouse/common/strings/Describable.html#description()"><CODE>Describable.description()</CODE></A> won't be called on
+ <code>describable</code> any more.
 <P>
 <DD><DL>
 </DL>
@@ -302,17 +286,18 @@ public static <A HREF="../../../../se/softhouse/common/strings/Describable.html"
 </DL>
 <HR>
 
-<A NAME="toString(java.lang.Object)"><!-- --></A><H3>
-toString</H3>
+<A NAME="format(java.lang.String, java.lang.Object...)"><!-- --></A><H3>
+format</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.152"><B>toString</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;value)</PRE>
+</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.79"><B>format</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;formatTemplate,
+                                                          <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>...&nbsp;args)</PRE>
 <DL>
-<DD>Lazily calls the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> of <code>value</code> as a describable
+<DD>Lazily calls <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#format(java.lang.String, java.lang.Object...)" title="class or interface in java.lang"><CODE>String.format(String, Object...)</CODE></A>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>value</CODE> - the object to call <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> on</DL>
+</DL>
 </DD>
 </DL>
 <HR>
@@ -350,16 +335,30 @@ illegalArgument</H3>
 </DL>
 <HR>
 
-<A NAME="asSerializable(se.softhouse.common.strings.Describable)"><!-- --></A><H3>
-asSerializable</H3>
+<A NAME="toString(java.lang.Object)"><!-- --></A><H3>
+toString</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describables.SerializableDescription.html" title="class in se.softhouse.common.strings">Describables.SerializableDescription</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.235"><B>asSerializable</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A>&nbsp;describable)</PRE>
+</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.152"><B>toString</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;value)</PRE>
 <DL>
-<DD>Returns a version of <code>describable</code> that is serializable. Note that after serialization
- the describable is fixed, that is <A HREF="../../../../se/softhouse/common/strings/Describable.html#description()"><CODE>Describable.description()</CODE></A> won't be called on
- <code>describable</code> any more.
+<DD>Lazily calls the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> of <code>value</code> as a describable
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>value</CODE> - the object to call <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> on</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="withString(java.lang.String)"><!-- --></A><H3>
+withString</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A> <A HREF="../../../../src-html/se/softhouse/common/strings/Describables.html#line.47"><B>withString</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;description)</PRE>
+<DL>
+<DD>Supplies an already created <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> as a <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A>.
+ Also useful for caching <A HREF="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A>s that won't change.
 <P>
 <DD><DL>
 </DL>
@@ -383,7 +382,6 @@ asSerializable</H3>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Describables.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

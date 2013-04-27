@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Describers.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -389,17 +388,37 @@ Gives you static access to implementations of the <A HREF="../../../../se/softho
 </TR>
 </TABLE>
 
-<A NAME="withConstantString(java.lang.String)"><!-- --></A><H3>
-withConstantString</H3>
+<A NAME="asFunction(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
+asFunction</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.55"><B>withConstantString</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;constant)</PRE>
+</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;? super T,<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.415"><B>asFunction</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;describer)</PRE>
 <DL>
-<DD>Always describes any value of type <code>T</code> with the given <code>constant</code>. For instance,
- if you have implemented a time related parser and don't want different times in the
- usage depending on when the usage is printed you could pass in "The current time", then this
- describer would describe any time object with "The current time".
+<DD><pre>
+ Exposes a <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> as a Guava <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A>.
+ <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>describer</CODE> - the describer to convert to a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A>
+<DT><B>Returns:</B><DD>a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that uses <A HREF="../../../../se/softhouse/common/strings/Describer.html#describe(T, java.util.Locale)"><CODE>describe(input, Locale.getDefault()</CODE></A>.
+ </pre></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="asFunction(se.softhouse.common.strings.Describer, java.util.Locale)"><!-- --></A><H3>
+asFunction</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;? super T,<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.434"><B>asFunction</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;describer,
+                                                                                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;locale)</PRE>
+<DL>
+<DD>Like <A HREF="../../../../se/softhouse/common/strings/Describers.html#asFunction(se.softhouse.common.strings.Describer)"><CODE>asFunction(Describer)</CODE></A> but with <code>locale</code> instead of
+ <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><CODE>Locale.getDefault()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -407,17 +426,29 @@ withConstantString</H3>
 </DL>
 <HR>
 
-<A NAME="toStringDescriber()"><!-- --></A><H3>
-toStringDescriber</H3>
+<A NAME="booleanAsEnabledDisabled()"><!-- --></A><H3>
+booleanAsEnabledDisabled</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.84"><B>toStringDescriber</B></A>()</PRE>
+</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.160"><B>booleanAsEnabledDisabled</B></A>()</PRE>
 <DL>
-<DD>Calls <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#valueOf(java.lang.Object)" title="class or interface in java.lang"><CODE>String.valueOf(Object)</CODE></A> for input values. As this goes
- against the very purpose of the <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> interface it may seem
- odd but this <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> works really well as a null object, it can
- also act as a functor for calling toString.
+<DD>Describes a boolean as enabled when <code>true</code> and disabled when <code>false</code>
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="booleanAsOnOff()"><!-- --></A><H3>
+booleanAsOnOff</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.170"><B>booleanAsOnOff</B></A>()</PRE>
+<DL>
+<DD>Describes a boolean as on when <code>true</code> and off when <code>false</code>
 <P>
 <DD><DL>
 </DL>
@@ -456,14 +487,16 @@ fileDescriber</H3>
 </DL>
 <HR>
 
-<A NAME="booleanAsEnabledDisabled()"><!-- --></A><H3>
-booleanAsEnabledDisabled</H3>
+<A NAME="listDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
+listDescriber</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.160"><B>booleanAsEnabledDisabled</B></A>()</PRE>
+</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;? extends T&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.478"><B>listDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;valueDescriber)</PRE>
 <DL>
-<DD>Describes a boolean as enabled when <code>true</code> and disabled when <code>false</code>
+<DD>Describes values in lists with <code>valueDescriber</code> and separates
+ elements with ", ". Lists with <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true#size()" title="class or interface in java.util"><CODE>List.size()</CODE></A> = zero is described
+ with the string "Empty List".
 <P>
 <DD><DL>
 </DL>
@@ -471,14 +504,17 @@ booleanAsEnabledDisabled</H3>
 </DL>
 <HR>
 
-<A NAME="booleanAsOnOff()"><!-- --></A><H3>
-booleanAsOnOff</H3>
+<A NAME="listDescriber(se.softhouse.common.strings.Describer, java.lang.String)"><!-- --></A><H3>
+listDescriber</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.170"><B>booleanAsOnOff</B></A>()</PRE>
+</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;? extends T&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.490"><B>listDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;valueDescriber,
+                                                                                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
 <DL>
-<DD>Describes a boolean as on when <code>true</code> and off when <code>false</code>
+<DD>Describes values in lists with <code>valueDescriber</code> and separates
+ values with <code>valueSeperator</code>. Lists with <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true#size()" title="class or interface in java.util"><CODE>List.size()</CODE></A> = zero
+ is described with the string "Empty List".
 <P>
 <DD><DL>
 </DL>
@@ -486,12 +522,73 @@ booleanAsOnOff</H3>
 </DL>
 <HR>
 
-<A NAME="numberDescriber()"><!-- --></A><H3>
-numberDescriber</H3>
+<A NAME="mapDescriber(se.softhouse.common.strings.Describer, se.softhouse.common.strings.Describer)"><!-- --></A><H3>
+mapDescriber</H3>
 <PRE>
-public static <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.199"><B>numberDescriber</B></A>()</PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.342"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;K&gt;&nbsp;keyDescriber,
+                                                                              <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber)</PRE>
 <DL>
-<DD>Describes <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><CODE>Number</CODE></A>s in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A> sensitive manner using <A HREF="http://download.oracle.com/javase/6/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text"><CODE>NumberFormat</CODE></A>.
+<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with <code>keyDescriber</code> and
+ values with <code>valueDescriber</code>.
+ "=" is used as the separator between key and value. <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates
+ entries.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="mapDescriber(se.softhouse.common.strings.Describer, se.softhouse.common.strings.Describer, java.lang.String)"><!-- --></A><H3>
+mapDescriber</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.354"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;K&gt;&nbsp;keyDescriber,
+                                                                              <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber,
+                                                                              <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
+<DL>
+<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with <code>keyDescriber</code> and
+ values with <code>valueDescriber</code>. <code>valueSeparator</code> is used as the separator between
+ key and value. <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates entries.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="mapDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
+mapDescriber</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.316"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber)</PRE>
+<DL>
+<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with
+ <A HREF="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber()"><CODE>toStringDescriber()</CODE></A> and values with <code>valueDescriber</code>. "=" is used as
+ the separator between key and value. <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates entries.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="mapDescriber(se.softhouse.common.strings.Describer, java.lang.String)"><!-- --></A><H3>
+mapDescriber</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.329"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber,
+                                                                              <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
+<DL>
+<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with
+ <A HREF="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber()"><CODE>toStringDescriber()</CODE></A> and values with <code>valueDescriber</code>.
+ <code>valueSeparator</code> is used as the separator between key and value.
+ <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates entries.
 <P>
 <DD><DL>
 </DL>
@@ -564,16 +661,12 @@ public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Descr
 </DL>
 <HR>
 
-<A NAME="mapDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
-mapDescriber</H3>
+<A NAME="numberDescriber()"><!-- --></A><H3>
+numberDescriber</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.316"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber)</PRE>
+public static <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.199"><B>numberDescriber</B></A>()</PRE>
 <DL>
-<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with
- <A HREF="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber()"><CODE>toStringDescriber()</CODE></A> and values with <code>valueDescriber</code>. "=" is used as
- the separator between key and value. <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates entries.
+<DD>Describes <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><CODE>Number</CODE></A>s in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A> sensitive manner using <A HREF="http://download.oracle.com/javase/6/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text"><CODE>NumberFormat</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -581,94 +674,17 @@ mapDescriber</H3>
 </DL>
 <HR>
 
-<A NAME="mapDescriber(se.softhouse.common.strings.Describer, java.lang.String)"><!-- --></A><H3>
-mapDescriber</H3>
+<A NAME="toStringDescriber()"><!-- --></A><H3>
+toStringDescriber</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.329"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber,
-                                                                              <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
-<DL>
-<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with
- <A HREF="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber()"><CODE>toStringDescriber()</CODE></A> and values with <code>valueDescriber</code>.
- <code>valueSeparator</code> is used as the separator between key and value.
- <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates entries.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="mapDescriber(se.softhouse.common.strings.Describer, se.softhouse.common.strings.Describer)"><!-- --></A><H3>
-mapDescriber</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.342"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;K&gt;&nbsp;keyDescriber,
-                                                                              <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber)</PRE>
-<DL>
-<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with <code>keyDescriber</code> and
- values with <code>valueDescriber</code>.
- "=" is used as the separator between key and value. <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates
- entries.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="mapDescriber(se.softhouse.common.strings.Describer, se.softhouse.common.strings.Describer, java.lang.String)"><!-- --></A><H3>
-mapDescriber</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;K,V&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</A>&lt;K,V&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.354"><B>mapDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;K&gt;&nbsp;keyDescriber,
-                                                                              <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;V&gt;&nbsp;valueDescriber,
-                                                                              <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
-<DL>
-<DD>Describes key values in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A>. Keys are described with <code>keyDescriber</code> and
- values with <code>valueDescriber</code>. <code>valueSeparator</code> is used as the separator between
- key and value. <A HREF="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><CODE>StringsUtil.NEWLINE</CODE></A> separates entries.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asFunction(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
-asFunction</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;? super T,<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.415"><B>asFunction</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;describer)</PRE>
+</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.84"><B>toStringDescriber</B></A>()</PRE>
 <DL>
-<DD><pre>
- Exposes a <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> as a Guava <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A>.
- <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>describer</CODE> - the describer to convert to a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A>
-<DT><B>Returns:</B><DD>a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that uses <A HREF="../../../../se/softhouse/common/strings/Describer.html#describe(T, java.util.Locale)"><CODE>describe(input, Locale.getDefault()</CODE></A>.
- </pre></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asFunction(se.softhouse.common.strings.Describer, java.util.Locale)"><!-- --></A><H3>
-asFunction</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;? super T,<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.434"><B>asFunction</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;describer,
-                                                                                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;locale)</PRE>
-<DL>
-<DD>Like <A HREF="../../../../se/softhouse/common/strings/Describers.html#asFunction(se.softhouse.common.strings.Describer)"><CODE>asFunction(Describer)</CODE></A> but with <code>locale</code> instead of
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><CODE>Locale.getDefault()</CODE></A>.
+<DD>Calls <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#valueOf(java.lang.Object)" title="class or interface in java.lang"><CODE>String.valueOf(Object)</CODE></A> for input values. As this goes
+ against the very purpose of the <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> interface it may seem
+ odd but this <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> works really well as a null object, it can
+ also act as a functor for calling toString.
 <P>
 <DD><DL>
 </DL>
@@ -696,34 +712,17 @@ usingFunction</H3>
 </DL>
 <HR>
 
-<A NAME="listDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
-listDescriber</H3>
+<A NAME="withConstantString(java.lang.String)"><!-- --></A><H3>
+withConstantString</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;? extends T&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.478"><B>listDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;valueDescriber)</PRE>
+</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.55"><B>withConstantString</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;constant)</PRE>
 <DL>
-<DD>Describes values in lists with <code>valueDescriber</code> and separates
- elements with ", ". Lists with <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true#size()" title="class or interface in java.util"><CODE>List.size()</CODE></A> = zero is described
- with the string "Empty List".
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="listDescriber(se.softhouse.common.strings.Describer, java.lang.String)"><!-- --></A><H3>
-listDescriber</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public static &lt;T&gt; <A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;? extends T&gt;&gt; <A HREF="../../../../src-html/se/softhouse/common/strings/Describers.html#line.490"><B>listDescriber</B></A>(<A HREF="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;T&gt;&nbsp;valueDescriber,
-                                                                                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
-<DL>
-<DD>Describes values in lists with <code>valueDescriber</code> and separates
- values with <code>valueSeperator</code>. Lists with <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true#size()" title="class or interface in java.util"><CODE>List.size()</CODE></A> = zero
- is described with the string "Empty List".
+<DD>Always describes any value of type <code>T</code> with the given <code>constant</code>. For instance,
+ if you have implemented a time related parser and don't want different times in the
+ usage depending on when the usage is printed you could pass in "The current time", then this
+ describer would describe any time object with "The current time".
 <P>
 <DD><DL>
 </DL>
@@ -747,7 +746,6 @@ listDescriber</H3>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Describers.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

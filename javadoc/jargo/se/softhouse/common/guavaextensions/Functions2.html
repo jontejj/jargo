@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Functions2.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -271,6 +270,20 @@ compound</H3>
 </DL>
 <HR>
 
+<A NAME="fileToString()"><!-- --></A><H3>
+fileToString</H3>
+<PRE>
+public static <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</A>,<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/guavaextensions/Functions2.html#line.241"><B>fileToString</B></A>()</PRE>
+<DL>
+<DD>Returns a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that reads whole <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s using the
+ <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Charsets.html?is-external=true#UTF_8" title="class or interface in com.google.common.base"><CODE>UTF-8</CODE></A> charset.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="listTransformer(com.google.common.base.Function)"><!-- --></A><H3>
 listTransformer</H3>
 <PRE>
@@ -294,6 +307,29 @@ mapValueTransformer</H3>
 <DL>
 <DD>Creates a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that applies <code>valueTransformer</code> to each value of the
  input <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A> and puts them in a new , immutable, map and returns it.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="repeat(com.google.common.base.Function, long)"><!-- --></A><H3>
+repeat</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;T,T&gt; <A HREF="../../../../src-html/se/softhouse/common/guavaextensions/Functions2.html#line.207"><B>repeat</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;T,T&gt;&nbsp;function,
+                                               long&nbsp;times)</PRE>
+<DL>
+<DD>Runs <code>function</code> <code>times</code> times.
+ The result of the first call is passed to the next apply in the chain and so on.
+ For instance:
+ 
+ <pre class="prettyprint">
+ <code class="language-java">
+ assertThat(Functions2.repeat(ADD_ONE, 2).apply(0)).isEqualTo(2);
+ </code>
+ </pre>
 <P>
 <DD><DL>
 </DL>
@@ -329,43 +365,6 @@ unmodifiableMap</H3>
 </DL>
 </DD>
 </DL>
-<HR>
-
-<A NAME="repeat(com.google.common.base.Function, long)"><!-- --></A><H3>
-repeat</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;T,T&gt; <A HREF="../../../../src-html/se/softhouse/common/guavaextensions/Functions2.html#line.207"><B>repeat</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;T,T&gt;&nbsp;function,
-                                               long&nbsp;times)</PRE>
-<DL>
-<DD>Runs <code>function</code> <code>times</code> times.
- The result of the first call is passed to the next apply in the chain and so on.
- For instance:
- 
- <pre class="prettyprint">
- <code class="language-java">
- assertThat(Functions2.repeat(ADD_ONE, 2).apply(0)).isEqualTo(2);
- </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="fileToString()"><!-- --></A><H3>
-fileToString</H3>
-<PRE>
-public static <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</A>,<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/guavaextensions/Functions2.html#line.241"><B>fileToString</B></A>()</PRE>
-<DL>
-<DD>Returns a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that reads whole <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s using the
- <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Charsets.html?is-external=true#UTF_8" title="class or interface in com.google.common.base"><CODE>UTF-8</CODE></A> charset.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
 
@@ -384,7 +383,6 @@ public static <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/co
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Functions2.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

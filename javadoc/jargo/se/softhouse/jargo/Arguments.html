@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Arguments.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -295,34 +294,32 @@ Class Arguments</H2>
 </TR>
 </TABLE>
 
-<A NAME="helpArgument(java.lang.String, java.lang.String...)"><!-- --></A><H3>
-helpArgument</H3>
+<A NAME="bigDecimalArgument(java.lang.String...)"><!-- --></A><H3>
+bigDecimalArgument</H3>
 <PRE>
-public static <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;?&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.89"><B>helpArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;mandatoryName,
-                                       <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;optionalNames)</PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math">BigDecimal</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.176"><B>bigDecimalArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
 <DL>
-<DD><pre>
- Makes the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><CODE>CommandLineParser</CODE></A> it's passed to throw a helpful <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A>
- with usage explaining either the full program or a specific <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>/<A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A>.
- The resulting <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> is currently only accessible through the <A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()"><CODE>ArgumentException.getMessageAndUsage()</CODE></A> method.
- This suits most use-cases as there's usually a catch block for <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> anyway where the <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> is printed
- 
- Supported usages:
- <ul>
- <li>"program -h" - Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the whole program</li>
- <li>"program -h --number" Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the "--number"<A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A></li>
- <li>"program commit -h" Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the <code>commit</code> <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A></li>
- <li>"program -h commit" Also gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the <code>commit</code> <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A></li>
- <li>"program commit -h --amend" Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the <code>--amend</code> <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> for the <code>commit</code> <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A></li>
- 
- </ul>
- 
- If given an unknown argument name, an <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> is thrown.
+<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#bigIntegerParser()"><CODE>StringParsers.bigIntegerParser()</CODE></A>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>mandatoryName</CODE> - "-h" in the above example<DD><CODE>optionalNames</CODE> - for example "--help"
-<DT><B>Returns:</B><DD>an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that can be passed to <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A>
- </pre></DL>
+<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="bigIntegerArgument(java.lang.String...)"><!-- --></A><H3>
+bigIntegerArgument</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math">BigInteger</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.164"><B>bigIntegerArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
+<DL>
+<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#bigIntegerParser()"><CODE>StringParsers.bigIntegerParser()</CODE></A>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
 </DD>
 </DL>
 <HR>
@@ -357,17 +354,110 @@ byteArgument</H3>
 </DL>
 <HR>
 
-<A NAME="shortArgument(java.lang.String...)"><!-- --></A><H3>
-shortArgument</H3>
+<A NAME="charArgument(java.lang.String...)"><!-- --></A><H3>
+charArgument</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang">Short</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.128"><B>shortArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.190"><B>charArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
 <DL>
-<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#shortParser()"><CODE>StringParsers.shortParser()</CODE></A>
+<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#charParser()"><CODE>StringParsers.charParser()</CODE></A>.<br>
+ Describes default <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><CODE>Character</CODE></A>s with <A HREF="../../../se/softhouse/common/strings/Describers.html#characterDescriber()"><CODE>Describers.characterDescriber()</CODE></A> in the
+ usage.
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="command(se.softhouse.jargo.Command)"><!-- --></A><H3>
+command</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.CommandBuilder</A> <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.271"><B>command</B></A>(<A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo">Command</A>&nbsp;command)</PRE>
+<DL>
+<DD><pre>
+ Creates a <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo"><CODE>ArgumentBuilder.CommandBuilder</CODE></A> for <code>command</code>. Used for setting up custom things like
+ <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#ignoreCase()"><CODE>ArgumentBuilder.ignoreCase()</CODE></A> for a <A HREF="../../../se/softhouse/jargo/Command.html#commandName()"><CODE>Command.commandName()</CODE></A>. Typically not needed
+ as <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#andCommands(se.softhouse.jargo.Command...)"><CODE>CommandLineParser.andCommands(Command...)</CODE></A> or <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withCommands(se.softhouse.jargo.Command...)"><CODE>CommandLineParser.withCommands(Command...)</CODE></A>
+ can be used.
+ </pre>
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="enumArgument(java.lang.Class, java.lang.String...)"><!-- --></A><H3>
+enumArgument</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;T&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.256"><B>enumArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumToHandle,
+                                                                                                                  <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
+<DL>
+<DD><pre>
+ Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses an <A HREF="../../../se/softhouse/jargo/StringParsers.html#enumParser(java.lang.Class)"><CODE>StringParsers.enumParser(Class)</CODE></A> to parse
+ arguments.
+ 
+ If you end up with a big switch statement for your enum consider using <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A>s
+ instead.
+ 
+ </pre>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>enumToHandle</CODE> - the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang"><CODE>Enum</CODE></A> to retrieve enum values from<DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="fileArgument(java.lang.String...)"><!-- --></A><H3>
+fileArgument</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
+<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.215"><B>fileArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
+<DL>
+<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#fileParser()"><CODE>StringParsers.fileParser()</CODE></A>.<br>
+ Describes default <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A>s with <A HREF="../../../se/softhouse/common/strings/Describers.html#fileDescriber()"><CODE>Describers.fileDescriber()</CODE></A> in the usage.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="helpArgument(java.lang.String, java.lang.String...)"><!-- --></A><H3>
+helpArgument</H3>
+<PRE>
+public static <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;?&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.89"><B>helpArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;mandatoryName,
+                                       <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;optionalNames)</PRE>
+<DL>
+<DD><pre>
+ Makes the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><CODE>CommandLineParser</CODE></A> it's passed to throw a helpful <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A>
+ with usage explaining either the full program or a specific <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>/<A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A>.
+ The resulting <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> is currently only accessible through the <A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()"><CODE>ArgumentException.getMessageAndUsage()</CODE></A> method.
+ This suits most use-cases as there's usually a catch block for <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> anyway where the <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> is printed
+ 
+ Supported usages:
+ <ul>
+ <li>"program -h" - Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the whole program</li>
+ <li>"program -h --number" Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the "--number"<A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A></li>
+ <li>"program commit -h" Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the <code>commit</code> <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A></li>
+ <li>"program -h commit" Also gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the <code>commit</code> <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A></li>
+ <li>"program commit -h --amend" Gives <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for the <code>--amend</code> <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> for the <code>commit</code> <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A></li>
+ 
+ </ul>
+ 
+ If given an unknown argument name, an <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> is thrown.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>mandatoryName</CODE> - "-h" in the above example<DD><CODE>optionalNames</CODE> - for example "--help"
+<DT><B>Returns:</B><DD>an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that can be passed to <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A>
+ </pre></DL>
 </DD>
 </DL>
 <HR>
@@ -402,84 +492,6 @@ longArgument</H3>
 </DL>
 <HR>
 
-<A NAME="bigIntegerArgument(java.lang.String...)"><!-- --></A><H3>
-bigIntegerArgument</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math">BigInteger</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.164"><B>bigIntegerArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
-<DL>
-<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#bigIntegerParser()"><CODE>StringParsers.bigIntegerParser()</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="bigDecimalArgument(java.lang.String...)"><!-- --></A><H3>
-bigDecimalArgument</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math">BigDecimal</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.176"><B>bigDecimalArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
-<DL>
-<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#bigIntegerParser()"><CODE>StringParsers.bigIntegerParser()</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="charArgument(java.lang.String...)"><!-- --></A><H3>
-charArgument</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.190"><B>charArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
-<DL>
-<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#charParser()"><CODE>StringParsers.charParser()</CODE></A>.<br>
- Describes default <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><CODE>Character</CODE></A>s with <A HREF="../../../se/softhouse/common/strings/Describers.html#characterDescriber()"><CODE>Describers.characterDescriber()</CODE></A> in the
- usage.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="stringArgument(java.lang.String...)"><!-- --></A><H3>
-stringArgument</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.202"><B>stringArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
-<DL>
-<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#stringParser()"><CODE>StringParsers.stringParser()</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="fileArgument(java.lang.String...)"><!-- --></A><H3>
-fileArgument</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.215"><B>fileArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
-<DL>
-<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#fileParser()"><CODE>StringParsers.fileParser()</CODE></A>.<br>
- Describes default <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A>s with <A HREF="../../../se/softhouse/common/strings/Describers.html#fileDescriber()"><CODE>Describers.fileDescriber()</CODE></A> in the usage.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
-</DD>
-</DL>
-<HR>
-
 <A NAME="optionArgument(java.lang.String, java.lang.String...)"><!-- --></A><H3>
 optionArgument</H3>
 <PRE>
@@ -502,45 +514,32 @@ optionArgument</H3>
 </DL>
 <HR>
 
-<A NAME="enumArgument(java.lang.Class, java.lang.String...)"><!-- --></A><H3>
-enumArgument</H3>
+<A NAME="shortArgument(java.lang.String...)"><!-- --></A><H3>
+shortArgument</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;T&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.256"><B>enumArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumToHandle,
-                                                                                                                  <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang">Short</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.128"><B>shortArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
 <DL>
-<DD><pre>
- Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses an <A HREF="../../../se/softhouse/jargo/StringParsers.html#enumParser(java.lang.Class)"><CODE>StringParsers.enumParser(Class)</CODE></A> to parse
- arguments.
- 
- If you end up with a big switch statement for your enum consider using <A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><CODE>Command</CODE></A>s
- instead.
- 
- </pre>
+<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#shortParser()"><CODE>StringParsers.shortParser()</CODE></A>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>enumToHandle</CODE> - the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang"><CODE>Enum</CODE></A> to retrieve enum values from<DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
+<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="command(se.softhouse.jargo.Command)"><!-- --></A><H3>
-command</H3>
+<A NAME="stringArgument(java.lang.String...)"><!-- --></A><H3>
+stringArgument</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.CommandBuilder</A> <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.271"><B>command</B></A>(<A HREF="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo">Command</A>&nbsp;command)</PRE>
+</FONT>public static <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/Arguments.html#line.202"><B>stringArgument</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;names)</PRE>
 <DL>
-<DD><pre>
- Creates a <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo"><CODE>ArgumentBuilder.CommandBuilder</CODE></A> for <code>command</code>. Used for setting up custom things like
- <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#ignoreCase()"><CODE>ArgumentBuilder.ignoreCase()</CODE></A> for a <A HREF="../../../se/softhouse/jargo/Command.html#commandName()"><CODE>Command.commandName()</CODE></A>. Typically not needed
- as <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#andCommands(se.softhouse.jargo.Command...)"><CODE>CommandLineParser.andCommands(Command...)</CODE></A> or <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withCommands(se.softhouse.jargo.Command...)"><CODE>CommandLineParser.withCommands(Command...)</CODE></A>
- can be used.
- </pre>
+<DD>Creates an <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParsers.html#stringParser()"><CODE>StringParsers.stringParser()</CODE></A>
 <P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>names</CODE> - the <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A> to use</DL>
 </DD>
 </DL>
 <HR>
@@ -579,7 +578,6 @@ withParser</H3>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Arguments.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>

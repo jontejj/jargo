@@ -41,7 +41,6 @@ function windowTitle()
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/ArgumentException.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
@@ -257,18 +256,22 @@ public final <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title=
 </DL>
 <HR>
 
-<A NAME="getMessageAndUsage()"><!-- --></A><H3>
-getMessageAndUsage</H3>
+<A NAME="getMessage()"><!-- --></A><H3>
+getMessage</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.84"><B>getMessageAndUsage</B></A>()</PRE>
+public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.114"><B>getMessage</B></A>()</PRE>
 <DL>
-<DD>Returns usage detailing how to use the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><CODE>CommandLineParser</CODE></A> that caused this
- <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>exception</CODE></A>, prepended with an error message detailing the erroneous
- argument and, if applicable, a reference to the usage where the user can read about
- acceptable input.
+<DD><pre>
+ 
+ 
+ Marked as final as the <A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessage(java.lang.String)"><CODE>getMessage(String)</CODE></A> should be implemented instead
+ </pre>
 <P>
 <DD><DL>
-</DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true#getMessage()" title="class or interface in java.lang">getMessage</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>See Also:</B><DD><A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()"><CODE>getMessageAndUsage()</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -289,22 +292,18 @@ protected abstract <A HREF="http://download.oracle.com/javase/6/docs/api/java/la
 </DL>
 <HR>
 
-<A NAME="getMessage()"><!-- --></A><H3>
-getMessage</H3>
+<A NAME="getMessageAndUsage()"><!-- --></A><H3>
+getMessageAndUsage</H3>
 <PRE>
-public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.114"><B>getMessage</B></A>()</PRE>
+public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.84"><B>getMessageAndUsage</B></A>()</PRE>
 <DL>
-<DD><pre>
- 
- 
- Marked as final as the <A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessage(java.lang.String)"><CODE>getMessage(String)</CODE></A> should be implemented instead
- </pre>
+<DD>Returns usage detailing how to use the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><CODE>CommandLineParser</CODE></A> that caused this
+ <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>exception</CODE></A>, prepended with an error message detailing the erroneous
+ argument and, if applicable, a reference to the usage where the user can read about
+ acceptable input.
 <P>
 <DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true#getMessage()" title="class or interface in java.lang">getMessage</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>See Also:</B><DD><A HREF="../../../se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()"><CODE>getMessageAndUsage()</CODE></A></DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -325,7 +324,6 @@ public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Str
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/ArgumentException.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
