@@ -153,11 +153,10 @@
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a></code></td>
-<td class="colLast"><span class="strong">ArgumentBuilder.</span><code><strong><a href="../../../../se/softhouse/jargo/ArgumentBuilder.html#parse(java.lang.String...)">parse</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)</code>
-<div class="block">
- Parses command line arguments and returns the value of the argument built
- by <a href="../../../../se/softhouse/jargo/ArgumentBuilder.html#build()"><code>ArgumentBuilder.build()</code></a>, providing a simple one liner shortcut when faced with only one argument.</div>
+<td class="colFirst"><code><a href="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a></code></td>
+<td class="colLast"><span class="strong">CommandLineParser.</span><code><strong><a href="../../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)">parse</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)</code>
+<div class="block">Parses <code>actualArguments</code> (typically from the command line, i.e argv) and returns the
+ parsed values in a <a href="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo"><code>ParsedArguments</code></a> container.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -168,10 +167,11 @@
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a></code></td>
-<td class="colLast"><span class="strong">CommandLineParser.</span><code><strong><a href="../../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)">parse</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)</code>
-<div class="block">Parses <code>actualArguments</code> (typically from the command line, i.e argv) and returns the
- parsed values in a <a href="../../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo"><code>ParsedArguments</code></a> container.</div>
+<td class="colFirst"><code><a href="../../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a></code></td>
+<td class="colLast"><span class="strong">ArgumentBuilder.</span><code><strong><a href="../../../../se/softhouse/jargo/ArgumentBuilder.html#parse(java.lang.String...)">parse</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)</code>
+<div class="block">
+ Parses command line arguments and returns the value of the argument built
+ by <a href="../../../../se/softhouse/jargo/ArgumentBuilder.html#build()"><code>ArgumentBuilder.build()</code></a>, providing a simple one liner shortcut when faced with only one argument.</div>
 </td>
 </tr>
 <tr class="altColor">
