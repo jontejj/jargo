@@ -7,7 +7,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>common-test</artifactId>
-	<name>common test library</name>
+	<name>common test</name>
 	<description>Reusable classes to use from tests.</description>
 	<packaging>jar</packaging>
 	<dependencies>
