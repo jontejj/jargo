@@ -131,6 +131,10 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.6.2.201302030002</version>
+				<configuration>
+					<!-- Workaround for bug https://github.com/jacoco/jacoco/pull/40 -->
+					<propertyName>coverageAgent</propertyName>
+				</configuration>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>

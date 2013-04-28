@@ -32,11 +32,11 @@
 							<check>
 								<!-- Not as strict requirements for test helping code -->
 								<classRatio>100</classRatio>
-								<instructionRatio>85</instructionRatio>
-								<methodRatio>90</methodRatio>
+								<instructionRatio>75</instructionRatio>
+								<methodRatio>75</methodRatio>
 								<branchRatio>75</branchRatio>
-								<complexityRatio>80</complexityRatio>
-								<lineRatio>90</lineRatio>
+								<complexityRatio>75</complexityRatio>
+								<lineRatio>75</lineRatio>
 							</check>
 						</configuration>
 					</execution>
