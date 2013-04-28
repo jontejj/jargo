@@ -40,10 +40,9 @@ public class LocalesTest
 	@Test
 	public void testThatResetDefaultLocaleResetsToTheOneBeforeSetDefaultWasCalled() throws Exception
 	{
-		Locale defaultLocale = Locale.getDefault();
-		Locales.setDefault(Locales.SWEDISH);
+		Locale before = Locales.setDefault(Locales.SWEDISH);
 		Locale after = Locales.resetDefaultLocale();
-		assertThat(after).isEqualTo(defaultLocale);
+		assertThat(after).isEqualTo(before);
 	}
 
 	@Test

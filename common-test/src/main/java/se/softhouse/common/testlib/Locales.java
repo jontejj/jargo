@@ -64,9 +64,10 @@ public final class Locales
 	 * 
 	 * @param locale the locale {@link Locale#getDefault()} should return
 	 * @throws InterruptedException if the current thread is interrupted
+	 * @return the previous default locale
 	 * </pre>
 	 */
-	public static void setDefault(Locale locale) throws InterruptedException
+	public static Locale setDefault(Locale locale) throws InterruptedException
 	{
 		checkNotNull(locale);
 		// Allow the same thread to change the locale during its "period" without locking
@@ -93,6 +94,7 @@ public final class Locales
 			LOCK.unlock(); // Let someone else try again
 			throw e;
 		}
+		return defaultLocale;
 	}
 
 	/**
