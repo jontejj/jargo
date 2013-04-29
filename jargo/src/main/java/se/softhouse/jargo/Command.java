@@ -91,7 +91,9 @@ import com.google.common.collect.ImmutableList;
  * </pre>
  * 
  * As can be seen in the example the command name is the class name in lower case by default. This
- * may be overridden with {@link #commandName()}.
+ * may be overridden with {@link #commandName()}.<br>
+ * If your commands don't require any arguments you can use
+ * {@link CommandLineParser#withCommands(Class)} instead.
  */
 @Immutable
 public abstract class Command extends InternalStringParser<ParsedArguments> implements Describable
