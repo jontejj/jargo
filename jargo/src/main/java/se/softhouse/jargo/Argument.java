@@ -208,9 +208,8 @@ public final class Argument<T>
 	String defaultValueDescription(Locale inLocale)
 	{
 		T value = defaultValue();
-		// TODO(jontejj): use locale(inLocale) here
 		if(defaultValueDescriber != null)
-			return defaultValueDescriber.describe(value, inLocale);
+			return defaultValueDescriber.describe(value, locale(inLocale));
 		return parser().describeValue(value);
 	}
 

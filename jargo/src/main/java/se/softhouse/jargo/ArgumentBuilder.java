@@ -140,11 +140,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		myself = self();
 	}
 
-	// SELF is passed in by subclasses as a type-variable, so type-safety
-	// is up to them
 	@SuppressWarnings("unchecked")
 	private SELF self()
 	{
+		// SELF is passed in by subclasses as a type-variable, so type-safety
+		// is up to them
 		return (SELF) this;
 	}
 

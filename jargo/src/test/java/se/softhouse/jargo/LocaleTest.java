@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import se.softhouse.common.strings.Describer;
 import se.softhouse.common.testlib.Locales;
 
 /**
@@ -112,12 +113,29 @@ public class LocaleTest
 	@Test
 	public void testThatLocaleOverrideForSpecificArgumentDoesNotAffectOthers() throws Exception
 	{
-		Argument<BigDecimal> usNumber = bigDecimalArgument().locale(Locale.US).build();
+		Argument<BigDecimal> usNumber = bigDecimalArgument().locale(US).build();
 		Argument<BigDecimal> swedishNumber = bigDecimalArgument().build();
 
 		ParsedArguments result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(SWEDISH).parse("1,000", "1,000");
 
 		assertThat(result.get(usNumber)).isEqualTo(BigDecimal.valueOf(1000));
 		assertThat(result.get(swedishNumber)).isEqualTo(new BigDecimal("1.000"));
+	}
+
+	@Test
+	public void testThatCustomDefaultValueDescriberUsesLocaleOverrideForSpecificArgument() throws Exception
+	{
+		Argument<BigDecimal> usNumber = bigDecimalArgument().locale(US).defaultValueDescriber(new Describer<BigDecimal>(){
+			@Override
+			public String describe(BigDecimal value, Locale inLocale)
+			{
+				assertThat(inLocale).as("default values should be described by argument specific locale if specified").isEqualTo(US);
+				return "did run";
+			}
+		}).build();
+		Argument<BigDecimal> swedishNumber = bigDecimalArgument().build();
+
+		Usage result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(SWEDISH).usage();
+		assertThat(result).contains("did run");
 	}
 }
