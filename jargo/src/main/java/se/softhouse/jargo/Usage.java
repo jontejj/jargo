@@ -28,7 +28,6 @@ import static se.softhouse.jargo.Argument.IS_VISIBLE;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.text.BreakIterator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,6 +36,7 @@ import java.util.Locale;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import se.softhouse.common.strings.Lines;
 import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
@@ -243,7 +243,7 @@ public final class Usage implements Serializable
 			mainUsage += UsageTexts.ARGUMENT_INDICATOR;
 		}
 
-		mainUsage += NEWLINE + wordWrap(program.programDescription(), 0, columnWidth);
+		mainUsage += NEWLINE + Lines.wrap(program.programDescription(), columnWidth, locale);
 
 		if(hasArguments())
 		{
@@ -347,7 +347,7 @@ public final class Usage implements Serializable
 		String description = arg.description();
 		if(!description.isEmpty())
 		{
-			row.descriptionColumn.append(wordWrap(description, indexOfDescriptionColumn, columnWidth));
+			row.descriptionColumn.append(Lines.wrap(description, indexOfDescriptionColumn, columnWidth, locale));
 			addIndicators(arg, row.descriptionColumn);
 			row.descriptionColumn.append(NEWLINE);
 			valueExplanation(arg, row.descriptionColumn);
@@ -396,35 +396,9 @@ public final class Usage implements Serializable
 		}
 	}
 
-	private StringBuilder wordWrap(String value, int startingLength, int maxLength)
-	{
-		// TODO(jontejj): move into StringsUtil?
-		StringBuilder result = new StringBuilder(value.length());
-		BreakIterator boundary = BreakIterator.getLineInstance(locale);
-		boundary.setText(value);
-		int start = boundary.first();
-		int end = boundary.next();
-		int lineLength = startingLength;
-
-		while(end != BreakIterator.DONE)
-		{
-			String word = value.substring(start, end);
-			lineLength = lineLength + word.length();
-			if(lineLength >= maxLength)
-			{
-				result.append(NEWLINE);
-				lineLength = startingLength;
-			}
-			result.append(word);
-			start = end;
-			end = boundary.next();
-		}
-		return result;
-	}
-
 	private void appendRowTo(Row row, Appendable target) throws IOException
 	{
-		StringBuilder nameColumn = wordWrap(row.nameColumn.toString(), 0, indexOfDescriptionColumn);
+		StringBuilder nameColumn = Lines.wrap(row.nameColumn, indexOfDescriptionColumn, locale);
 		String descriptionColumn = row.descriptionColumn.toString();
 		Iterable<String> nameLines = Splitter.on(NEWLINE).split(nameColumn);
 		Iterator<String> descriptionLines = Splitter.on(NEWLINE).split(descriptionColumn).iterator();
