@@ -95,7 +95,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Nonnull private Describable description = EMPTY_STRING;
 	private boolean required = false;
 	@Nonnull private String separator = DEFAULT_SEPARATOR;
-	@Nonnull private Optional<Locale> localeOverride = Optional.absent();
 	private boolean ignoreCase = false;
 	private boolean isAllowedToRepeat = false;
 	@Nonnull private Optional<String> metaDescription = Optional.absent();
@@ -275,20 +274,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	public final SELF ignoreCase()
 	{
 		ignoreCase = true;
-		return myself;
-	}
-
-	/**
-	 * Uses {@code localeToUseForThisArgument} to handle this argument with instead of the one
-	 * passed to {@link CommandLineParser#locale(Locale)}, allowing different {@link Argument}s to
-	 * use different {@link Locale}s.
-	 * 
-	 * @return this builder
-	 */
-	public final SELF locale(Locale localeToUseForThisArgument)
-	{
-
-		this.localeOverride = Optional.of(localeToUseForThisArgument);
 		return myself;
 	}
 
@@ -698,8 +683,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	{
 		return toStringHelper(this).omitNullValues().add("names", names).add("description", description).add("metaDescription", metaDescription)
 				.add("hideFromUsage", hideFromUsage).add("ignoreCase", ignoreCase).add("limiter", limiter).add("required", required)
-				.add("separator", separator).add("defaultValueDescriber", defaultValueDescriber).add("localeOverride", localeOverride)
-				.add("defaultValueSupplier", defaultValueSupplier).add("internalStringParser", internalStringParser).toString();
+				.add("separator", separator).add("defaultValueDescriber", defaultValueDescriber).add("defaultValueSupplier", defaultValueSupplier)
+				.add("internalStringParser", internalStringParser).toString();
 	}
 
 	/**
@@ -717,7 +702,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		this.description = copy.description;
 		this.required = copy.required;
 		this.separator = copy.separator;
-		this.localeOverride = copy.localeOverride;
 		this.ignoreCase = copy.ignoreCase;
 		this.isAllowedToRepeat = copy.isAllowedToRepeat;
 		this.metaDescription = copy.metaDescription;
@@ -777,9 +761,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	final boolean isRequired(){ return required; }
 
 	@Nullable final String separator(){ return separator; }
-
-
-	@Nullable final Optional<Locale> localeOverride(){ return localeOverride; }
 
 	final boolean isIgnoringCase(){ return ignoreCase; }
 

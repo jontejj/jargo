@@ -30,13 +30,12 @@ import java.util.Locale;
 import org.junit.Test;
 
 import se.softhouse.common.numbers.NumberType;
-import se.softhouse.common.strings.Describers;
 import se.softhouse.common.strings.Describables;
+import se.softhouse.common.strings.Describers;
 import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.common.testlib.EnumTester;
 import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
-import se.softhouse.jargo.CommandLineParserInstance.ParserCache;
 import se.softhouse.jargo.StringParsers.StringStringParser;
 import se.softhouse.jargo.Usage.Row;
 import se.softhouse.jargo.commands.Build;
@@ -64,8 +63,7 @@ public class PackagePrivateTest
 	{
 		assertThat(integerArgument("-i").description("foo").metaDescription("bar").toString())
 				.isEqualTo(	"DefaultArgumentBuilder{names=[-i], description=foo, metaDescription=Optional.of(bar), hideFromUsage=false"
-									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= , defaultValueDescriber=NumberDescriber"
-									+ ", localeOverride=Optional.absent()}");
+									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= , defaultValueDescriber=NumberDescriber}");
 	}
 
 	@Test
@@ -144,8 +142,7 @@ public class PackagePrivateTest
 	public void testConstructorsForUtilityClasses()
 	{
 		testUtilityClassDesign(	Arguments.class, StringsUtil.class, Describables.class, StringParsers.class, ArgumentExceptions.class,
-								Describers.class, Texts.class, ParserCache.class, Texts.class, UserErrors.class, UsageTexts.class,
-								ProgrammaticErrors.class);
+								Describers.class, Texts.class, Texts.class, UserErrors.class, UsageTexts.class, ProgrammaticErrors.class);
 	}
 
 	@Test

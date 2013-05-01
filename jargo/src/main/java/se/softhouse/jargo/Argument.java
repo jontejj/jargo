@@ -18,7 +18,6 @@ import static com.google.common.base.Predicates.alwaysTrue;
 import static java.util.Arrays.asList;
 import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
-import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
 import java.text.CollationKey;
 import java.text.Collator;
@@ -65,7 +64,6 @@ public final class Argument<T>
 	private final boolean hideFromUsage;
 
 	@Nonnull private final String separator;
-	@Nonnull private final Optional<Locale> localeOveride;
 	private final boolean required;
 	private final boolean ignoreCase;
 	private final boolean isAllowedToRepeat;
@@ -97,7 +95,6 @@ public final class Argument<T>
 		this.description = builder.description();
 		this.required = builder.isRequired();
 		this.separator = builder.separator();
-		this.localeOveride = builder.localeOverride();
 		this.ignoreCase = builder.isIgnoringCase();
 		this.names = builder.names();
 		this.isPropertyMap = builder.isPropertyMap();
@@ -139,9 +136,10 @@ public final class Argument<T>
 	 * Parses command line arguments and returns the value of this argument.<br>
 	 * This is a shorthand method that should be used if only one {@link Argument} is expected.
 	 * If several arguments are expected use {@link CommandLineParser#withArguments(Argument...)}
-	 * instead. {@link Locale#US} is used by default to parse strings. Use
-	 * {@link ArgumentBuilder#locale(Locale)} to specify another {@link Locale}, such as
-	 * {@link Locale#getDefault()}.
+	 * instead. <br>
+	 * <b>Locale:</b> {@link Locale#US} is used to parse strings / print usage. To use another
+	 * {@link Locale} you'll need to use {@link CommandLineParser#withArguments(Argument...)}
+	 * instead.
 	 * 
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the {@code actualArguments}
@@ -151,20 +149,18 @@ public final class Argument<T>
 	@Nullable
 	public T parse(String ... actualArguments) throws ArgumentException
 	{
-		return commandLineParser().parse(asList(actualArguments), locale(US_BY_DEFAULT)).get(this);
+		return commandLineParser().parse(asList(actualArguments)).get(this);
 	}
 
 	/**
 	 * Returns the {@link Usage} for this argument. Should only be used if one argument is
 	 * supported, otherwise the {@link CommandLineParser#usage()} method should be used instead.
-	 * {@link Locale#US} is used by default. Use {@link ArgumentBuilder#locale(Locale)} to specify
-	 * another {@link Locale}, such as {@link Locale#getDefault()}.
 	 */
 	@Nonnull
 	@CheckReturnValue
 	public Usage usage()
 	{
-		return new Usage(commandLineParser().allArguments(), locale(US_BY_DEFAULT), ProgramInformation.AUTO, false);
+		return new Usage(commandLineParser());
 	}
 
 	/**
@@ -196,12 +192,12 @@ public final class Argument<T>
 		return value;
 	}
 
-	String descriptionOfValidValues(Locale localeToDescribeValuesWith)
+	String descriptionOfValidValues(Locale inLocale)
 	{
 		if(limiter != alwaysTrue())
 			return limiter.toString();
 
-		return parser().descriptionOfValidValues(this, locale(localeToDescribeValuesWith));
+		return parser().descriptionOfValidValues(this, inLocale);
 	}
 
 	@Nullable
@@ -209,7 +205,7 @@ public final class Argument<T>
 	{
 		T value = defaultValue();
 		if(defaultValueDescriber != null)
-			return defaultValueDescriber.describe(value, locale(inLocale));
+			return defaultValueDescriber.describe(value, inLocale);
 		return parser().describeValue(value);
 	}
 
@@ -302,11 +298,6 @@ public final class Argument<T>
 		return ignoreCase;
 	}
 
-	Locale locale(Locale usualLocale)
-	{
-		return localeOveride.or(usualLocale);
-	}
-
 	Function<T, T> finalizer()
 	{
 		return finalizer;
@@ -326,7 +317,7 @@ public final class Argument<T>
 	{
 		// Not cached to save memory, users should use CommandLineParser.withArguments if they are
 		// concerned about reuse
-		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), ProgramInformation.AUTO);
+		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this));
 	}
 
 	enum ParameterArity

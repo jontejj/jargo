@@ -1,4 +1,4 @@
-'NaN' is not a valid byte (Localization: svenska (Sverige))
+'NaN' is not a valid byte (Localization: English (United States))
  ^. See usage for -b for proper values.
 
 Usage: ByteNaN [Arguments]

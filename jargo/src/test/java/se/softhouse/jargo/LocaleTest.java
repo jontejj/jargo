@@ -20,6 +20,7 @@ import static se.softhouse.common.testlib.Locales.SWEDISH;
 import static se.softhouse.common.testlib.Locales.TURKISH;
 import static se.softhouse.jargo.Arguments.bigDecimalArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.CommandLineParser.withArguments;
 import static se.softhouse.jargo.StringParsers.integerParser;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
@@ -29,11 +30,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.common.strings.Describer;
 import se.softhouse.common.testlib.Locales;
 
 /**
- * Tests for {@link CommandLineParser#locale(Locale)} and {@link ArgumentBuilder#locale(Locale)}
+ * Tests for {@link CommandLineParser#locale(Locale)}
  */
 public class LocaleTest
 {
@@ -67,10 +67,11 @@ public class LocaleTest
 	@Test
 	public void testThatDefaultLocaleIsNotUsed() throws Exception
 	{
-		BigDecimal d = bigDecimalArgument().locale(SWEDISH).parse("123400,987");
+		Argument<BigDecimal> localeDependantArgument = bigDecimalArgument().build();
+		BigDecimal d = withArguments(localeDependantArgument).locale(SWEDISH).parse("123400,987").get(localeDependantArgument);
 		assertThat(d).isEqualTo(BigDecimal.valueOf(123400.987));
 
-		d = bigDecimalArgument().locale(US).parse("123400,987");
+		d = withArguments(localeDependantArgument).locale(US).parse("123400,987").get(localeDependantArgument);
 		assertThat(d).isEqualTo(BigDecimal.valueOf(123400987));
 	}
 
@@ -108,34 +109,5 @@ public class LocaleTest
 
 		assertThat(results.get(asPropertyMap).get("i")).isEqualTo(2);
 		Locales.resetDefaultLocale();
-	}
-
-	@Test
-	public void testThatLocaleOverrideForSpecificArgumentDoesNotAffectOthers() throws Exception
-	{
-		Argument<BigDecimal> usNumber = bigDecimalArgument().locale(US).build();
-		Argument<BigDecimal> swedishNumber = bigDecimalArgument().build();
-
-		ParsedArguments result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(SWEDISH).parse("1,000", "1,000");
-
-		assertThat(result.get(usNumber)).isEqualTo(BigDecimal.valueOf(1000));
-		assertThat(result.get(swedishNumber)).isEqualTo(new BigDecimal("1.000"));
-	}
-
-	@Test
-	public void testThatCustomDefaultValueDescriberUsesLocaleOverrideForSpecificArgument() throws Exception
-	{
-		Argument<BigDecimal> usNumber = bigDecimalArgument().locale(US).defaultValueDescriber(new Describer<BigDecimal>(){
-			@Override
-			public String describe(BigDecimal value, Locale inLocale)
-			{
-				assertThat(inLocale).as("default values should be described by argument specific locale if specified").isEqualTo(US);
-				return "did run";
-			}
-		}).build();
-		Argument<BigDecimal> swedishNumber = bigDecimalArgument().build();
-
-		Usage result = CommandLineParser.withArguments(swedishNumber, usNumber).locale(SWEDISH).usage();
-		assertThat(result).contains("did run");
 	}
 }

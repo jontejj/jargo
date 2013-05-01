@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,15 +35,14 @@ import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
 import se.softhouse.jargo.StringParsers.RunnableParser;
 
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Atomics;
 
 /**
  * Manages multiple {@link Argument}s and/or {@link Command}s. The brain of this API.
  * Its primary goal is to decide which {@link Argument} each input string belongs to.
- * Immutability is dearly embraced. Thus a {@link CommandLineParser} can be reused to parse
- * arguments over and over again. Different {@link CommandLineParser}s can even
- * share {@link Argument} configurations as {@link Argument} instances are immutable as well.
- * Documentation through example:
+ * A {@link CommandLineParser} can be reused to parse arguments over and over again (even
+ * concurrently). Different {@link CommandLineParser}s can even share {@link Argument}
+ * configurations as {@link Argument} instances are immutable as well. Documentation through
+ * example:
  * 
  * <pre class="prettyprint">
  * <code class="language-java">
@@ -113,16 +111,23 @@ public final class CommandLineParser
 
 	static final Locale US_BY_DEFAULT = Locale.US;
 
-	// TODO(jontejj): use getAndSet instead of set on Atomics
-
-	@GuardedBy("modifyGuard") private final List<Argument<?>> argumentDefinitions;
-	@GuardedBy("modifyGuard") private final AtomicReference<ProgramInformation> programInformation = Atomics.newReference(ProgramInformation.AUTO);
-
-	private final AtomicReference<Locale> locale = Atomics.newReference(US_BY_DEFAULT);
-
-	@GuardedBy("modifyGuard") private final AtomicReference<CommandLineParserInstance> cachedParser;
-
+	@GuardedBy("modifyGuard") private volatile CommandLineParserInstance cachedParser;
+	/**
+	 * Use of this lock makes sure that there's no race condition if several concurrent calls
+	 * to addArguments are made at the same time, in such a race some argument definitions
+	 * could be "lost" without this lock.
+	 */
 	private final Lock modifyGuard = new ReentrantLock();
+
+	private CommandLineParser(Iterable<Argument<?>> argumentDefinitions)
+	{
+		this.cachedParser = new CommandLineParserInstance(argumentDefinitions);
+	}
+
+	CommandLineParserInstance parser()
+	{
+		return cachedParser;
+	}
 
 	/**
 	 * Creates a {@link CommandLineParser} with support for the given {@code argumentDefinitions}.
@@ -216,7 +221,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final String ... actualArguments) throws ArgumentException
 	{
-		return parser().parse(asList(actualArguments), locale());
+		return parser().parse(asList(actualArguments));
 	}
 
 	/**
@@ -225,7 +230,7 @@ public final class CommandLineParser
 	@Nonnull
 	public ParsedArguments parse(final Iterable<String> actualArguments) throws ArgumentException
 	{
-		return parser().parse(actualArguments, locale());
+		return parser().parse(actualArguments);
 	}
 
 	/**
@@ -236,7 +241,7 @@ public final class CommandLineParser
 	@Nonnull
 	public Usage usage()
 	{
-		return new Usage(parser().allArguments(), locale(), programInformation(), false);
+		return new Usage(parser());
 	}
 
 	/**
@@ -281,11 +286,9 @@ public final class CommandLineParser
 		try
 		{
 			modifyGuard.lock();
-			List<Argument<?>> newDefinitions = Lists.newArrayList(argumentDefinitions);
+			List<Argument<?>> newDefinitions = Lists.newArrayList(parser().allArguments());
 			newDefinitions.addAll(argumentsToAdd);
-			cachedParser.set(new CommandLineParserInstance(newDefinitions, programInformation()));
-			// Everything went fine, accept argument
-			argumentDefinitions.addAll(argumentsToAdd);
+			cachedParser = new CommandLineParserInstance(newDefinitions, parser().programInformation(), parser().locale(), false);
 		}
 		finally
 		{
@@ -303,8 +306,8 @@ public final class CommandLineParser
 		try
 		{
 			modifyGuard.lock();
-			programInformation.set(programInformation().programName(programName));
-			cachedParser.set(new CommandLineParserInstance(argumentDefinitions, programInformation()));
+			ProgramInformation programInformation = parser().programInformation().programName(programName);
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), programInformation, parser().locale(), false);
 		}
 		finally
 		{
@@ -323,8 +326,8 @@ public final class CommandLineParser
 		try
 		{
 			modifyGuard.lock();
-			programInformation.set(programInformation().programDescription(programDescription));
-			cachedParser.set(new CommandLineParserInstance(argumentDefinitions, programInformation()));
+			ProgramInformation programInformation = parser().programInformation().programDescription(programDescription);
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), programInformation, parser().locale(), false);
 		}
 		finally
 		{
@@ -338,9 +341,7 @@ public final class CommandLineParser
 	 * which makes it hard to give any guarantees on what it will be at a certain time. This is why
 	 * {@link Locale#US} is used by default instead.
 	 * If {@link Locale#getDefault()} is wanted, use {@link #locale(Locale)
-	 * locale(Locale.getDefault())}. To use a different {@link Locale} for <b>only</b> one of your
-	 * {@link Argument}s you can override the value set here with
-	 * {@link ArgumentBuilder#locale(Locale)}.
+	 * locale(Locale.getDefault())}.
 	 * 
 	 * @param localeToUse the {@link Locale} to parse input strings with (it will be passed to
 	 *            {@link StringParser#parse(String, Locale)} and
@@ -349,7 +350,15 @@ public final class CommandLineParser
 	 */
 	public CommandLineParser locale(Locale localeToUse)
 	{
-		locale.set(checkNotNull(localeToUse));
+		try
+		{
+			modifyGuard.lock();
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), parser().programInformation(), checkNotNull(localeToUse), false);
+		}
+		finally
+		{
+			modifyGuard.unlock();
+		}
 		return this;
 	}
 
@@ -360,27 +369,6 @@ public final class CommandLineParser
 	public String toString()
 	{
 		return usage().toString();
-	}
-
-	CommandLineParser(Iterable<Argument<?>> argumentDefinitions)
-	{
-		this.argumentDefinitions = Lists.newArrayList(argumentDefinitions);
-		this.cachedParser = Atomics.newReference(new CommandLineParserInstance(this.argumentDefinitions, programInformation()));
-	}
-
-	CommandLineParserInstance parser()
-	{
-		return cachedParser.get();
-	}
-
-	Locale locale()
-	{
-		return locale.get();
-	}
-
-	ProgramInformation programInformation()
-	{
-		return programInformation.get();
 	}
 
 	private static List<Argument<?>> commandsToArguments(final Command ... commands)

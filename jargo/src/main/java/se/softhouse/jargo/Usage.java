@@ -117,6 +117,14 @@ public final class Usage implements Serializable
 		this.forCommand = forCommand;
 	}
 
+	Usage(CommandLineParserInstance parser)
+	{
+		this.unfilteredArguments = parser.allArguments();
+		this.locale = parser.locale();
+		this.program = parser.programInformation();
+		this.forCommand = parser.isCommandParser();
+	}
+
 	private Usage(String fromSerializedUsage)
 	{
 		// All these are unused as the usage is already constructed

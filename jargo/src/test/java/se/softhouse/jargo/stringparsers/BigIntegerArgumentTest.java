@@ -23,7 +23,6 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-import se.softhouse.common.testlib.Locales;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
@@ -48,14 +47,14 @@ public class BigIntegerArgumentTest
 	{
 		try
 		{
-			bigIntegerArgument("-n").locale(Locales.SWEDISH).parse("-n", "1a");
+			bigIntegerArgument("-n").parse("-n", "1a");
 		}
 		catch(ArgumentException e)
 		{
 			/**
 			 * @formatter.off
 			 */
-			assertThat(e).hasMessage("'1a' is not a valid big-integer (Localization: svenska (Sverige))" + NEWLINE +
+			assertThat(e).hasMessage("'1a' is not a valid big-integer (Localization: English (United States))" + NEWLINE +
 			                         "  ^");
 			/**
 			 * @formatter.on
@@ -75,12 +74,5 @@ public class BigIntegerArgumentTest
 	{
 		BigInteger b = bigIntegerArgument("-b").parse();
 		assertThat(b).isEqualTo(BigInteger.ZERO);
-	}
-
-	@Test
-	public void testThatDefaultValueForBigIntegerIsFormattedInTheChosenLocale()
-	{
-		Usage b = bigIntegerArgument("-b").locale(Locales.TURKISH).defaultValue(BigInteger.valueOf(Long.MAX_VALUE)).usage();
-		assertThat(b).contains("Default: 9.223.372.036.854.775.807" + NEWLINE);
 	}
 }

@@ -14,6 +14,8 @@
  */
 package se.softhouse.jargo;
 
+import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
+
 import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
@@ -104,7 +106,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 		@Override
 		public CommandLineParserInstance get()
 		{
-			return CommandLineParserInstance.createCommandParser(commandArguments);
+			return new CommandLineParserInstance(commandArguments, ProgramInformation.AUTO, US_BY_DEFAULT, true);
 		}
 	});
 

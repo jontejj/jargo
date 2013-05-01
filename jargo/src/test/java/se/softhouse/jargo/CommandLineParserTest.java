@@ -14,12 +14,10 @@
  */
 package se.softhouse.jargo;
 
-import static java.util.Locale.US;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.failure;
 import static org.junit.Assert.fail;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.testlib.Locales.SWEDISH;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
@@ -459,13 +457,12 @@ public class CommandLineParserTest
 	@Test
 	public void testThatArgumentBuilderTransfersPropertiesWhenBuilderIsChanged() throws Exception
 	{
-		Argument<List<Integer>> n = integerArgument().description("a description").ignoreCase().required().names("-n").separator("/").locale(SWEDISH)
+		Argument<List<Integer>> n = integerArgument().description("a description").ignoreCase().required().names("-n").separator("/")
 				.metaDescription("<foo>") //
 				.arity(2)// Changes builder
 				.build();
-		ParsedArguments result = CommandLineParser.withArguments(n).locale(US).parse("-N/1,000", "2,000");
-		assertThat(result.get(n)).as("If the result was [1000, 2000] instead of [1,2] then the locale wasn't overriden correctly")
-				.isEqualTo(Arrays.asList(1, 2));
+		ParsedArguments result = CommandLineParser.withArguments(n).parse("-N/1", "2");
+		assertThat(result.get(n)).isEqualTo(Arrays.asList(1, 2));
 		assertThat(n.usage()).contains("-n/<foo>").contains(UsageTexts.REQUIRED).contains("a description");
 
 		assertThat(integerArgument("hidden-argument").hideFromUsage().arity(2).usage()).doesNotContain("hidden-argument");
