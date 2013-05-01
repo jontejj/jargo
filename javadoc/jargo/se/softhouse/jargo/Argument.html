@@ -100,7 +100,7 @@ Class Argument&lt;T&gt;</H2>
 <HR>
 <DL>
 <DT><PRE><FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</A>
-</FONT>public final class <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.60"><B>Argument&lt;T&gt;</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
+</FONT>public final class <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.59"><B>Argument&lt;T&gt;</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
 </PRE>
 
 <P>
@@ -176,15 +176,16 @@ Class Argument&lt;T&gt;</H2>
 parse</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/Argument.html" title="type parameter in Argument">T</A> <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.152"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)
+</FONT>public <A HREF="../../../se/softhouse/jargo/Argument.html" title="type parameter in Argument">T</A> <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.150"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)
         throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></PRE>
 <DL>
 <DD>Parses command line arguments and returns the value of this argument.<br>
  This is a shorthand method that should be used if only one <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> is expected.
  If several arguments are expected use <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A>
- instead. <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#US" title="class or interface in java.util"><CODE>Locale.US</CODE></A> is used by default to parse strings. Use
- <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#locale(java.util.Locale)"><CODE>ArgumentBuilder.locale(Locale)</CODE></A> to specify another <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>, such as
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><CODE>Locale.getDefault()</CODE></A>.
+ instead. <br>
+ <b>Locale:</b> <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#US" title="class or interface in java.util"><CODE>Locale.US</CODE></A> is used to parse strings / print usage. To use another
+ <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A> you'll need to use <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A>
+ instead.
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>actualArguments</CODE> - the arguments from the command line
@@ -199,7 +200,7 @@ parse</H3>
 <A NAME="toString()"><!-- --></A><H3>
 toString</H3>
 <PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.175"><B>toString</B></A>()</PRE>
+public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.171"><B>toString</B></A>()</PRE>
 <DL>
 <DD>Describes <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>s by their first name. If they are indexed and have no name the
  <A HREF="../../../se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>meta description</CODE></A> is used instead.
@@ -218,12 +219,10 @@ usage</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.165"><B>usage</B></A>()</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/Argument.html#line.161"><B>usage</B></A>()</PRE>
 <DL>
 <DD>Returns the <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><CODE>Usage</CODE></A> for this argument. Should only be used if one argument is
  supported, otherwise the <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#usage()"><CODE>CommandLineParser.usage()</CODE></A> method should be used instead.
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#US" title="class or interface in java.util"><CODE>Locale.US</CODE></A> is used by default. Use <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#locale(java.util.Locale)"><CODE>ArgumentBuilder.locale(Locale)</CODE></A> to specify
- another <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>, such as <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><CODE>Locale.getDefault()</CODE></A>.
 <P>
 <DD><DL>
 </DL>

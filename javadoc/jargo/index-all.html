@@ -100,9 +100,9 @@ Constructor for class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ArgumentB
  doesn't have any <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A>
  has an empty <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><CODE>ArgumentBuilder.description(String)</CODE></A>
  isn't <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#required()"><CODE>ArgumentBuilder.required()</CODE></A>
- uses <A HREF="./se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>defaultValue()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce default values
+ uses <A HREF="./se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce default values
  uses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> to describe the default value
- uses <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>metaDescription()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce meta
+ uses <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A> on <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><CODE>ArgumentBuilder.parser()</CODE></A> to produce meta
  descriptions
  doesn't have any <A HREF="./se/softhouse/jargo/ArgumentBuilder.html#limitTo(com.google.common.base.Predicate)"><CODE>limits</CODE></A>
  
@@ -525,11 +525,6 @@ Static method in class se.softhouse.common.guavaextensions.<A HREF="./se/softhou
 Static method in class se.softhouse.common.guavaextensions.<A HREF="./se/softhouse/common/guavaextensions/Functions2.html" title="class in se.softhouse.common.guavaextensions">Functions2</A>
 <DD>Creates a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that applies <code>elementTransformer</code> to each element of the
  input <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util"><CODE>List</CODE></A> and puts the new elements in a new , immutable, list and returns it.
-<DT><A HREF="./se/softhouse/jargo/ArgumentBuilder.html#locale(java.util.Locale)"><B>locale(Locale)</B></A> - 
-Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</A>
-<DD>Uses <code>localeToUseForThisArgument</code> to handle this argument with instead of the one
- passed to <A HREF="./se/softhouse/jargo/CommandLineParser.html#locale(java.util.Locale)"><CODE>CommandLineParser.locale(Locale)</CODE></A>, allowing different <A HREF="./se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>s to
- use different <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>s.
 <DT><A HREF="./se/softhouse/jargo/CommandLineParser.html#locale(java.util.Locale)"><B>locale(Locale)</B></A> - 
 Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</A>
 <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><CODE>Locale.getDefault()</CODE></A> is dangerous to use.
@@ -580,7 +575,7 @@ Method in class se.softhouse.common.numbers.<A HREF="./se/softhouse/common/numbe
 <DT><A HREF="./se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)"><B>metaDescription(String)</B></A> - 
 Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</A>
 <DD>
- By default <A HREF="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>metaDescription()</CODE></A>
+ By default <A HREF="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="./se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>
  that describes the type of data they expect.
 <DT><A HREF="./se/softhouse/jargo/ForwardingStringParser.html#metaDescription()"><B>metaDescription()</B></A> - 
 Method in class se.softhouse.jargo.<A HREF="./se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo">ForwardingStringParser</A>

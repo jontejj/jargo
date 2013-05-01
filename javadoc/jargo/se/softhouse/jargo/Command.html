@@ -99,7 +99,7 @@ Class Command</H2>
 <HR>
 <DL>
 <DT><PRE><FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</A>
-</FONT>public abstract class <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.99"><B>Command</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A><DT>implements <A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A></DL>
+</FONT>public abstract class <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.101"><B>Command</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A><DT>implements <A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A></DL>
 </PRE>
 
 <P>
@@ -258,7 +258,7 @@ Class Command</H2>
 <A NAME="Command(se.softhouse.jargo.Argument...)"><!-- --></A><H3>
 Command</H3>
 <PRE>
-protected <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.114"><B>Command</B></A>(<A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;?&gt;...&nbsp;commandArguments)</PRE>
+protected <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.116"><B>Command</B></A>(<A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;?&gt;...&nbsp;commandArguments)</PRE>
 <DL>
 <DL>
 <DT><B>Parameters:</B><DD><CODE>commandArguments</CODE> - the arguments that this command supports.</DL>
@@ -279,7 +279,7 @@ commandName</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>protected <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.127"><B>commandName</B></A>()</PRE>
+</FONT>protected <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.129"><B>commandName</B></A>()</PRE>
 <DL>
 <DD>The name that triggers this command. Defaults to <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true#getSimpleName()" title="class or interface in java.lang"><CODE>Class.getSimpleName()</CODE></A> in lower
  case. For several names override this with <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>ArgumentBuilder.names(String...)</CODE></A>
@@ -297,7 +297,7 @@ commandName</H3>
 description</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.149"><B>description</B></A>()</PRE>
+</FONT>public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.151"><B>description</B></A>()</PRE>
 <DL>
 <DD>Override to provide a description to print in the usage text for this command.
  This is essentially an alternative to <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#description(se.softhouse.common.strings.Describable)"><CODE>ArgumentBuilder.description(Describable)</CODE></A>
@@ -315,7 +315,7 @@ description</H3>
 <A NAME="execute(se.softhouse.jargo.ParsedArguments)"><!-- --></A><H3>
 execute</H3>
 <PRE>
-protected abstract void <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.139"><B>execute</B></A>(<A HREF="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</A>&nbsp;parsedArguments)</PRE>
+protected abstract void <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.141"><B>execute</B></A>(<A HREF="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</A>&nbsp;parsedArguments)</PRE>
 <DL>
 <DD>Called when this command is encountered on the command line
 <P>
@@ -332,7 +332,7 @@ protected abstract void <A HREF="../../../src-html/se/softhouse/jargo/Command.ht
 <A NAME="toString()"><!-- --></A><H3>
 toString</H3>
 <PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.155"><B>toString</B></A>()</PRE>
+public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/Command.html#line.157"><B>toString</B></A>()</PRE>
 <DL>
 <DD><DL>
 <DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>

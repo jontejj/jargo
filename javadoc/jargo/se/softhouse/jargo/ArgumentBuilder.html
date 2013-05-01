@@ -371,16 +371,6 @@ Class ArgumentBuilder&lt;SELF extends ArgumentBuilder&lt;SELF,T&gt;,T&gt;</H2>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#locale(java.util.Locale)">locale</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;localeToUseForThisArgument)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses <code>localeToUseForThisArgument</code> to handle this argument with instead of the one
- passed to <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#locale(java.util.Locale)"><CODE>CommandLineParser.locale(Locale)</CODE></A>, allowing different <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>s to
- use different <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>s.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)">metaDescription</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aMetaDescription)</CODE>
 
 <BR>
@@ -513,7 +503,7 @@ Class ArgumentBuilder&lt;SELF extends ArgumentBuilder&lt;SELF,T&gt;,T&gt;</H2>
 <A NAME="ArgumentBuilder()"><!-- --></A><H3>
 ArgumentBuilder</H3>
 <PRE>
-protected <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.132"><B>ArgumentBuilder</B></A>()</PRE>
+protected <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.131"><B>ArgumentBuilder</B></A>()</PRE>
 <DL>
 <DD>Creates a default <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo"><CODE>ArgumentBuilder.DefaultArgumentBuilder</CODE></A> that produces arguments that:
  <ul>
@@ -544,7 +534,7 @@ protected <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#lin
 arity</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.645"><B>arity</B></A>(int&nbsp;numberOfParameters)</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.630"><B>arity</B></A>(int&nbsp;numberOfParameters)</PRE>
 <DL>
 <DD><pre>
  Uses this argument to parse values but assumes that <code>numberOfParameters</code> of the
@@ -578,7 +568,7 @@ arity</H3>
 asKeyValuesWithKeyParser</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public final &lt;K&gt; <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</A>&lt;K,<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.567"><B>asKeyValuesWithKeyParser</B></A>(<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;K&gt;&nbsp;keyParser)</PRE>
+</FONT>public final &lt;K&gt; <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</A>&lt;K,<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.552"><B>asKeyValuesWithKeyParser</B></A>(<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;K&gt;&nbsp;keyParser)</PRE>
 <DL>
 <DD><pre>
  Makes this argument handle properties like arguments:
@@ -617,7 +607,7 @@ asKeyValuesWithKeyParser</H3>
 asPropertyMap</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.532"><B>asPropertyMap</B></A>()</PRE>
+</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.517"><B>asPropertyMap</B></A>()</PRE>
 <DL>
 <DD><pre>
  Makes this argument handle "property like" arguments:
@@ -649,7 +639,7 @@ build</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
 <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public final <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.162"><B>build</B></A>()</PRE>
+</FONT>public final <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.161"><B>build</B></A>()</PRE>
 <DL>
 <DD>Returns an <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><CODE>Immutable</CODE></A> <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> which can be passed to
  <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#withArguments(se.softhouse.jargo.Argument...)"><CODE>CommandLineParser.withArguments(Argument...)</CODE></A> <br>
@@ -668,7 +658,7 @@ build</H3>
 <A NAME="defaultValue(java.lang.Object)"><!-- --></A><A NAME="defaultValue(T)"><!-- --></A><H3>
 defaultValue</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.364"><B>defaultValue</B></A>(<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A></FONT>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.349"><B>defaultValue</B></A>(<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A></FONT>
                          <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&nbsp;value)</PRE>
 <DL>
 <DD><pre>
@@ -693,7 +683,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 <A NAME="defaultValueDescriber(se.softhouse.common.strings.Describer)"><!-- --></A><H3>
 defaultValueDescriber</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.416"><B>defaultValueDescriber</B></A>(<A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;describer)</PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.401"><B>defaultValueDescriber</B></A>(<A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;describer)</PRE>
 <DL>
 <DD><A HREF="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><CODE>Describer</CODE></A> version of <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueDescription(java.lang.String)"><CODE>defaultValueDescription(String)</CODE></A>
 <P>
@@ -707,7 +697,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 <A NAME="defaultValueDescription(java.lang.String)"><!-- --></A><H3>
 defaultValueDescription</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.404"><B>defaultValueDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aDescription)</PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.389"><B>defaultValueDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aDescription)</PRE>
 <DL>
 <DD>Provides a way to give the usage texts a better explanation of a default
  value than <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> provides. Always prints <code>aDescription</code> regardless
@@ -724,7 +714,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 defaultValueSupplier</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.388"><B>defaultValueSupplier</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base">Supplier</A>&lt;? extends <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aDefaultValueSupplier)</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.373"><B>defaultValueSupplier</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base">Supplier</A>&lt;? extends <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aDefaultValueSupplier)</PRE>
 <DL>
 <DD><pre>
  Sets a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Supplier.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Supplier</CODE></A> that can supply default values in the absence of this argument
@@ -750,7 +740,7 @@ defaultValueSupplier</H3>
 <A NAME="description(se.softhouse.common.strings.Describable)"><!-- --></A><H3>
 description</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.319"><B>description</B></A>(<A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A>&nbsp;theDescription)</PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.304"><B>description</B></A>(<A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</A>&nbsp;theDescription)</PRE>
 <DL>
 <DD><pre>
  <A HREF="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><CODE>Describable</CODE></A> version of <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><CODE>description(String)</CODE></A>.
@@ -766,7 +756,7 @@ public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="t
 <A NAME="description(java.lang.String)"><!-- --></A><H3>
 description</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.307"><B>description</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;theDescription)</PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.292"><B>description</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;theDescription)</PRE>
 <DL>
 <DD><pre>
  Sets <code>theDescription</code> of what this argument does/means. Printed with
@@ -788,7 +778,7 @@ public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="t
 <A NAME="hideFromUsage()"><!-- --></A><H3>
 hideFromUsage</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.460"><B>hideFromUsage</B></A>()</PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.445"><B>hideFromUsage</B></A>()</PRE>
 <DL>
 <DD>Hides this argument so that it's not displayed in the usage texts.<br>
  It's recommended that hidden arguments have a reasonable <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue(T)"><CODE>defaultValue(Object)</CODE></A> and
@@ -804,7 +794,7 @@ public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="t
 <A NAME="ignoreCase()"><!-- --></A><H3>
 ignoreCase</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.275"><B>ignoreCase</B></A>()</PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.274"><B>ignoreCase</B></A>()</PRE>
 <DL>
 <DD>Ignores the case of the argument names set by <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A>
 <P>
@@ -819,7 +809,7 @@ public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="t
 limitTo</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.502"><B>limitTo</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true" title="class or interface in com.google.common.base">Predicate</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aLimiter)</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.487"><B>limitTo</B></A>(<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicate.html?is-external=true" title="class or interface in com.google.common.base">Predicate</A>&lt;? super <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt;&nbsp;aLimiter)</PRE>
 <DL>
 <DD><pre>
  Limits values parsed so that they conform to some specific rule.
@@ -846,26 +836,10 @@ limitTo</H3>
 </DL>
 <HR>
 
-<A NAME="locale(java.util.Locale)"><!-- --></A><H3>
-locale</H3>
-<PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.288"><B>locale</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;localeToUseForThisArgument)</PRE>
-<DL>
-<DD>Uses <code>localeToUseForThisArgument</code> to handle this argument with instead of the one
- passed to <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#locale(java.util.Locale)"><CODE>CommandLineParser.locale(Locale)</CODE></A>, allowing different <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A>s to
- use different <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>s.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>this builder</DL>
-</DD>
-</DL>
-<HR>
-
 <A NAME="metaDescription(java.lang.String)"><!-- --></A><H3>
 metaDescription</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.446"><B>metaDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aMetaDescription)</PRE>
+public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.431"><B>metaDescription</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aMetaDescription)</PRE>
 <DL>
 <DD><pre>
  By default <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A>s provides a meta description (by implementing <A HREF="../../../se/softhouse/jargo/StringParser.html#metaDescription()"><CODE>StringParser.metaDescription()</CODE></A>
@@ -898,7 +872,7 @@ public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="t
 <A NAME="names(java.lang.Iterable)"><!-- --></A><H3>
 names</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.263"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt;&nbsp;argumentNames)</PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.262"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt;&nbsp;argumentNames)</PRE>
 <DL>
 <DD>Works just like <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><CODE>names(String...)</CODE></A> but it takes an <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><CODE>Iterable</CODE></A> instead.
 <P>
@@ -912,7 +886,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 <A NAME="names(java.lang.String...)"><!-- --></A><H3>
 names</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.250"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;argumentNames)</PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.249"><B>names</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;argumentNames)</PRE>
 <DL>
 <DD>Specifies the argument names that triggers the argument being built. As commands sometimes
  gets long and hard to understand it's recommended to also support long named arguments,
@@ -937,7 +911,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 parse</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</A>
-</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.193"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)
+</FONT>public final <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.192"><B>parse</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>...&nbsp;actualArguments)
               throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</A></PRE>
 <DL>
 <DD><pre>
@@ -973,7 +947,7 @@ parse</H3>
 parser</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>protected abstract <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.223"><B>parser</B></A>()</PRE>
+</FONT>protected abstract <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.222"><B>parser</B></A>()</PRE>
 <DL>
 <DD><pre>
  Returns a customized parser that the <A HREF="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><CODE>Argument</CODE></A> will use to parse values.
@@ -998,7 +972,7 @@ parser</H3>
 repeated</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.691"><B>repeated</B></A>()</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.676"><B>repeated</B></A>()</PRE>
 <DL>
 <DD><pre>
  Makes it possible to enter several values for the same argument. Such as this:
@@ -1046,7 +1020,7 @@ repeated</H3>
 <A NAME="required()"><!-- --></A><H3>
 required</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.343"><B>required</B></A>()</PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.328"><B>required</B></A>()</PRE>
 <DL>
 <DD><pre>
  Makes <A HREF="../../../se/softhouse/jargo/CommandLineParser.html#parse(java.lang.String...)"><CODE>CommandLineParser.parse(String...)</CODE></A> throw
@@ -1074,7 +1048,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 <A NAME="separator(java.lang.String)"><!-- --></A><H3>
 separator</H3>
 <PRE>
-public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.473"><B>separator</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aSeparator)</PRE>
+public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.458"><B>separator</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;aSeparator)</PRE>
 <DL>
 <DD>For instance, "=" in --author=jjonsson
 <P>
@@ -1090,7 +1064,7 @@ public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type pa
 splitWith</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.587"><B>splitWith</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.572"><B>splitWith</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;valueSeparator)</PRE>
 <DL>
 <DD><pre>
  When given a "," this allows for
@@ -1111,7 +1085,7 @@ splitWith</H3>
 <A NAME="toString()"><!-- --></A><H3>
 toString</H3>
 <PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.697"><B>toString</B></A>()</PRE>
+public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.682"><B>toString</B></A>()</PRE>
 <DL>
 <DD><DL>
 <DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
@@ -1125,7 +1099,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.ht
 <A NAME="usage()"><!-- --></A><H3>
 usage</H3>
 <PRE>
-public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.203"><B>usage</B></A>()</PRE>
+public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</A> <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.202"><B>usage</B></A>()</PRE>
 <DL>
 <DD>Returns a usage string for the argument that this builder builds.
  Should only be used if one argument is supported,
@@ -1141,7 +1115,7 @@ public final <A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se
 variableArity</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.616"><B>variableArity</B></A>()</PRE>
+</FONT>public <A HREF="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</A>&lt;<A HREF="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.601"><B>variableArity</B></A>()</PRE>
 <DL>
 <DD>Useful for handling a variable amount of parameters in the end of a
  command. Uses this argument to parse values but assumes that all the following
