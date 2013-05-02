@@ -55,6 +55,7 @@ public final class Lines
 	{
 		String textToSplit = value.toString();
 		StringBuilder result = new StringBuilder(textToSplit.length());
+		// TODO(jontejj): is this not thread safe?
 		BreakIterator boundary = BreakIterator.getLineInstance(locale);
 		boundary.setText(textToSplit);
 		int start = boundary.first();

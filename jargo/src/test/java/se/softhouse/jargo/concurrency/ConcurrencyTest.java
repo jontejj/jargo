@@ -52,7 +52,6 @@ import org.junit.Test;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
-import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 import se.softhouse.jargo.utils.ExpectedTexts;
 
@@ -110,8 +109,6 @@ public class ConcurrencyTest
 							string, charArgument, boolArgument, propertyArgument, arityArgument, repeatedArgument, splittedArgument, enumArgument,
 							variableArityArgument, bigIntegerArgument, bigDecimalArgument)
 			.programDescription("Example of most argument types that jargo can handle by default").locale(Locale.US);
-
-	final Usage usage = parser.usage();
 
 	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");
 
@@ -248,9 +245,8 @@ public class ConcurrencyTest
 
 					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
 					{
-						StringBuilder usageText = new StringBuilder();
-						usage.printOn(usageText);
-						assertThat(usageText.toString()).isEqualTo(expectedUsageText);
+						// TODO(jontejj): share Usage instance once it's thread safe
+						assertThat(parser.usage()).isEqualTo(expectedUsageText);
 					}
 				}
 			}

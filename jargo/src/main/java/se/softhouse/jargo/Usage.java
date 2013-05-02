@@ -326,23 +326,26 @@ public final class Usage implements Serializable
 
 	/**
 	 * <pre>
-	 * 	-foo   Foo something [Required]
-	 *         	Valid values: 1 to 5
-	 *        -bar   Bar something
-	 *         	Default: 0
+	 * Left column  | Right column:
+	 * name &lt;meta&gt; 	description of what the argument means [indicators]
+	 *                &lt;meta&gt;: description of valid values
+	 *                Default: default value
+	 * 
+	 * For instance:
+	 * -foo &lt;integer&gt;		Foo something [Required]
+	 *                      	&lt;integer&gt;: 1 to 5
+	 * 
+	 * -bar			Bar something
+	 * 			Default: 0
 	 * </pre>
 	 */
 	private Row usageForArgument(final Argument<?> arg)
 	{
 		Row row = new Row();
 
-		// Left column: name <meta>
 		NAME_JOINER.appendTo(row.nameColumn, arg.names());
 		row.nameColumn.append(arg.metaDescriptionInLeftColumn());
 
-		// Right column: description of what the argument means [indicators]
-		// <meta>: description of valid values
-		// Default: default value
 		String description = arg.description();
 		if(!description.isEmpty())
 		{
