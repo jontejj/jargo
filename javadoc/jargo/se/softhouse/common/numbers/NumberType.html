@@ -202,7 +202,10 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../se/softhouse/common/numbers/NumberType.html#inRange(java.lang.Number)">inRange</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;number)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../se/softhouse/common/numbers/NumberType.html#inRange(java.lang.Number)">inRange</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;number)</code>
+<div class="block">Returns <code>true</code> if <code>number</code> can be represented by this type without losing
+ any numeric information</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>abstract <a href="../../../../se/softhouse/common/numbers/NumberType.html" title="type parameter in NumberType">T</a></code></td>
@@ -367,7 +370,7 @@ public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.ht
 <h4>descriptionOfValidValues</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.221">descriptionOfValidValues</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;inLocale)</pre>
+public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.225">descriptionOfValidValues</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;inLocale)</pre>
 <div class="block">Returns a descriptive string of the range this <a href="../../../../se/softhouse/common/numbers/NumberType.html" title="class in se.softhouse.common.numbers"><code>NumberType</code></a> can <a href="../../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String)"><code>parse(String)</code></a></div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>inLocale</code> - the locale to format numbers with</dd></dl>
 </li>
@@ -390,7 +393,9 @@ public abstract&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType
 <ul class="blockList">
 <li class="blockList">
 <h4>inRange</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.200">inRange</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;number)</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.150">inRange</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&nbsp;number)</pre>
+<div class="block">Returns <code>true</code> if <code>number</code> can be represented by this type without losing
+ any numeric information</div>
 </li>
 </ul>
 <a name="maxValue()">
@@ -441,7 +446,7 @@ public abstract&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/
 <h4>parse</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.html" title="type parameter in NumberType">T</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.188">parse</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
+public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.html" title="type parameter in NumberType">T</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.198">parse</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
 <div class="block"><pre>
  Converts <code>value</code> into a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><code>Number</code></a> of the type <code>T</code> assuming <code>value</code>
  is expressed in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#US" title="class or interface in java.util"><code>Locale.US</code></a> format.
@@ -461,7 +466,7 @@ public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.ht
 <h4>parse</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.html" title="type parameter in NumberType">T</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.159">parse</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value,
+public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.html" title="type parameter in NumberType">T</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.169">parse</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value,
                                <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;inLocale)</pre>
 <div class="block"><pre>
  Converts <code>value</code> into a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><code>Number</code></a> of the type <code>T</code> in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a>
@@ -480,7 +485,7 @@ public final&nbsp;<a href="../../../../se/softhouse/common/numbers/NumberType.ht
 <ul class="blockListLast">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.235">toString</a>()</pre>
+<pre>public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/numbers/NumberType.html#line.239">toString</a>()</pre>
 <dl>
 <dt><strong>Overrides:</strong></dt>
 <dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
