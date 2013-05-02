@@ -144,6 +144,16 @@ public abstract class NumberType<T extends Number>
 	public abstract T from(Number value);
 
 	/**
+	 * Returns <code>true</code> if {@code number} can be represented by this type without losing
+	 * any numeric information
+	 */
+	public boolean inRange(Number number)
+	{
+		Long value = number.longValue();
+		return value >= minValue().longValue() && value <= maxValue().longValue();
+	}
+
+	/**
 	 * <pre>
 	 * Converts {@code value} into a {@link Number} of the type {@code T} in a {@link Locale}
 	 * sensitive way by using {@link NumberFormat}.
@@ -195,12 +205,6 @@ public abstract class NumberType<T extends Number>
 		// TODO(jontejj): NumberType.INTEGER.parse("1.5); should not work, specify isDiscreet and
 		// set parseIntegerOnly on formatter, what about longs?
 		return NumberFormat.getInstance(inLocale);
-	}
-
-	public boolean inRange(Number number)
-	{
-		Long value = number.longValue();
-		return value >= minValue().longValue() && value <= maxValue().longValue();
 	}
 
 	private static final String TEMPLATE = "'%s' is not a valid %s (Localization: %s)" + NEWLINE + " %s";
