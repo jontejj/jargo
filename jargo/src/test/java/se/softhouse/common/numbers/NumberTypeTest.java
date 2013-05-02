@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.testing.NullPointerTester;
@@ -72,20 +71,6 @@ public class NumberTypeTest
 	{
 		assertThat(NumberType.LONG.maxValue()).isEqualTo(Long.MAX_VALUE);
 		assertThat(NumberType.LONG.minValue()).isEqualTo(Long.MIN_VALUE);
-	}
-
-	@Test
-	public void testMappingOfFloatFields()
-	{
-		assertThat(NumberType.FLOAT.maxValue()).isEqualTo(Float.MAX_VALUE);
-		assertThat(NumberType.FLOAT.minValue()).isEqualTo(Float.MIN_VALUE);
-	}
-
-	@Test
-	public void testMappingOfDoubleFields()
-	{
-		assertThat(NumberType.DOUBLE.maxValue()).isEqualTo(Double.MAX_VALUE);
-		assertThat(NumberType.DOUBLE.minValue()).isEqualTo(Double.MIN_VALUE);
 	}
 
 	@Test
@@ -260,44 +245,6 @@ public class NumberTypeTest
 			catch(IllegalArgumentException expected)
 			{
 				assertThat(expected).hasMessage(format(OUT_OF_RANGE, input, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807"));
-			}
-		}
-	}
-
-	@Ignore("Why doesn't Float.parseFloat throw here?")
-	@Test
-	public void testInvalidFloatNumbers()
-	{
-		List<BigDecimal> invalidInput = Arrays.asList(	BigDecimal.valueOf(Float.MIN_VALUE).subtract(BigDecimal.ONE),
-														BigDecimal.valueOf(Float.MAX_VALUE).add(BigDecimal.ONE));
-		for(BigDecimal input : invalidInput)
-		{
-			try
-			{
-				NumberType.FLOAT.parse(input.toString());
-				fail("Invalid float input not detected: " + input);
-			}
-			catch(IllegalArgumentException expected)
-			{
-			}
-		}
-	}
-
-	@Ignore("Why doesn't Double.parseDouble throw here?")
-	@Test
-	public void testInvalidDoubleNumbers()
-	{
-		List<BigDecimal> invalidInput = Arrays.asList(	BigDecimal.valueOf(Double.MIN_VALUE).subtract(BigDecimal.ONE),
-														BigDecimal.valueOf(Double.MAX_VALUE).add(BigDecimal.ONE));
-		for(BigDecimal input : invalidInput)
-		{
-			try
-			{
-				NumberType.DOUBLE.parse(input.toString());
-				fail("Invalid double input not detected: " + input);
-			}
-			catch(IllegalArgumentException expected)
-			{
 			}
 		}
 	}

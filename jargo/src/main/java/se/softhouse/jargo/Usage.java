@@ -208,7 +208,6 @@ public final class Usage implements Serializable
 	 */
 	public void printOn(StringBuilder target)
 	{
-		// TODO(jontejj): verify that this is threadsafe
 		try
 		{
 			printOn((Appendable) target);

@@ -89,8 +89,6 @@ public abstract class ArgumentException extends Exception
 		return getUsage().withErrorMessage(message);
 	}
 
-	// TODO(jontejj): use getMessageAndUsage in toString()
-
 	/**
 	 * Returns why this exception occurred.
 	 * 

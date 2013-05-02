@@ -30,7 +30,6 @@ import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.shortArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.stringparsers.custom.DateTimeParser.dateArgument;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -111,6 +110,8 @@ public class ConcurrencyTest
 							string, charArgument, boolArgument, propertyArgument, arityArgument, repeatedArgument, splittedArgument, enumArgument,
 							variableArityArgument, bigIntegerArgument, bigDecimalArgument)
 			.programDescription("Example of most argument types that jargo can handle by default").locale(Locale.US);
+
+	final Usage usage = parser.usage();
 
 	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");
 
@@ -247,8 +248,9 @@ public class ConcurrencyTest
 
 					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
 					{
-						Usage usage = parser.usage();
-						assertThat(usage).isEqualTo(expectedUsageText);
+						StringBuilder usageText = new StringBuilder();
+						usage.printOn(usageText);
+						assertThat(usageText.toString()).isEqualTo(expectedUsageText);
 					}
 				}
 			}

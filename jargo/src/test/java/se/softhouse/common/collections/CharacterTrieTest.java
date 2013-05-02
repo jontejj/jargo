@@ -15,6 +15,7 @@
 package se.softhouse.common.collections;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -58,7 +59,7 @@ public class CharacterTrieTest
 
 		assertThat(tree.put("world", world)).as("world should already exist in the tree").isEqualTo(world);
 
-		assertThat(tree.size()).as("Wrong tree size, insertion in tree must have failed").isEqualTo(4);
+		assertThat(tree).as("Wrong tree size, insertion in tree must have failed").hasSize(4);
 
 		// Removal
 
@@ -66,16 +67,16 @@ public class CharacterTrieTest
 		assertThat(tree.remove("him")).as("Failed to delete 'him'").isEqualTo(him);
 		assertThat(tree.remove("him")).as("Deleted 'him' from: " + tree + ", even though it's part of 'himmi' ").isNull();
 		// Make sure the removal of 'him' left himmi intact
-		assertThat(tree.containsKey("himmi")).as("'himmi' did not exist in tree" + tree).isTrue();
+		assertThat(tree).includes(entry("himmi", himmi));
 
 		// Clean up parents because they have no children
 		assertThat(tree.remove("himmi")).as("Failed to delete 'himmi' from " + tree).isEqualTo(himmi);
 
 		assertThat(tree.remove("Bye")).as("Deleted non-existing object 'Bye' from " + tree).isNull();
 
-		assertThat(tree.containsKey("hello")).isTrue();
+		assertThat(tree).includes(entry("hello", hello));
 		assertThat(tree.containsKey("Bye")).isFalse();
-		assertThat(tree.size()).as("Wrong tree size, deletion from tree must have failed").isEqualTo(2);
+		assertThat(tree).as("Wrong tree size, deletion from tree must have failed").hasSize(2);
 
 		// Retrieval
 

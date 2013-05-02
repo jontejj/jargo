@@ -39,7 +39,10 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * A class that exposes static fields (and functions), such as {@link Integer#MAX_VALUE} and
- * {@link Integer#decode(String)}, for subclasses of {@link Number} in an object oriented way
+ * {@link Integer#MIN_VALUE}, for subclasses of {@link Number} in an object oriented way.<br>
+ * <b>Note:</b> As {@link Double} and {@link Float} are very hard to use <a
+ * href="http://www.ibm.com/developerworks/java/library/j-jtp0114/">right</a>, their counterparts
+ * are not available here.
  * 
  * @param <T> the subclass of {@link Number}
  */
@@ -73,16 +76,6 @@ public abstract class NumberType<T extends Number>
 	public static final NumberType<Long> LONG = new LongType();
 
 	/**
-	 * Exposes static fields/methods in {@link Float} in a {@link NumberType}
-	 */
-	public static final NumberType<Float> FLOAT = new FloatType();
-
-	/**
-	 * Exposes static fields/methods in {@link Double} in a {@link NumberType}
-	 */
-	public static final NumberType<Double> DOUBLE = new DoubleType();
-
-	/**
 	 * Exposes static fields/methods in {@link BigInteger} in a {@link NumberType}
 	 */
 	public static final NumberType<BigInteger> BIG_INTEGER = new BigIntegerType();
@@ -95,9 +88,7 @@ public abstract class NumberType<T extends Number>
 	/**
 	 * An ordered (by data size) {@link List} of {@link NumberType}s
 	 */
-	public static final ImmutableList<NumberType<?>> TYPES = ImmutableList.<NumberType<?>>of(	BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE,
-																								BIG_INTEGER,
-																								BIG_DECIMAL);
+	public static final ImmutableList<NumberType<?>> TYPES = ImmutableList.<NumberType<?>>of(BYTE, SHORT, INTEGER, LONG, BIG_INTEGER, BIG_DECIMAL);
 	/**
 	 * {@link NumberType}s that doesn't have any {@link #minValue()} or {@link #maxValue()}
 	 */
@@ -206,8 +197,7 @@ public abstract class NumberType<T extends Number>
 		return NumberFormat.getInstance(inLocale);
 	}
 
-	// TODO(jontejj): make this public once I figure out how to validate double/float
-	boolean inRange(Number number)
+	public boolean inRange(Number number)
 	{
 		Long value = number.longValue();
 		return value >= minValue().longValue() && value <= maxValue().longValue();
@@ -358,91 +348,9 @@ public abstract class NumberType<T extends Number>
 		}
 
 		@Override
-		boolean inRange(Number number)
+		public boolean inRange(Number number)
 		{
 			return number instanceof Long;
-		}
-	}
-
-	private static final class DoubleType extends NumberType<Double>
-	{
-		@Override
-		public Double minValue()
-		{
-			return Double.MIN_VALUE;
-		}
-
-		@Override
-		public Double maxValue()
-		{
-			return Double.MAX_VALUE;
-		}
-
-		@Override
-		public String name()
-		{
-			return "double";
-		}
-
-		@Override
-		public Double from(Number value)
-		{
-			return value.doubleValue();
-		}
-
-		@Override
-		boolean inRange(Number number)
-		{
-			try
-			{
-				Double.parseDouble(number.toString());
-				return true;
-			}
-			catch(NumberFormatException e)
-			{
-				return false;
-			}
-		}
-	}
-
-	private static final class FloatType extends NumberType<Float>
-	{
-		@Override
-		public Float minValue()
-		{
-			return Float.MIN_VALUE;
-		}
-
-		@Override
-		public Float maxValue()
-		{
-			return Float.MAX_VALUE;
-		}
-
-		@Override
-		public String name()
-		{
-			return "float";
-		}
-
-		@Override
-		public Float from(Number value)
-		{
-			return value.floatValue();
-		}
-
-		@Override
-		boolean inRange(Number number)
-		{
-			try
-			{
-				Float.parseFloat(number.toString());
-				return true;
-			}
-			catch(NumberFormatException e)
-			{
-				return false;
-			}
 		}
 	}
 
@@ -461,7 +369,7 @@ public abstract class NumberType<T extends Number>
 		}
 
 		@Override
-		boolean inRange(Number number)
+		public boolean inRange(Number number)
 		{
 			return true;
 		}
