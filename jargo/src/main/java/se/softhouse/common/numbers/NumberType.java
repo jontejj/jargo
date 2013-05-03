@@ -14,6 +14,7 @@
  */
 package se.softhouse.common.numbers;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static se.softhouse.common.strings.Describables.illegalArgument;
 import static se.softhouse.common.strings.Describers.numberDescriber;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
@@ -36,6 +37,7 @@ import se.softhouse.common.strings.Describables;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Longs;
 
 /**
  * A class that exposes static fields (and functions), such as {@link Integer#MAX_VALUE} and
@@ -78,15 +80,17 @@ public abstract class NumberType<T extends Number>
 	/**
 	 * Exposes static fields/methods in {@link BigInteger} in a {@link NumberType}
 	 */
-	public static final NumberType<BigInteger> BIG_INTEGER = new BigIntegerType();
+	public static final UnlimitedNumberType<BigInteger> BIG_INTEGER = new BigIntegerType();
 
 	/**
 	 * Exposes static fields/methods in {@link BigDecimal} in a {@link NumberType}
 	 */
-	public static final NumberType<BigDecimal> BIG_DECIMAL = new BigDecimalType();
+	public static final UnlimitedNumberType<BigDecimal> BIG_DECIMAL = new BigDecimalType();
 
 	/**
-	 * An ordered (by data size) {@link List} of {@link NumberType}s
+	 * An ordered (by <a
+	 * href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">data size</a>)
+	 * {@link List} of {@link NumberType}s
 	 */
 	public static final ImmutableList<NumberType<?>> TYPES = ImmutableList.<NumberType<?>>of(BYTE, SHORT, INTEGER, LONG, BIG_INTEGER, BIG_DECIMAL);
 	/**
@@ -166,20 +170,26 @@ public abstract class NumberType<T extends Number>
 	 */
 	@CheckReturnValue
 	@Nonnull
-	public final T parse(String value, Locale inLocale)
+	public final T parse(String input, Locale inLocale)
 	{
 		ParsePosition parsePosition = new ParsePosition(0);
 		// TODO(jontejj): maybe remove spaces here? refer to
 		// http://bugs.sun.com/view_bug.do?bug_id=4510618
-		Number result = parser(inLocale).parse(value, parsePosition);
+		Number result = parser(inLocale).parse(input, parsePosition);
 
-		if(parsePosition.getIndex() != value.length() || result == null)
-			throw illegalArgument(formatError(value, inLocale, parsePosition));
+		// Make sure the whole string was parsed
+		if(parsePosition.getIndex() != input.length() || result == null)
+			throw illegalArgument(formatError(input, inLocale, parsePosition));
 
-		if(!inRange(result))
-			throw illegalArgument(Describables.format(OUT_OF_RANGE, value, format(minValue(), inLocale), format(maxValue(), inLocale)));
+		throwForOutOfRange(input, result, inLocale);
 
 		return from(result);
+	}
+
+	void throwForOutOfRange(String input, Number result, Locale inLocale) throws IllegalArgumentException
+	{
+		if(!inRange(result))
+			throw illegalArgument(Describables.format(OUT_OF_RANGE, input, format(minValue(), inLocale), format(maxValue(), inLocale)));
 	}
 
 	/**
@@ -202,14 +212,14 @@ public abstract class NumberType<T extends Number>
 
 	NumberFormat parser(Locale inLocale)
 	{
-		// TODO(jontejj): NumberType.INTEGER.parse("1.5); should not work, specify isDiscreet and
-		// set parseIntegerOnly on formatter, what about longs?
-		return NumberFormat.getInstance(inLocale);
+		NumberFormat formatter = NumberFormat.getInstance(inLocale);
+		formatter.setParseIntegerOnly(true);
+		return formatter;
 	}
 
 	private static final String TEMPLATE = "'%s' is not a valid %s (Localization: %s)" + NEWLINE + " %s";
 
-	private Describable formatError(String invalidValue, Locale locale, ParsePosition positionForInvalidCharacter)
+	Describable formatError(Object invalidValue, Locale locale, ParsePosition positionForInvalidCharacter)
 	{
 		String localeInformation = locale.getDisplayName(locale);
 		return Describables.format(TEMPLATE, invalidValue, name(), localeInformation, pointingAtIndex(positionForInvalidCharacter.getIndex()));
@@ -354,28 +364,40 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public boolean inRange(Number number)
 		{
-			return number instanceof Long;
+			return number instanceof Long || Longs.tryParse(number.toString()) != null;
 		}
 	}
 
-	private abstract static class UnlimitedNumberType<T extends Number> extends NumberType<T>
+	/**
+	 * A {@link NumberType} that doesn't have any {@link #minValue()} or {@link #maxValue()}.
+	 * 
+	 * @param <T> the type of {@link Number} that's unlimited, {@link BigDecimal} for instance.
+	 */
+	@SuppressWarnings("javadoc")
+	public abstract static class UnlimitedNumberType<T extends Number> extends NumberType<T>
 	{
+		UnlimitedNumberType()
+		{
+		}
+
+		/**
+		 * @deprecated an unlimited number doesn't have any minimum value
+		 */
+		@Deprecated
 		@Override
 		public T minValue()
 		{
 			throw new UnsupportedOperationException(name() + " doesn't have any minValue");
 		}
 
+		/**
+		 * @deprecated an unlimited number doesn't have any maximum value
+		 */
+		@Deprecated
 		@Override
 		public T maxValue()
 		{
 			throw new UnsupportedOperationException(name() + " doesn't have any maxValue");
-		}
-
-		@Override
-		public boolean inRange(Number number)
-		{
-			return true;
 		}
 
 		@Override
@@ -409,8 +431,32 @@ public abstract class NumberType<T extends Number>
 		}
 
 		@Override
+		public boolean inRange(Number number)
+		{
+			checkNotNull(number);
+			if(number instanceof BigDecimal)
+				return ((BigDecimal) number).scale() <= 0;
+			return true;
+		}
+
+		@Override
+		void throwForOutOfRange(String input, Number result, Locale inLocale) throws IllegalArgumentException
+		{
+			if(result instanceof BigDecimal)
+			{
+				boolean hasDecimals = ((BigDecimal) result).scale() > 0;
+				if(hasDecimals)
+				{
+					int decimalPosition = input.indexOf('.');
+					throw illegalArgument(formatError(input, inLocale, new ParsePosition(decimalPosition)));
+				}
+			}
+		}
+
+		@Override
 		public String descriptionOfValidValues(Locale inLocale)
 		{
+			checkNotNull(inLocale);
 			return "an arbitrary integer number (practically no limits)";
 		}
 	}
@@ -421,6 +467,13 @@ public abstract class NumberType<T extends Number>
 		public String name()
 		{
 			return "big-decimal";
+		}
+
+		@Override
+		public boolean inRange(Number number)
+		{
+			checkNotNull(number);
+			return true;
 		}
 
 		@Override
@@ -436,6 +489,7 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public String descriptionOfValidValues(Locale inLocale)
 		{
+			checkNotNull(inLocale);
 			return "an arbitrary decimal number (practically no limits)";
 		}
 	}

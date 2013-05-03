@@ -48,29 +48,29 @@ public class NumberTypeTest
 	@Test
 	public void testMappingOfByteFields()
 	{
-		assertThat(NumberType.BYTE.maxValue()).isEqualTo(Byte.MAX_VALUE);
-		assertThat(NumberType.BYTE.minValue()).isEqualTo(Byte.MIN_VALUE);
+		assertThat(BYTE.maxValue()).isEqualTo(Byte.MAX_VALUE);
+		assertThat(BYTE.minValue()).isEqualTo(Byte.MIN_VALUE);
 	}
 
 	@Test
 	public void testMappingOfShortFields()
 	{
-		assertThat(NumberType.SHORT.maxValue()).isEqualTo(Short.MAX_VALUE);
-		assertThat(NumberType.SHORT.minValue()).isEqualTo(Short.MIN_VALUE);
+		assertThat(SHORT.maxValue()).isEqualTo(Short.MAX_VALUE);
+		assertThat(SHORT.minValue()).isEqualTo(Short.MIN_VALUE);
 	}
 
 	@Test
 	public void testMappingOfIntegerFields()
 	{
-		assertThat(NumberType.INTEGER.maxValue()).isEqualTo(Integer.MAX_VALUE);
-		assertThat(NumberType.INTEGER.minValue()).isEqualTo(Integer.MIN_VALUE);
+		assertThat(INTEGER.maxValue()).isEqualTo(Integer.MAX_VALUE);
+		assertThat(INTEGER.minValue()).isEqualTo(Integer.MIN_VALUE);
 	}
 
 	@Test
 	public void testMappingOfLongFields()
 	{
-		assertThat(NumberType.LONG.maxValue()).isEqualTo(Long.MAX_VALUE);
-		assertThat(NumberType.LONG.minValue()).isEqualTo(Long.MIN_VALUE);
+		assertThat(LONG.maxValue()).isEqualTo(Long.MAX_VALUE);
+		assertThat(LONG.minValue()).isEqualTo(Long.MIN_VALUE);
 	}
 
 	@Test
@@ -123,7 +123,6 @@ public class NumberTypeTest
 	@Test
 	public void testThatParseCanHandleLargeNumbers() throws Exception
 	{
-
 		BigInteger bigInteger = BIG_INTEGER.parse(biggerThanLong.toString());
 		assertThat(bigInteger).isEqualTo(biggerThanLong);
 
@@ -202,7 +201,7 @@ public class NumberTypeTest
 		{
 			try
 			{
-				NumberType.SHORT.parse(input.toString());
+				SHORT.parse(input.toString());
 				fail("Invalid short input not detected: " + input);
 			}
 			catch(IllegalArgumentException expected)
@@ -220,7 +219,7 @@ public class NumberTypeTest
 		{
 			try
 			{
-				NumberType.INTEGER.parse(input.toString());
+				INTEGER.parse(input.toString());
 				fail("Invalid integer input not detected: " + input);
 			}
 			catch(IllegalArgumentException expected)
@@ -233,13 +232,12 @@ public class NumberTypeTest
 	@Test
 	public void testInvalidLongNumbers()
 	{
-		List<BigInteger> invalidInput = Arrays.asList(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), BigInteger.valueOf(Long.MAX_VALUE)
-				.add(BigInteger.ONE));
+		List<BigInteger> invalidInput = Arrays.asList(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), biggerThanLong);
 		for(BigInteger input : invalidInput)
 		{
 			try
 			{
-				NumberType.LONG.parse(input.toString());
+				LONG.parse(input.toString());
 				fail("Invalid long input not detected: " + input);
 			}
 			catch(IllegalArgumentException expected)
@@ -252,16 +250,20 @@ public class NumberTypeTest
 	@Test
 	public void testThatNullContractsAreFollowed()
 	{
-		new NullPointerTester().testInstanceMethods(NumberType.INTEGER, Visibility.PACKAGE);
+		for(NumberType<?> numberType : NumberType.TYPES)
+		{
+			new NullPointerTester().testInstanceMethods(numberType, Visibility.PUBLIC);
+		}
+
 		new NullPointerTester().testStaticMethods(NumberType.class, Visibility.PACKAGE);
 	}
 
 	@Test
-	public void testThatUnparsableTextGeneratesProperErrorMessage() throws Exception
+	public void testThatUnparsableIntegerGeneratesProperErrorMessage() throws Exception
 	{
 		try
 		{
-			NumberType.INTEGER.parse("123a", Locale.ENGLISH);
+			INTEGER.parse("123a", Locale.ENGLISH);
 			fail("a should not be a parsable number");
 		}
 		catch(IllegalArgumentException e)
@@ -275,5 +277,64 @@ public class NumberTypeTest
 			 * @formatter.on
 			 */
 		}
+	}
+
+	@Test
+	public void testThatUnparsableBigIntegerGeneratesProperErrorMessage() throws Exception
+	{
+		try
+		{
+			BIG_INTEGER.parse("12.3", Locale.ENGLISH);
+			fail("12.3 should not be a parsable big-integer");
+		}
+		catch(IllegalArgumentException e)
+		{
+			/**
+			 * @formatter.off
+			 */
+			assertThat(e).hasMessage("'12.3' is not a valid big-integer (Localization: English)" + NEWLINE +
+			                         "   ^");
+			/**
+			 * @formatter.on
+			 */
+		}
+	}
+
+	@Test
+	public void testThatDecimalSeparatorCausesParseErrorForDiscreetTypes() throws Exception
+	{
+		List<NumberType<?>> discreetTypes = Arrays.<NumberType<?>>asList(BYTE, SHORT, INTEGER, LONG, BIG_INTEGER);
+		for(NumberType<?> discreetType : discreetTypes)
+		{
+			try
+			{
+				discreetType.parse("12.3", Locale.ENGLISH);
+				fail("12.3 should not be a parsable " + discreetType);
+			}
+			catch(IllegalArgumentException e)
+			{
+				assertThat(e.getMessage()).contains("is not a valid " + discreetType);
+			}
+		}
+	}
+
+	@Test
+	public void testThatSmallEnoughDataTypesAreInLongRange() throws Exception
+	{
+		assertThat(LONG.inRange((byte) 42)).isTrue();
+		assertThat(LONG.inRange((short) 42)).isTrue();
+		assertThat(LONG.inRange(42)).isTrue();
+		assertThat(LONG.inRange(BigDecimal.valueOf(Long.MAX_VALUE))).isTrue();
+		assertThat(LONG.inRange(BigInteger.valueOf(Long.MIN_VALUE))).isTrue();
+
+		assertThat(LONG.inRange(biggerThanLong)).isFalse();
+	}
+
+	@Test
+	public void testThatBigDecimalMustBeDiscreetForItToFitInABigInteger() throws Exception
+	{
+		assertThat(BIG_INTEGER.inRange(BigDecimal.valueOf(1.23))).isFalse();
+		assertThat(BIG_INTEGER.inRange(BigDecimal.valueOf(123))).isTrue();
+		assertThat(BIG_INTEGER.inRange(biggerThanLong)).isTrue();
 	}
 }
