@@ -184,7 +184,7 @@ public final class Describables
 	@CheckReturnValue
 	public static IllegalArgumentException illegalArgument(Describable message)
 	{
-		return new DescriptionException(message);
+		return new IllegalArgument(message);
 	}
 
 	/**
@@ -195,19 +195,19 @@ public final class Describables
 	@CheckReturnValue
 	public static IllegalArgumentException illegalArgument(Describable message, Throwable cause)
 	{
-		return new DescriptionException(message, cause);
+		return new IllegalArgument(message, cause);
 	}
 
-	private static final class DescriptionException extends IllegalArgumentException
+	private static final class IllegalArgument extends IllegalArgumentException
 	{
 		private final SerializableDescription message;
 
-		private DescriptionException(final Describable message)
+		private IllegalArgument(final Describable message)
 		{
-			this.message = checkNotNull(Describables.asSerializable(message));
+			this.message = asSerializable(message);
 		}
 
-		private DescriptionException(final Describable message, Throwable cause)
+		private IllegalArgument(final Describable message, Throwable cause)
 		{
 			this(message);
 			initCause(checkNotNull(cause));
