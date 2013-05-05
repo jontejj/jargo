@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-EnumTester (common test 0.1.1-SNAPSHOT API)
+Streams (common test 0.1.1-SNAPSHOT API)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ EnumTester (common test 0.1.1-SNAPSHOT API)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="EnumTester (common test 0.1.1-SNAPSHOT API)";
+        parent.document.title="Streams (common test 0.1.1-SNAPSHOT API)";
     }
 }
 </SCRIPT>
@@ -38,7 +38,7 @@ function windowTitle()
   <TR ALIGN="center" VALIGN="top">
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../se/softhouse/common/testlib/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/EnumTester.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Streams.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../se/softhouse/common/testlib/Constants.html" title="class in se.softhouse.common.testlib"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../se/softhouse/common/testlib/Explanation.html" title="class in se.softhouse.common.testlib"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../se/softhouse/common/testlib/SimulatedException.html" title="class in se.softhouse.common.testlib"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../se/softhouse/common/testlib/Thrower.html" title="class in se.softhouse.common.testlib"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?se/softhouse/common/testlib/EnumTester.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="EnumTester.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?se/softhouse/common/testlib/Streams.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Streams.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -87,18 +87,18 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <FONT SIZE="-1">
 se.softhouse.common.testlib</FONT>
 <BR>
-Class EnumTester</H2>
+Class Streams</H2>
 <PRE>
 <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>se.softhouse.common.testlib.EnumTester</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>se.softhouse.common.testlib.Streams</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public final class <A HREF="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.25"><B>EnumTester</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
+<DT><PRE>public final class <A HREF="../../../../src-html/se/softhouse/common/testlib/Streams.html#line.29"><B>Streams</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
 </PRE>
 
 <P>
-Calls the compiler generated valueOf/toString methods for code coverage
+Utility for working with <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Readable.html?is-external=true" title="class or interface in java.lang"><CODE>Readable</CODE></A> and <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io"><CODE>streams</CODE></A> instances.
 <P>
 
 <P>
@@ -116,39 +116,11 @@ Calls the compiler generated valueOf/toString methods for code coverage
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; 
-<BR>
-void</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../se/softhouse/common/testlib/EnumTester.html#testThatToStringIsCompatibleWithValueOf(java.lang.Class)">testThatToStringIsCompatibleWithValueOf</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumClass)</CODE>
+<CODE>static&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../se/softhouse/common/testlib/Streams.html#readAsynchronously(java.io.InputStream)">readAsynchronously</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</A>&nbsp;source)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tests that the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> for each enum constant in <code>enumClass</code> returns
- the exact same as <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#name()" title="class or interface in java.lang"><CODE>Enum.name()</CODE></A> (default behavior).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; 
-<BR>
-void</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../se/softhouse/common/testlib/EnumTester.html#testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(java.lang.Class)">testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumClass)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A variant of <A HREF="../../../../se/softhouse/common/testlib/EnumTester.html#testThatToStringIsCompatibleWithValueOf(java.lang.Class)"><CODE>testThatToStringIsCompatibleWithValueOf(Class)</CODE></A> that doesn't care about
- the visibility of the <code>enumClass</code></TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reads from <code>source</code> asynchronously.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -173,28 +145,16 @@ void</CODE></FONT></TD>
 </TR>
 </TABLE>
 
-<A NAME="testThatToStringIsCompatibleWithValueOf(java.lang.Class)"><!-- --></A><H3>
-testThatToStringIsCompatibleWithValueOf</H3>
+<A NAME="readAsynchronously(java.io.InputStream)"><!-- --></A><H3>
+readAsynchronously</H3>
 <PRE>
-public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; void <A HREF="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.36"><B>testThatToStringIsCompatibleWithValueOf</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumClass)</PRE>
+public static <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../../src-html/se/softhouse/common/testlib/Streams.html#line.42"><B>readAsynchronously</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</A>&nbsp;source)</PRE>
 <DL>
-<DD>Tests that the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><CODE>Object.toString()</CODE></A> for each enum constant in <code>enumClass</code> returns
- the exact same as <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#name()" title="class or interface in java.lang"><CODE>Enum.name()</CODE></A> (default behavior).
- This guarantees that <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#valueOf(java.lang.Class, java.lang.String)" title="class or interface in java.lang"><CODE>Enum.valueOf(Class, String)</CODE></A> will work for each enum constant.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(java.lang.Class)"><!-- --></A><H3>
-testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility</H3>
-<PRE>
-public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; void <A HREF="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.45"><B>testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumClass)</PRE>
-<DL>
-<DD>A variant of <A HREF="../../../../se/softhouse/common/testlib/EnumTester.html#testThatToStringIsCompatibleWithValueOf(java.lang.Class)"><CODE>testThatToStringIsCompatibleWithValueOf(Class)</CODE></A> that doesn't care about
- the visibility of the <code>enumClass</code>
+<DD>Reads from <code>source</code> asynchronously. Use <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> to get the
+ characters read. Characters will be read using <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Charsets.html?is-external=true#UTF_8" title="class or interface in com.google.common.base"><CODE>UTF-8</CODE></A>. A typical use
+ case is to avoid <a
+ href="http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=4">deadlock
+ pitfalls</a> when launching <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Process.html?is-external=true" title="class or interface in java.lang"><CODE>processes</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -215,7 +175,7 @@ public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/ap
   <TR ALIGN="center" VALIGN="top">
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../se/softhouse/common/testlib/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/EnumTester.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Streams.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
@@ -229,11 +189,11 @@ public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/ap
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../se/softhouse/common/testlib/Constants.html" title="class in se.softhouse.common.testlib"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../se/softhouse/common/testlib/Explanation.html" title="class in se.softhouse.common.testlib"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../se/softhouse/common/testlib/SimulatedException.html" title="class in se.softhouse.common.testlib"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../se/softhouse/common/testlib/Thrower.html" title="class in se.softhouse.common.testlib"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?se/softhouse/common/testlib/EnumTester.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="EnumTester.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?se/softhouse/common/testlib/Streams.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Streams.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
