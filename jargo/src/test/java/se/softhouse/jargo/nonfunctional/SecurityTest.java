@@ -12,7 +12,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.jargo.security;
+package se.softhouse.jargo.nonfunctional;
 
 import java.io.FilePermission;
 import java.net.NetPermission;
@@ -20,14 +20,13 @@ import java.security.Permission;
 import java.util.PropertyPermission;
 import java.util.Set;
 
-import se.softhouse.jargo.concurrency.ConcurrencyTest;
 
 import com.google.common.collect.Sets;
 
 /**
  * Tests that argument parser works with an extremely restrictive {@link SecurityManager} installed.
  */
-public class SecurityManagerDependencyTest
+public class SecurityTest
 {
 	public static void main(String[] args) throws Throwable
 	{

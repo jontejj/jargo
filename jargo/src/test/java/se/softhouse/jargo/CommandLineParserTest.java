@@ -481,7 +481,4 @@ public class CommandLineParserTest
 			assertThat(expected).hasMessage("Detected a space in foo bar, argument names must not have spaces in them");
 		}
 	}
-
-	// TODO(jontejj): Test for memory leaks by parsing a gigantic string and GcFinalization.await()
-	// MemoryTester#allocateLargeString
 }
