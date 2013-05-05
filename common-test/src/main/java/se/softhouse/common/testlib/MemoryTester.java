@@ -60,8 +60,9 @@ public final class MemoryTester
 
 	/**
 	 * Creates a {@link FinalizationAwareObject} that will know if {@code referenceToKeepTrackOff}
-	 * has been garbage collected. When you expect that garbage collection has occurred call
-	 * {@link FinalizationAwareObject#assertThatNoMoreReferencesToReferentIsKept()} to verify it.
+	 * has been garbage collected. Call
+	 * {@link FinalizationAwareObject#assertThatNoMoreReferencesToReferentIsKept()} when you expect
+	 * all references to {@code referenceToKeepTrackOff} be gone.
 	 */
 	public static FinalizationAwareObject createFinalizationAwareObject(Object referenceToKeepTrackOff)
 	{

@@ -14,6 +14,8 @@
  */
 package se.softhouse.common.testlib;
 
+import static com.google.common.base.Charsets.US_ASCII;
+import static com.google.common.base.Charsets.UTF_8;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
@@ -33,5 +35,13 @@ public class ConstantsTest
 	public void testThatOneMinuteIsExpressedInMillis() throws Exception
 	{
 		assertThat(Constants.ONE_MINUTE).isEqualTo(60000);
+	}
+
+	@Test
+	public void testThatUTF8CharIsNotRepresentableInAscii() throws Exception
+	{
+		byte[] asciiBytes = String.valueOf(Constants.UTF_8_CHAR).getBytes(US_ASCII);
+		byte[] utf8Bytes = String.valueOf(Constants.UTF_8_CHAR).getBytes(UTF_8);
+		assertThat(asciiBytes).isNotEqualTo(utf8Bytes);
 	}
 }

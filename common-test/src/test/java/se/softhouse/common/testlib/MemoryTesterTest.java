@@ -46,6 +46,15 @@ public class MemoryTesterTest
 	}
 
 	@Test
+	public void testThatUnreferencedObjectIsOkay() throws Exception
+	{
+		Object releaseMe = new Object();
+		FinalizationAwareObject finalizationAwareObject = MemoryTester.createFinalizationAwareObject(releaseMe);
+		releaseMe = null;
+		finalizationAwareObject.assertThatNoMoreReferencesToReferentIsKept();
+	}
+
+	@Test
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(MemoryTester.class, Visibility.PACKAGE);

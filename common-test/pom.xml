@@ -17,7 +17,7 @@
 			<version>1.4</version>
 		</dependency>
 		<dependency>
-			<!-- Includes GzFinalization and lots more -->
+			<!-- Includes GcFinalization and lots more -->
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-testlib</artifactId>
 			<version>14.0.1</version>

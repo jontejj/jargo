@@ -16,6 +16,8 @@ package se.softhouse.common.testlib;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.Charsets;
+
 /**
  * Useful constants to use in tests
  */
@@ -34,6 +36,12 @@ public final class Constants
 	 * One minute in milliseconds
 	 */
 	public static final long ONE_MINUTE = SECONDS.toMillis(60);
+
+	/**
+	 * A character that exists in {@link Charsets#UTF_8 UTF-8} but not in {@link Charsets#US_ASCII
+	 * ascii}
+	 */
+	public static final char UTF_8_CHAR = '\uFF26';
 
 	static final int EXPECTED_TEST_TIME_FOR_THIS_SUITE = 2000;
 }

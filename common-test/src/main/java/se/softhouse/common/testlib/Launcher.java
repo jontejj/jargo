@@ -16,7 +16,6 @@ package se.softhouse.common.testlib;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.io.ByteStreams.toByteArray;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 
@@ -24,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -147,12 +148,20 @@ public final class Launcher
 	private static LaunchedProgram execute(List<String> args, String debugInformation) throws IOException, InterruptedException
 	{
 		Process program = new ProcessBuilder().command(args).start();
-		// TODO(jontejj): read streams simultaneously to avoid deadlock in the launched program
-		// http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=4
-		String output = new String(toByteArray(program.getInputStream()), Charsets.UTF_8);
-		String errors = new String(toByteArray(program.getErrorStream()), Charsets.UTF_8);
-
+		Future<String> stdout = Streams.readAsynchronously(program.getInputStream());
+		Future<String> stderr = Streams.readAsynchronously(program.getErrorStream());
 		program.waitFor();
-		return new LaunchedProgram(errors, output, debugInformation);
+		try
+		{
+			String output = stdout.get();
+			String errors = stderr.get();
+			return new LaunchedProgram(errors, output, debugInformation);
+		}
+		catch(ExecutionException e)
+		{
+			if(e.getCause() instanceof IOException)
+				throw (IOException) e.getCause();
+			throw new RuntimeException("Failed to read stdout/stderr", e);
+		}
 	}
 }
