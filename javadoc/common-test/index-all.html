@@ -60,11 +60,16 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#_A_">A</a>&nbsp;<a href="#_C_">C</a>&nbsp;<a href="#_D_">D</a>&nbsp;<a href="#_E_">E</a>&nbsp;<a href="#_F_">F</a>&nbsp;<a href="#_G_">G</a>&nbsp;<a href="#_L_">L</a>&nbsp;<a href="#_O_">O</a>&nbsp;<a href="#_R_">R</a>&nbsp;<a href="#_S_">S</a>&nbsp;<a href="#_T_">T</a>&nbsp;<a href="#_U_">U</a>&nbsp;<a name="_A_">
+<div class="contentContainer"><a href="#_A_">A</a>&nbsp;<a href="#_C_">C</a>&nbsp;<a href="#_D_">D</a>&nbsp;<a href="#_E_">E</a>&nbsp;<a href="#_F_">F</a>&nbsp;<a href="#_G_">G</a>&nbsp;<a href="#_L_">L</a>&nbsp;<a href="#_M_">M</a>&nbsp;<a href="#_O_">O</a>&nbsp;<a href="#_R_">R</a>&nbsp;<a href="#_S_">S</a>&nbsp;<a href="#_T_">T</a>&nbsp;<a href="#_U_">U</a>&nbsp;<a name="_A_">
 <!--   -->
 </a>
 <h2 class="title">A</h2>
 <dl>
+<dt><span class="strong"><a href="./se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html#assertThatNoMoreReferencesToReferentIsKept()">assertThatNoMoreReferencesToReferentIsKept()</a></span> - Method in class se.softhouse.common.testlib.<a href="./se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib">MemoryTester.FinalizationAwareObject</a></dt>
+<dd>
+<div class="block">Runs a full <a href="http://download.oracle.com/javase/6/docs/api/java/lang/System.html?is-external=true#gc()" title="class or interface in java.lang"><code>GC</code></a> and asserts that the reference has been released
+ afterwards</div>
+</dd>
 <dt><span class="strong"><a href="./se/softhouse/common/testlib/Thrower.html#asUnchecked(java.lang.Exception)">asUnchecked(Exception)</a></span> - Static method in class se.softhouse.common.testlib.<a href="./se/softhouse/common/testlib/Thrower.html" title="class in se.softhouse.common.testlib">Thrower</a></dt>
 <dd>
 <div class="block">Re-throws <code>checkedException</code> without declaring that it throws it</div>
@@ -82,6 +87,11 @@
 <dt><a href="./se/softhouse/common/testlib/Constants.html" title="class in se.softhouse.common.testlib"><span class="strong">Constants</span></a> - Class in <a href="./se/softhouse/common/testlib/package-summary.html">se.softhouse.common.testlib</a></dt>
 <dd>
 <div class="block">Useful constants to use in tests</div>
+</dd>
+<dt><span class="strong"><a href="./se/softhouse/common/testlib/MemoryTester.html#createFinalizationAwareObject(java.lang.Object)">createFinalizationAwareObject(Object)</a></span> - Static method in class se.softhouse.common.testlib.<a href="./se/softhouse/common/testlib/MemoryTester.html" title="class in se.softhouse.common.testlib">MemoryTester</a></dt>
+<dd>
+<div class="block">Creates a <a href="./se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><code>MemoryTester.FinalizationAwareObject</code></a> that will know if <code>referenceToKeepTrackOff</code>
+ has been garbage collected.</div>
 </dd>
 </dl>
 <a name="_D_">
@@ -159,6 +169,21 @@
 <dd>
 <div class="block">
  Utilities for testing different <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a>s.</div>
+</dd>
+</dl>
+<a name="_M_">
+<!--   -->
+</a>
+<h2 class="title">M</h2>
+<dl>
+<dt><a href="./se/softhouse/common/testlib/MemoryTester.html" title="class in se.softhouse.common.testlib"><span class="strong">MemoryTester</span></a> - Class in <a href="./se/softhouse/common/testlib/package-summary.html">se.softhouse.common.testlib</a></dt>
+<dd>
+<div class="block">Helps to test for memory leaks</div>
+</dd>
+<dt><a href="./se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><span class="strong">MemoryTester.FinalizationAwareObject</span></a> - Class in <a href="./se/softhouse/common/testlib/package-summary.html">se.softhouse.common.testlib</a></dt>
+<dd>
+<div class="block">A simple <a href="http://download.oracle.com/javase/6/docs/api/java/lang/ref/PhantomReference.html?is-external=true" title="class or interface in java.lang.ref"><code>PhantomReference</code></a> that can be used to assert that all references to it is
+ gone.</div>
 </dd>
 </dl>
 <a name="_O_">
@@ -271,7 +296,7 @@
  coverage drops.</div>
 </dd>
 </dl>
-<a href="#_A_">A</a>&nbsp;<a href="#_C_">C</a>&nbsp;<a href="#_D_">D</a>&nbsp;<a href="#_E_">E</a>&nbsp;<a href="#_F_">F</a>&nbsp;<a href="#_G_">G</a>&nbsp;<a href="#_L_">L</a>&nbsp;<a href="#_O_">O</a>&nbsp;<a href="#_R_">R</a>&nbsp;<a href="#_S_">S</a>&nbsp;<a href="#_T_">T</a>&nbsp;<a href="#_U_">U</a>&nbsp;</div>
+<a href="#_A_">A</a>&nbsp;<a href="#_C_">C</a>&nbsp;<a href="#_D_">D</a>&nbsp;<a href="#_E_">E</a>&nbsp;<a href="#_F_">F</a>&nbsp;<a href="#_G_">G</a>&nbsp;<a href="#_L_">L</a>&nbsp;<a href="#_M_">M</a>&nbsp;<a href="#_O_">O</a>&nbsp;<a href="#_R_">R</a>&nbsp;<a href="#_S_">S</a>&nbsp;<a href="#_T_">T</a>&nbsp;<a href="#_U_">U</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar_bottom">
 <!--   -->

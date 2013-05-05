@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-<title>ResourceLoader (common test 0.1.1-SNAPSHOT API)</title>
+<title>MemoryTester (common test 0.1.1-SNAPSHOT API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ResourceLoader (common test 0.1.1-SNAPSHOT API)";
+        parent.document.title="MemoryTester (common test 0.1.1-SNAPSHOT API)";
     }
 //-->
 </script>
@@ -25,7 +25,7 @@
 <ul class="navList" title="Navigation">
 <li><a href="../../../../se/softhouse/common/testlib/package-summary.html">Package</a></li>
 <li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/ResourceLoader.html">Use</a></li>
+<li><a href="class-use/MemoryTester.html">Use</a></li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../index-all.html">Index</a></li>
 <li><a href="../../../../help-doc.html">Help</a></li>
@@ -34,12 +34,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../se/softhouse/common/testlib/Serializer.html" title="class in se.softhouse.common.testlib"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../se/softhouse/common/testlib/Locales.html" title="class in se.softhouse.common.testlib"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?se/softhouse/common/testlib/ResourceLoader.html" target="_top">Frames</a></li>
-<li><a href="ResourceLoader.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?se/softhouse/common/testlib/MemoryTester.html" target="_top">Frames</a></li>
+<li><a href="MemoryTester.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -59,7 +59,7 @@
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
@@ -78,14 +78,14 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">se.softhouse.common.testlib</div>
-<h2 title="Class ResourceLoader" class="title">Class ResourceLoader</h2>
+<h2 title="Class MemoryTester" class="title">Class MemoryTester</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
 <li>
 <ul class="inheritance">
-<li>se.softhouse.common.testlib.ResourceLoader</li>
+<li>se.softhouse.common.testlib.MemoryTester</li>
 </ul>
 </li>
 </ul>
@@ -94,16 +94,37 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public final class <a href="../../../../src-html/se/softhouse/common/testlib/ResourceLoader.html#line.28">ResourceLoader</a>
+<pre>public final class <a href="../../../../src-html/se/softhouse/common/testlib/MemoryTester.html#line.29">MemoryTester</a>
 extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
-<div class="block">Aids tests with loading resource texts. These texts are often the expected result from some
- operation.</div>
+<div class="block">Helps to test for memory leaks</div>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="nested_class_summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Class and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib">MemoryTester.FinalizationAwareObject</a></strong></code>
+<div class="block">A simple <a href="http://download.oracle.com/javase/6/docs/api/java/lang/ref/PhantomReference.html?is-external=true" title="class or interface in java.lang.ref"><code>PhantomReference</code></a> that can be used to assert that all references to it is
+ gone.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method_summary">
@@ -117,9 +138,10 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../se/softhouse/common/testlib/ResourceLoader.html#get(java.lang.String)">get</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resourceName)</code>
-<div class="block">Loads a file and reads it as an <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Charsets.html?is-external=true#UTF_8" title="class or interface in com.google.common.base"><code>UTF_8</code></a> file.</div>
+<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib">MemoryTester.FinalizationAwareObject</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../se/softhouse/common/testlib/MemoryTester.html#createFinalizationAwareObject(java.lang.Object)">createFinalizationAwareObject</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;referenceToKeepTrackOff)</code>
+<div class="block">Creates a <a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><code>MemoryTester.FinalizationAwareObject</code></a> that will know if <code>referenceToKeepTrackOff</code>
+ has been garbage collected.</div>
 </td>
 </tr>
 </table>
@@ -144,18 +166,16 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="get(java.lang.String)">
+<a name="createFinalizationAwareObject(java.lang.Object)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>get</h4>
-<pre>public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/ResourceLoader.html#line.41">get</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resourceName)</pre>
-<div class="block">Loads a file and reads it as an <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Charsets.html?is-external=true#UTF_8" title="class or interface in com.google.common.base"><code>UTF_8</code></a> file.
- <code>resourceName</code> must start with a "/"</div>
-<dl><dt><span class="strong">Returns:</span></dt><dd>the file as a string</dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a></code> - if <code>resourceName</code> can't be found/loaded</dd></dl>
+<h4>createFinalizationAwareObject</h4>
+<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib">MemoryTester.FinalizationAwareObject</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/MemoryTester.html#line.66">createFinalizationAwareObject</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;referenceToKeepTrackOff)</pre>
+<div class="block">Creates a <a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><code>MemoryTester.FinalizationAwareObject</code></a> that will know if <code>referenceToKeepTrackOff</code>
+ has been garbage collected. When you expect that garbage collection has occurred call
+ <a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html#assertThatNoMoreReferencesToReferentIsKept()"><code>MemoryTester.FinalizationAwareObject.assertThatNoMoreReferencesToReferentIsKept()</code></a> to verify it.</div>
 </li>
 </ul>
 </li>
@@ -174,7 +194,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <ul class="navList" title="Navigation">
 <li><a href="../../../../se/softhouse/common/testlib/package-summary.html">Package</a></li>
 <li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/ResourceLoader.html">Use</a></li>
+<li><a href="class-use/MemoryTester.html">Use</a></li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../index-all.html">Index</a></li>
 <li><a href="../../../../help-doc.html">Help</a></li>
@@ -183,12 +203,12 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../se/softhouse/common/testlib/Serializer.html" title="class in se.softhouse.common.testlib"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../se/softhouse/common/testlib/Locales.html" title="class in se.softhouse.common.testlib"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../se/softhouse/common/testlib/MemoryTester.FinalizationAwareObject.html" title="class in se.softhouse.common.testlib"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?se/softhouse/common/testlib/ResourceLoader.html" target="_top">Frames</a></li>
-<li><a href="ResourceLoader.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?se/softhouse/common/testlib/MemoryTester.html" target="_top">Frames</a></li>
+<li><a href="MemoryTester.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -208,7 +228,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
