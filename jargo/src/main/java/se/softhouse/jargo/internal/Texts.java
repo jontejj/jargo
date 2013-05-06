@@ -163,6 +163,8 @@ public final class Texts
 		 */
 		public static final String DISALLOWED_VALUE = "'%s' is not %s";
 
+		public static final String DISALLOWED_PROPERTY_VALUE = "Invalid value for key '%s': '%s' is not %s";
+
 		public static final String INVALID_CHAR = "'%s' is not a valid character";
 
 		/**

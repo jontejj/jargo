@@ -24,7 +24,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
 /**
- * Utility for working with {@link Readable} and {@link InputStream streams} instances.
+ * Utility for working with {@link Readable} and {@link InputStream stream} instances.
  */
 public final class Streams
 {

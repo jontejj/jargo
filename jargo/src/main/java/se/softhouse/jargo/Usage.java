@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.NotThreadSafe;
 
 import se.softhouse.common.strings.Lines;
 import se.softhouse.common.strings.StringBuilders;
@@ -66,7 +66,7 @@ import com.google.common.collect.Iterables;
  * </ol>
  * </pre>
  */
-@ThreadSafe
+@NotThreadSafe
 public final class Usage implements Serializable
 {
 	private static final long serialVersionUID = 1L;

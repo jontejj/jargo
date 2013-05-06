@@ -437,7 +437,6 @@ final class CommandLineParserInstance
 		}
 		catch(IllegalArgumentException e)
 		{
-			// TODO(jontejj): use the used argument name instead of arg.toString()
 			throw wrapException(e).withUsageReference(arg).withUsedArgumentName(arg.toString()).withUsage(usage(inLocale));
 		}
 		catch(ArgumentException e)

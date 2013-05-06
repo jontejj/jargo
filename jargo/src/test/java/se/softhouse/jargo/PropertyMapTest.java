@@ -16,6 +16,7 @@ package se.softhouse.jargo;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newLinkedHashMap;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
@@ -25,6 +26,7 @@ import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.StringParsers.byteParser;
 import static se.softhouse.jargo.StringParsers.integerParser;
+import static se.softhouse.jargo.internal.Texts.UserErrors.DISALLOWED_PROPERTY_VALUE;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
@@ -130,7 +132,7 @@ public class PropertyMapTest
 		assertThat(numberMap.get("key")).isEqualTo(3);
 	}
 
-	@Test(expected = ArgumentException.class)
+	@Test
 	public void testLimitationOfPropertyValues() throws ArgumentException
 	{
 		Argument<Map<String, String>> fooArgument = stringArgument("-N").limitTo(foos()).asPropertyMap().build();
@@ -140,7 +142,15 @@ public class PropertyMapTest
 
 		assertThat(parsed.get(fooArgument).get("bar")).isEqualTo("foo");
 
-		parser.parse("-Nbar=bar");
+		try
+		{
+			parser.parse("-Nbar=bar");
+			fail("bar should not be a valid value");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(format(DISALLOWED_PROPERTY_VALUE, "bar", "bar", "foo"));
+		}
 	}
 
 	@Test(expected = ArgumentException.class)
@@ -176,7 +186,7 @@ public class PropertyMapTest
 		}
 		catch(ArgumentException invalidBar)
 		{
-			assertThat(invalidBar).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, -1, zeroToTen));
+			assertThat(invalidBar).hasMessage(format(DISALLOWED_PROPERTY_VALUE, "bar", -1, zeroToTen));
 		}
 	}
 

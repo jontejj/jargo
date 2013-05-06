@@ -987,7 +987,7 @@ public final class StringParsers
 			try
 			{
 				if(!valueLimiter.apply(parsedValue))
-					throw withMessage(format(UserErrors.DISALLOWED_VALUE, parsedValue, valueLimiter));
+					throw withMessage(format(UserErrors.DISALLOWED_PROPERTY_VALUE, parsedKey, parsedValue, valueLimiter));
 			}
 			catch(IllegalArgumentException e)
 			{
