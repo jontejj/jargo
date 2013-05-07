@@ -98,4 +98,19 @@ public final class Predicates2
 			return elementLimiter.toString();
 		}
 	}
+
+	/**
+	 * Works just like {@link Predicates#and(Predicate, Predicate)} except that if {@code first} is
+	 * {@link Predicates#alwaysTrue()} {@code second} is returned directly (or vice versa). This has
+	 * the potential to make {@link Predicate#toString()} look a bit nicer for the resulting
+	 * {@link Predicate}.
+	 */
+	public static <T> Predicate<T> and(Predicate<T> first, Predicate<T> second)
+	{
+		if(first == alwaysTrue())
+			return checkNotNull(second);
+		else if(second == alwaysTrue())
+			return checkNotNull(first);
+		return Predicates.and(first, second);
+	}
 }

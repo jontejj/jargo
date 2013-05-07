@@ -14,10 +14,12 @@
  */
 package se.softhouse.common.guavaextensions;
 
+import static com.google.common.base.Predicates.alwaysFalse;
 import static com.google.common.base.Predicates.alwaysTrue;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.guavaextensions.Predicates2.and;
 import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
 
 import java.util.List;
@@ -81,6 +83,25 @@ public class Predicates2Test
 	public void testThatListPredicateReturnsAlwaysTrueWhenGivenAlwaysTrue()
 	{
 		assertThat(listPredicate(alwaysTrue())).isSameAs(alwaysTrue());
+	}
+
+	@Test
+	public void testThatSecondArgumentIsReturnedDirectlyWhenFirstIsAlwaysTrue() throws Exception
+	{
+		assertThat(and(alwaysTrue(), alwaysFalse())).isSameAs(alwaysFalse());
+	}
+
+	@Test
+	public void testThatFirstArgumentIsReturnedDirectlyWhenSecondIsAlwaysTrue() throws Exception
+	{
+		assertThat(and(alwaysFalse(), alwaysTrue())).isSameAs(alwaysFalse());
+	}
+
+	@Test
+	public void testThatBothPredicatesNeedsToBeTheSameInAndPredicate() throws Exception
+	{
+		assertThat(and(alwaysTrue(), alwaysTrue()).apply(null)).isTrue();
+		assertThat(and(alwaysFalse(), alwaysFalse()).apply(null)).isFalse();
 	}
 
 	@Test
