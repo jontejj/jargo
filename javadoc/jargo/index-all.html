@@ -66,7 +66,7 @@
 </a>
 <h2 class="title">A</h2>
 <dl>
-<dt><span class="strong"><a href="./se/softhouse/common/guavaextensions/Predicates2.html#and(com.google.common.base.Predicate, com.google.common.base.Predicate)">and(Predicate&lt;T&gt;, Predicate&lt;T&gt;)</a></span> - Static method in class se.softhouse.common.guavaextensions.<a href="./se/softhouse/common/guavaextensions/Predicates2.html" title="class in se.softhouse.common.guavaextensions">Predicates2</a></dt>
+<dt><span class="strong"><a href="./se/softhouse/common/guavaextensions/Predicates2.html#and(com.google.common.base.Predicate, com.google.common.base.Predicate)">and(Predicate&lt;? super T&gt;, Predicate&lt;? super T&gt;)</a></span> - Static method in class se.softhouse.common.guavaextensions.<a href="./se/softhouse/common/guavaextensions/Predicates2.html" title="class in se.softhouse.common.guavaextensions">Predicates2</a></dt>
 <dd>
 <div class="block">Works just like <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicates.html?is-external=true#and(com.google.common.base.Predicate, com.google.common.base.Predicate)" title="class or interface in com.google.common.base"><code>Predicates.and(Predicate, Predicate)</code></a> except that if <code>first</code> is
  <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Predicates.html?is-external=true#alwaysTrue()" title="class or interface in com.google.common.base"><code>Predicates.alwaysTrue()</code></a> <code>second</code> is returned directly (or vice versa).</div>
@@ -102,9 +102,9 @@
  doesn't have any <a href="./se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><code>ArgumentBuilder.names(String...)</code></a>
  has an empty <a href="./se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><code>ArgumentBuilder.description(String)</code></a>
  isn't <a href="./se/softhouse/jargo/ArgumentBuilder.html#required()"><code>ArgumentBuilder.required()</code></a>
- uses <a href="./se/softhouse/jargo/StringParser.html#defaultValue()"><code>defaultValue()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce default values
+ uses <a href="./se/softhouse/jargo/StringParser.html#defaultValue()"><code>StringParser.defaultValue()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce default values
  uses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><code>Object.toString()</code></a> to describe the default value
- uses <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>metaDescription()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce meta
+ uses <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>StringParser.metaDescription()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce meta
  descriptions
  doesn't have any <a href="./se/softhouse/jargo/ArgumentBuilder.html#limitTo(com.google.common.base.Predicate)"><code>limits</code></a>
  
@@ -749,7 +749,7 @@
 <dt><span class="strong"><a href="./se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)">metaDescription(String)</a></span> - Method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a></dt>
 <dd>
 <div class="block">
- By default <a href="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a>s provides a meta description (by implementing <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>metaDescription()</code></a>
+ By default <a href="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a>s provides a meta description (by implementing <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>StringParser.metaDescription()</code></a>
  that describes the type of data they expect.</div>
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/ForwardingStringParser.html#metaDescription()">metaDescription()</a></span> - Method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo">ForwardingStringParser</a></dt>
@@ -1173,15 +1173,15 @@
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(java.lang.Object, java.lang.Throwable)">withMessage(Object, Throwable)</a></span> - Static method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ArgumentExceptions.html" title="class in se.softhouse.jargo">ArgumentExceptions</a></dt>
 <dd>
-<div class="block">Like <a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(java.lang.Object)"><code>ArgumentExceptions.withMessage(Object)</code></a> but with a <code>cause</code></div>
+<div class="block">Like <a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(java.lang.Object)"><code>withMessage(Object)</code></a> but with a <code>cause</code></div>
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(se.softhouse.common.strings.Describable)">withMessage(Describable)</a></span> - Static method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ArgumentExceptions.html" title="class in se.softhouse.jargo">ArgumentExceptions</a></dt>
 <dd>
-<div class="block"><a href="./se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a> based version of <a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(java.lang.Object)"><code>ArgumentExceptions.withMessage(Object)</code></a></div>
+<div class="block"><a href="./se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a> based version of <a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(java.lang.Object)"><code>withMessage(Object)</code></a></div>
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(se.softhouse.common.strings.Describable, java.lang.Throwable)">withMessage(Describable, Throwable)</a></span> - Static method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ArgumentExceptions.html" title="class in se.softhouse.jargo">ArgumentExceptions</a></dt>
 <dd>
-<div class="block">Like <a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(se.softhouse.common.strings.Describable)"><code>ArgumentExceptions.withMessage(Describable)</code></a> but with a <code>cause</code></div>
+<div class="block">Like <a href="./se/softhouse/jargo/ArgumentExceptions.html#withMessage(se.softhouse.common.strings.Describable)"><code>withMessage(Describable)</code></a> but with a <code>cause</code></div>
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/Arguments.html#withParser(se.softhouse.jargo.StringParser)">withParser(StringParser&lt;T&gt;)</a></span> - Static method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/Arguments.html" title="class in se.softhouse.jargo">Arguments</a></dt>
 <dd>

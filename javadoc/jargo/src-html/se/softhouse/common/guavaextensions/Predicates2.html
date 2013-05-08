@@ -113,7 +113,7 @@
 <span class="sourceLineNo">105</span>         * the potential to make {@link Predicate#toString()} look a bit nicer for the resulting<a name="line.105"></a>
 <span class="sourceLineNo">106</span>         * {@link Predicate}.<a name="line.106"></a>
 <span class="sourceLineNo">107</span>         */<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        public static &lt;T&gt; Predicate&lt;T&gt; and(Predicate&lt;T&gt; first, Predicate&lt;T&gt; second)<a name="line.108"></a>
+<span class="sourceLineNo">108</span>        public static &lt;T&gt; Predicate&lt;? super T&gt; and(Predicate&lt;? super T&gt; first, Predicate&lt;? super T&gt; second)<a name="line.108"></a>
 <span class="sourceLineNo">109</span>        {<a name="line.109"></a>
 <span class="sourceLineNo">110</span>                if(first == alwaysTrue())<a name="line.110"></a>
 <span class="sourceLineNo">111</span>                        return checkNotNull(second);<a name="line.111"></a>
