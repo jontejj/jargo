@@ -39,8 +39,8 @@ import javax.annotation.concurrent.NotThreadSafe;
  * Neither <code>null</code> keys or <code>null</code> values are allowed because just like the
  * devil, they are evil.
  * 
- * If you're iterating over the whole trie more often than you do simple lookups like
- * {@link #getEntriesWithPrefix(CharSequence)} you're probably better off using a {@link TreeMap}.
+ * If you're iterating over the whole trie more often than you do {@link #getEntriesWithPrefix(CharSequence) simple lookups}
+ * you're probably better off using a {@link TreeMap}.
  * 
  * TODO(jontejj): Implement SortedMap instead of Map
  * 

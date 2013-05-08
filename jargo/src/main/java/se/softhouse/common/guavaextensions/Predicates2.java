@@ -105,12 +105,14 @@ public final class Predicates2
 	 * the potential to make {@link Predicate#toString()} look a bit nicer for the resulting
 	 * {@link Predicate}.
 	 */
-	public static <T> Predicate<? super T> and(Predicate<? super T> first, Predicate<? super T> second)
+	// A predicate for ? super T is also a Predicate for T
+	@SuppressWarnings("unchecked")
+	public static <T> Predicate<T> and(Predicate<? super T> first, Predicate<? super T> second)
 	{
 		if(first == alwaysTrue())
-			return checkNotNull(second);
+			return (Predicate<T>) checkNotNull(second);
 		else if(second == alwaysTrue())
-			return checkNotNull(first);
+			return (Predicate<T>) checkNotNull(first);
 		return Predicates.and(first, second);
 	}
 }
