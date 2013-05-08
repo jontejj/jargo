@@ -41,6 +41,7 @@ import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import se.softhouse.common.guavaextensions.Functions2;
+import se.softhouse.common.guavaextensions.Predicates2;
 import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describer;
@@ -478,6 +479,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <b>Note:</b>The validity of any {@link #defaultValueSupplier(Supplier) default value} isn't checked until
 	 * it's actually needed when {@link ParsedArguments#get(Argument)} is called. This is so
 	 * because {@link Supplier#get()} (or {@link StringParser#defaultValue()}) could take an arbitrary long time.
+	 * 
+	 * <b>Note:</b>Any previously set limiter will be {@link Predicates2#and(Predicate, Predicate)
+	 * and'ed} together with {@code aLimiter}.
 	 * </pre>
 	 * 
 	 * @param aLimiter a limiter
@@ -486,8 +490,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Beta
 	public SELF limitTo(Predicate<? super T> aLimiter)
 	{
-		// TODO(jontejj): Add support for several different limiters?
-		limiter = checkNotNull(aLimiter);
+		limiter = Predicates2.and(limiter, aLimiter);
 		return myself;
 	}
 

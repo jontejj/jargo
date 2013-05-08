@@ -62,6 +62,20 @@ public class LimiterTest
 	}
 
 	@Test
+	public void testThatSeveralLimiterAreCombinedIntoAnAndLimiter()
+	{
+		try
+		{
+			integerArgument("-n").limitTo(Range.closed(1, 2)).limitTo(Range.closed(0, 4)).parse("-n", "3");
+			fail("3 should not be allowed, limiter override lost previously set limiter");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("'3' is not And([1‥2],[0‥4])");
+		}
+	}
+
+	@Test
 	public void testRepeatedWithLimiter()
 	{
 		try
