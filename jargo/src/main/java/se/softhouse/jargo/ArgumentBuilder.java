@@ -490,7 +490,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Beta
 	public SELF limitTo(Predicate<? super T> aLimiter)
 	{
-		limiter = Predicates2.and(limiter, aLimiter);
+		limiter = Predicates2.<T>and(limiter, aLimiter);
 		return myself;
 	}
 
