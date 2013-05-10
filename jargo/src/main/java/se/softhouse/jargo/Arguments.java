@@ -88,9 +88,6 @@ public final class Arguments
 	 */
 	public static Argument<?> helpArgument(final String mandatoryName, final String ... optionalNames)
 	{
-		// TODO(jontejj): instead of throwing, this could be an Argument<Usage> instead, where the
-		// user would have to query ParsedArguments#wasGiven to know whether or not to print help
-		// texts
 		return new SimpleArgumentBuilder<String>(HelpParser.INSTANCE).names(asList(mandatoryName, optionalNames)).build();
 	}
 

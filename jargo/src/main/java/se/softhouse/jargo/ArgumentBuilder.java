@@ -865,9 +865,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			super(command);
 		}
 
-		// TODO(jontejj): add aliases(String ...aliases) method that delegates to names (keep main
-		// name)
-
 		/**
 		 * @deprecated Commands shouldn't be required
 		 */
