@@ -102,9 +102,9 @@
  doesn't have any <a href="./se/softhouse/jargo/ArgumentBuilder.html#names(java.lang.String...)"><code>ArgumentBuilder.names(String...)</code></a>
  has an empty <a href="./se/softhouse/jargo/ArgumentBuilder.html#description(java.lang.String)"><code>ArgumentBuilder.description(String)</code></a>
  isn't <a href="./se/softhouse/jargo/ArgumentBuilder.html#required()"><code>ArgumentBuilder.required()</code></a>
- uses <a href="./se/softhouse/jargo/StringParser.html#defaultValue()"><code>StringParser.defaultValue()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce default values
+ uses <a href="./se/softhouse/jargo/StringParser.html#defaultValue()"><code>defaultValue()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce default values
  uses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><code>Object.toString()</code></a> to describe the default value
- uses <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>StringParser.metaDescription()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce meta
+ uses <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>metaDescription()</code></a> on <a href="./se/softhouse/jargo/ArgumentBuilder.html#parser()"><code>ArgumentBuilder.parser()</code></a> to produce meta
  descriptions
  doesn't have any <a href="./se/softhouse/jargo/ArgumentBuilder.html#limitTo(com.google.common.base.Predicate)"><code>limits</code></a>
  
@@ -573,7 +573,7 @@
 <div class="block">
  
  
- Marked as final as the <a href="./se/softhouse/jargo/ArgumentException.html#getMessage(java.lang.String)"><code>getMessage(String)</code></a> should be implemented instead</div>
+ Marked as final as the <a href="./se/softhouse/jargo/ArgumentException.html#getMessage(java.lang.String)"><code>ArgumentException.getMessage(String)</code></a> should be implemented instead</div>
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/ArgumentException.html#getMessageAndUsage()">getMessageAndUsage()</a></span> - Method in exception se.softhouse.jargo.<a href="./se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a></dt>
 <dd>
@@ -749,7 +749,7 @@
 <dt><span class="strong"><a href="./se/softhouse/jargo/ArgumentBuilder.html#metaDescription(java.lang.String)">metaDescription(String)</a></span> - Method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a></dt>
 <dd>
 <div class="block">
- By default <a href="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a>s provides a meta description (by implementing <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>StringParser.metaDescription()</code></a>
+ By default <a href="./se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a>s provides a meta description (by implementing <a href="./se/softhouse/jargo/StringParser.html#metaDescription()"><code>metaDescription()</code></a>
  that describes the type of data they expect.</div>
 </dd>
 <dt><span class="strong"><a href="./se/softhouse/jargo/ForwardingStringParser.html#metaDescription()">metaDescription()</a></span> - Method in class se.softhouse.jargo.<a href="./se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo">ForwardingStringParser</a></dt>
