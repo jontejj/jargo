@@ -30,7 +30,6 @@ import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.shortArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.stringparsers.custom.DateTimeParser.dateArgument;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -53,10 +52,12 @@ import org.junit.Test;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
+import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 import se.softhouse.jargo.utils.ExpectedTexts;
 
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.Atomics;
 
 /**
  * Stress tests that verifies that a {@link CommandLineParser} can be used from several
@@ -111,6 +112,8 @@ public class ConcurrencyTest
 							variableArityArgument, bigIntegerArgument, bigDecimalArgument)
 			.programDescription("Example of most argument types that jargo can handle by default").locale(Locale.US);
 
+	final Usage usage = parser.usage();
+
 	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");
 
 	// Amount of test harness
@@ -124,7 +127,7 @@ public class ConcurrencyTest
 	/**
 	 * Used by other threads to report failure
 	 */
-	private final AtomicReference<Throwable> failure = new AtomicReference<Throwable>(null);
+	private final AtomicReference<Throwable> failure = Atomics.newReference();
 
 	private final CountDownLatch activeWorkers = new CountDownLatch(nrOfConcurrentRunners);
 	private final CyclicBarrier startup = new CyclicBarrier(nrOfConcurrentRunners);
@@ -244,10 +247,12 @@ public class ConcurrencyTest
 					checkThat(bigDecimalArgument).received(bigDecimal);
 					assertThat(arguments.get(variableArityArgument)).hasSize(amountOfVariableArity);
 
-					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
+					// if(i % 10 == 0) // As usage is expensive to create only test this sometimes
 					{
 						// TODO(jontejj): share Usage instance once it's thread safe
-						assertThat(parser.usage()).isEqualTo(expectedUsageText);
+						StringBuilder result = new StringBuilder(expectedUsageText.length());
+						usage.printOn(result);
+						assertThat(result.toString()).isEqualTo(expectedUsageText);
 					}
 				}
 			}
