@@ -30,6 +30,7 @@ import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.shortArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.stringparsers.custom.DateTimeParser.dateArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -52,7 +53,6 @@ import org.junit.Test;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
-import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 import se.softhouse.jargo.utils.ExpectedTexts;
 
@@ -111,8 +111,6 @@ public class ConcurrencyTest
 							string, charArgument, boolArgument, propertyArgument, arityArgument, repeatedArgument, splittedArgument, enumArgument,
 							variableArityArgument, bigIntegerArgument, bigDecimalArgument)
 			.programDescription("Example of most argument types that jargo can handle by default").locale(Locale.US);
-
-	final Usage usage = parser.usage();
 
 	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");
 
@@ -247,12 +245,10 @@ public class ConcurrencyTest
 					checkThat(bigDecimalArgument).received(bigDecimal);
 					assertThat(arguments.get(variableArityArgument)).hasSize(amountOfVariableArity);
 
-					// if(i % 10 == 0) // As usage is expensive to create only test this sometimes
+					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
 					{
 						// TODO(jontejj): share Usage instance once it's thread safe
-						StringBuilder result = new StringBuilder(expectedUsageText.length());
-						usage.printOn(result);
-						assertThat(result.toString()).isEqualTo(expectedUsageText);
+						assertThat(parser.usage()).isEqualTo(expectedUsageText);
 					}
 				}
 			}
