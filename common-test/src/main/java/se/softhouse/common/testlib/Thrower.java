@@ -14,6 +14,8 @@
  */
 package se.softhouse.common.testlib;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * <pre>
  * Makes it possible to throw checked exceptions from methods that don't declare them. See
@@ -22,6 +24,7 @@ package se.softhouse.common.testlib;
  * <a href="https://code.google.com/p/guava-libraries/wiki/StringsExplained#Charsets">can't happen</a>.
  * </pre>
  */
+@Immutable
 public final class Thrower<E extends Exception>
 {
 	/**

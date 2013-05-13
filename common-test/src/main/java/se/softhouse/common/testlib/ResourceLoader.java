@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -19,12 +19,15 @@ import static com.google.common.base.Charsets.UTF_8;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.google.common.io.Resources;
 
 /**
  * Aids tests with loading resource texts. These texts are often the expected result from some
  * operation.
  */
+@Immutable
 public final class ResourceLoader
 {
 	private ResourceLoader()

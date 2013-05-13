@@ -19,9 +19,12 @@ import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import java.text.BreakIterator;
 import java.util.Locale;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Utilities for working with {@link StringsUtil#NEWLINE new line} in texts.
  */
+@Immutable
 public final class Lines
 {
 	private Lines()

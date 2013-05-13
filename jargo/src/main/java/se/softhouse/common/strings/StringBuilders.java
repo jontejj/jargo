@@ -14,9 +14,12 @@
  */
 package se.softhouse.common.strings;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Utilities for working with {@link StringBuilder}s
  */
+@Immutable
 public final class StringBuilders
 {
 	private StringBuilders()

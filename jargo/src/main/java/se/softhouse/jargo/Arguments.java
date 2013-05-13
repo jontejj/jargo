@@ -37,6 +37,7 @@ import java.math.BigInteger;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
@@ -56,6 +57,7 @@ import se.softhouse.jargo.StringParsers.HelpParser;
  * parsed, {@link ArgumentBuilder#parse(String...)} can be used instead.
  * </pre>
  */
+@Immutable
 public final class Arguments
 {
 	private Arguments()

@@ -23,6 +23,7 @@ import java.util.Collection;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describables;
@@ -34,6 +35,7 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
  * Gives you static access for creating {@link ArgumentException}s.<br>
  * Remember that created exceptions are simply returned <b>not thrown</b>.
  */
+@Immutable
 public final class ArgumentExceptions
 {
 	private ArgumentExceptions()

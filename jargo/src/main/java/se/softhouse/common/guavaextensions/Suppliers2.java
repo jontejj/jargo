@@ -20,6 +20,8 @@ import static com.google.common.collect.Lists.newArrayListWithCapacity;
 
 import java.util.List;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
@@ -27,6 +29,7 @@ import com.google.common.base.Suppliers;
  * Additional implementations of the {@link Supplier} interface, as a complement of
  * {@link Suppliers}
  */
+@Immutable
 public final class Suppliers2
 {
 	private Suppliers2()

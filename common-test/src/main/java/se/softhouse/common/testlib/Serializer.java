@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,9 +23,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Aids tests that needs to test how APIs behave when their objects are serialized
  */
+@Immutable
 public final class Serializer
 {
 	private Serializer()

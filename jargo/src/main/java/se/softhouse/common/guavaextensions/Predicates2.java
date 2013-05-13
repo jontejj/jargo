@@ -20,6 +20,7 @@ import static com.google.common.base.Predicates.alwaysTrue;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.strings.Describables;
 
@@ -30,6 +31,7 @@ import com.google.common.base.Predicates;
  * Additional implementations of the {@link Predicate} interface, as a complement to
  * {@link Predicates}
  */
+@Immutable
 public final class Predicates2
 {
 	private Predicates2()

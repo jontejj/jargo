@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -36,6 +37,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * Gives you static access to implementations of the {@link Describer} interface.
  */
+@Immutable
 public final class Describers
 {
 	private Describers()

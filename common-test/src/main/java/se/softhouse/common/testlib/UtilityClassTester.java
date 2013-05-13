@@ -20,6 +20,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * The reasoning behind testing code that doesn't do anything is to achieve 100%
  * code coverage and to notice when the code
@@ -29,6 +31,7 @@ import java.lang.reflect.Modifier;
  * This makes it easy to spot untested methods without having to check that it
  * only was a private constructor etc.
  */
+@Immutable
 public final class UtilityClassTester
 {
 	private UtilityClassTester()

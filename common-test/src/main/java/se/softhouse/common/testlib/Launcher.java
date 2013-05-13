@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
@@ -33,11 +35,13 @@ import com.google.common.collect.Lists;
  * Can launch java programs for a {@link Class} with a main method. Output is captured in the
  * returned {@link LaunchedProgram}.
  */
+@Immutable
 public final class Launcher
 {
 	/**
 	 * Result from a {@link Launcher#launch(Class, String...) launched program}
 	 */
+	@Immutable
 	public static final class LaunchedProgram
 	{
 		private final String errors;

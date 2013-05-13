@@ -40,6 +40,7 @@ import com.google.common.io.Files;
  * Gives you static access to additional implementations of the {@link Function} interface, as a
  * complement to {@link Functions}
  */
+@Immutable
 public final class Functions2
 {
 	private Functions2()

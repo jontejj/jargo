@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -27,6 +28,7 @@ import com.google.common.collect.Lists;
 /**
  * Additional {@link Preconditions pre-condition} checks
  */
+@Immutable
 public final class Preconditions2
 {
 	private Preconditions2()

@@ -16,6 +16,7 @@ package se.softhouse.common.classes;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -23,6 +24,7 @@ import com.google.common.base.Suppliers;
 /**
  * Utilities for working with {@link Class} instances
  */
+@Immutable
 public final class Classes
 {
 	private Classes()

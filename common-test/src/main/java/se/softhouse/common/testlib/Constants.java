@@ -16,11 +16,14 @@ package se.softhouse.common.testlib;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.google.common.base.Charsets;
 
 /**
  * Useful constants to use in tests
  */
+@Immutable
 public final class Constants
 {
 	private Constants()

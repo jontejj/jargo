@@ -20,12 +20,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
 /**
  * Utility for working with {@link Readable} and {@link InputStream stream} instances.
  */
+@Immutable
 public final class Streams
 {
 	private Streams()

@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describables;
@@ -48,6 +49,7 @@ import com.google.common.primitives.Longs;
  * 
  * @param <T> the subclass of {@link Number}
  */
+@Immutable
 public abstract class NumberType<T extends Number>
 {
 	/**

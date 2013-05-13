@@ -19,9 +19,12 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Calls the compiler generated valueOf/toString methods for code coverage
  */
+@Immutable
 public final class EnumTester
 {
 	private EnumTester()

@@ -21,11 +21,15 @@ import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
+
 import com.google.common.testing.GcFinalization;
 
 /**
  * Helps to test for memory leaks
  */
+@Immutable
 public final class MemoryTester
 {
 	private MemoryTester()
@@ -36,6 +40,7 @@ public final class MemoryTester
 	 * A simple {@link PhantomReference} that can be used to assert that all references to it is
 	 * gone.
 	 */
+	@ThreadSafe
 	public static final class FinalizationAwareObject extends PhantomReference<Object>
 	{
 		private final WeakReference<Object> weakReference;

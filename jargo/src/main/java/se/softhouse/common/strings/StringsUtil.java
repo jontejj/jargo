@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -34,6 +35,7 @@ import com.google.common.primitives.Ints;
 /**
  * Utilities for working with {@link String}s
  */
+@Immutable
 public final class StringsUtil
 {
 	private StringsUtil()

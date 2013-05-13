@@ -11,13 +11,16 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.common.testlib;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Sometimes tests makes things that the tested API tells it not to,
  * these strings explain some motivations about why certain test code looks like it does.
  */
+@Immutable
 public final class Explanation
 {
 	private Explanation()
