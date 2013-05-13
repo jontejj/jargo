@@ -94,7 +94,8 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public final class <a href="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.25">EnumTester</a>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</a>
+public final class <a href="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.28">EnumTester</a>
 extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Calls the compiler generated valueOf/toString methods for code coverage</div>
 </li>
@@ -157,7 +158,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <ul class="blockList">
 <li class="blockList">
 <h4>testThatToStringIsCompatibleWithValueOf</h4>
-<pre>public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;T&gt;&gt;&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.36">testThatToStringIsCompatibleWithValueOf</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;enumClass)</pre>
+<pre>public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;T&gt;&gt;&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.39">testThatToStringIsCompatibleWithValueOf</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;enumClass)</pre>
 <div class="block">Tests that the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><code>Object.toString()</code></a> for each enum constant in <code>enumClass</code> returns
  the exact same as <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#name()" title="class or interface in java.lang"><code>Enum.name()</code></a> (default behavior).
  This guarantees that <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#valueOf(java.lang.Class, java.lang.String)" title="class or interface in java.lang"><code>Enum.valueOf(Class, String)</code></a> will work for each enum constant.</div>
@@ -169,7 +170,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility</h4>
-<pre>public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;T&gt;&gt;&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.45">testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;enumClass)</pre>
+<pre>public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;T&gt;&gt;&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/EnumTester.html#line.48">testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;enumClass)</pre>
 <div class="block">A variant of <a href="../../../../se/softhouse/common/testlib/EnumTester.html#testThatToStringIsCompatibleWithValueOf(java.lang.Class)"><code>testThatToStringIsCompatibleWithValueOf(Class)</code></a> that doesn't care about
  the visibility of the <code>enumClass</code></div>
 </li>

@@ -94,7 +94,8 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public final class <a href="../../../../src-html/se/softhouse/common/testlib/Serializer.html#line.29">Serializer</a>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</a>
+public final class <a href="../../../../src-html/se/softhouse/common/testlib/Serializer.html#line.32">Serializer</a>
 extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Aids tests that needs to test how APIs behave when their objects are serialized</div>
 </li>
@@ -151,7 +152,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <ul class="blockListLast">
 <li class="blockList">
 <h4>clone</h4>
-<pre>public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a>&gt;&nbsp;T&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Serializer.html#line.40">clone</a>(T&nbsp;objectToSerialize)</pre>
+<pre>public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a>&gt;&nbsp;T&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Serializer.html#line.43">clone</a>(T&nbsp;objectToSerialize)</pre>
 <div class="block">Serializes <code>objectToSerialize</code> and reads the serialized bytes into an object again.
  Requires that readReplace() isn't overridden to return a type not assignable as a <code>T</code>,
  for default implementations of <a href="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io"><code>Serializable</code></a> this is true.</div>

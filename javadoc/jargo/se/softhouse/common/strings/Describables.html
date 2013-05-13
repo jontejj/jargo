@@ -95,7 +95,8 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public final class <a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.30">Describables</a>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</a>
+public final class <a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.32">Describables</a>
 extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Gives you static access to implementations of the <a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a> interface.</div>
 </li>
@@ -234,7 +235,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <li class="blockList">
 <h4>EMPTY_STRING</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static final&nbsp;<a href="../../../../se/softhouse/common/strings/Describables.SerializableDescription.html" title="class in se.softhouse.common.strings">Describables.SerializableDescription</a> <a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.39">EMPTY_STRING</a></pre>
+public static final&nbsp;<a href="../../../../se/softhouse/common/strings/Describables.SerializableDescription.html" title="class in se.softhouse.common.strings">Describables.SerializableDescription</a> <a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.41">EMPTY_STRING</a></pre>
 <div class="block">Returns an empty string as a describable.</div>
 </li>
 </ul>
@@ -254,7 +255,7 @@ public static final&nbsp;<a href="../../../../se/softhouse/common/strings/Descri
 <h4>asSerializable</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describables.SerializableDescription.html" title="class in se.softhouse.common.strings">Describables.SerializableDescription</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.235">asSerializable</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;describable)</pre>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describables.SerializableDescription.html" title="class in se.softhouse.common.strings">Describables.SerializableDescription</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.237">asSerializable</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;describable)</pre>
 <div class="block">Returns a version of <code>describable</code> that is serializable. Note that after serialization
  the describable is fixed, that is <a href="../../../../se/softhouse/common/strings/Describable.html#description()"><code>Describable.description()</code></a> won't be called on
  <code>describable</code> any more.</div>
@@ -266,7 +267,7 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describables
 <ul class="blockList">
 <li class="blockList">
 <h4>cache</h4>
-<pre>public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.112">cache</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;describable)</pre>
+<pre>public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.114">cache</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;describable)</pre>
 <div class="block">Lazily caches the result of running <a href="../../../../se/softhouse/common/strings/Describable.html#description()"><code>Describable.description()</code></a> on <code>describable</code>
  so that it's only run once.</div>
 </li>
@@ -279,7 +280,7 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describables
 <h4>format</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.79">format</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;formatTemplate,
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.81">format</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;formatTemplate,
                                           <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>...&nbsp;args)</pre>
 <div class="block">Lazily calls <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#format(java.lang.String, java.lang.Object...)" title="class or interface in java.lang"><code>String.format(String, Object...)</code></a></div>
 </li>
@@ -292,7 +293,7 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.
 <h4>illegalArgument</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.185">illegalArgument</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message)</pre>
+public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.187">illegalArgument</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message)</pre>
 <div class="block">Creates an <a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><code>IllegalArgumentException</code></a> where the <a href="../../../../se/softhouse/common/strings/Describable.html#description()"><code>Describable.description()</code></a> of
  <code>message</code> is used as the detail message.</div>
 </li>
@@ -305,7 +306,7 @@ public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/la
 <h4>illegalArgument</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.196">illegalArgument</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message,
+public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.198">illegalArgument</a>(<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message,
                                                                 <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
 <div class="block">Creates an <a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><code>IllegalArgumentException</code></a> where the <a href="../../../../se/softhouse/common/strings/Describable.html#description()"><code>Describable.description()</code></a> of
  <code>message</code> is used as the detail message. <code>cause</code> is set as the cause.</div>
@@ -319,7 +320,7 @@ public static&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/la
 <h4>toString</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.152">toString</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;value)</pre>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.154">toString</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;value)</pre>
 <div class="block">Lazily calls the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><code>Object.toString()</code></a> of <code>value</code> as a describable</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>value</code> - the object to call <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang"><code>Object.toString()</code></a> on</dd></dl>
 </li>
@@ -332,7 +333,7 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.
 <h4>withString</h4>
 <pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
 <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.47">withString</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describables.html#line.49">withString</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
 <div class="block">Supplies an already created <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> as a <a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a>.
  Also useful for caching <a href="../../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a>s that won't change.</div>
 </li>
