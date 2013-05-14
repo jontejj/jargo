@@ -42,7 +42,7 @@ import se.softhouse.jargo.internal.Texts.UsageTexts;
  * is available after deserialization.
  */
 @NotThreadSafe
-public abstract class ArgumentException extends Exception
+public abstract class ArgumentException extends RuntimeException
 {
 	/**
 	 * The {@link Usage} explaining how to avoid this exception

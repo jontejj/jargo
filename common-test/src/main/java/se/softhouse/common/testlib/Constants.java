@@ -46,5 +46,5 @@ public final class Constants
 	 */
 	public static final char UTF_8_CHAR = '\uFF26';
 
-	static final int EXPECTED_TEST_TIME_FOR_THIS_SUITE = 2000;
+	static final int EXPECTED_TEST_TIME_FOR_THIS_SUITE = 10000;
 }

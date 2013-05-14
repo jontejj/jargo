@@ -11,7 +11,7 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
+ */
 package se.softhouse.jargo.stringparsers;
 
 import static com.google.common.collect.Lists.transform;
@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.StringParsers;
 
@@ -50,7 +51,7 @@ public class StringParserAsFunctionTest
 			asFunction(integerParser()).apply("a1");
 			fail("a1 should cause an exception");
 		}
-		catch(IllegalArgumentException e)
+		catch(ArgumentException e)
 		{
 			assertThat(e.getMessage()).startsWith("'a1' is not a valid integer");
 		}

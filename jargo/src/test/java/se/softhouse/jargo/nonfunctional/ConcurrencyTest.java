@@ -16,7 +16,6 @@ package se.softhouse.jargo.nonfunctional;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
 import static se.softhouse.jargo.Arguments.bigDecimalArgument;
 import static se.softhouse.jargo.Arguments.bigIntegerArgument;
 import static se.softhouse.jargo.Arguments.booleanArgument;
@@ -39,17 +38,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.fest.assertions.Description;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import se.softhouse.common.testlib.ConcurrencyTester;
+import se.softhouse.common.testlib.ConcurrencyTester.RunnableFactory;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
@@ -57,7 +53,6 @@ import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 import se.softhouse.jargo.utils.ExpectedTexts;
 
 import com.google.common.base.Strings;
-import com.google.common.util.concurrent.Atomics;
 
 /**
  * Stress tests that verifies that a {@link CommandLineParser} can be used from several
@@ -105,7 +100,9 @@ public class ConcurrencyTest
 
 	final Argument<BigDecimal> bigDecimalArgument = bigDecimalArgument("--big-decimal").build();
 
-	// The shared instance that the different threads will use
+	/**
+	 * The shared instance that the different threads will use
+	 */
 	final CommandLineParser parser = CommandLineParser
 			.withArguments(greetingPhraseArgument, enableLoggingArgument, port, longArgument, date, shortArgument, byteArgument, fileArgument,
 							string, charArgument, boolArgument, propertyArgument, arityArgument, repeatedArgument, splittedArgument, enumArgument,
@@ -114,160 +111,147 @@ public class ConcurrencyTest
 
 	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");
 
-	// Amount of test harness
-	private static final int ITERATION_COUNT = 300;
-
-	private static final int RUNNERS_PER_PROCESSOR = 3; // We want the threads
-														// to fight for CPU time
-
-	private static final int nrOfConcurrentRunners = Runtime.getRuntime().availableProcessors() * RUNNERS_PER_PROCESSOR;
-
-	/**
-	 * Used by other threads to report failure
-	 */
-	private final AtomicReference<Throwable> failure = Atomics.newReference();
-
-	private final CountDownLatch activeWorkers = new CountDownLatch(nrOfConcurrentRunners);
-	private final CyclicBarrier startup = new CyclicBarrier(nrOfConcurrentRunners);
-	private final CyclicBarrier parseDone = new CyclicBarrier(nrOfConcurrentRunners);
-
 	private static final int timeoutInSeconds = 60;
 	private static final int cleanupTime = 5;
+
+	@Test
+	public void testThatUsageCanBeCalledConcurrently() throws Throwable
+	{
+		ConcurrencyTester.verify(new RunnableFactory(){
+			@Override
+			public int iterationCount()
+			{
+				return 20;
+			}
+
+			@Override
+			public Runnable create(int uniqueNumber)
+			{
+				return new Runnable(){
+					@Override
+					public void run()
+					{
+						// TODO(jontejj): share Usage instance once it's thread safe
+						assertThat(parser.usage()).isEqualTo(expectedUsageText);
+					}
+				};
+			}
+		}, timeoutInSeconds, TimeUnit.SECONDS);
+	}
 
 	@Test(timeout = (timeoutInSeconds + cleanupTime) * 1000)
 	public void testThatDifferentArgumentsCanBeParsedConcurrently() throws Throwable
 	{
-		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nrOfConcurrentRunners);
-		for(int i = 0; i < nrOfConcurrentRunners; i++)
-		{
-			executor.execute(new ArgumentParseRunner(i));
-		}
+		ConcurrencyTester.verify(new RunnableFactory(){
+			@Override
+			public int iterationCount()
+			{
+				return 300;
+			}
 
-		try
-		{
-			if(!activeWorkers.await(timeoutInSeconds, TimeUnit.SECONDS))
+			@Override
+			public Runnable create(int uniqueNumber)
 			{
-				executor.shutdownNow();
-				fail("Timeout waiting for concurrency test to finish");
+				return new ArgumentParseRunner(uniqueNumber);
 			}
-		}
-		catch(InterruptedException e)
-		{
-			Thread.interrupted();
-			if(failure.get() != null)
-			{
-				executor.shutdownNow();
-				throw failure.get();
-			}
-		}
-		assertThat(executor.shutdownNow()).isEmpty();
+		}, timeoutInSeconds, TimeUnit.SECONDS);
 	}
 
 	private final class ArgumentParseRunner implements Runnable
 	{
+		/**
+		 * The unique number each thread is assigned, used to differentiate results
+		 */
 		private final int offset;
-		private final Thread originThread;
-		private ParsedArguments arguments;
+		private ParsedArguments parsedArguments;
+		private final String[] inputArgs;
+		private final int portNumber;
+		private final String greetingPhrase;
+		private final DateTime time;
+		private final char c;
+		private final boolean bool;
+		private final String enableLogging;
+		private final short shortNumber;
+		private final byte byteNumber;
+		private final long longNumber;
+		private final BigInteger bigInteger;
+		private final String str;
+		private final String action;
+		private final Map<String, Boolean> propertyMap = new HashMap<String, Boolean>();
+		private final int amountOfVariableArity;
+		private final String variableArityIntegers;
+		private final List<Boolean> arityBooleans;
+		private final String arityString;
+		private final String filename;
+		private final File file;
+		private final BigDecimal bigDecimal;
 
-		public ArgumentParseRunner(int offset)
+		private ArgumentParseRunner(int offset)
 		{
 			this.offset = offset;
-			originThread = Thread.currentThread();
-		}
+			portNumber = 8090 + offset;
 
-		@Override
-		public void run()
-		{
-			int portNumber = 8090 + offset;
+			greetingPhrase = "Hello" + offset;
+			time = DateTime.parse(new DateTime("2010-01-01").plusMillis(offset).toString());
+			c = charFor(offset);
+			bool = offset % 2 == 0;
+			enableLogging = bool ? "-l " : "";
+			shortNumber = (short) (1232 + offset);
+			byteNumber = (byte) (123 + offset);
+			longNumber = 1234567890L + offset;
+			bigInteger = BigInteger.valueOf(12312313212323L + offset);
+			str = "FooBar" + offset;
+			action = Action.values()[offset % Action.values().length].toString();
 
-			String greetingPhrase = "Hello" + offset;
-			DateTime time = DateTime.parse(new DateTime("2010-01-01").plusMillis(offset).toString());
-			char c = charForOffset();
-			boolean bool = offset % 2 == 0;
-			String enableLogging = bool ? "-l " : "";
-			short shortNumber = (short) (1232 + offset);
-			byte byteNumber = (byte) (123 + offset);
-			long longNumber = 1234567890L + offset;
-			BigInteger bigInteger = BigInteger.valueOf(12312313212323L + offset);
-			String str = "FooBar" + offset;
-			String action = Action.values()[offset % Action.values().length].toString();
-
-			Map<String, Boolean> propertyMap = new HashMap<String, Boolean>();
 			propertyMap.put("foo" + offset, true);
 			propertyMap.put("bar", false);
 
-			int amountOfVariableArity = offset % 10;
-			String variableArityIntegers = Strings.repeat(" " + portNumber, amountOfVariableArity);
-			List<Boolean> arityBooleans = asList(bool, bool, bool, bool, bool, bool);
-			String arityString = Strings.repeat(" " + bool, 6);
+			amountOfVariableArity = offset % 10;
+			variableArityIntegers = Strings.repeat(" " + portNumber, amountOfVariableArity);
+			arityBooleans = asList(bool, bool, bool, bool, bool, bool);
+			arityString = Strings.repeat(" " + bool, 6);
 
-			String filename = "user_" + offset;
-			File file = new File(filename);
-			BigDecimal bigDecimal = BigDecimal.valueOf(Long.MAX_VALUE);
-
+			filename = "user_" + offset;
+			file = new File(filename);
+			bigDecimal = BigDecimal.valueOf(Long.MAX_VALUE);
 			String inputArguments = enableLogging + "-p " + portNumber + " " + greetingPhrase + " --long " + longNumber + " --big-integer "
 					+ bigInteger + " --date " + time + " --short " + shortNumber + " --byte " + byteNumber + " --file " + filename + " --string "
 					+ str + " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false" + " --arity" + arityString
 					+ " --repeated 1 --repeated " + offset + " --split=1," + (2 + offset) + ",3" + " --enum " + action + " --big-decimal "
 					+ bigDecimal + " --variableArity" + variableArityIntegers;
-
-			try
-			{
-				String[] args = inputArguments.split(" ");
-				// Let all threads prepare the input and start processing at the
-				// same time
-				startup.await(10, TimeUnit.SECONDS);
-
-				for(int i = 0; i < ITERATION_COUNT; i++)
-				{
-					arguments = parser.parse(args);
-
-					// Let all threads assert at the same time
-					parseDone.await(10, TimeUnit.SECONDS);
-
-					checkThat(enableLoggingArgument).received(bool);
-					checkThat(port).received(portNumber);
-					checkThat(greetingPhraseArgument).received(greetingPhrase);
-					checkThat(longArgument).received(longNumber);
-					checkThat(bigIntegerArgument).received(bigInteger);
-					checkThat(date).received(time);
-					checkThat(shortArgument).received(shortNumber);
-					checkThat(byteArgument).received(byteNumber);
-					checkThat(fileArgument).received(file);
-					checkThat(string).received(str);
-					checkThat(charArgument).received(c);
-					checkThat(boolArgument).received(bool);
-					checkThat(arityArgument).received(arityBooleans);
-					checkThat(repeatedArgument).received(asList(1, offset));
-					checkThat(splittedArgument).received(asList(1, 2 + offset, 3));
-					checkThat(propertyArgument).received(propertyMap);
-					checkThat(enumArgument).received(Action.valueOf(action));
-					checkThat(bigDecimalArgument).received(bigDecimal);
-					assertThat(arguments.get(variableArityArgument)).hasSize(amountOfVariableArity);
-
-					if(i % 10 == 0) // As usage is expensive to create only test this sometimes
-					{
-						// TODO(jontejj): share Usage instance once it's thread safe
-						assertThat(parser.usage()).isEqualTo(expectedUsageText);
-					}
-				}
-			}
-			catch(Throwable e)
-			{
-				// Don't report secondary failures
-				if(failure.compareAndSet(null, e))
-				{
-					originThread.interrupt();
-				}
-				return;
-			}
-			activeWorkers.countDown();
+			inputArgs = inputArguments.split(" ");
 		}
 
-		private char charForOffset()
+		@Override
+		public void run()
 		{
-			char c = (char) (offset % Character.MAX_VALUE);
-			return c == ' ' ? '.' : c; // A space would be trimmed to nothing
+			parsedArguments = parser.parse(inputArgs);
+
+			checkThat(enableLoggingArgument).received(bool);
+			checkThat(port).received(portNumber);
+			checkThat(greetingPhraseArgument).received(greetingPhrase);
+			checkThat(longArgument).received(longNumber);
+			checkThat(bigIntegerArgument).received(bigInteger);
+			checkThat(date).received(time);
+			checkThat(shortArgument).received(shortNumber);
+			checkThat(byteArgument).received(byteNumber);
+			checkThat(fileArgument).received(file);
+			checkThat(string).received(str);
+			checkThat(charArgument).received(c);
+			checkThat(boolArgument).received(bool);
+			checkThat(arityArgument).received(arityBooleans);
+			checkThat(repeatedArgument).received(asList(1, offset));
+			checkThat(splittedArgument).received(asList(1, 2 + offset, 3));
+			checkThat(propertyArgument).received(propertyMap);
+			checkThat(enumArgument).received(Action.valueOf(action));
+			checkThat(bigDecimalArgument).received(bigDecimal);
+			assertThat(parsedArguments.get(variableArityArgument)).hasSize(amountOfVariableArity);
+		}
+
+		private char charFor(int o)
+		{
+			char result = (char) (o % Character.MAX_VALUE);
+			return result == ' ' ? '.' : result; // A space would be trimmed to nothing
 		}
 
 		/**
@@ -289,7 +273,7 @@ public class ConcurrencyTest
 
 			public void received(final T expectation)
 			{
-				final T parsedValue = arguments.get(arg);
+				final T parsedValue = parsedArguments.get(arg);
 				Description description = new Description(){
 					// In a concurrency test it makes a big performance difference
 					// with lazily created descriptions

@@ -19,7 +19,6 @@ import static com.google.common.base.Strings.repeat;
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static java.util.Collections.emptyList;
 import static se.softhouse.common.strings.Describables.format;
-import static se.softhouse.jargo.ArgumentExceptions.asUnchecked;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingNthParameter;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingParameter;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
@@ -477,8 +476,8 @@ public final class StringParsers
 	 * {@link StringParsers#asFunction(StringParser, Locale)} to specify a specific {@link Locale}
 	 * 
 	 * @param parser the parser to expose as a {@link Function}
-	 * @return {@code parser} exposed in a {@link Function} that throws
-	 *         {@link IllegalArgumentException} when given faulty values.
+	 * @return {@code parser} exposed in a {@link Function} that throws {@link ArgumentException}
+	 *         when given faulty values.
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -502,14 +501,7 @@ public final class StringParsers
 			@Override
 			public T apply(@Nonnull String input)
 			{
-				try
-				{
-					return parser.parse(input, localeToUse);
-				}
-				catch(final ArgumentException e)
-				{
-					throw asUnchecked(e);
-				}
+				return parser.parse(input, localeToUse);
 			}
 		};
 	}

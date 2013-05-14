@@ -140,37 +140,6 @@ public final class ArgumentExceptions
 	}
 
 	/**
-	 * @param cause the checked exception that will be used as the cause (and message) of the
-	 *            returned exception
-	 * @return an unchecked exception that uses {@code cause#getMessage()} as it's own message
-	 */
-	@CheckReturnValue
-	@Nonnull
-	static IllegalArgumentException asUnchecked(final ArgumentException cause)
-	{
-		return new UncheckedArgumentException(cause);
-	}
-
-	private static final class UncheckedArgumentException extends IllegalArgumentException
-	{
-		UncheckedArgumentException(final ArgumentException cause)
-		{
-			super(checkNotNull(cause));
-		}
-
-		@Override
-		public String getMessage()
-		{
-			return getCause().getMessage();
-		}
-
-		/**
-		 * For {@link Serializable}
-		 */
-		private static final long serialVersionUID = 1L;
-	}
-
-	/**
 	 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
 	 * argument wasn't found in the input arguments
 	 * 
