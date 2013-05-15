@@ -49,7 +49,7 @@ public class ConcurrencyTesterTest
 	@Test
 	public void testThatRunsAreInterleavedBetweenDifferentThreadsForEachIteration() throws Throwable
 	{
-		final Vector<Thread> orderedInvocations = new Vector<Thread>();
+		final Vector<Integer> invocationIdentifiers = new Vector<Integer>();
 		final int iterationCount = 100;
 		ConcurrencyTester.verify(new RunnableFactory(){
 			@Override
@@ -59,13 +59,13 @@ public class ConcurrencyTesterTest
 			}
 
 			@Override
-			public Runnable create(int uniqueNumber)
+			public Runnable create(final int identifierForThread)
 			{
 				return new Runnable(){
 					@Override
 					public void run()
 					{
-						orderedInvocations.add(Thread.currentThread());
+						invocationIdentifiers.add(identifierForThread);
 					}
 				};
 			}
@@ -73,10 +73,10 @@ public class ConcurrencyTesterTest
 
 		int minInARow = Integer.MAX_VALUE;
 		int currentStreak = 0;
-		Thread lastOne = null;
-		for(Thread thread : orderedInvocations)
+		Integer lastIdentifier = null;
+		for(int invocationIdentifier : invocationIdentifiers)
 		{
-			if(thread == lastOne && lastOne != null)
+			if(lastIdentifier != null && invocationIdentifier == lastIdentifier)
 			{
 				if(currentStreak < minInARow)
 				{
@@ -84,7 +84,7 @@ public class ConcurrencyTesterTest
 				}
 				currentStreak = 0;
 			}
-			lastOne = thread;
+			lastIdentifier = invocationIdentifier;
 			currentStreak++;
 		}
 		assertThat(minInARow) //
@@ -219,7 +219,7 @@ public class ConcurrencyTesterTest
 									{
 										startSignal.await();
 										// Wait for the interrupt signal
-										infinitelyLocked.tryLock();
+										infinitelyLocked.lockInterruptibly();
 										fail("Executor did not interrupt remaining threads during shutdown operation");
 									}
 									catch(InterruptedException expected)

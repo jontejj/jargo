@@ -50,7 +50,7 @@ public final class ConcurrencyTester
 		int iterationCount();
 
 		/**
-		 * Creates a Runnable that can be should be run {@link #iterationCount()} number of times.
+		 * Creates a Runnable that should be run {@link #iterationCount()} number of times.
 		 * This method is called {@link ConcurrencyTester#NR_OF_CONCURRENT_RUNNERS} times so the
 		 * total number of executions will be {@code iteratationCount * NR_OF_CONCURRENT_RUNNERS}.
 		 * Any {@link RuntimeException} or {@link Error} thrown from the created runnable will be
@@ -106,7 +106,10 @@ public final class ConcurrencyTester
 
 		try
 		{
-			activeWorkers.await(timeout, unit);
+			if(!activeWorkers.await(timeout, unit))
+			{
+				fail("Timeout while waiting for tasks to finish");
+			}
 		}
 		catch(InterruptedException e)
 		{
@@ -114,11 +117,11 @@ public final class ConcurrencyTester
 			// Otherwise there could be a risk that await would throw
 			// InterruptedException again without actually running any code again
 			Thread.interrupted();
+			executor.shutdownNow();
 		}
 		executor.shutdown();
 		if(!executor.awaitTermination(timeout, unit))
 		{
-
 			executor.shutdownNow();
 			fail("Timeout waiting for concurrency test to finish");
 		}
