@@ -16,6 +16,8 @@ package se.softhouse.common.testlib;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.testlib.ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS;
+import static se.softhouse.common.testlib.ConcurrencyTester.verify;
 
 import java.util.Collections;
 import java.util.Map;
@@ -34,7 +36,6 @@ import org.junit.Test;
 
 import se.softhouse.common.testlib.ConcurrencyTester.RunnableFactory;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -72,26 +73,28 @@ public class ConcurrencyTesterTest
 			}
 		}, Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS);
 
-		int minInARow = Integer.MAX_VALUE;
+		int maxInARow = 0;
 		int currentStreak = 0;
-		Integer lastIdentifier = null;
+		int lastIdentifier = 0;
 		for(int invocationIdentifier : invocationIdentifiers)
 		{
-			if(Objects.equal(invocationIdentifier, lastIdentifier))
+			if(invocationIdentifier != lastIdentifier)
 			{
-				if(currentStreak < minInARow)
+				if(currentStreak > maxInARow)
 				{
-					minInARow = currentStreak;
+					maxInARow = currentStreak;
 				}
 				currentStreak = 0;
 			}
 			lastIdentifier = invocationIdentifier;
 			currentStreak++;
 		}
-		assertThat(minInARow) //
+		// As there is a barrier in between each run, no thread should be able to run more than
+		// two iterations without another thread executing in between
+		assertThat(maxInARow) //
 				.as("At least two of the threads should be interleaved with each other "
-							+ "to boost confidence of concurrency harness to an acceptable level") //
-				.isLessThan(iterationCount);
+							+ ", otherwise the concurrency test harness is not acceptable") //
+				.isLessThan(3);
 	}
 
 	@Test
@@ -189,81 +192,126 @@ public class ConcurrencyTesterTest
 	@Test
 	public void testThatInterruptedStatusIsClearedWhenInterruptedAndThatRemainingThreadsGetInterrupted() throws Throwable
 	{
-		final Thread originThread = Thread.currentThread();
-		final AtomicReference<Throwable> failure = Atomics.newReference();
+		for(int i = 0; i < 2; i++)
+		{
+			final Thread originThread = Thread.currentThread();
+			final AtomicReference<Throwable> failure = Atomics.newReference();
+			final Lock infinitelyLocked = new ReentrantLock();
+			infinitelyLocked.lock();
+			// +1 so that the starter thread also can await the start
+			final CyclicBarrier startSignal = new CyclicBarrier(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS + 1);
+			final CountDownLatch activeWorkers = new CountDownLatch(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS);
+			Thread interruptableThread = new Thread(){
+				@Override
+				public void run()
+				{
+					try
+					{
+						ConcurrencyTester.verify(new RunnableFactory(){
+							@Override
+							public int iterationCount()
+							{
+								return 1;
+							}
+
+							@Override
+							public Runnable create(final int uniqueNumber)
+							{
+								return new Runnable(){
+									@Override
+									public void run()
+									{
+										try
+										{
+											startSignal.await();
+											// Wait for the interrupt signal
+											infinitelyLocked.lockInterruptibly();
+											fail("Executor did not interrupt remaining threads during shutdown operation");
+										}
+										catch(InterruptedException expected)
+										{
+										}
+										catch(BrokenBarrierException e)
+										{
+											Throwables.propagate(e);
+										}
+										activeWorkers.countDown();
+									}
+								};
+							}
+						}, Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS);
+						fail("verify completed without being interrupted");
+					}
+					catch(InterruptedException expected)
+					{
+						originThread.interrupt();
+					}
+					catch(Throwable error)
+					{
+						failure.compareAndSet(null, error);
+						originThread.interrupt();
+					}
+				}
+			};
+			try
+			{
+				interruptableThread.start();
+				startSignal.await();
+				interruptableThread.interrupt();
+
+				if(!activeWorkers.await(Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS))
+				{
+					fail("Timeout while waiting for shutdown of remaining threads");
+				}
+			}
+			catch(InterruptedException e)
+			{
+			}
+			if(failure.get() != null)
+				throw failure.get();
+		}
+	}
+
+	@Test
+	public void testThatVerifyTimeoutsWhenTasksTakesToLongToExecute() throws Throwable
+	{
 		final Lock infinitelyLocked = new ReentrantLock();
 		infinitelyLocked.lock();
-		// +1 so that the starter thread also can await the start
-		final CyclicBarrier startSignal = new CyclicBarrier(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS + 1);
-		final CountDownLatch activeWorkers = new CountDownLatch(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS);
-		Thread interruptableThread = new Thread(){
-			@Override
-			public void run()
-			{
-				try
-				{
-					ConcurrencyTester.verify(new RunnableFactory(){
-						@Override
-						public int iterationCount()
-						{
-							return 1;
-						}
-
-						@Override
-						public Runnable create(final int uniqueNumber)
-						{
-							return new Runnable(){
-								@Override
-								public void run()
-								{
-									try
-									{
-										startSignal.await();
-										// Wait for the interrupt signal
-										infinitelyLocked.lockInterruptibly();
-										fail("Executor did not interrupt remaining threads during shutdown operation");
-									}
-									catch(InterruptedException expected)
-									{
-										Thread.interrupted();
-									}
-									catch(BrokenBarrierException e)
-									{
-										Throwables.propagate(e);
-									}
-									activeWorkers.countDown();
-								}
-							};
-						}
-					}, Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS);
-				}
-				catch(InterruptedException expected)
-				{
-					originThread.interrupt();
-				}
-				catch(Throwable error)
-				{
-					failure.compareAndSet(null, error);
-					originThread.interrupt();
-				}
-			}
-		};
 		try
 		{
-			interruptableThread.start();
-			startSignal.await();
-			interruptableThread.interrupt();
+			verify(new RunnableFactory(){
+				@Override
+				public int iterationCount()
+				{
+					return 1;
+				}
 
-			if(!activeWorkers.await(Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS))
-			{
-				fail("Timeout while waiting for shutdown of remaining threads");
-			}
+				@Override
+				public Runnable create(final int uniqueNumber)
+				{
+					return new Runnable(){
+						@Override
+						public void run()
+						{
+							try
+							{
+								infinitelyLocked.lockInterruptibly();
+								fail("Inifinite test was not interrupted");
+							}
+							catch(InterruptedException expected)
+							{
+							}
+						}
+					};
+				}
+			}, 0, TimeUnit.NANOSECONDS);
+			fail("Infinitely running test did not throw AssertionError when timeout should have occured");
 		}
-		catch(InterruptedException e)
+		catch(AssertionError expected)
 		{
+			assertThat(expected.getMessage()).isEqualTo(NR_OF_CONCURRENT_RUNNERS + " of " + NR_OF_CONCURRENT_RUNNERS
+																+ " did not finish within 0 NANOSECONDS");
 		}
-		if(failure.get() != null)
-			throw failure.get();
 	}
 
 	@Test

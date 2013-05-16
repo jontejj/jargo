@@ -15,8 +15,9 @@
 package se.softhouse.common.testlib;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.fest.assertions.Fail.fail;
+import static org.fest.assertions.Assertions.assertThat;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
@@ -104,12 +105,12 @@ public final class ConcurrencyTester
 			executor.execute(new BarrieredRunnable(codeToTest, iterationCount, startSignal, activeWorkers, failureReporter));
 		}
 
+		InterruptedException interrupted = null;
 		try
 		{
 			if(!activeWorkers.await(timeout, unit))
-			{
-				fail("Timeout while waiting for tasks to finish");
-			}
+				throw new AssertionError(activeWorkers.getCount() + " of " + NR_OF_CONCURRENT_RUNNERS + " did not finish within " + timeout + " "
+						+ unit);
 		}
 		catch(InterruptedException e)
 		{
@@ -117,16 +118,15 @@ public final class ConcurrencyTester
 			// Otherwise there could be a risk that await would throw
 			// InterruptedException again without actually running any code again
 			Thread.interrupted();
-			executor.shutdownNow();
+			interrupted = e;
 		}
-		executor.shutdown();
-		if(!executor.awaitTermination(timeout, unit))
-		{
-			executor.shutdownNow();
-			fail("Timeout waiting for concurrency test to finish");
-		}
+		List<Runnable> leftoverTasks = executor.shutdownNow();
 		if(failureReporter.get() != null)
 			throw failureReporter.get();
+		if(interrupted != null)
+			// We were interrupted while verifying, propagate so that tests finish up quickly
+			throw interrupted;
+		assertThat(leftoverTasks).as("Tasks remained even though activeWorkers reached zero").isEmpty();
 	}
 
 	/**
