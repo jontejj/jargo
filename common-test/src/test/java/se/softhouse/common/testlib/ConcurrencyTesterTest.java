@@ -34,6 +34,7 @@ import org.junit.Test;
 
 import se.softhouse.common.testlib.ConcurrencyTester.RunnableFactory;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -76,7 +77,7 @@ public class ConcurrencyTesterTest
 		Integer lastIdentifier = null;
 		for(int invocationIdentifier : invocationIdentifiers)
 		{
-			if(lastIdentifier != null && invocationIdentifier == lastIdentifier)
+			if(Objects.equal(invocationIdentifier, lastIdentifier))
 			{
 				if(currentStreak < minInARow)
 				{
