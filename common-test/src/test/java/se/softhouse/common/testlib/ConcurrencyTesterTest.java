@@ -90,11 +90,13 @@ public class ConcurrencyTesterTest
 			currentStreak++;
 		}
 		// As there is a barrier in between each run, no thread should be able to run more than
-		// two iterations without another thread executing in between
+		// two iterations without another thread executing in between.
+		// 2 because when all threads have waited for each other the last one to execute could be
+		// the first one after the startSignal have been sent to be executed.
 		assertThat(maxInARow) //
-				.as("At least two of the threads should be interleaved with each other "
-							+ ", otherwise the concurrency test harness is not acceptable") //
-				.isLessThan(3);
+				.as("At least two of " + NR_OF_CONCURRENT_RUNNERS + " threads should be interleaved "
+							+ "with each other, otherwise the concurrency test harness is not acceptable") //
+				.isLessThanOrEqualTo(2);
 	}
 
 	@Test
