@@ -12,21 +12,15 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.common.strings;
+package se.softhouse.common.anotherpackage;
 
-import org.junit.Test;
-
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
-
-/**
- * Tests for {@link StringBuilders}
- */
-public class StringBuildersTest
+public final class ProperUtilityClass
 {
-	@Test
-	public void testThatNullContractsAreFollowed() throws Exception
+	private ProperUtilityClass()
 	{
-		new NullPointerTester().testStaticMethods(StringBuilders.class, Visibility.PACKAGE);
+	}
+
+	public static void doSomething()
+	{
 	}
 }

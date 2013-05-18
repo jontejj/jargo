@@ -20,7 +20,6 @@ import static se.softhouse.common.strings.Describables.cache;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.Serializer;
-import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -106,11 +105,5 @@ public class DescribablesTest
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Describables.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Describables.class);
 	}
 }

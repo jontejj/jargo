@@ -14,9 +14,12 @@
  */
 package se.softhouse.common.classes;
 
-
-public class ExampleProgram
+public final class ExampleProgram
 {
+	private ExampleProgram()
+	{
+	}
+
 	public static void main(String[] args)
 	{
 		System.out.print(Classes.mainClassName());

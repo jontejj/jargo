@@ -12,21 +12,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.common.strings;
+package se.softhouse.common.testlib.enums;
 
-import org.junit.Test;
-
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
-
-/**
- * Tests for {@link StringBuilders}
- */
-public class StringBuildersTest
+public final class NestedEnum
 {
-	@Test
-	public void testThatNullContractsAreFollowed() throws Exception
+	private NestedEnum()
 	{
-		new NullPointerTester().testStaticMethods(StringBuilders.class, Visibility.PACKAGE);
+	}
+
+	enum InsideEnum
+	{
+		DUMMY
 	}
 }

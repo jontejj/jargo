@@ -17,12 +17,14 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesign;
+import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesignForAllClassesAround;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.ProgramInformation.withProgramName;
 import static se.softhouse.jargo.StringParsers.optionParser;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
@@ -30,16 +32,12 @@ import java.util.Locale;
 import org.junit.Test;
 
 import se.softhouse.common.numbers.NumberType;
-import se.softhouse.common.strings.Describables;
-import se.softhouse.common.strings.Describers;
-import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.common.testlib.EnumTester;
 import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.StringStringParser;
 import se.softhouse.jargo.Usage.Row;
 import se.softhouse.jargo.commands.Build;
-import se.softhouse.jargo.internal.Texts;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -139,10 +137,10 @@ public class PackagePrivateTest
 	}
 
 	@Test
-	public void testConstructorsForUtilityClasses()
+	public void testThatUtilityClassDesignIsCorrect() throws IOException
 	{
-		testUtilityClassDesign(	Arguments.class, StringsUtil.class, Describables.class, StringParsers.class, ArgumentExceptions.class,
-								Describers.class, Texts.class, Texts.class, UserErrors.class, UsageTexts.class, ProgrammaticErrors.class);
+		testUtilityClassDesignForAllClassesAround(Argument.class);
+		testUtilityClassDesign(UserErrors.class, UsageTexts.class, ProgrammaticErrors.class);
 	}
 
 	@Test

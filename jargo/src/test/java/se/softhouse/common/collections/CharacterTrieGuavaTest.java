@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 import com.google.common.collect.testing.MapTestSuiteBuilder;
 import com.google.common.collect.testing.TestStringMapGenerator;
@@ -25,7 +26,7 @@ import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
 import com.google.common.collect.testing.features.MapFeature;
 
-public class CharacterTrieGuavaTest
+public class CharacterTrieGuavaTest extends TestCase
 {
 	public static Test suite()
 	{

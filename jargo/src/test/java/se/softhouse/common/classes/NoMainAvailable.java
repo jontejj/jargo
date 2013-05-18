@@ -14,8 +14,12 @@
  */
 package se.softhouse.common.classes;
 
-public class NoMainAvailable
+public final class NoMainAvailable
 {
+	private NoMainAvailable()
+	{
+	}
+
 	public static void main(String[] args)
 	{
 		final Thread mainThread = Thread.currentThread();

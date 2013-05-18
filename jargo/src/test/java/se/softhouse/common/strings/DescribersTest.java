@@ -44,7 +44,6 @@ import org.junit.Test;
 import se.softhouse.common.strings.Describers.BooleanDescribers;
 import se.softhouse.common.testlib.Locales;
 import se.softhouse.common.testlib.ResourceLoader;
-import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.collect.Lists;
 import com.google.common.testing.NullPointerTester;
@@ -242,11 +241,5 @@ public class DescribersTest
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Describers.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Describers.class);
 	}
 }

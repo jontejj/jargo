@@ -20,14 +20,17 @@ import java.security.Permission;
 import java.util.PropertyPermission;
 import java.util.Set;
 
-
 import com.google.common.collect.Sets;
 
 /**
  * Tests that argument parser works with an extremely restrictive {@link SecurityManager} installed.
  */
-public class SecurityTest
+public final class SecurityTest
 {
+	private SecurityTest()
+	{
+	}
+
 	public static void main(String[] args) throws Throwable
 	{
 		// TODO(jontejj): introduce this as a security test

@@ -14,6 +14,7 @@
  */
 package se.softhouse.jargo;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -137,7 +138,7 @@ public final class Usage implements Serializable
 	 */
 	Usage withErrorMessage(String message)
 	{
-		this.errorMessage = message;
+		this.errorMessage = checkNotNull(message);
 		return this;
 	}
 

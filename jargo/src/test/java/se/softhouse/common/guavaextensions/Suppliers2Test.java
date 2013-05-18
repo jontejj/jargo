@@ -22,8 +22,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.common.testlib.UtilityClassTester;
-
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.testing.NullPointerTester;
@@ -91,11 +89,5 @@ public class Suppliers2Test
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Suppliers2.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Suppliers2.class);
 	}
 }

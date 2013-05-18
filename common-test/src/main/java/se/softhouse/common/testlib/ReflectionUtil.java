@@ -12,21 +12,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.common.strings;
+package se.softhouse.common.testlib;
 
-import org.junit.Test;
+import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
-
-/**
- * Tests for {@link StringBuilders}
- */
-public class StringBuildersTest
+final class ReflectionUtil
 {
-	@Test
-	public void testThatNullContractsAreFollowed() throws Exception
+	private ReflectionUtil()
 	{
-		new NullPointerTester().testStaticMethods(StringBuilders.class, Visibility.PACKAGE);
+
+	}
+
+	public static boolean isStatic(Member member)
+	{
+		return (member.getModifiers() & Modifier.STATIC) == Modifier.STATIC;
 	}
 }

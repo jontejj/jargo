@@ -28,8 +28,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import se.softhouse.common.testlib.UtilityClassTester;
-
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
@@ -181,11 +179,5 @@ public class Functions2Test
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Functions2.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Functions2.class);
 	}
 }

@@ -45,10 +45,4 @@ public class StreamsTest
 	{
 		new NullPointerTester().testStaticMethods(Streams.class, Visibility.PACKAGE);
 	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Streams.class);
-	}
 }

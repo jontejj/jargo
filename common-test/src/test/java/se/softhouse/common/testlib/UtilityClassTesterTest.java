@@ -17,7 +17,12 @@ package se.softhouse.common.testlib;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
+
+import se.softhouse.common.anotherpackage.ProperUtilityClass;
+import se.softhouse.common.anotherpackage.utilities.InvalidUtilityClass;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -25,10 +30,9 @@ import com.google.common.testing.NullPointerTester.Visibility;
 public class UtilityClassTesterTest
 {
 	@Test
-	public void testThatContructorNeedsToBePrivate()
+	public void testThatUtilityClassDesignIsCorrect() throws IOException
 	{
-		UtilityClassTester.testUtilityClassDesign(	EnumTester.class, Explanation.class, ResourceLoader.class, Serializer.class, Constants.class,
-													Launcher.class, Locales.class, Thrower.class);
+		UtilityClassTester.testUtilityClassDesignForAllClassesAround(UtilityClassTester.class);
 	}
 
 	@Test
@@ -36,21 +40,21 @@ public class UtilityClassTesterTest
 	{
 		try
 		{
-			UtilityClassTester.testUtilityClassDesign(UtilityClassWithNoArgConstructor.class);
+			UtilityClassTester.testUtilityClassDesign(UtilityClassWithoutNoArgConstructor.class);
 			fail("Missing no-arg constructor not detected");
 		}
 		catch(IllegalArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format("No no-arg constructor found for: %s", UtilityClassWithNoArgConstructor.class.getName()));
+			assertThat(expected).hasMessage(String.format("No no-arg constructor found for %s", UtilityClassWithoutNoArgConstructor.class));
 			assertThat(expected.getCause()).isInstanceOf(NoSuchMethodException.class);
 		}
 	}
 
-	private static final class UtilityClassWithNoArgConstructor
+	private static final class UtilityClassWithoutNoArgConstructor
 	{
 		// The test shall verify that this constructor shouldn't exist
 		@SuppressWarnings("unused")
-		UtilityClassWithNoArgConstructor(int dummy)
+		UtilityClassWithoutNoArgConstructor(int dummy)
 		{
 
 		}
@@ -93,14 +97,22 @@ public class UtilityClassTesterTest
 	}
 
 	@Test
-	public void testThatNullContractsAreFollowed() throws Exception
+	public void testThatPackagesAreSearchedRecursively() throws IOException
 	{
-		new NullPointerTester().testStaticMethods(UtilityClassTester.class, Visibility.PACKAGE);
+		try
+		{
+			UtilityClassTester.testUtilityClassDesignForAllClassesAround(ProperUtilityClass.class);
+			fail("Didn't find an invalid utility class in a sub package");
+		}
+		catch(AssertionError expected)
+		{
+			assertThat(expected.getMessage()).contains("Constructor for " + InvalidUtilityClass.class + " should be private");
+		}
 	}
 
 	@Test
-	public void testThatUtilityClassDesignIsCorrect()
+	public void testThatNullContractsAreFollowed() throws Exception
 	{
-		UtilityClassTester.testUtilityClassDesign(UtilityClassTester.class);
+		new NullPointerTester().testStaticMethods(UtilityClassTester.class, Visibility.PACKAGE);
 	}
 }

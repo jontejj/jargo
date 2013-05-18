@@ -15,12 +15,24 @@
 package se.softhouse.common.testlib;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static se.softhouse.common.testlib.ReflectionUtil.isStatic;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
 import javax.annotation.concurrent.Immutable;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 
 /**
  * The reasoning behind testing code that doesn't do anything is to achieve 100%
@@ -45,6 +57,14 @@ public final class UtilityClassTester
 	 */
 	public static void testUtilityClassDesign(Class<?> ... utilityClasses)
 	{
+		testUtilityClassDesign(Arrays.asList(utilityClasses));
+	}
+
+	/**
+	 * {@link Iterable} version of {@link #testUtilityClassDesign(Class...)}.
+	 */
+	public static void testUtilityClassDesign(Iterable<Class<?>> utilityClasses)
+	{
 		for(Class<?> clazz : utilityClasses)
 		{
 			try
@@ -58,7 +78,7 @@ public final class UtilityClassTester
 			}
 			catch(NoSuchMethodException e)
 			{
-				throw new IllegalArgumentException("No no-arg constructor found for: " + clazz.getName(), e);
+				throw new IllegalArgumentException("No no-arg constructor found for " + clazz, e);
 			}
 			catch(InvocationTargetException e)
 			{
@@ -67,7 +87,7 @@ public final class UtilityClassTester
 			}
 			catch(InstantiationException e)
 			{
-				throw new IllegalArgumentException("Utility class " + clazz.getName() + " may not be abstract", e);
+				throw new IllegalArgumentException("Utility " + clazz + " may not be abstract", e);
 			}
 			catch(IllegalAccessException e)
 			{
@@ -75,5 +95,73 @@ public final class UtilityClassTester
 				// that's what we're testing here
 			}
 		}
+	}
+
+	/**
+	 * Goes through all {@link ClassLoader#loadClass(String) loadable} classes around {@code klazz}
+	 * (and sub packages) and makes sure that the class is marked as final and that its constructor
+	 * is private if all publicly available methods are static (by using
+	 * {@link #testUtilityClassDesign(Iterable)}).<br>
+	 * <b>Note:</b> Nested classes are not tested (yet)
+	 * 
+	 * @throws IOException if the attempt to read class path resources (jar files or directories)
+	 *             failed.
+	 * @throws IllegalArgumentException if no utility classes were found
+	 */
+	public static void testUtilityClassDesignForAllClassesAround(Class<?> klazz) throws IOException
+	{
+		String packageName = klazz.getPackage().getName();
+		ImmutableSet<ClassInfo> classes = ClassPath.from(klazz.getClassLoader()).getTopLevelClassesRecursive(packageName);
+		Iterable<Class<?>> utilityClasses = FluentIterable.from(classes).transform(loadClasses()).filter(lookingLikeAUtilityClass()).toList();
+
+		assertThat(utilityClasses).as("No utitlity classes exists in " + packageName).isNotEmpty();
+		testUtilityClassDesign(utilityClasses);
+	}
+
+	private static Predicate<Class<?>> lookingLikeAUtilityClass()
+	{
+		return new Predicate<Class<?>>(){
+			@Override
+			public boolean apply(Class<?> input)
+			{
+				for(Method method : input.getDeclaredMethods())
+				{
+					if(method.isSynthetic())// Don't count injected code
+					{
+						continue;
+					}
+					if(!isStatic(method))
+						return false;
+				}
+				if(input.isInterface())
+					return false;
+				if(hasInstanceFields(input))
+					return false;
+				return true;
+			}
+
+			private boolean hasInstanceFields(Class<?> input)
+			{
+				if(input == Object.class)
+					return false;
+				for(Field field : input.getDeclaredFields())
+				{
+					if(!isStatic(field))
+						return true;
+				}
+				return hasInstanceFields(input.getSuperclass());
+			}
+		};
+	}
+
+	private static Function<ClassInfo, Class<?>> loadClasses()
+	{
+		return new Function<ClassInfo, Class<?>>(){
+			@Override
+			public Class<?> apply(ClassInfo input)
+			{
+				return input.load();
+			}
+		};
 	}
 }

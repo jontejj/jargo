@@ -26,8 +26,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import se.softhouse.common.testlib.UtilityClassTester;
-
 import com.google.common.base.Predicate;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -108,11 +106,5 @@ public class Predicates2Test
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Predicates2.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Predicates2.class);
 	}
 }

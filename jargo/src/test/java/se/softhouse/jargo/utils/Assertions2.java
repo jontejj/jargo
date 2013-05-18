@@ -24,6 +24,10 @@ import se.softhouse.jargo.Usage;
  */
 public final class Assertions2
 {
+	private Assertions2()
+	{
+	}
+
 	public static class UsageAssert extends StringAssert
 	{
 		protected UsageAssert(Usage usage)

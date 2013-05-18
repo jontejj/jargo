@@ -14,9 +14,12 @@
  */
 package se.softhouse.common.classes;
 
-
-public class ThreadedProgram
+public final class ThreadedProgram
 {
+	private ThreadedProgram()
+	{
+	}
+
 	public static void main(String[] args) throws InterruptedException
 	{
 		Thread thread = new Thread(){

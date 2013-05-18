@@ -19,6 +19,8 @@ import static org.junit.Assert.fail;
 import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.Arguments.integerArgument;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -27,13 +29,13 @@ import org.junit.Test;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ArgumentExceptions;
-import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
-import se.softhouse.jargo.StringParsers;
 import se.softhouse.jargo.commands.ProfilingExecuteCommand;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
@@ -43,13 +45,15 @@ import com.google.common.testing.NullPointerTester.Visibility;
 public class NullPointerTest
 {
 	@Test
-	public void testThatNullContractsAreCheckedEagerly() throws ArgumentException
+	public void testThatNullContractsAreCheckedEagerly() throws ArgumentException, IOException
 	{
+		String packageName = Argument.class.getPackage().getName();
+		ImmutableSet<ClassInfo> classes = ClassPath.from(getClass().getClassLoader()).getTopLevelClasses(packageName);
 		NullPointerTester npeTester = new NullPointerTester();
-		npeTester.testStaticMethods(ArgumentExceptions.class, Visibility.PACKAGE);
-		npeTester.testStaticMethods(Arguments.class, Visibility.PACKAGE);
-		npeTester.testStaticMethods(StringParsers.class, Visibility.PACKAGE);
-		npeTester.testStaticMethods(CommandLineParser.class, Visibility.PACKAGE);
+		for(ClassInfo klazz : classes)
+		{
+			npeTester.testStaticMethods(klazz.load(), Visibility.PACKAGE);
+		}
 
 		DefaultArgumentBuilder<Integer> builder = integerArgument("--name");
 		npeTester.testInstanceMethods(builder, Visibility.PROTECTED);
@@ -73,6 +77,7 @@ public class NullPointerTest
 		{
 			npeTester.testAllPublicInstanceMethods(expected);
 		}
+		npeTester.testInstanceMethods(parser.usage(), Visibility.PACKAGE);
 	}
 
 	@Test

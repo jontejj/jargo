@@ -21,8 +21,12 @@ import se.softhouse.jargo.Usage;
 /**
  * Helps to load saved {@link Usage} texts
  */
-public class ExpectedTexts
+public final class ExpectedTexts
 {
+	private ExpectedTexts()
+	{
+	}
+
 	/**
 	 * Loads a usage text (from resources) named /usage_texts/{@code testName}.txt
 	 * 

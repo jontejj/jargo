@@ -98,7 +98,7 @@ public class EnumTesterTest
 	{
 		try
 		{
-			Class<InvalidEnum> insideEnum = loadInvalidEnum("anotherpackage.", "NestedEnum$InsideEnum");
+			Class<InvalidEnum> insideEnum = loadInvalidEnum("enums.", "NestedEnum$InsideEnum");
 			EnumTester.testThatToStringIsCompatibleWithValueOf(insideEnum);
 			fail("valueOf should not work reflectively for package private enums");
 		}

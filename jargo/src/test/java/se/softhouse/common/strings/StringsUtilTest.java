@@ -30,7 +30,6 @@ import java.util.List;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.Explanation;
-import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -181,11 +180,5 @@ public class StringsUtilTest
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(StringsUtil.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(StringsUtil.class);
 	}
 }

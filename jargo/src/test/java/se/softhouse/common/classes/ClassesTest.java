@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import se.softhouse.common.testlib.Launcher;
 import se.softhouse.common.testlib.Launcher.LaunchedProgram;
-import se.softhouse.common.testlib.UtilityClassTester;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -63,11 +62,5 @@ public class ClassesTest
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Classes.class, Visibility.PACKAGE);
-	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(Classes.class);
 	}
 }

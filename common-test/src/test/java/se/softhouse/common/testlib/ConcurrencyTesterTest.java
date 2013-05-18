@@ -321,10 +321,4 @@ public class ConcurrencyTesterTest
 	{
 		new NullPointerTester().testStaticMethods(ConcurrencyTester.class, Visibility.PACKAGE);
 	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(ConcurrencyTester.class);
-	}
 }

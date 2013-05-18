@@ -60,10 +60,4 @@ public class MemoryTesterTest
 		new NullPointerTester().testStaticMethods(MemoryTester.class, Visibility.PACKAGE);
 		new NullPointerTester().testInstanceMethods(MemoryTester.createFinalizationAwareObject(""), Visibility.PACKAGE);
 	}
-
-	@Test
-	public void testThatUtilityClassDesignIsCorrect()
-	{
-		UtilityClassTester.testUtilityClassDesign(MemoryTester.class);
-	}
 }
