@@ -268,6 +268,7 @@ public class ConcurrencyTesterTest
 			}
 			catch(InterruptedException e)
 			{
+				Thread.interrupted();
 			}
 			if(failure.get() != null)
 				throw failure.get();
