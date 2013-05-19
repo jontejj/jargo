@@ -122,7 +122,9 @@
 					<!-- TODO(jontejj): enable when http://jira.codehaus.org/browse/SUREFIRE-797
 						is solved <parallel>methods</parallel> -->
 					<threadCount>1</threadCount>
-					<forkCount>0</forkCount>
+					<!-- Fork one time to minimize memory usage while concurrently launching several child-processes -->
+					<forkCount>1</forkCount>
+					<reuseForks>true</reuseForks>
 					<!-- Workaround for bug https://github.com/jacoco/jacoco/pull/40 -->
 					<argLine>${coverageAgent}</argLine>
 				</configuration>
