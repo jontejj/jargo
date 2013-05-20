@@ -15,11 +15,11 @@
 package se.softhouse.common.testlib;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static se.softhouse.common.testlib.ReflectionUtil.hasInstanceFields;
 import static se.softhouse.common.testlib.ReflectionUtil.isStatic;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -138,18 +138,6 @@ public final class UtilityClassTester
 				if(hasInstanceFields(input))
 					return false;
 				return true;
-			}
-
-			private boolean hasInstanceFields(Class<?> input)
-			{
-				if(input == Object.class)
-					return false;
-				for(Field field : input.getDeclaredFields())
-				{
-					if(!isStatic(field))
-						return true;
-				}
-				return hasInstanceFields(input.getSuperclass());
 			}
 		};
 	}

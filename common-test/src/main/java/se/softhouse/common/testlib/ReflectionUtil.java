@@ -14,9 +14,13 @@
  */
 package se.softhouse.common.testlib;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 
+/**
+ * Utility for working with reflection types such as {@link Member}.
+ */
 final class ReflectionUtil
 {
 	private ReflectionUtil()
@@ -24,8 +28,20 @@ final class ReflectionUtil
 
 	}
 
-	public static boolean isStatic(Member member)
+	static boolean isStatic(Member member)
 	{
 		return (member.getModifiers() & Modifier.STATIC) == Modifier.STATIC;
+	}
+
+	static boolean hasInstanceFields(Class<?> input)
+	{
+		if(input == Object.class)
+			return false;
+		for(Field field : input.getDeclaredFields())
+		{
+			if(!isStatic(field))
+				return true;
+		}
+		return hasInstanceFields(input.getSuperclass());
 	}
 }
