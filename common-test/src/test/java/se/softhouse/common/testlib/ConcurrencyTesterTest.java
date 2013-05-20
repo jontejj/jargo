@@ -194,85 +194,113 @@ public class ConcurrencyTesterTest
 	@Test
 	public void testThatInterruptedStatusIsClearedWhenInterruptedAndThatRemainingThreadsGetInterrupted() throws Throwable
 	{
-		for(int i = 0; i < 2; i++)
-		{
-			final Thread originThread = Thread.currentThread();
-			final AtomicReference<Throwable> failure = Atomics.newReference();
-			final Lock infinitelyLocked = new ReentrantLock();
-			infinitelyLocked.lock();
-			// +1 so that the starter thread also can await the start
-			final CyclicBarrier startSignal = new CyclicBarrier(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS + 1);
-			final CountDownLatch activeWorkers = new CountDownLatch(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS);
-			Thread interruptableThread = new Thread(){
-				@Override
-				public void run()
+		final Thread originThread = Thread.currentThread();
+		final AtomicReference<Throwable> failure = Atomics.newReference();
+		final Lock infinitelyLocked = new ReentrantLock();
+		infinitelyLocked.lock();
+		// +1 so that the starter thread also can await the start
+		final CyclicBarrier startSignal = new CyclicBarrier(ConcurrencyTester.NR_OF_CONCURRENT_RUNNERS + 1);
+		final CountDownLatch doneSignal = new CountDownLatch(1);
+		Thread interruptableThread = new Thread(){
+			@Override
+			public void run()
+			{
+				try
 				{
-					try
-					{
-						ConcurrencyTester.verify(new RunnableFactory(){
-							@Override
-							public int iterationCount()
-							{
-								return 1;
-							}
+					// Verify that all the Runnables gets an interrupt signal
+					ConcurrencyTester.verify(new RunnableFactory(){
+						@Override
+						public int iterationCount()
+						{
+							return 1;
+						}
 
-							@Override
-							public Runnable create(final int uniqueNumber)
-							{
-								return new Runnable(){
-									@Override
-									public void run()
+						@Override
+						public Runnable create(final int uniqueNumber)
+						{
+							return new Runnable(){
+								@Override
+								public void run()
+								{
+									try
 									{
-										try
-										{
-											startSignal.await();
-											// Wait for the interrupt signal
-											infinitelyLocked.lockInterruptibly();
-											fail("Executor did not interrupt remaining threads during shutdown operation");
-										}
-										catch(InterruptedException expected)
-										{
-										}
-										catch(BrokenBarrierException e)
-										{
-											Throwables.propagate(e);
-										}
-										activeWorkers.countDown();
+										startSignal.await();
+										// Wait for the interrupt signal
+										infinitelyLocked.lockInterruptibly();
+										fail("Executor did not interrupt remaining threads during shutdown operation");
 									}
-								};
-							}
-						}, Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS);
-						fail("verify completed without being interrupted");
-					}
-					catch(InterruptedException expected)
-					{
-						originThread.interrupt();
-					}
-					catch(Throwable error)
-					{
-						failure.compareAndSet(null, error);
-						originThread.interrupt();
-					}
+									catch(InterruptedException expected)
+									{
+										Thread.interrupted();
+									}
+									catch(BrokenBarrierException e)
+									{
+										Throwables.propagate(e);
+									}
+								}
+							};
+						}
+					}, Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS);
+					fail("verify completed without being interrupted");
 				}
-			};
-			try
-			{
-				interruptableThread.start();
-				startSignal.await();
-				interruptableThread.interrupt();
-
-				if(!activeWorkers.await(Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS))
+				catch(InterruptedException expected)
 				{
-					fail("Timeout while waiting for shutdown of remaining threads");
 				}
+				catch(Throwable error)
+				{
+					failure.compareAndSet(null, error);
+					originThread.interrupt();
+					return;
+				}
+				try
+				{
+					// As the interrupt status of this thread should have been cleared, it
+					// should be okay to reenter the verify method
+					ConcurrencyTester.verify(new RunnableFactory(){
+						@Override
+						public int iterationCount()
+						{
+							return 1;
+						}
+
+						@Override
+						public Runnable create(int uniqueNumber)
+						{
+							return new Runnable(){
+								@Override
+								public void run()
+								{
+								}
+							};
+						}
+					}, Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS);
+				}
+				catch(Throwable error)
+				{
+					failure.compareAndSet(null, error);
+					originThread.interrupt();
+					return;
+				}
+				doneSignal.countDown();
 			}
-			catch(InterruptedException e)
+		};
+		try
+		{
+			interruptableThread.start();
+			startSignal.await();
+			interruptableThread.interrupt();
+
+			if(!doneSignal.await(Constants.EXPECTED_TEST_TIME_FOR_THIS_SUITE, TimeUnit.MILLISECONDS))
 			{
-				Thread.interrupted();
+				fail("Timeout while waiting for shutdown of remaining threads");
 			}
-			if(failure.get() != null)
-				throw failure.get();
 		}
+		catch(InterruptedException error)
+		{
+			Thread.interrupted();
+		}
+		if(failure.get() != null)
+			throw failure.get();
 	}
 
 	@Test
