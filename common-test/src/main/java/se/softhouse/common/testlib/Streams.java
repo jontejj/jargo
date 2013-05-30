@@ -14,16 +14,17 @@
  */
 package se.softhouse.common.testlib;
 
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * Utility for working with {@link Readable} and {@link InputStream stream} instances.
@@ -42,7 +43,7 @@ public final class Streams
 	 * href="http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=4">deadlock
 	 * pitfalls</a> when launching {@link Process processes}.
 	 */
-	public static Future<String> readAsynchronously(InputStream source)
+	public static ListenableFuture<String> readAsynchronously(InputStream source)
 	{
 		final Readable sourceInUTF8 = new InputStreamReader(source, Charsets.UTF_8);
 		Callable<String> reader = new Callable<String>(){
@@ -54,6 +55,6 @@ public final class Streams
 				return result.toString();
 			}
 		};
-		return Executors.newSingleThreadExecutor().submit(reader);
+		return Concurrently.run(reader);
 	}
 }
