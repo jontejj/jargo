@@ -97,7 +97,6 @@ public final class Functions2
 	@Nonnull
 	public static <E> Function<List<E>, List<E>> listTransformer(Function<E, E> elementTransformer)
 	{
-		checkNotNull(elementTransformer);
 		if(elementTransformer == Functions.identity())
 			return Functions.identity();
 		return new ListTransformer<E>(elementTransformer);
@@ -109,7 +108,7 @@ public final class Functions2
 
 		private ListTransformer(Function<E, E> elementTransformer)
 		{
-			this.elementTransformer = elementTransformer;
+			this.elementTransformer = checkNotNull(elementTransformer);
 		}
 
 		@Override

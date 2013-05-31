@@ -21,7 +21,6 @@ import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.util.Collections;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.jargo.ArgumentException;
@@ -104,27 +103,16 @@ public class OptionalArgumentTest
 		assertThat(optionArgument("-l").names("--logging").parse("--logging")).isTrue();
 	}
 
-	/**
-	 * TODO(jontejj): maybe this should be supported? KeyValueParser#defaultValue() would have to
-	 * create a Map in that relayed key lookups against the defaultValue previously set.
-	 */
 	@Test
-	@Ignore
 	public void testThatOptionArgumentWorksInPropertyMap() throws ArgumentException
 	{
-		// new LinkedHashMap<K, V>()
-		// {
-		// @Override
-		// public V get(Object key)
-		// {
-		// if(!super.containsKey(key))
-		// {
-		// return defaultValueForValues;
-		// }
-		// return super.get(key);
-		// }
-		// };
 		assertThat(optionArgument("-n").asPropertyMap().parse("-nactived.property").get("actived.property")).isTrue();
+	}
+
+	@Test
+	public void testThatOptionDefaultValueForKeysInPropertyMapWorks() throws ArgumentException
+	{
+		assertThat(optionArgument("-n").defaultValue(true).asPropertyMap().parse().get("by.default.activated.property")).isTrue();
 	}
 
 	@Test(expected = IllegalArgumentException.class)

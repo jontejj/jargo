@@ -263,7 +263,6 @@ public final class Texts
 		public static final String INVALID_META_DESCRIPTION = "a meta description can't be empty";
 
 		public static final String DEFAULT_VALUE_AND_REQUIRED = "Having a requried argument and a default value makes no sense";
-		public static final String INVALID_CALL_ORDER = "The %s needs to be set after the %s invocation";
 		public static final String NO_USAGE_AVAILABLE = "No originParser set for ArgumentException. No usage available.";
 
 		/**

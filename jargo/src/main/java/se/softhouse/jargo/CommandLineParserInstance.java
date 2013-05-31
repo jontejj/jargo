@@ -364,7 +364,7 @@ final class CommandLineParserInstance
 			for(Character optionName : givenCharacters)
 			{
 				lastOption = namedArguments.get("-" + optionName);
-				if(lastOption == null || lastOption.parameterArity() != NO_ARGUMENTS || !foundOptions.add(lastOption))
+				if(lastOption == null || lastOption.parser().parameterArity() != NO_ARGUMENTS || !foundOptions.add(lastOption))
 				{
 					// Abort as soon as an unexpected character is discovered
 					break;

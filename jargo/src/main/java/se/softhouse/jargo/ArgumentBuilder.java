@@ -46,7 +46,6 @@ import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
-import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.ForwardingStringParser.SimpleForwardingStringParser;
 import se.softhouse.jargo.StringParsers.FixedArityParser;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
@@ -102,7 +101,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	private boolean hideFromUsage = false;
 
 	private boolean isPropertyMap = false;
-	private ParameterArity parameterArity = ParameterArity.AT_LEAST_ONE_ARGUMENT;
 
 	// Members that uses the T type, think about
 	// ListArgumentBuilder#copyAsListBuilder() when adding new ones
@@ -511,7 +509,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * to use sane defaults for your properties).
 	 * 
 	 * @return a new (more specific) builder
-	 * @throws IllegalStateException if {@link #defaultValue(Object)} has been set before {@link #asPropertyMap()} is called
 	 * 
 	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}
 	 * </pre>
@@ -519,7 +516,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@CheckReturnValue
 	public final MapArgumentBuilder<String, T> asPropertyMap()
 	{
-		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asPropertyMap");
 		return new MapArgumentBuilder<String, T>(this, stringParser());
 	}
 
@@ -547,14 +543,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * proper {@link Object#hashCode()} because it's going to be used a key in a {@link Map}.
 	 * 
 	 * @return a new (more specific) builder
-	 * @throws IllegalStateException if a {@link #defaultValueDescriber(Describer)} or
-	 *             {@link #defaultValue(Object)} has been set as they have no place in a property
-	 *             map.
 	 */
 	@CheckReturnValue
 	public final <K> MapArgumentBuilder<K, T> asKeyValuesWithKeyParser(StringParser<K> keyParser)
 	{
-		checkState(defaultValueSupplier == null, ProgrammaticErrors.INVALID_CALL_ORDER, "defaultValue", "asKeyValuesWithKeyParser");
 		return new MapArgumentBuilder<K, T>(this, checkNotNull(keyParser));
 	}
 
@@ -747,11 +739,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		isPropertyMap = true;
 	}
 
-	final void setParameterArity(ParameterArity arity)
-	{
-		parameterArity = arity;
-	}
-
 	/**
 	 * @formatter.off
 	 */
@@ -768,8 +755,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	final boolean isIgnoringCase(){ return ignoreCase; }
 
 	final boolean isPropertyMap(){ return isPropertyMap; }
-
-	final ParameterArity parameterArity(){ return parameterArity; }
 
 	final boolean isAllowedToRepeat(){ return isAllowedToRepeat; }
 
@@ -872,7 +857,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@Override
 		public CommandBuilder required()
 		{
-			throw new IllegalStateException("");
+			throw new IllegalStateException();
 		}
 
 		/**
@@ -1000,7 +985,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		private ArityArgumentBuilder(final ArgumentBuilder<? extends ArgumentBuilder<?, T>, T> builder)
 		{
 			super(new VariableArityParser<T>(builder.internalParser()));
-			setParameterArity(ParameterArity.VARIABLE_AMOUNT);
 			init(builder, 1);
 		}
 
@@ -1081,7 +1065,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		OptionArgumentBuilder()
 		{
 			defaultValue(false);
-			setParameterArity(ParameterArity.NO_ARGUMENTS);
 		}
 
 		@Override
@@ -1197,7 +1180,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			{
 				checkState(separator().length() > 0, ProgrammaticErrors.EMPTY_SEPARATOR);
 			}
-			return new KeyValueParser<K, V>(keyParser, valueBuilder.internalParser(), valueBuilder.limiter, defaultValueSupplier());
+			return new KeyValueParser<K, V>(keyParser,
+					valueBuilder.internalParser(),
+					valueBuilder.limiter,
+					defaultValueSupplier(),
+					valueBuilder.defaultValueSupplier);
 		}
 
 		// A Describer<? super V> is also a describer for a V

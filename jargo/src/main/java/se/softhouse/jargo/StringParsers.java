@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,6 +42,7 @@ import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.numbers.NumberType;
 import se.softhouse.common.strings.StringBuilders;
+import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -575,6 +577,15 @@ public final class StringParsers
 		{
 			return metaDescription(argumentSettings);
 		}
+
+		/**
+		 * Returns the {@link ParameterArity}
+		 * {@link #parse(ArgumentIterator, Object, Argument, Locale) parse} expects.
+		 */
+		ParameterArity parameterArity()
+		{
+			return ParameterArity.AT_LEAST_ONE_ARGUMENT;
+		}
 	}
 
 	@CheckReturnValue
@@ -630,6 +641,12 @@ public final class StringParsers
 		{
 			// Options don't have parameters so there's no parameter to explain
 			return "";
+		}
+
+		@Override
+		ParameterArity parameterArity()
+		{
+			return ParameterArity.NO_ARGUMENTS;
 		}
 	}
 
@@ -841,6 +858,12 @@ public final class StringParsers
 			String metaDescriptionForValue = metaDescription(argumentSettings);
 			return metaDescriptionForValue + " ...";
 		}
+
+		@Override
+		ParameterArity parameterArity()
+		{
+			return ParameterArity.VARIABLE_AMOUNT;
+		}
 	}
 
 	/**
@@ -929,27 +952,39 @@ public final class StringParsers
 		@Nonnull private final InternalStringParser<V> valueParser;
 		@Nonnull private final StringParser<K> keyParser;
 		@Nonnull private final Predicate<? super V> valueLimiter;
-		@Nonnull private final Supplier<? extends Map<K, V>> defaultValueSupplier;
+		@Nonnull private final Supplier<? extends Map<K, V>> defaultMap;
 
 		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<? super V> valueLimiter,
-				@Nullable Supplier<? extends Map<K, V>> defaultValueSupplier)
+				@Nullable Supplier<? extends Map<K, V>> defaultMap, @Nullable final Supplier<? extends V> defaultValue)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
 			this.valueLimiter = valueLimiter;
-			if(defaultValueSupplier == null)
+			if(defaultMap == null)
 			{
-				this.defaultValueSupplier = new Supplier<Map<K, V>>(){
+				this.defaultMap = new Supplier<Map<K, V>>(){
 					@Override
 					public Map<K, V> get()
 					{
+						if(defaultValue != null)
+							return new LinkedHashMap<K, V>(){
+								private static final long serialVersionUID = 1L;
+
+								@Override
+								public V get(Object key)
+								{
+									if(super.containsKey(key))
+										return super.get(key);
+									return defaultValue.get();
+								}
+							};
 						return Maps.newLinkedHashMap();
 					}
 				};
 			}
 			else
 			{
-				this.defaultValueSupplier = defaultValueSupplier;
+				this.defaultMap = defaultMap;
 			}
 		}
 
@@ -969,7 +1004,10 @@ public final class StringParsers
 			V oldValue = map.get(parsedKey);
 
 			// Hide what we just did to the parser that handles the "value"
-			arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
+			if(valueParser.parameterArity() != ParameterArity.NO_ARGUMENTS)
+			{
+				arguments.setNextArgumentTo(getValue(key, keyValue, argumentSettings));
+			}
 			V parsedValue = valueParser.parse(arguments, oldValue, argumentSettings, locale);
 
 			try
@@ -991,11 +1029,12 @@ public final class StringParsers
 		 */
 		private String getKey(String keyValue, Argument<?> argumentSettings) throws ArgumentException
 		{
+			if(valueParser.parameterArity() == ParameterArity.NO_ARGUMENTS)
+				return keyValue;// Consume the whole string as the key as there's no value to parse
 			String separator = argumentSettings.separator();
 			int keyEndIndex = keyValue.indexOf(separator);
 			if(keyEndIndex == -1)
 				throw withMessage(format(UserErrors.MISSING_KEY_VALUE_SEPARATOR, argumentSettings, keyValue, separator));
-
 			return keyValue.substring(0, keyEndIndex);
 		}
 
@@ -1029,7 +1068,7 @@ public final class StringParsers
 		@Override
 		public Map<K, V> defaultValue()
 		{
-			return defaultValueSupplier.get();
+			return defaultMap.get();
 		}
 
 		@Override

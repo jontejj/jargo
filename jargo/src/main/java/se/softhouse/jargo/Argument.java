@@ -75,7 +75,6 @@ public final class Argument<T>
 
 	// Internal bookkeeping
 	@Nonnull private final Function<T, T> finalizer;
-	private final ParameterArity parameterArity;
 	private final boolean isPropertyMap;
 
 	private final CollationKey sortingKey;
@@ -101,7 +100,6 @@ public final class Argument<T>
 		this.isAllowedToRepeat = builder.isAllowedToRepeat();
 		this.hideFromUsage = builder.isHiddenFromUsage();
 		this.metaDescription = builder.metaDescription();
-		this.parameterArity = builder.parameterArity();
 
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
@@ -288,11 +286,6 @@ public final class Argument<T>
 		return isAllowedToRepeat;
 	}
 
-	ParameterArity parameterArity()
-	{
-		return parameterArity;
-	}
-
 	boolean isIgnoringCase()
 	{
 		return ignoreCase;
@@ -320,6 +313,9 @@ public final class Argument<T>
 		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this));
 	}
 
+	/**
+	 * Classes of how many arguments that can be handled by an {@link Argument}.
+	 */
 	enum ParameterArity
 	{
 		/**
@@ -364,7 +360,7 @@ public final class Argument<T>
 		@Override
 		public boolean apply(@Nonnull Argument<?> input)
 		{
-			return input.parameterArity() == ParameterArity.VARIABLE_AMOUNT;
+			return input.parser().parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 		}
 	};
 

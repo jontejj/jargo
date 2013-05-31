@@ -24,7 +24,6 @@ import static se.softhouse.jargo.Arguments.fileArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.Arguments.withParser;
-import static se.softhouse.jargo.StringParsers.integerParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
 import static se.softhouse.jargo.stringparsers.custom.ObjectParser.objectArgument;
@@ -299,22 +298,17 @@ public class DefaultValueTest
 		assertThat(usage).contains("Default: 2");
 	}
 
-	@Test(expected = IllegalStateException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
-	public void testThatSettingDefaultValueForValuesInAPropertyArgumentIsNotAllowed()
+	@Test
+	public void testThatDefaultValueIsUsedForNonExistingKeys()
 	{
-		integerArgument("-n").defaultValue(1).asPropertyMap();
-	}
-
-	@Test(expected = IllegalStateException.class)
-	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
-	public void testThatSettingDefaultValueForValuesInAKeyValueArgumentIsNotAllowed()
-	{
-		booleanArgument("-n").defaultValue(true).asKeyValuesWithKeyParser(integerParser());
+		Map<String, Boolean> parsedKeys = booleanArgument("-n").defaultValue(true) //
+				.asPropertyMap().parse();
+		Boolean defaultValue = parsedKeys.get("non-existing-key");
+		assertThat(defaultValue).as("setting defaultValue on argument should mean defaultValue for values in a key/value map").isTrue();
 	}
 
 	@Test
-	public void testThatSettingDefaultValueDescriberForValuesInAKeyValueArgumentIsUsedForValues()
+	public void testThatDefaultValueDescriberForValuesInAKeyValueArgumentIsUsedForValues()
 	{
 		Map<String, Integer> defaults = ImmutableMap.<String, Integer>builder().put("foo", 4000).build();
 		Usage usage = integerArgument("-n").asPropertyMap().defaultValue(defaults).usage();
