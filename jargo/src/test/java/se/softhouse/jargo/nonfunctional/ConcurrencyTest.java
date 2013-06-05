@@ -287,4 +287,33 @@ public class ConcurrencyTest
 			}
 		}
 	}
+
+	@Test(timeout = (timeoutInSeconds + cleanupTime) * 1000)
+	public void testThatEndOfOptionsIsNotSharedBetweenParsers() throws Throwable
+	{
+		final Argument<String> option = stringArgument("--option").build();
+		final Argument<String> indexed = stringArgument().build();
+		final CommandLineParser cli = CommandLineParser.withArguments(option, indexed);
+		ConcurrencyTester.verify(new RunnableFactory(){
+			@Override
+			public int iterationCount()
+			{
+				return 300;
+			}
+
+			@Override
+			public Runnable create(final int uniqueNumber)
+			{
+				return new Runnable(){
+					@Override
+					public void run()
+					{
+						ParsedArguments result = cli.parse("--option", "one" + uniqueNumber, "--", "indexed" + uniqueNumber);
+						assertThat(result.get(option)).isEqualTo("one" + uniqueNumber);
+						assertThat(result.get(indexed)).isEqualTo("indexed" + uniqueNumber);
+					}
+				};
+			}
+		}, timeoutInSeconds, TimeUnit.SECONDS);
+	}
 }

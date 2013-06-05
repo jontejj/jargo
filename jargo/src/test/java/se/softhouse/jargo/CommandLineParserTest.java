@@ -14,6 +14,7 @@
  */
 package se.softhouse.jargo;
 
+import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.failure;
 import static org.junit.Assert.fail;
@@ -262,10 +263,10 @@ public class CommandLineParserTest
 	public void testThatInputIsCopiedBeforeBeingWorkedOn() throws ArgumentException
 	{
 		List<String> args = Arrays.asList("-Dfoo=bar", "-Dbaz=zoo");
-		List<String> copy = Lists.newArrayList(args);
+		List<String> stateBeforeParsing = Lists.newArrayList(args);
 		Argument<Map<String, String>> arg = stringArgument("-D").asPropertyMap().build();
 		CommandLineParser.withArguments(arg).parse(args);
-		assertThat(args).isEqualTo(copy);
+		assertThat(args).isEqualTo(stateBeforeParsing);
 	}
 
 	@Test
@@ -292,6 +293,19 @@ public class CommandLineParserTest
 		List<String> parsed = stringArgument().variableArity().parse("@" + tempFile.getPath());
 
 		assertThat(parsed).isEqualTo(Arrays.asList("hello", "world"));
+	}
+
+	@Test
+	public void testThatAllArgumentsAreTreatedAsIndexedArgumentsAfterEndOfOptions() throws Exception
+	{
+		Argument<String> optionOne = stringArgument("--option").build();
+		Argument<String> optionTwo = stringArgument("--option-two").defaultValue("two").build();
+		Argument<List<String>> indexed = stringArgument().variableArity().build();
+		CommandLineParser parser = CommandLineParser.withArguments(optionOne, optionTwo, indexed);
+		ParsedArguments result = parser.parse("--option", "one", "--", "--option-two", "--option", "--");
+		assertThat(result.get(indexed)).isEqualTo(asList("--option-two", "--option", "--"));
+		assertThat(result.get(optionOne)).isEqualTo("one");
+		assertThat(result.get(optionTwo)).isEqualTo("two");
 	}
 
 	@Test

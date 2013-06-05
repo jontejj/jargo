@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.Arguments.command;
+import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
@@ -489,6 +490,28 @@ public class CommandTest
 			fail("Describable should only be called if usage is printed");
 			return "Unreachable description";
 		}
+	}
+
+	@Test
+	public void testThatEndOfOptionsStopCommandsFromParsingArgumentNames() throws Exception
+	{
+		final Argument<String> option = stringArgument("--option").defaultValue("one").build();
+		Command command = new Command(option){
+			@Override
+			protected String commandName()
+			{
+				return "command";
+			}
+
+			@Override
+			protected void execute(ParsedArguments parsedArguments)
+			{
+				assertThat(parsedArguments.get(option)).isEqualTo("one");
+			}
+		};
+		Argument<?> indexed = stringArgument().build();
+		ParsedArguments result = CommandLineParser.withCommands(command).andArguments(indexed).parse("command", "--", "--option");
+		assertThat(result.get(indexed)).isEqualTo("--option");
 	}
 
 	// This is what's tested

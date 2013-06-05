@@ -297,20 +297,23 @@ final class CommandLineParserInstance
 	 *             for the current argument
 	 */
 	@Nullable
-	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator arguments, final ParsedArguments holder) throws ArgumentException
+	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator iterator, final ParsedArguments holder) throws ArgumentException
 	{
-		String currentArgument = arguments.next();
-		arguments.setCurrentArgumentName(currentArgument);
+		String currentArgument = iterator.next();
+		iterator.setCurrentArgumentName(currentArgument);
 
-		Argument<?> byName = lookupByName(arguments);
-		if(byName != null)
-			return byName;
+		if(iterator.allowsOptions())
+		{
+			Argument<?> byName = lookupByName(iterator);
+			if(byName != null)
+				return byName;
 
-		Argument<?> option = batchOfShortNamedArguments(arguments, holder);
-		if(option != null)
-			return option;
+			Argument<?> option = batchOfShortNamedArguments(iterator, holder);
+			if(option != null)
+				return option;
+		}
 
-		Argument<?> indexedArgument = indexedArgument(arguments, holder);
+		Argument<?> indexedArgument = indexedArgument(iterator, holder);
 		if(indexedArgument != null)
 			return indexedArgument;
 
@@ -318,14 +321,14 @@ final class CommandLineParserInstance
 		{
 			// Rolling back here means that the parent parser/command will receive the argument
 			// instead, maybe it can handle it
-			arguments.previous();
+			iterator.previous();
 			return null;
 		}
 
-		guessAndSuggestIfCloseMatch(arguments, holder);
+		guessAndSuggestIfCloseMatch(iterator, holder);
 
 		// We're out of order, tell the user what we didn't like
-		throw ArgumentExceptions.forUnexpectedArgument(arguments);
+		throw ArgumentExceptions.forUnexpectedArgument(iterator);
 	}
 
 	private Argument<?> lookupByName(ArgumentIterator arguments)
@@ -528,12 +531,18 @@ final class CommandLineParserInstance
 	@NotThreadSafe
 	static final class ArgumentIterator extends UnmodifiableIterator<String>
 	{
+		/**
+		 * Indicator from the user that all arguments after this should be treated as
+		 * {@link ArgumentBuilder#names(String...) indexed arguments}.
+		 */
+		private static final String END_OF_OPTIONS = "--";
+		private boolean endOfOptionsReceived;
+
 		private final List<String> arguments;
 
 		/**
 		 * Corresponds to one of the {@link Argument#names()} that has been given from the command
-		 * line.
-		 * This is updated as soon as the parsing of a new argument begins.
+		 * line. This is updated as soon as the parsing of a new argument begins.
 		 * For indexed arguments this will be the meta description instead.
 		 */
 		private String currentArgumentName;
@@ -562,6 +571,14 @@ final class CommandLineParserInstance
 		Argument<?> helpArgument(String currentArgument)
 		{
 			return helpArguments.get(currentArgument);
+		}
+
+		/**
+		 * Returns <code>true</code> if {@link #END_OF_OPTIONS} hasn't been received yet.
+		 */
+		boolean allowsOptions()
+		{
+			return !endOfOptionsReceived;
 		}
 
 		void setCurrentParser(CommandLineParserInstance instance)
@@ -641,6 +658,21 @@ final class CommandLineParserInstance
 		public String next()
 		{
 			String nextArgument = arguments.get(currentArgumentIndex++);
+			nextArgument = skipAheadIfEndOfOptions(nextArgument);
+			return nextArgument;
+		}
+
+		/**
+		 * Skips {@link #END_OF_OPTIONS} if the parser hasn't received it yet.
+		 * This is to allow the string {@link #END_OF_OPTIONS} as an indexed argument itself.
+		 */
+		String skipAheadIfEndOfOptions(String nextArgument)
+		{
+			if(!endOfOptionsReceived && nextArgument.equals(END_OF_OPTIONS))
+			{
+				endOfOptionsReceived = true;
+				return next();
+			}
 			return nextArgument;
 		}
 
