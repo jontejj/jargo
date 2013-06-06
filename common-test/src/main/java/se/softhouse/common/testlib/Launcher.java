@@ -21,6 +21,8 @@ import static java.lang.reflect.Modifier.isStatic;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -122,13 +124,16 @@ public final class Launcher
 		{
 			throw new IllegalArgumentException("No main method found on: " + classWithMainMethod.getName(), e);
 		}
+		RuntimeMXBean runtimeInformation = ManagementFactory.getRuntimeMXBean();
 		String jvm = new File(new File(System.getProperty("java.home"), "bin"), "java").getAbsolutePath();
-		String classPath = System.getProperty("java.class.path");
+		String classPath = runtimeInformation.getClassPath();
+
+		List<String> vmArgs = runtimeInformation.getInputArguments();
 
 		List<String> args = Lists.newArrayList(jvm, "-cp", classPath, classWithMainMethod.getName());
 		args.addAll(Arrays.asList(programArguments));
 
-		String debugInformation = "\njvm: " + jvm + "\nclasspath: " + classPath;
+		String debugInformation = "\njvm: " + jvm + "\nvm args: " + vmArgs + "\nclasspath: " + classPath;
 		return execute(args, debugInformation);
 	}
 

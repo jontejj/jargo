@@ -35,8 +35,10 @@ public class LauncherTest
 	public void testThatOutputAndErrorIsCapturedFromLaunchedProgram() throws IOException, InterruptedException
 	{
 		LaunchedProgram program = Launcher.launch(HelloWorldProgram.class);
-		assertThat(program.errors()).isEqualTo("FooBar");
-		assertThat(program.output()).isEqualTo("HelloWorld");
+		String debugInformation = program.debugInformation();
+		assertThat(program.errors()).as("Error stream must be slurped from parent process." + debugInformation).isEqualTo("FooBar");
+		assertThat(program.output()).as("Standard out must be slurped from parent process." + debugInformation).isEqualTo("HelloWorld");
+		assertThat(debugInformation).contains("java").contains("classpath");
 	}
 
 	private static class HelloWorldProgram
@@ -124,13 +126,6 @@ public class LauncherTest
 		{
 
 		}
-	}
-
-	@Test
-	public void testThatDebugInformationContainsJavaAndClassPathInformation() throws IOException, InterruptedException
-	{
-		String debug = Launcher.launch(HelloWorldProgram.class).debugInformation();
-		assertThat(debug).contains("java").contains("classpath");
 	}
 
 	@Test
