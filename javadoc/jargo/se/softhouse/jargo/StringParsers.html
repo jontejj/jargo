@@ -1,302 +1,255 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-StringParsers (jargo 0.1.1-SNAPSHOT API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+<title>StringParsers (jargo 0.1.1-SNAPSHOT API)</title>
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
         parent.document.title="StringParsers (jargo 0.1.1-SNAPSHOT API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/StringParsers.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-<link rel="stylesheet" type="text/css" href="doc-files/prettify/prettify.css">                <script src="doc-files/prettify/prettify.js" type="text/javascript"></script>                <script language="JavaScript">window.onload=function(){prettyPrint();};</script></EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../index.html?se/softhouse/jargo/StringParsers.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="StringParsers.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/StringParsers.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><link rel="stylesheet" type="text/css" href="doc-files/prettify/prettify.css">                <script src="doc-files/prettify/prettify.js" type="text/javascript"></script>                <script language="JavaScript">window.onload=function(){prettyPrint();};</script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?se/softhouse/jargo/StringParsers.html" target="_top">Frames</a></li>
+<li><a href="StringParsers.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-se.softhouse.jargo</FONT>
-<BR>
-Class StringParsers</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../resources/inherit.gif" ALT="extended by "><B>se.softhouse.jargo.StringParsers</B>
-</PRE>
-<HR>
-<DL>
-<DT><PRE><FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</A>
-</FONT>public final class <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.75"><B>StringParsers</B></A><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
-</PRE>
-
-<P>
-<pre>
- Gives you static access to implementations of the <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A> interface.
- All methods return <A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><CODE>Immutable</CODE></A> parsers.
+<div class="header">
+<div class="subTitle">se.softhouse.jargo</div>
+<h2 title="Class StringParsers" class="title">Class StringParsers</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>se.softhouse.jargo.StringParsers</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent">@Immutable</a>
+public final class <a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.75">StringParsers</a>
+extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
+<div class="block"><pre>
+ Gives you static access to implementations of the <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> interface.
+ All methods return <a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/concurrent/Immutable.html?is-external=true" title="class or interface in javax.annotation.concurrent"><code>Immutable</code></a> parsers.
  Most methods here even return the same instance for every call.
- If you want to customize one of these parsers you can use a <A HREF="../../../se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo"><CODE>ForwardingStringParser</CODE></A>.
+ If you want to customize one of these parsers you can use a <a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="class in se.softhouse.jargo"><code>ForwardingStringParser</code></a>.
  
- By <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>default</CODE></A> most parsers return <code>zero</code> or otherwise
- sane defaults. The only exception being <A HREF="../../../se/softhouse/jargo/StringParsers.html#enumParser(java.lang.Class)"><CODE>enumParser(Class)</CODE></A> which returns null instead
+ By <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>default</code></a> most parsers return <code>zero</code> or otherwise
+ sane defaults. The only exception being <a href="../../../se/softhouse/jargo/StringParsers.html#enumParser(java.lang.Class)"><code>enumParser(Class)</code></a> which returns null instead
  of the first enum constant available.
- </pre>
-<P>
-
-<P>
-<HR>
-
-<P>
-
+ </pre></div>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,T&gt;</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser)">asFunction</A></B>(<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;T&gt;&nbsp;parser)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- A <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><CODE>parse</CODE></A> for input <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,T&gt;</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser, java.util.Locale)">asFunction</A></B>(<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;T&gt;&nbsp;parser,
-                     <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;localeToUse)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A> version of <A HREF="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser)"><CODE>asFunction(StringParser)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math">BigDecimal</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#bigDecimalParser()">bigDecimalParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math"><CODE>BigDecimal</CODE></A>s using
- <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math">BigInteger</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#bigIntegerParser()">bigIntegerParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math"><CODE>BigInteger</CODE></A>s using
- <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#booleanParser()">booleanParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- A parser that parse strings with <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true#valueOf(java.lang.String)" title="class or interface in java.lang"><CODE>Boolean.valueOf(String)</CODE></A>
- The <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>default value</CODE></A> is <code>false</code></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang">Byte</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#byteParser()">byteParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang"><CODE>Byte</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#charParser()">charParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- A parser that returns the first character in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> as a <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><CODE>Character</CODE></A> and that
- throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> for any given <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> with more than
- one <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><CODE>Character</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; 
-<BR>
-<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;T&gt;</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#enumParser(java.lang.Class)">enumParser</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumToHandle)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- A parser that uses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#valueOf(java.lang.Class, java.lang.String)" title="class or interface in java.lang"><CODE>Enum.valueOf(Class, String)</CODE></A> to <A HREF="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><CODE>parse</CODE></A> input strings.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#fileParser()">fileParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A parser that creates <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A>s using <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#File(java.lang.String)" title="class or interface in java.io"><CODE>File.File(String)</CODE></A> for input strings.<br>
- The <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>default value</CODE></A> is a <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A> representing the
- current working directory (cwd).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#integerParser()">integerParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><CODE>Integer</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#longParser()">longParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang"><CODE>Long</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang">Short</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#shortParser()">shortParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang"><CODE>Short</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../se/softhouse/jargo/StringParsers.html#stringParser()">stringParser</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The simplest possible parser, it simply returns the strings it's given to parse.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser)">asFunction</a></strong>(<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;&nbsp;parser)</code>
+<div class="block">
+ A <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><code>Function</code></a> that uses <a href="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><code>parse</code></a> for input <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser, java.util.Locale)">asFunction</a></strong>(<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;&nbsp;parser,
+                    <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;localeToUse)</code>
+<div class="block"><a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> version of <a href="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser)"><code>asFunction(StringParser)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math">BigDecimal</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#bigDecimalParser()">bigDecimalParser</a></strong>()</code>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math"><code>BigDecimal</code></a>s using
+ <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math">BigInteger</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#bigIntegerParser()">bigIntegerParser</a></strong>()</code>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math"><code>BigInteger</code></a>s using
+ <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#booleanParser()">booleanParser</a></strong>()</code>
+<div class="block">
+ A parser that parse strings with <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true#valueOf(java.lang.String)" title="class or interface in java.lang"><code>Boolean.valueOf(String)</code></a>
+ The <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>default value</code></a> is <code>false</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang">Byte</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#byteParser()">byteParser</a></strong>()</code>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang"><code>Byte</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#charParser()">charParser</a></strong>()</code>
+<div class="block">
+ A parser that returns the first character in a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> as a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a> and that
+ throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a> for any given <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> with more than
+ one <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static &lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;T&gt;&gt;&nbsp;<br><a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#enumParser(java.lang.Class)">enumParser</a></strong>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;enumToHandle)</code>
+<div class="block">
+ A parser that uses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#valueOf(java.lang.Class, java.lang.String)" title="class or interface in java.lang"><code>Enum.valueOf(Class, String)</code></a> to <a href="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><code>parse</code></a> input strings.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#fileParser()">fileParser</a></strong>()</code>
+<div class="block">A parser that creates <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s using <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#File(java.lang.String)" title="class or interface in java.io"><code>File.File(String)</code></a> for input strings.<br>
+ The <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>default value</code></a> is a <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a> representing the
+ current working directory (cwd).</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#integerParser()">integerParser</a></strong>()</code>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><code>Integer</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#longParser()">longParser</a></strong>()</code>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang"><code>Long</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang">Short</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#shortParser()">shortParser</a></strong>()</code>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang"><code>Short</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../se/softhouse/jargo/StringParsers.html#stringParser()">stringParser</a></strong>()</code>
+<div class="block">The simplest possible parser, it simply returns the strings it's given to parse.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="asFunction(se.softhouse.jargo.StringParser)"><!-- --></A><H3>
-asFunction</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,T&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.487"><B>asFunction</B></A>(<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;T&gt;&nbsp;parser)</PRE>
-<DL>
-<DD><pre>
- A <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that uses <A HREF="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><CODE>parse</CODE></A> for input <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s.
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="asFunction(se.softhouse.jargo.StringParser)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asFunction</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.487">asFunction</a>(<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;&nbsp;parser)</pre>
+<div class="block"><pre>
+ A <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><code>Function</code></a> that uses <a href="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><code>parse</code></a> for input <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s.
  </pre>
  
  For example:
@@ -308,283 +261,253 @@ asFunction</H3>
  </pre>
  
  <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.<br>
- <b>Note:</b>The parser will pass the <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><CODE>Locale.getDefault()</CODE></A> to
- <A HREF="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><CODE>parse</CODE></A>. Use
- <A HREF="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser, java.util.Locale)"><CODE>asFunction(StringParser, Locale)</CODE></A> to specify a specific <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>parser</CODE> - the parser to expose as a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A>
-<DT><B>Returns:</B><DD><code>parser</code> exposed in a <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><CODE>Function</CODE></A> that throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A>
-         when given faulty values.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asFunction(se.softhouse.jargo.StringParser, java.util.Locale)"><!-- --></A><H3>
-asFunction</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>,T&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.498"><B>asFunction</B></A>(<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;T&gt;&nbsp;parser,
-                                                                              <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</A>&nbsp;localeToUse)</PRE>
-<DL>
-<DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><CODE>Locale</CODE></A> version of <A HREF="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser)"><CODE>asFunction(StringParser)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="bigDecimalParser()"><!-- --></A><H3>
-bigDecimalParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math">BigDecimal</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.403"><B>bigDecimalParser</B></A>()</PRE>
-<DL>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math"><CODE>BigDecimal</CODE></A>s using
- <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="bigIntegerParser()"><!-- --></A><H3>
-bigIntegerParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math">BigInteger</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.392"><B>bigIntegerParser</B></A>()</PRE>
-<DL>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math"><CODE>BigInteger</CODE></A>s using
- <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="booleanParser()"><!-- --></A><H3>
-booleanParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.135"><B>booleanParser</B></A>()</PRE>
-<DL>
-<DD><pre>
- A parser that parse strings with <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true#valueOf(java.lang.String)" title="class or interface in java.lang"><CODE>Boolean.valueOf(String)</CODE></A>
- The <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>default value</CODE></A> is <code>false</code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="byteParser()"><!-- --></A><H3>
-byteParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang">Byte</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.351"><B>byteParser</B></A>()</PRE>
-<DL>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang"><CODE>Byte</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="charParser()"><!-- --></A><H3>
-charParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.220"><B>charParser</B></A>()</PRE>
-<DL>
-<DD><pre>
- A parser that returns the first character in a <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> as a <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><CODE>Character</CODE></A> and that
- throws <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> for any given <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> with more than
- one <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><CODE>Character</CODE></A>.
- The <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A> is the <A HREF="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Ascii.html?is-external=true#NUL" title="class or interface in com.google.common.base"><CODE>Ascii.NUL</CODE></A> character.
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="enumParser(java.lang.Class)"><!-- --></A><H3>
-enumParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</A>&lt;T&gt;&gt; <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;T&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.276"><B>enumParser</B></A>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</A>&lt;T&gt;&nbsp;enumToHandle)</PRE>
-<DL>
-<DD><pre>
- A parser that uses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#valueOf(java.lang.Class, java.lang.String)" title="class or interface in java.lang"><CODE>Enum.valueOf(Class, String)</CODE></A> to <A HREF="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><CODE>parse</CODE></A> input strings.
+ <b>Note:</b>The parser will pass the <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault()" title="class or interface in java.util"><code>Locale.getDefault()</code></a> to
+ <a href="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><code>parse</code></a>. Use
+ <a href="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser, java.util.Locale)"><code>asFunction(StringParser, Locale)</code></a> to specify a specific <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>parser</code> - the parser to expose as a <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><code>Function</code></a></dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>parser</code> exposed in a <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base"><code>Function</code></a> that throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a>
+         when given faulty values.</dd></dl>
+</li>
+</ul>
+<a name="asFunction(se.softhouse.jargo.StringParser, java.util.Locale)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asFunction</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/annotations/Beta.html?is-external=true" title="class or interface in com.google.common.annotations">@Beta</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Function.html?is-external=true" title="class or interface in com.google.common.base">Function</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.498">asFunction</a>(<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;&nbsp;parser,
+                                                              <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;localeToUse)</pre>
+<div class="block"><a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> version of <a href="../../../se/softhouse/jargo/StringParsers.html#asFunction(se.softhouse.jargo.StringParser)"><code>asFunction(StringParser)</code></a></div>
+</li>
+</ul>
+<a name="bigDecimalParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>bigDecimalParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math">BigDecimal</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.403">bigDecimalParser</a>()</pre>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math"><code>BigDecimal</code></a>s using
+ <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</li>
+</ul>
+<a name="bigIntegerParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>bigIntegerParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math">BigInteger</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.392">bigIntegerParser</a>()</pre>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/math/BigInteger.html?is-external=true" title="class or interface in java.math"><code>BigInteger</code></a>s using
+ <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</li>
+</ul>
+<a name="booleanParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>booleanParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.135">booleanParser</a>()</pre>
+<div class="block"><pre>
+ A parser that parse strings with <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true#valueOf(java.lang.String)" title="class or interface in java.lang"><code>Boolean.valueOf(String)</code></a>
+ The <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>default value</code></a> is <code>false</code>
+ </pre></div>
+</li>
+</ul>
+<a name="byteParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>byteParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang">Byte</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.351">byteParser</a>()</pre>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Byte.html?is-external=true" title="class or interface in java.lang"><code>Byte</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</li>
+</ul>
+<a name="charParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>charParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.220">charParser</a>()</pre>
+<div class="block"><pre>
+ A parser that returns the first character in a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> as a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a> and that
+ throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a> for any given <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> with more than
+ one <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a>.
+ The <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>StringParser.defaultValue()</code></a> is the <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Ascii.html?is-external=true#NUL" title="class or interface in com.google.common.base"><code>Ascii.NUL</code></a> character.
+ </pre></div>
+</li>
+</ul>
+<a name="enumParser(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>enumParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;&lt;T extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;T&gt;&gt;&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.276">enumParser</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;enumToHandle)</pre>
+<div class="block"><pre>
+ A parser that uses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true#valueOf(java.lang.Class, java.lang.String)" title="class or interface in java.lang"><code>Enum.valueOf(Class, String)</code></a> to <a href="../../../se/softhouse/jargo/StringParser.html#parse(java.lang.String, java.util.Locale)"><code>parse</code></a> input strings.
  
  <b>Case sensitivity note:</b> First a direct match with the input value in upper case is
  made, if that fails a direct match without converting the case is made,
- if that also fails an <A HREF="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><CODE>ArgumentException</CODE></A> is thrown. This order of execution is
+ if that also fails an <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a> is thrown. This order of execution is
  based on the fact that users typically don't upper case their input while
  <nobr><a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a>
  recommends upper case for enum constants.</nobr>
  </pre>
  
- <b>Default value:</b> <code>null</code> is used as <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>StringParser.defaultValue()</CODE></A> and
- not any of the enum values in <code>enumToHandle</code>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>enumToHandle</CODE> - the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang"><CODE>Class</CODE></A> literal for the <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang"><CODE>Enum</CODE></A> to parse strings into
-<DT><B>Returns:</B><DD>a <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><CODE>StringParser</CODE></A> that parses strings into enum values of the type <code>T</code></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="fileParser()"><!-- --></A><H3>
-fileParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.176"><B>fileParser</B></A>()</PRE>
-<DL>
-<DD>A parser that creates <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A>s using <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#File(java.lang.String)" title="class or interface in java.io"><CODE>File.File(String)</CODE></A> for input strings.<br>
- The <A HREF="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><CODE>default value</CODE></A> is a <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><CODE>File</CODE></A> representing the
- current working directory (cwd).
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="integerParser()"><!-- --></A><H3>
-integerParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.371"><B>integerParser</B></A>()</PRE>
-<DL>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><CODE>Integer</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="longParser()"><!-- --></A><H3>
-longParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.381"><B>longParser</B></A>()</PRE>
-<DL>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang"><CODE>Long</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="shortParser()"><!-- --></A><H3>
-shortParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang">Short</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.361"><B>shortParser</B></A>()</PRE>
-<DL>
-<DD>Parses <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A>s into <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang"><CODE>Short</CODE></A>s using <A HREF="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><CODE>NumberType.parse(String, Locale)</CODE></A>
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="stringParser()"><!-- --></A><H3>
-stringParser</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</A>
-<A HREF="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</A>
-</FONT>public static <A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&gt; <A HREF="../../../src-html/se/softhouse/jargo/StringParsers.html#line.86"><B>stringParser</B></A>()</PRE>
-<DL>
-<DD>The simplest possible parser, it simply returns the strings it's given to parse.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
+ <b>Default value:</b> <code>null</code> is used as <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>StringParser.defaultValue()</code></a> and
+ not any of the enum values in <code>enumToHandle</code></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>enumToHandle</code> - the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang"><code>Class</code></a> literal for the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang"><code>Enum</code></a> to parse strings into</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> that parses strings into enum values of the type <code>T</code></dd></dl>
+</li>
+</ul>
+<a name="fileParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fileParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.176">fileParser</a>()</pre>
+<div class="block">A parser that creates <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s using <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#File(java.lang.String)" title="class or interface in java.io"><code>File.File(String)</code></a> for input strings.<br>
+ The <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue()"><code>default value</code></a> is a <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a> representing the
+ current working directory (cwd).</div>
+</li>
+</ul>
+<a name="integerParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>integerParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.371">integerParser</a>()</pre>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang"><code>Integer</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</li>
+</ul>
+<a name="longParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>longParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.381">longParser</a>()</pre>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang"><code>Long</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</li>
+</ul>
+<a name="shortParser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>shortParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang">Short</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.361">shortParser</a>()</pre>
+<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Short.html?is-external=true" title="class or interface in java.lang"><code>Short</code></a>s using <a href="../../../se/softhouse/common/numbers/NumberType.html#parse(java.lang.String, java.util.Locale)"><code>NumberType.parse(String, Locale)</code></a></div>
+</li>
+</ul>
+<a name="stringParser()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>stringParser</h4>
+<pre><a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+<a href="http://jsr-305.googlecode.com/svn/trunk/javadoc/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParsers.html#line.86">stringParser</a>()</pre>
+<div class="block">The simplest possible parser, it simply returns the strings it's given to parse.</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/StringParsers.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-<link rel="stylesheet" type="text/css" href="doc-files/prettify/prettify.css">                <script src="doc-files/prettify/prettify.js" type="text/javascript"></script>                <script language="JavaScript">window.onload=function(){prettyPrint();};</script></EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../index.html?se/softhouse/jargo/StringParsers.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="StringParsers.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/StringParsers.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><link rel="stylesheet" type="text/css" href="doc-files/prettify/prettify.css">                <script src="doc-files/prettify/prettify.js" type="text/javascript"></script>                <script language="JavaScript">window.onload=function(){prettyPrint();};</script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?se/softhouse/jargo/StringParsers.html" target="_top">Frames</a></li>
+<li><a href="StringParsers.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2013. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2013. All Rights Reserved.</small></p>
+</body>
+</html>
