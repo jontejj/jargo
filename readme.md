@@ -1,6 +1,7 @@
 # Jargo
 A tool to ease the handling of program arguments/options  
 [![Build Status](https://travis-ci.org/Softhouse/jargo.png)](https://travis-ci.org/Softhouse/jargo)  [Jenkins](https://jontejj.ci.cloudbees.com/job/jargo/)
+
 # Most basic usage
 ```java
 import static se.softhouse.jargo.Arguments.*;
@@ -52,6 +53,10 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
       <version>0.1</version>
   </dependency>
 
+# Bugs/Questions
+[Issues](https://github.com/Softhouse/jargo/issues)  
+[QA forum](https://groups.google.com/forum/?fromgroups=&hl=en#!forum/jargo)
+
 # Rationale
  for writing yet another argument parsing library (see [Is there a good command line argument parser for Java?](http://stackoverflow.com/a/7829772) for others)
 
@@ -85,7 +90,3 @@ For more examples see the [Javadoc](http://softhouse.github.com/jargo/javadoc/ja
 
 6. Reflection makes it hard to analyze references to classes/methods and it
     often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted. No reflection is used in jargo.
-
-# Communication
-[Issues](https://github.com/Softhouse/jargo/issues)  
-[QA forum](https://groups.google.com/forum/?fromgroups=&hl=en#!forum/jargo)
