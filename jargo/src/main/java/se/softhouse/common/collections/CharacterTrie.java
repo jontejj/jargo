@@ -315,11 +315,11 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 			return null;
 		}
 
+		/**
+		 * Returns <code>true</code> if this node is an ancestor for {@code entry}.
+		 */
 		private boolean ancestorFor(Entry<V> entry)
 		{
-			if(entry == null)
-				return false;
-
 			if(isRoot())
 				return true;
 

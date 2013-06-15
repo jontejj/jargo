@@ -130,7 +130,9 @@ public final class Launcher
 
 		List<String> vmArgs = runtimeInformation.getInputArguments();
 
-		List<String> args = Lists.newArrayList(jvm, "-cp", classPath, classWithMainMethod.getName());
+		List<String> args = Lists.newArrayList(jvm, "-cp", classPath);
+		args.addAll(vmArgs);
+		args.add(classWithMainMethod.getName());
 		args.addAll(Arrays.asList(programArguments));
 
 		String debugInformation = "\njvm: " + jvm + "\nvm args: " + vmArgs + "\nclasspath: " + classPath;

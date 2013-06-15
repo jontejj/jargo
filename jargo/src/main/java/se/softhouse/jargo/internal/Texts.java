@@ -24,6 +24,8 @@ import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.StringParsers;
 
+import com.google.common.base.Charsets;
+
 /**
  * Contains {@link String#format(String, Object...)} ready strings.
  */
@@ -65,6 +67,18 @@ public final class Texts
 		 * </pre>
 		 */
 		public static final String USAGE_REFERENCE = ". See usage for %s for proper values.";
+
+		/**
+		 * Indicator from the user that all arguments after this should be treated as
+		 * {@link ArgumentBuilder#names(String...) indexed arguments}.
+		 */
+		public static final String END_OF_OPTIONS = "--";
+
+		/**
+		 * Indicates that if a file called with what comes after the @ sign exists, arguments should
+		 * be read from it (in {@link Charsets#UTF_8}) before continuing on with the parsing.
+		 */
+		public static final String FILE_REFERENCE_PREFIX = "@";
 	}
 
 	/**

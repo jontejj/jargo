@@ -161,10 +161,10 @@
 							<check>
 								<classRatio>100</classRatio>
 								<methodRatio>100</methodRatio>
-								<instructionRatio>95</instructionRatio>
-								<branchRatio>95</branchRatio>
-								<complexityRatio>95</complexityRatio>
-								<lineRatio>95</lineRatio>
+								<instructionRatio>99</instructionRatio>
+								<branchRatio>99</branchRatio>
+								<complexityRatio>99</complexityRatio>
+								<lineRatio>99</lineRatio>
 							</check>
 						</configuration>
 					</execution>
@@ -277,5 +277,18 @@
 			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Makes mocking final classes possible (even java.* classes) -->
+		<dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.5</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>

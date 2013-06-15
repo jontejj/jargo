@@ -37,6 +37,8 @@ import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.ArgumentExceptions.wrapException;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,13 +60,16 @@ import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
+import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.UnmodifiableIterator;
+import com.google.common.io.Files;
 
 /**
  * A snapshot view of a {@link CommandLineParser} configuration.
@@ -249,25 +254,26 @@ final class CommandLineParserInstance
 		return holder;
 	}
 
-	private ParsedArguments parseArguments(final ArgumentIterator actualArguments, Locale inLocale) throws ArgumentException
+	private ParsedArguments parseArguments(final ArgumentIterator iterator, Locale inLocale) throws ArgumentException
 	{
 		ParsedArguments holder = new ParsedArguments(allArguments());
-		actualArguments.setCurrentParser(this);
-		while(actualArguments.hasNext())
+		iterator.setCurrentParser(this);
+		while(iterator.hasNext())
 		{
 			Argument<?> definition = null;
 			try
 			{
-				definition = getDefinitionForCurrentArgument(actualArguments, holder);
+				iterator.setCurrentArgumentName(iterator.next());
+				definition = getDefinitionForCurrentArgument(iterator, holder);
 				if(definition == null)
 				{
 					break;
 				}
-				parseArgument(actualArguments, holder, definition, inLocale);
+				parseArgument(iterator, holder, definition, inLocale);
 			}
 			catch(ArgumentException e)
 			{
-				e.withUsedArgumentName(actualArguments.getCurrentArgumentName());
+				e.withUsedArgumentName(iterator.getCurrentArgumentName());
 				if(definition != null)
 				{
 					e.withUsageReference(definition);
@@ -299,9 +305,6 @@ final class CommandLineParserInstance
 	@Nullable
 	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator iterator, final ParsedArguments holder) throws ArgumentException
 	{
-		String currentArgument = iterator.next();
-		iterator.setCurrentArgumentName(currentArgument);
-
 		if(iterator.allowsOptions())
 		{
 			Argument<?> byName = lookupByName(iterator);
@@ -331,6 +334,9 @@ final class CommandLineParserInstance
 		throw ArgumentExceptions.forUnexpectedArgument(iterator);
 	}
 
+	/**
+	 * Looks for {@link ArgumentBuilder#names(String...) named arguments}
+	 */
 	private Argument<?> lookupByName(ArgumentIterator arguments)
 	{
 		String currentArgument = arguments.current();
@@ -393,6 +399,9 @@ final class CommandLineParserInstance
 		return null;
 	}
 
+	/**
+	 * Looks for {@link ArgumentBuilder#names(String...) indexed arguments}
+	 */
 	private Argument<?> indexedArgument(ArgumentIterator arguments, ParsedArguments holder)
 	{
 		if(holder.indexedArgumentsParsed() < indexedArguments.size())
@@ -531,13 +540,6 @@ final class CommandLineParserInstance
 	@NotThreadSafe
 	static final class ArgumentIterator extends UnmodifiableIterator<String>
 	{
-		/**
-		 * Indicator from the user that all arguments after this should be treated as
-		 * {@link ArgumentBuilder#names(String...) indexed arguments}.
-		 */
-		private static final String END_OF_OPTIONS = "--";
-		private boolean endOfOptionsReceived;
-
 		private final List<String> arguments;
 
 		/**
@@ -547,6 +549,7 @@ final class CommandLineParserInstance
 		 */
 		private String currentArgumentName;
 		private int currentArgumentIndex;
+		private boolean endOfOptionsReceived;
 
 		private int indexOfLastCommand = -1;
 		private Command lastCommandParsed;
@@ -574,7 +577,7 @@ final class CommandLineParserInstance
 		}
 
 		/**
-		 * Returns <code>true</code> if {@link #END_OF_OPTIONS} hasn't been received yet.
+		 * Returns <code>true</code> if {@link UsageTexts#END_OF_OPTIONS} hasn't been received yet.
 		 */
 		boolean allowsOptions()
 		{
@@ -659,21 +662,59 @@ final class CommandLineParserInstance
 		{
 			String nextArgument = arguments.get(currentArgumentIndex++);
 			nextArgument = skipAheadIfEndOfOptions(nextArgument);
+			nextArgument = readArgumentsFromFile(nextArgument);
+
 			return nextArgument;
 		}
 
 		/**
-		 * Skips {@link #END_OF_OPTIONS} if the parser hasn't received it yet.
-		 * This is to allow the string {@link #END_OF_OPTIONS} as an indexed argument itself.
+		 * Skips {@link UsageTexts#END_OF_OPTIONS} if the parser hasn't received it yet.
+		 * This is to allow the string {@link UsageTexts#END_OF_OPTIONS} as an indexed argument
+		 * itself.
 		 */
-		String skipAheadIfEndOfOptions(String nextArgument)
+		private String skipAheadIfEndOfOptions(String nextArgument)
 		{
-			if(!endOfOptionsReceived && nextArgument.equals(END_OF_OPTIONS))
+			if(!endOfOptionsReceived && nextArgument.equals(UsageTexts.END_OF_OPTIONS))
 			{
 				endOfOptionsReceived = true;
 				return next();
 			}
 			return nextArgument;
+		}
+
+		/**
+		 * Reads arguments from files if the argument starts with a
+		 * {@link UsageTexts#FILE_REFERENCE_PREFIX}.
+		 */
+		private String readArgumentsFromFile(String nextArgument)
+		{
+			// TODO(jontejj): add possibility to disable this feature? It has some security
+			// implications as the caller can input any files and if this parser was exposed from a
+			// server...
+			if(nextArgument.startsWith(UsageTexts.FILE_REFERENCE_PREFIX))
+			{
+				String filename = nextArgument.substring(1);
+				File fileWithArguments = new File(filename);
+				if(fileWithArguments.exists())
+				{
+					try
+					{
+						appendArgumentsAtCurrentPosition(Files.readLines(fileWithArguments, Charsets.UTF_8));
+					}
+					catch(IOException errorWhileReadingFile)
+					{
+						throw withMessage("Failed while reading arguments from: " + filename, errorWhileReadingFile);
+					}
+					// Recursive call adds support for file references from within the file itself
+					return next();
+				}
+			}
+			return nextArgument;
+		}
+
+		private void appendArgumentsAtCurrentPosition(List<String> argumentsToAppend)
+		{
+			arguments.addAll(currentArgumentIndex, argumentsToAppend);
 		}
 
 		@Override

@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -37,5 +38,5 @@ public interface Describer<T>
 	 */
 	@CheckReturnValue
 	@Nonnull
-	String describe(T value, Locale inLocale);
+	String describe(@Nullable T value, Locale inLocale);
 }

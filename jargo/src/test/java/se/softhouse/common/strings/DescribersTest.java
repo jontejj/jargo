@@ -26,6 +26,7 @@ import static se.softhouse.common.strings.Describers.characterDescriber;
 import static se.softhouse.common.strings.Describers.fileDescriber;
 import static se.softhouse.common.strings.Describers.mapDescriber;
 import static se.softhouse.common.strings.Describers.numberDescriber;
+import static se.softhouse.common.strings.Describers.toStringDescriber;
 import static se.softhouse.common.strings.Describers.withConstantString;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.testlib.Locales.TURKISH;
@@ -66,9 +67,12 @@ public class DescribersTest
 	}
 
 	@Test
-	public void testThatToStringDescriberWorksForNulls()
+	public void testThatDescribingNullYieldsNullString()
 	{
-		assertThat(Describers.toStringDescriber().describe(null, locale)).isEqualTo("null");
+		assertThat(toStringDescriber().describe(null, locale)).isEqualTo("null");
+		assertThat(characterDescriber().describe(null, locale)).isEqualTo("null");
+		assertThat(fileDescriber().describe(null, locale)).isEqualTo("null");
+		assertThat(mapDescriber(toStringDescriber()).describe(null, locale)).isEqualTo("null");
 	}
 
 	@Test
@@ -80,7 +84,6 @@ public class DescribersTest
 	@Test
 	public void testCharacterDescriber()
 	{
-		assertThat(characterDescriber().describe(null, locale)).isEqualTo("null");
 		assertThat(characterDescriber().describe((char) 0, locale)).isEqualTo("the Null character");
 		assertThat(characterDescriber().describe('a', locale)).isEqualTo("a");
 	}
@@ -90,7 +93,6 @@ public class DescribersTest
 	{
 		File file = new File("");
 		assertThat(fileDescriber().describe(file, locale)).isEqualTo(file.getAbsolutePath());
-		assertThat(fileDescriber().describe(null, locale)).isEqualTo("null");
 	}
 
 	@Test

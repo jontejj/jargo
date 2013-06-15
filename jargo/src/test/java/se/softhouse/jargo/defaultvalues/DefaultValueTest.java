@@ -219,7 +219,6 @@ public class DefaultValueTest
 	{
 		assertThat(stringArgument("-n").arity(2).defaultValue(null).usage()).contains("null");
 		assertThat(integerArgument("-n").arity(2).defaultValue(null).usage()).contains("null");
-		assertThat(integerArgument("-n").asPropertyMap().defaultValue(null).usage()).contains("null");
 		assertThat(integerArgument("-n").defaultValue(null).usage()).contains("null");
 		assertThat(fileArgument("-n").defaultValue(null).usage()).contains("null");
 	}
@@ -305,6 +304,17 @@ public class DefaultValueTest
 				.asPropertyMap().parse();
 		Boolean defaultValue = parsedKeys.get("non-existing-key");
 		assertThat(defaultValue).as("setting defaultValue on argument should mean defaultValue for values in a key/value map").isTrue();
+	}
+
+	@Test
+	public void testThatExistingKeysDoNotUseDefaultValue()
+	{
+		Map<String, Boolean> parsedKeys = booleanArgument("-n").defaultValue(true) //
+				.asPropertyMap().parse("-nexisting-key=false");
+		Boolean givenValue = parsedKeys.get("existing-key");
+		assertThat(givenValue).isFalse();
+		Boolean defaultValue = parsedKeys.get("non-existing-key");
+		assertThat(defaultValue).isTrue();
 	}
 
 	@Test

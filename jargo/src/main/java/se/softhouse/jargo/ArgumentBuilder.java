@@ -65,6 +65,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Range;
 
 /**
@@ -1247,6 +1248,12 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		public ArityArgumentBuilder<Map<K, V>> variableArity()
 		{
 			throw new IllegalStateException("asPropertyMap is already of variable arity");
+		}
+
+		@Override
+		public MapArgumentBuilder<K, V> defaultValue(Map<K, V> defaultKeyValues)
+		{
+			return super.defaultValue(Maps.newLinkedHashMap(defaultKeyValues));
 		}
 	}
 

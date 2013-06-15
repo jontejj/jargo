@@ -161,6 +161,8 @@ public class Functions2Test
 	{
 		assertThat(Functions2.listTransformer(unmodifiableList()).apply(null)).isNull();
 		assertThat(Functions2.mapValueTransformer(unmodifiableMap()).apply(null)).isNull();
+		assertThat(Functions2.unmodifiableList().apply(null)).isNull();
+		assertThat(Functions2.unmodifiableMap().apply(null)).isNull();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

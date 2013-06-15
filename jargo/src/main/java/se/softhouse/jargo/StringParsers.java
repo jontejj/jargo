@@ -995,7 +995,7 @@ public final class StringParsers
 			Map<K, V> map = previousMap;
 			if(map == null)
 			{
-				map = Maps.newLinkedHashMap(defaultValue());
+				map = defaultValue();
 			}
 
 			String keyValue = arguments.next();

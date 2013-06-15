@@ -509,7 +509,7 @@ public final class Describers
 		public String describe(List<? extends T> value, Locale inLocale)
 		{
 			if(value == null)
-				return "null";
+				return NULL;
 			if(value.isEmpty())
 				return "Empty list";
 

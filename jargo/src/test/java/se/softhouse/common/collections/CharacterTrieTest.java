@@ -16,7 +16,9 @@ package se.softhouse.common.collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;
+import static org.junit.Assert.fail;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -33,9 +35,9 @@ import com.google.common.testing.NullPointerTester.Visibility;
  */
 public class CharacterTrieTest
 {
-	static final String foo = "foo";
-	static final String bar = "bar";
-	static final String zoo = "zoo";
+	static final String FOO = "foo";
+	static final String BAR = "bar";
+	static final String ZOO = "zoo";
 
 	@Test
 	public void testTrieTree()
@@ -94,11 +96,11 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("", foo);
+		trie.put("", FOO);
 
 		assertThat(trie.keySet()).contains("");
 
-		assertThat(trie.get("")).isEqualTo(foo);
+		assertThat(trie.get("")).isEqualTo(FOO);
 	}
 
 	@Test
@@ -127,15 +129,15 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", bar);
-		trie.put("fooo", bar);
-		trie.put("fooos", bar);
+		trie.put("foo", BAR);
+		trie.put("fooo", BAR);
+		trie.put("fooos", BAR);
 
 		// Removing fooo should leave fooos in the trie has it has fooos as a child
-		assertThat(trie.remove("fooo")).isEqualTo(bar);
+		assertThat(trie.remove("fooo")).isEqualTo(BAR);
 
 		// Removing fooos should remove the left-over fooo node as it no longer has any children
-		assertThat(trie.remove("fooos")).isEqualTo(bar);
+		assertThat(trie.remove("fooos")).isEqualTo(BAR);
 	}
 
 	@Test
@@ -143,12 +145,12 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", foo);
-		trie.put("fooo", bar);
-		trie.put("fooos", zoo);
+		trie.put("foo", FOO);
+		trie.put("fooo", BAR);
+		trie.put("fooos", ZOO);
 
 		Set<String> actualEntries = valuesInSet(trie.entrySet());
-		assertThat(actualEntries).containsOnly(foo, bar, zoo);
+		assertThat(actualEntries).containsOnly(FOO, BAR, ZOO);
 	}
 
 	@Test
@@ -156,12 +158,12 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", foo);
-		trie.put("fooo", bar);
-		trie.put("fooos", zoo);
+		trie.put("foo", FOO);
+		trie.put("fooo", BAR);
+		trie.put("fooos", ZOO);
 
 		Set<String> actualEntries = valuesInSet(trie.getEntriesWithPrefix("fooo"));
-		assertThat(actualEntries).containsOnly(bar, zoo);
+		assertThat(actualEntries).containsOnly(BAR, ZOO);
 	}
 
 	@Test
@@ -169,9 +171,9 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", foo);
-		trie.put("fooo", bar);
-		trie.put("fooos", zoo);
+		trie.put("foo", FOO);
+		trie.put("fooo", BAR);
+		trie.put("fooos", ZOO);
 
 		assertThat(trie.getEntriesWithPrefix("zoo")).isEmpty();
 	}
@@ -181,9 +183,9 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", foo);
-		trie.put("fooo", bar);
-		trie.put("fooos", zoo);
+		trie.put("foo", FOO);
+		trie.put("fooo", BAR);
+		trie.put("fooos", ZOO);
 
 		// Make sure equals of Entry isn't fooling us
 		CharacterTrie<String> copy = CharacterTrie.newTrie(trie);
@@ -204,9 +206,9 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", foo);
-		trie.put("fooo", bar);
-		trie.put("fooos", zoo);
+		trie.put("foo", FOO);
+		trie.put("fooo", BAR);
+		trie.put("fooos", ZOO);
 
 		assertThat(trie.getEntriesWithPrefix("fooo")).hasSize(2);
 	}
@@ -216,12 +218,12 @@ public class CharacterTrieTest
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
 
-		trie.put("foo", foo);
-		trie.put("fooo", bar);
-		trie.put("fooos", zoo);
+		trie.put("foo", FOO);
+		trie.put("fooo", BAR);
+		trie.put("fooos", ZOO);
 
 		Set<Entry<String, String>> entrySet = trie.entrySet();
-		Entry<String, String> entryToRemove = Maps.immutableEntry("fooo", bar);
+		Entry<String, String> entryToRemove = Maps.immutableEntry("fooo", BAR);
 		entrySet.remove(entryToRemove);
 
 		assertThat(trie.containsKey("fooo")).isFalse();
@@ -251,8 +253,8 @@ public class CharacterTrieTest
 	public void testThatPreCreatedEntryHasTheRightKey() throws Exception
 	{
 		CharacterTrie<String> trie = CharacterTrie.newTrie();
-		trie.put("NS", foo);
-		trie.put("N", bar);
+		trie.put("NS", FOO);
+		trie.put("N", BAR);
 
 		assertThat(trie.keySet()).containsOnly("NS", "N");
 	}
@@ -265,6 +267,39 @@ public class CharacterTrieTest
 			result.add(entry.getValue());
 		}
 		return result;
+	}
+
+	@Test
+	public void testThatModificationDuringIterationIsDetected() throws Exception
+	{
+		CharacterTrie<Object> trie = CharacterTrie.newTrie();
+		trie.put("foo", FOO);
+		trie.put("bar", BAR);
+		Iterator<Entry<String, Object>> iterator = trie.entrySet().iterator();
+		iterator.next();
+		trie.put("zoo", ZOO);
+		try
+		{
+			iterator.next();
+			fail("Modifying the trie during an iteration should yield a CME to avoid unpredictable errors further down the line");
+		}
+		catch(ConcurrentModificationException expected)
+		{
+		}
+	}
+
+	@Test
+	public void testThatEntriesWithTheSameKeyButWithDifferentValuesAreNonEqual() throws Exception
+	{
+		CharacterTrie<Object> trie = CharacterTrie.newTrie();
+		trie.put("foo", FOO);
+		Entry<String, Object> foo = trie.entrySet().iterator().next();
+
+		CharacterTrie<Object> anotherTrie = CharacterTrie.newTrie();
+		anotherTrie.put("foo", BAR);
+		Entry<String, Object> bar = anotherTrie.entrySet().iterator().next();
+
+		assertThat(foo).isNotEqualTo(bar);
 	}
 
 	@Test

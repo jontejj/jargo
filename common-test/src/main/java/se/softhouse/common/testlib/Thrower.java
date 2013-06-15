@@ -16,6 +16,8 @@ package se.softhouse.common.testlib;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * <pre>
  * Makes it possible to throw checked exceptions from methods that don't declare them. See
@@ -44,7 +46,8 @@ public final class Thrower<E extends Exception>
 
 	@SuppressWarnings("unchecked")
 	// Takes advantage of the fact that the JVM allows any exceptions to be thrown
-	private E sneakyThrow(Exception exception) throws E
+	@VisibleForTesting
+	E sneakyThrow(Exception exception) throws E
 	{
 		throw (E) exception;
 	}

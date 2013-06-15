@@ -38,7 +38,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.Explanation;
@@ -275,24 +274,70 @@ public class CommandLineParserTest
 		assertThat(stringArgument().parse("\"hello\"")).isEqualTo("\"hello\"");
 	}
 
-	/**
-	 * TODO(jontejj): Supporting @/path/to/arguments style arguments has the obvious
-	 * limitation that arguments starting with @ and that don't want the
-	 * argument to be parsed as a filename can't be accepted,
-	 * can quotes be used to circumvent this?
-	 */
-	@Ignore
 	@Test
 	public void testReadingArgumentsFromFile() throws IOException, ArgumentException
 	{
 		File tempFile = File.createTempFile("_testReadingArgumentsFromFile", ".arguments");
 		tempFile.deleteOnExit();
 
-		Files.write(Joiner.on(NEWLINE).join("hello", "world"), tempFile, Charsets.UTF_8);
+		Files.write(Joiner.on(NEWLINE).join("lo", "wor"), tempFile, Charsets.UTF_8);
 
-		List<String> parsed = stringArgument().variableArity().parse("@" + tempFile.getPath());
+		List<String> parsed = stringArgument().variableArity().parse("hel", "@" + tempFile.getPath(), "ld");
 
-		assertThat(parsed).isEqualTo(Arrays.asList("hello", "world"));
+		assertThat(parsed).isEqualTo(Arrays.asList("hel", "lo", "wor", "ld"));
+	}
+
+	/**
+	 * <pre>
+	 * So given referencedFile that contains:
+	 * world
+	 * and another file that contains:
+	 * &#64;referencedFile
+	 * the invocation "hello &#64;referencedFile" shall turn into "hello world"
+	 * </pre>
+	 */
+	@Test
+	public void testThatFilesCanReferenceFilesWhenReadingArgumentsFromFile() throws IOException, ArgumentException
+	{
+		File referenceFile = File.createTempFile("_testReadingFileReferencedFromFile", ".referencedFile");
+		referenceFile.deleteOnExit();
+
+		Files.write("world", referenceFile, Charsets.UTF_8);
+
+		File referencingFile = File.createTempFile("_testReadingFileReferencedFromFile", ".referencingFile");
+		referencingFile.deleteOnExit();
+
+		String referencedFilename = "@" + referenceFile.getPath();
+
+		Files.write(Joiner.on(NEWLINE).join("hello", referencedFilename, "and"), referencingFile, Charsets.UTF_8);
+
+		List<String> parsed = stringArgument().variableArity().parse("@" + referencingFile.getPath(), "foo");
+
+		assertThat(parsed).isEqualTo(Arrays.asList("hello", "world", "and", "foo"));
+	}
+
+	@Test
+	public void testThatReadingFromUnreadableFileThrowsArgumentException() throws IOException, ArgumentException
+	{
+		File tempFile = File.createTempFile("_testReadingArgumentsFromFile", ".arguments");
+		tempFile.deleteOnExit();
+		tempFile.setReadable(false);
+
+		try
+		{
+			stringArgument().parse("@" + tempFile.getPath());
+			fail("Reading from an unreadable file should trigger an exception");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage("Failed while reading arguments from: " + tempFile.getPath());
+		}
+	}
+
+	@Test
+	public void testThatFileReferenceToOrdinaryArgumentIsTreatedAsARegularArgument()
+	{
+		assertThat(stringArgument().parse("@non-existing-file")).isEqualTo("@non-existing-file");
 	}
 
 	@Test
@@ -488,7 +533,7 @@ public class CommandLineParserTest
 		try
 		{
 			integerArgument("foo bar");
-			fail("a space should not be allowed in argument names as it would not be possible to trigger such an argument from the command line");
+			fail("a space should not be allowed in argument names as it would be quirky to trigger such an argument from the command line");
 		}
 		catch(IllegalArgumentException expected)
 		{

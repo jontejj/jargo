@@ -17,9 +17,6 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static org.fest.assertions.Fail.failure;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.common.testlib.Thrower.asUnchecked;
@@ -37,10 +34,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import se.softhouse.common.classes.Classes;
 import se.softhouse.common.strings.Describable;
@@ -438,37 +432,6 @@ public class UsageTest
 		try
 		{
 			CommandLineParser.withArguments(integerArgument().build()).usage().printOn(nastyStream);
-			fail("IOException wasn't propagated correctly");
-		}
-		catch(AssertionError expected)
-		{
-			assertThat(expected.getCause()).isSameAs(thrown);
-		}
-	}
-
-	/**
-	 * TODO(jontejj): Move these to the class level and enable test
-	 * 
-	 * @RunWith(PowerMockRunner.class)
-	 * @PrepareForTest({UsageTest.class, StringBuilder.class})
-	 */
-	@Test
-	@Ignore("Enable when https://code.google.com/p/powermock/issues/detail?id=135 has been fixed")
-	public void testThatIOExceptionIsPropagatedAsAssertionErrorForImpossibleCase_StringBuilder()
-	{
-		final IOException thrown = new IOException();
-		StringBuilder nastyBuilder = mock(StringBuilder.class);
-		when(nastyBuilder.append((CharSequence) any())).thenAnswer(new Answer<StringBuilder>(){
-			@Override
-			public StringBuilder answer(InvocationOnMock invocation) throws Throwable
-			{
-				throw asUnchecked(thrown);
-			}
-		});
-
-		try
-		{
-			CommandLineParser.withArguments(integerArgument().build()).usage().printOn(nastyBuilder);
 			fail("IOException wasn't propagated correctly");
 		}
 		catch(AssertionError expected)
