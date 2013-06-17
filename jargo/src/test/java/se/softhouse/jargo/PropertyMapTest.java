@@ -41,8 +41,10 @@ import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import se.softhouse.jargo.stringparsers.custom.LimitedKeyParser;
+import se.softhouse.jargo.stringparsers.custom.ObjectParser;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Range;
 
@@ -389,5 +391,23 @@ public class PropertyMapTest
 		{
 			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-a", "-n"));
 		}
+	}
+
+	@Test
+	public void testThatSystemPropertiesCanBeUsedAsTargetMap() throws Exception
+	{
+		Map<Object, Object> map = Arguments.withParser(new ObjectParser()).names("-D").asKeyValuesWithKeyParser(new ObjectParser())
+				.defaultValueSupplier(new Supplier<Map<Object, Object>>(){
+					@Override
+					public Map<Object, Object> get()
+					{
+						return System.getProperties();
+					}
+				}).parse("-Dsys.prop.test=foo");
+
+		assertThat(map.get("sys.prop.test")).isEqualTo("foo");
+		assertThat(System.getProperty("sys.prop.test")).isEqualTo("foo");
+		assertThat(map.get("os.name")).as("Should delegate to system properties when not specified") //
+				.isEqualTo(System.getProperty("os.name"));
 	}
 }
