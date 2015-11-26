@@ -62,6 +62,22 @@ public class StringsUtilTest
 	}
 
 	@Test
+	public void testLevenshteinDistanceWithADistance()
+	{
+		assertThat(StringsUtil.levenshteinDistance("", "", 1)).isZero();
+		assertThat(StringsUtil.levenshteinDistance("", "a", 1)).isEqualTo(1);
+		assertThat(StringsUtil.levenshteinDistance("aaapppp", "", 8)).isEqualTo(7);
+		assertThat(StringsUtil.levenshteinDistance("frog", "fog", 3)).isEqualTo(1);
+		assertThat(StringsUtil.levenshteinDistance("elephantelephantelephantelephantelephantelephant", "hippo", 4)).isEqualTo(4);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testLevenshteinDistanceWithADistanceMustBePositive()
+	{
+		StringsUtil.levenshteinDistance("", "", -1);
+	}
+
+	@Test
 	public void testClosestMatch()
 	{
 		List<String> strings = asList("logging", "help", "status");
