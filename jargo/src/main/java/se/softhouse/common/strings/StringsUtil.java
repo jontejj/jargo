@@ -84,22 +84,22 @@ public final class StringsUtil
 	 * <pre>
 	 * Returns the {@link String} in {@code validOptions} that {@code input} has the shortest
 	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to.
-	 * 
+	 *
 	 * For example when given "stats" as input and "status", "help",
 	 * "action" as validOptions, "status" is returned.
-	 * 
+	 *
 	 * Current performance characteristics:
 	 * n = length of {@code input}
 	 * m = average string length of the strings in {@code validOptions}
 	 * s = amount of validOptions
-	 * 
+	 *
 	 * complexity = n * m * s = O(n<sup>3</sup>)
-	 * 
+	 *
 	 * So try to limit the number of valid options...
-	 * 
+	 *
 	 * @throws IllegalArgumentException if {@code validOptions} is empty
 	 * </pre>
-	 * 
+	 *
 	 * @see #closestMatches(String, Iterable, int)
 	 */
 	@Nonnull
@@ -127,14 +127,14 @@ public final class StringsUtil
 	 * <pre>
 	 * Returns a sorted {@link List} where the first entry is the {@link String} in {@code validOptions} that's closest in terms of
 	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to {@code input}, or an empty list if no options within distance can be found.
-	 * 
+	 *
 	 * For example when given "stats" as input and "status", "staging",
 	 * "stage" as validOptions, and 4 as maximumDistance, "status", "stage", "staging" is returned.
-	 * 
+	 *
 	 * Only values with a distance less than or equal to {@code maximumDistance} will be included in the result.
-	 * 
+	 *
 	 * The returned list is <i>modifiable</i>.
-	 * 
+	 *
 	 * </pre>
 	 */
 	@Nonnull
@@ -148,7 +148,7 @@ public final class StringsUtil
 		List<CloseMatch> closeMatches = Lists.newArrayList();
 		for(String validOption : validOptions)
 		{
-			int distance = levenshteinDistance(input, validOption);
+			int distance = levenshteinDistance(input, validOption, maximumDistance + 1);
 			if(distance <= maximumDistance)
 			{
 				closeMatches.add(new CloseMatch(validOption, distance));
@@ -189,13 +189,25 @@ public final class StringsUtil
 	/**
 	 * Returns the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein
 	 * distance</a> between {@code left} and {@code right}.
-	 * 
+	 *
 	 * @see #closestMatch(String, Iterable)
 	 */
 	public static int levenshteinDistance(final String left, final String right)
 	{
+		return levenshteinDistance(left, right, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Returns the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein
+	 * distance</a> between {@code left} and {@code right}. If it's greater than maxDistance, maxDistance will be returned.
+	 *
+	 * @see #closestMatch(String, Iterable)
+	 */
+	public static int levenshteinDistance(final String left, final String right, final int maxDistance)
+	{
 		checkNotNull(left);
 		checkNotNull(right);
+		checkArgument(maxDistance >= 0);
 
 		// a "cleaner" version of the org.apache.commons-lang algorithm which in
 		// turn was inspired by http://www.merriampark.com/ldjava.htm
@@ -206,6 +218,8 @@ public final class StringsUtil
 			return rightLength;
 		else if(rightLength == 0)
 			return leftLength;
+		else if(Math.abs(leftLength- rightLength) > maxDistance)
+			return maxDistance;
 
 		int previousDistances[] = new int[leftLength + 1]; // 'previous' cost array, horizontally
 		int distances[] = new int[leftLength + 1]; // cost array, horizontally
@@ -254,7 +268,7 @@ public final class StringsUtil
 	 * Returns {@code number} expressed as a position. For example 0 returns
 	 * "zeroth", 1 returns "first" and so forth up to "fifth". Higher positions
 	 * are described as "6th", "7th" and so on.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if {@code number} is negative
 	 */
 	@Nonnull
@@ -283,7 +297,7 @@ public final class StringsUtil
 
 	/**
 	 * Finds the {@code nth} occurrence of {@code needle} in {@code haystack}
-	 * 
+	 *
 	 * @param nth how many occurrences of {@code needle} that should occur before the returned index
 	 * @param needle the string to search for
 	 * @param haystack the string to search within
