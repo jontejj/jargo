@@ -93,7 +93,7 @@ public final class StringsUtil
 	 * m = average string length of the strings in {@code validOptions}
 	 * s = amount of validOptions
 	 *
-	 * complexity = n * m * s = O(n<sup>3</sup>)
+	 * complexity = n * m * s = O(n^3)
 	 *
 	 * So try to limit the number of valid options...
 	 *

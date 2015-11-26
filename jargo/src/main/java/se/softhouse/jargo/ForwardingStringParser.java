@@ -20,13 +20,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * <pre>
  * A <a href="http://en.wikipedia.org/wiki/Decorator_pattern">Decorator</a> class.
  * It allows you to subclass it and override individual methods
  * that you want to customize for an existing {@link StringParser}.
- * 
+ *
  * For instance, a parser that's useful in a garden application could look like this:
- * 
+ *
  * <pre class="prettyprint">
  * <code class="language-java">
  * private static final class WateringParser extends SimpleForwardingStringParser&lt;Integer&gt;
@@ -35,27 +34,26 @@ import javax.annotation.concurrent.Immutable;
  *   {
  *     super(StringParsers.integerParser());
  *   }
- * 
+ *
  *   public Integer parse(String value, Locale locale) throws ArgumentException
  *   {
  *     waterPlants();
  *     return super.parse(value, locale);
  *   }
- * 
+ *
  *   private void waterPlants()
  *   {
  *     System.out.println("Watering plants");
  *   }
  * }
  * </code>
- * </pre>
- * 
+ *
  * This WateringParser can then be integrated with an argument via
  * {@link Arguments#withParser(StringParser)}.
  * Most subclasses can just use {@link SimpleForwardingStringParser}.
- * 
+ * </pre>
+ *
  * @param <T> the type the decorated {@link StringParser} handles
- *            </pre>
  */
 @Immutable
 public abstract class ForwardingStringParser<T> implements StringParser<T>
@@ -65,7 +63,7 @@ public abstract class ForwardingStringParser<T> implements StringParser<T>
 	 * like the <a href="http://en.wikipedia.org/wiki/Proxy_pattern">Proxy</a> pattern explains.
 	 * Just remember that a {@link StringParser} should be treated like it's {@link Immutable} so
 	 * make sure your callers can't tell the difference when you switch parser.
-	 * 
+	 *
 	 * @return the delegate to pass non-overridden calls to
 	 */
 	@Nonnull
@@ -104,7 +102,7 @@ public abstract class ForwardingStringParser<T> implements StringParser<T>
 	/**
 	 * A {@link ForwardingStringParser} that uses an already created {@link StringParser} as its
 	 * delegate.
-	 * 
+	 *
 	 * @param <T> the type the decorated {@link StringParser} handles
 	 */
 	public abstract static class SimpleForwardingStringParser<T> extends ForwardingStringParser<T>

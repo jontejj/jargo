@@ -44,7 +44,7 @@ public final class Predicates2
 	 * where you already have a {@link Predicate} for the element type and want to check a list of
 	 * such elements.
 	 * Without {@link #listPredicate(Predicate)} it would look something like:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * List&lt;Integer&gt; numbers = Arrays.asList(1, -1, -2);
@@ -53,15 +53,15 @@ public final class Predicates2
 	 *   throw new IllegalArgumentException("'" + invalidNumber.get() + "' is not " + ABOVE_ZERO);
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * With {@link #listPredicate(Predicate)}:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * Predicates2.listPredicate(ABOVE_ZERO).apply(numbers);
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * As this breaks the general contract of {@link Predicate#apply(Object)} it should be
 	 * considered useful for validating arguments only.
 	 * The detail message only mentions the first element that didn't return true.
@@ -104,7 +104,7 @@ public final class Predicates2
 	/**
 	 * Works just like {@link Predicates#and(Predicate, Predicate)} except that if {@code first} is
 	 * {@link Predicates#alwaysTrue()} {@code second} is returned directly (or vice versa). This has
-	 * the potential to make {@link Predicate#toString()} look a bit nicer for the resulting
+	 * the potential to make {@link Object#toString()} look a bit nicer for the resulting
 	 * {@link Predicate}.
 	 */
 	public static <T> Predicate<? super T> and(Predicate<? super T> first, Predicate<? super T> second)

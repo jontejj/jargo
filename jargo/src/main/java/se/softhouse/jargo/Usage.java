@@ -51,21 +51,19 @@ import com.google.common.collect.Iterables;
  * Responsible for formatting usage texts for {@link CommandLineParser#usage()} and
  * {@link Arguments#helpArgument(String, String...)}.
  * Using it is often as simple as:
- * 
+ *
  * <pre class="prettyprint">
  * <code class="language-java">
  * System.out.print(CommandLineParser.withArguments(someArguments).usage());
  * </code>
  * </pre>
- * 
- * <pre>
+ *
  * Sorts {@link Argument}s in the following order:
  * <ol>
  *   <li>{@link ArgumentBuilder#names(String...) indexed arguments} without a {@link ArgumentBuilder#variableArity() variable arity}</li>
  * 	 <li>By their {@link ArgumentBuilder#names(String...) first name}  in an alphabetical order</li>
  * 	 <li>The remaining {@link ArgumentBuilder#names(String...) indexed arguments} that are of {@link ArgumentBuilder#variableArity() variable arity}</li>
  * </ol>
- * </pre>
  */
 @NotThreadSafe
 public final class Usage implements Serializable
@@ -103,7 +101,7 @@ public final class Usage implements Serializable
 	 * For:
 	 * -l, --enable-logging Output debug information to standard out
 	 * -p, --listen-port    The port clients should connect to.
-	 * 
+	 *
 	 * This would be 20.
 	 * </pre>
 	 */
@@ -167,7 +165,7 @@ public final class Usage implements Serializable
 	/**
 	 * Appends usage to {@code target}. An alternative to {@link #toString()} when the usage is very
 	 * large and needs to be flushed from time to time.
-	 * 
+	 *
 	 * @throws IOException If an I/O error occurs while appending usage
 	 */
 	public void printOn(Appendable target) throws IOException
@@ -188,7 +186,7 @@ public final class Usage implements Serializable
 	 * {@link PrintStream} instead. The reason for this overload is that {@link Appendable} declares
 	 * {@link IOException} to be thrown while {@link PrintStream} handles it internally through the
 	 * use of the {@link PrintStream#checkError()} method.
-	 * 
+	 *
 	 * @param target a {@link PrintStream} such as {@link System#out} or {@link System#err}.
 	 */
 	public void printOn(PrintStream target)
@@ -331,11 +329,11 @@ public final class Usage implements Serializable
 	 * name &lt;meta&gt; 	description of what the argument means [indicators]
 	 *                &lt;meta&gt;: description of valid values
 	 *                Default: default value
-	 * 
+	 *
 	 * For instance:
 	 * -foo &lt;integer&gt;		Foo something [Required]
 	 *                      	&lt;integer&gt;: 1 to 5
-	 * 
+	 *
 	 * -bar			Bar something
 	 * 			Default: 0
 	 * </pre>

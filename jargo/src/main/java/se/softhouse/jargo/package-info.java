@@ -24,7 +24,7 @@
  *  <li><b>Indexed Argument</b> an argument without a name, such as "file_to_build" in "buildProgram file_to_build"</li>
  *  <li><b>{@link se.softhouse.jargo.CommandLineParser}</b> Understands how to manage several <i>Argument</i>s</li>
  * </ul>
- * <pre><h2>Examples</h2>
+ * <h2>Examples</h2>
  * See {@link se.softhouse.jargo.CommandLineParser}, {@link se.softhouse.jargo.Arguments}, {@link se.softhouse.jargo.ArgumentBuilder} for how to use this API
  * <h2>Localization</h2>
  * {@link se.softhouse.jargo.Arguments#integerArgument(String...)}, {@link se.softhouse.jargo.Arguments#longArgument(String...)} and so on,
@@ -35,7 +35,6 @@
  * {@link se.softhouse.jargo.ArgumentBuilder#defaultValueSupplier(com.google.common.base.Supplier)}
  * {@link se.softhouse.jargo.StringParsers#asFunction(StringParser)}
  * May be changed when JDK 8 is here as it will contain those interfaces without the need of Guava. For now they are marked with {@link com.google.common.annotations.Beta}
- * </pre>
  * <h2>Inspiration (a.k.a Credits)</h2>
  * If you recognize any features in this API it may come from:
  * <ul>
