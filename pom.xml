@@ -13,9 +13,9 @@
 	<packaging>pom</packaging>
 	<url>https://github.com/Softhouse/jargo</url>
 	<scm>
-		<url>https://github.com/Softhouse/jargo</url>
-		<connection>scm:git:git://github.com/Softhouse/jargo.git</connection>
-		<developerConnection>scm:git:git@github.com:Softhouse/jargo.git</developerConnection>
+		<url>https://github.com/jontejj/jargo</url>
+		<connection>scm:git:git://github.com/jontejj/jargo.git</connection>
+		<developerConnection>scm:git:git@github.com:jontejj/jargo.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
@@ -44,8 +44,8 @@
 			<id>joj</id>
 			<name>Jonatan Jönsson</name>
 			<email>jontejj@gmail.com</email>
-			<organization>Softhouse</organization>
-			<organizationUrl>http://www.softhouse.se/en/</organizationUrl>
+			<organization>Nox Finans AB</organization>
+			<organizationUrl>http://www.noxfinans.se</organizationUrl>
 			<roles>
 				<role>owner</role>
 				<role>developer</role>
