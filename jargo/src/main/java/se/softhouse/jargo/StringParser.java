@@ -73,6 +73,8 @@ import javax.annotation.concurrent.Immutable;
  * </code>
  * </pre>
  * 
+ * Btw, this parser can be found in jargo-addons.
+ * 
  * @param <T> the type to parse {@link String}s into
  * @see StringParsers
  */

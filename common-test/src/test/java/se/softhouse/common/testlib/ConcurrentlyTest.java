@@ -61,6 +61,31 @@ public class ConcurrentlyTest
 	}
 
 	@Test
+	public void testThatConcurrentlyShutsDownExecutorForFailures() throws Exception
+	{
+		final SimulatedException simulatedException = new SimulatedException();
+		ListenableFuture<Object> future = Concurrently.run(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception
+			{
+				throw simulatedException;
+			}
+		});
+		Futures.addCallback(future, new FutureCallback<Object>(){
+			@Override
+			public void onSuccess(Object result)
+			{
+			}
+
+			@Override
+			public void onFailure(Throwable t)
+			{
+				assertThat(t).isSameAs(simulatedException);
+			}
+		});
+	}
+
+	@Test
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Concurrently.class, Visibility.PACKAGE);

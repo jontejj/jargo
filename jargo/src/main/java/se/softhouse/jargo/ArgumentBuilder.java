@@ -629,6 +629,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
+	// TODO: add minimumArguments(int)?
+
 	/**
 	 * <pre>
 	 * Makes it possible to enter several values for the same argument. Such as this:
@@ -964,7 +966,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			{
 				defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));
 			}
-			// TODO(jontejj): should meta description <foo> be expanded to <foo> <foo>?
 		}
 	}
 

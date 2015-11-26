@@ -375,7 +375,6 @@ public abstract class NumberType<T extends Number>
 	 * 
 	 * @param <T> the type of {@link Number} that's unlimited, {@link BigDecimal} for instance.
 	 */
-	@SuppressWarnings("javadoc")
 	public abstract static class UnlimitedNumberType<T extends Number> extends NumberType<T>
 	{
 		UnlimitedNumberType()

@@ -36,9 +36,10 @@ public class LauncherTest
 	{
 		LaunchedProgram program = Launcher.launch(HelloWorldProgram.class);
 		String debugInformation = program.debugInformation();
-		assertThat(program.errors()).as("Error stream must be slurped from parent process." + debugInformation).isEqualTo("FooBar");
+		assertThat(program.errors()).as("Error stream must be slurped from parent process." + debugInformation).endsWith("FooBar");
 		assertThat(program.output()).as("Standard out must be slurped from parent process." + debugInformation).isEqualTo("HelloWorld");
 		assertThat(debugInformation).contains("java").contains("classpath");
+		assertThat(program.toString()).contains("Output: HelloWorld");
 	}
 
 	private static class HelloWorldProgram
