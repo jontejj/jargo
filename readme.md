@@ -2,6 +2,8 @@
 A tool to ease the handling of program arguments/options  
 [![Build Status](https://travis-ci.org/Softhouse/jargo.png)](https://travis-ci.org/Softhouse/jargo)  [Jenkins](https://jontejj.ci.cloudbees.com/job/jargo/)
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.softhouse/se.softhouse/badge.svg?style=flat)](http://search.maven.org/#search|ga|1|a%3Ajargo)
+
 # Most basic usage
 ```java
 import static se.softhouse.jargo.Arguments.*;
