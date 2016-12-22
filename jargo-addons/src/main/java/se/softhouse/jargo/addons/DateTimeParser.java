@@ -11,34 +11,53 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
-*/
-package se.softhouse.jargo.stringparsers.custom;
+ */
+package se.softhouse.jargo.addons;
 
-import static se.softhouse.jargo.Arguments.withParser;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Locale;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ArgumentExceptions;
 import se.softhouse.jargo.StringParser;
-import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
 
-public class DateTimeParser implements StringParser<DateTime>
+/**
+ * Parser for <a href="http://joda-time.sourceforge.net/">joda-time</a> {@link DateTime dates}
+ */
+final class DateTimeParser implements StringParser<DateTime>
 {
+	private final DateTimeZone timeZone;
+	private final DateTimeFormatter formatter;
+
+	DateTimeParser(DateTimeZone timeZone)
+	{
+		this.timeZone = checkNotNull(timeZone);
+		this.formatter = ISODateTimeFormat.dateOptionalTimeParser()
+				.withOffsetParsed()
+				.withZone(timeZone);
+	}
+
 	@Override
 	public String descriptionOfValidValues(Locale locale)
 	{
-		return "an ISO8601 date, such as 2011-02-28";
+		checkNotNull(locale);
+		String unmistakableDate = new DateTime("2011-02-28").withZone(timeZone).toString(ISODateTimeFormat.dateTime());
+		return "an ISO8601 date, such as " + unmistakableDate;
 	}
 
 	@Override
 	public DateTime parse(final String value, Locale locale) throws ArgumentException
 	{
+		checkNotNull(locale);
 		try
 		{
-			return DateTime.parse(value);
+			return DateTime.parse(value, formatter);
 		}
 		catch(IllegalArgumentException wrongDateFormat)
 		{
@@ -49,12 +68,7 @@ public class DateTimeParser implements StringParser<DateTime>
 	@Override
 	public DateTime defaultValue()
 	{
-		return DateTime.now();
-	}
-
-	public static DefaultArgumentBuilder<DateTime> dateArgument(String ... names)
-	{
-		return withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);
+		return DateTime.now(timeZone);
 	}
 
 	@Override

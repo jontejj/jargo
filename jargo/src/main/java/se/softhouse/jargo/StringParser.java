@@ -25,7 +25,7 @@ import javax.annotation.concurrent.Immutable;
  * Create an {@link Argument} for your {@link StringParser} with
  * {@link Arguments#withParser(StringParser)}.
  * An example implementation for handling joda-time dates:
- * 
+ *
  * <pre class="prettyprint">
  * <code class="language-java">
  * public class DateTimeParser implements StringParser&lt;DateTime&gt;
@@ -34,12 +34,12 @@ import javax.annotation.concurrent.Immutable;
  * 	{
  * 		return Arguments.withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);
  * 	}
- * 
+ *
  * 	public String descriptionOfValidValues()
  * 	{
  * 		return "an ISO8601 date, such as 2011-02-28";
  * 	}
- * 
+ *
  * 	public DateTime parse(String value, Locale locale) throws ArgumentException
  * 	{
  * 		try
@@ -51,12 +51,12 @@ import javax.annotation.concurrent.Immutable;
  * 			throw ArgumentExceptions.withMessage(wrongDateFormat.getLocalizedMessage());
  * 		}
  * 	}
- * 
+ *
  * 	public DateTime defaultValue()
  * 	{
  * 		return DateTime.now();
  * 	}
- * 
+ *
  * 	public String metaDescription()
  * 	{
  * 		return "&lt;date&gt;";
@@ -64,7 +64,7 @@ import javax.annotation.concurrent.Immutable;
  * }
  * </code>
  * </pre>
- * 
+ *
  * <pre>
  * When printed in usage, this would look like:
  * <code>
@@ -72,7 +72,9 @@ import javax.annotation.concurrent.Immutable;
  *                Default: Current time
  * </code>
  * </pre>
- * 
+ *
+ * Btw, this parser can be found in jargo-addons.
+ *
  * @param <T> the type to parse {@link String}s into
  * @see StringParsers
  */
@@ -81,7 +83,7 @@ public interface StringParser<T>
 {
 	/**
 	 * Parses the given {@link String} into the type {@code T}
-	 * 
+	 *
 	 * @param argument the string as given from the command line
 	 * @param locale the locale to parse strings with, may matter when parsing numbers, dates etc
 	 * @return the parsed value
@@ -93,7 +95,7 @@ public interface StringParser<T>
 
 	/**
 	 * Describes what values this {@link StringParser} accepts
-	 * 
+	 *
 	 * @param locale the locale to print the description with
 	 * @return a description string to show in usage texts
 	 */
@@ -110,12 +112,14 @@ public interface StringParser<T>
 	/**
 	 * <pre>
 	 * The meta description is the text displayed after the argument names.
-	 * Typically surrounded by < and >
+	 * Typically surrounded by &lt; and &gt;
 	 * Sort of like the default value of {@link ArgumentBuilder#metaDescription(String)}.
-	 * 
+	 *
 	 * For instance:
 	 * {@link StringParsers#integerParser()}s {@link #metaDescription()} is &lt;integer&gt;
-	 * 
+	 *
+	 * </pre>
+	 *
 	 * @return a meta description that very briefly explains what value this parser expects
 	 */
 	@Nonnull

@@ -65,7 +65,7 @@ import com.google.common.collect.Maps;
  * All methods return {@link Immutable} parsers.
  * Most methods here even return the same instance for every call.
  * If you want to customize one of these parsers you can use a {@link ForwardingStringParser}.
- * 
+ *
  * By {@link StringParser#defaultValue() default} most parsers return <code>zero</code> or otherwise
  * sane defaults. The only exception being {@link #enumParser(Class)} which returns null instead
  * of the first enum constant available.
@@ -256,18 +256,17 @@ public final class StringParsers
 	/**
 	 * <pre>
 	 * A parser that uses {@link Enum#valueOf(Class, String)} to {@link StringParser#parse(String, Locale) parse} input strings.
-	 * 
+	 *
 	 * <b>Case sensitivity note:</b> First a direct match with the input value in upper case is
 	 * made, if that fails a direct match without converting the case is made,
 	 * if that also fails an {@link ArgumentException} is thrown. This order of execution is
 	 * based on the fact that users typically don't upper case their input while
-	 * <nobr><a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a>
-	 * recommends upper case for enum constants.</nobr>
+	 * <a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a> recommends upper case for enum constants.
 	 * </pre>
-	 * 
+	 *
 	 * <b>Default value:</b> <code>null</code> is used as {@link StringParser#defaultValue()} and
 	 * not any of the enum values in {@code enumToHandle}
-	 * 
+	 *
 	 * @param enumToHandle the {@link Class} literal for the {@link Enum} to parse strings into
 	 * @return a {@link StringParser} that parses strings into enum values of the type {@code T}
 	 */
@@ -463,20 +462,20 @@ public final class StringParsers
 	 * <pre>
 	 * A {@link Function} that uses {@link StringParser#parse(String, Locale) parse} for input {@link String}s.
 	 * </pre>
-	 * 
+	 *
 	 * For example:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * List&lt;Integer&gt; result =  Lists.transform(asList("1", "3", "2"), asFunction(integerParser()));
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.<br>
 	 * <b>Note:</b>The parser will pass the {@link Locale#getDefault()} to
 	 * {@link StringParser#parse(String, Locale) parse}. Use
 	 * {@link StringParsers#asFunction(StringParser, Locale)} to specify a specific {@link Locale}
-	 * 
+	 *
 	 * @param parser the parser to expose as a {@link Function}
 	 * @return {@code parser} exposed in a {@link Function} that throws {@link ArgumentException}
 	 *         when given faulty values.
@@ -512,11 +511,11 @@ public final class StringParsers
 	 * <pre>
 	 * Makes it possible to convert several (or zero) {@link String}s into a single {@code T} value.
 	 * For a simpler one use {@link StringParser}.
-	 * 
+	 *
 	 * {@link Argument} is passed to the functions that produces text for the usage,
 	 * it can't be a member of this class because one parser can be referenced
 	 * from multiple different {@link Argument}s so this is extrinsic state.
-	 * 
+	 *
 	 * @param <T> the type this parser parses strings into
 	 * </pre>
 	 */
@@ -541,7 +540,7 @@ public final class StringParsers
 
 		/**
 		 * Describes the values this parser accepts
-		 * 
+		 *
 		 * @return a description string to show in usage texts
 		 */
 		@Nonnull
@@ -791,7 +790,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, final List<T> list, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-		{
+				{
 			List<T> parsedArguments = newArrayListWithCapacity(arity);
 			for(int i = 0; i < arity; i++)
 			{
@@ -807,7 +806,7 @@ public final class StringParsers
 				}
 			}
 			return parsedArguments;
-		}
+				}
 
 		@Override
 		public List<T> defaultValue()
@@ -842,7 +841,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, final List<T> list, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-		{
+				{
 			List<T> parsedArguments = newArrayListWithCapacity(arguments.nrOfRemainingArguments());
 			while(arguments.hasNext())
 			{
@@ -850,7 +849,7 @@ public final class StringParsers
 				parsedArguments.add(parsedValue);
 			}
 			return parsedArguments;
-		}
+				}
 
 		@Override
 		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
@@ -868,7 +867,7 @@ public final class StringParsers
 
 	/**
 	 * Implements {@link ArgumentBuilder#splitWith(String)}.
-	 * 
+	 *
 	 * @param <T> the type that's separated by the {@code valueSeparator}
 	 */
 	static final class StringSplitterParser<T> extends ListParser<T>
@@ -886,7 +885,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-		{
+				{
 			if(!arguments.hasNext())
 				throw forMissingParameter(argumentSettings);
 
@@ -900,7 +899,7 @@ public final class StringParsers
 				result.add(parsedValue);
 			}
 			return result;
-		}
+				}
 
 		@Override
 		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
@@ -912,7 +911,7 @@ public final class StringParsers
 
 	/**
 	 * Implements {@link ArgumentBuilder#repeated()}.
-	 * 
+	 *
 	 * @param <T> type of the repeated values (such as {@link Integer} for {@link #integerParser()}
 	 */
 	static final class RepeatedArgumentParser<T> extends ListParser<T>
@@ -925,7 +924,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-		{
+				{
 			T parsedValue = elementParser().parse(arguments, null, argumentSettings, locale);
 
 			List<T> listToStoreRepeatedValuesIn = previouslyCreatedList;
@@ -936,13 +935,13 @@ public final class StringParsers
 
 			listToStoreRepeatedValuesIn.add(parsedValue);
 			return listToStoreRepeatedValuesIn;
-		}
+				}
 	}
 
 	/**
-	 * Implements {@link ArgumentBuilder#asPropertyMap()} &
+	 * Implements {@link ArgumentBuilder#asPropertyMap()} and
 	 * {@link ArgumentBuilder#asKeyValuesWithKeyParser(StringParser)}.
-	 * 
+	 *
 	 * @param <K> the type of key in the resulting map
 	 * @param <V> the type of values in the resulting map
 	 */
@@ -955,8 +954,8 @@ public final class StringParsers
 		@Nonnull private final Supplier<? extends Map<K, V>> defaultMap;
 
 		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<? super V> valueLimiter,
-				@Nullable Supplier<? extends Map<K, V>> defaultMap, @Nullable final Supplier<? extends V> defaultValue)
-		{
+		               @Nullable Supplier<? extends Map<K, V>> defaultMap, @Nullable final Supplier<? extends V> defaultValue)
+		               {
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
 			this.valueLimiter = valueLimiter;
@@ -968,16 +967,16 @@ public final class StringParsers
 					{
 						if(defaultValue != null)
 							return new LinkedHashMap<K, V>(){
-								private static final long serialVersionUID = 1L;
+							private static final long serialVersionUID = 1L;
 
-								@Override
-								public V get(Object key)
-								{
-									if(super.containsKey(key))
-										return super.get(key);
-									return defaultValue.get();
-								}
-							};
+							@Override
+							public V get(Object key)
+							{
+								if(super.containsKey(key))
+									return super.get(key);
+								return defaultValue.get();
+							}
+						};
 						return Maps.newLinkedHashMap();
 					}
 				};
@@ -986,12 +985,12 @@ public final class StringParsers
 			{
 				this.defaultMap = defaultMap;
 			}
-		}
+		               }
 
 		@Override
 		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-		{
+				{
 			Map<K, V> map = previousMap;
 			if(map == null)
 			{
@@ -1022,7 +1021,7 @@ public final class StringParsers
 
 			map.put(parsedKey, parsedValue);
 			return map;
-		}
+				}
 
 		/**
 		 * Fetch "key" from "key=value"
@@ -1087,7 +1086,7 @@ public final class StringParsers
 
 		/**
 		 * A bridge between the {@link StringParser} & {@link InternalStringParser} interfaces.
-		 * 
+		 *
 		 * @param parserToBridge the {@link StringParser} to expose as a
 		 *            {@link InternalStringParser}
 		 */

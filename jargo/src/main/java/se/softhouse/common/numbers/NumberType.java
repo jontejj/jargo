@@ -46,7 +46,7 @@ import com.google.common.primitives.Longs;
  * <b>Note:</b> As {@link Double} and {@link Float} are very hard to use <a
  * href="http://www.ibm.com/developerworks/java/library/j-jtp0114/">right</a>, their counterparts
  * are not available here.
- * 
+ *
  * @param <T> the subclass of {@link Number}
  */
 @Immutable
@@ -106,6 +106,7 @@ public abstract class NumberType<T extends Number>
 	 * 1st %s = the received value
 	 * 2nd %s = the minimum allowed value
 	 * 3rd %s = the maximum allowed value
+	 * </pre>
 	 */
 	@VisibleForTesting static final String OUT_OF_RANGE = "'%s' is not in the range %s to %s";
 
@@ -163,10 +164,10 @@ public abstract class NumberType<T extends Number>
 	 * <pre>
 	 * Converts {@code value} into a {@link Number} of the type {@code T} in a {@link Locale}
 	 * sensitive way by using {@link NumberFormat}.
-	 * 
+	 *
 	 * For instance:
 	 * {@code Integer fortyTwo = NumberType.INTEGER.parse("42", Locale.US);}
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the value isn't convertable to a number of type {@code T}
 	 * </pre>
 	 */
@@ -198,10 +199,10 @@ public abstract class NumberType<T extends Number>
 	 * <pre>
 	 * Converts {@code value} into a {@link Number} of the type {@code T} assuming {@code value}
 	 * is expressed in a {@link Locale#US} format.
-	 * 
+	 *
 	 * For instance:
 	 * {@code Integer fortyTwo = NumberType.INTEGER.parse("42");}
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the value isn't convertable to a number of type {@code T}
 	 * </pre>
 	 */
@@ -229,7 +230,7 @@ public abstract class NumberType<T extends Number>
 
 	/**
 	 * Returns a descriptive string of the range this {@link NumberType} can {@link #parse(String)}
-	 * 
+	 *
 	 * @param inLocale the locale to format numbers with
 	 */
 	@CheckReturnValue
@@ -372,10 +373,9 @@ public abstract class NumberType<T extends Number>
 
 	/**
 	 * A {@link NumberType} that doesn't have any {@link #minValue()} or {@link #maxValue()}.
-	 * 
+	 *
 	 * @param <T> the type of {@link Number} that's unlimited, {@link BigDecimal} for instance.
 	 */
-	@SuppressWarnings("javadoc")
 	public abstract static class UnlimitedNumberType<T extends Number> extends NumberType<T>
 	{
 		UnlimitedNumberType()

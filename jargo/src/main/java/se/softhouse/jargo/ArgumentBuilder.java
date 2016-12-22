@@ -72,14 +72,14 @@ import com.google.common.collect.Range;
  * <pre>
  * Responsible for configuring and building {@link Argument} instances.
  * Example builders can be created with {@link Arguments}.
- * 
+ *
  * <b>Note:</b>The code examples (for each method) assumes that all methods in {@link Arguments} have been statically imported.
- * 
+ *
  * <b>Note:</b>Some methods needs to be called in a specific order
  * (to make the generic type system produce the correct type) and to guide the
  * caller, such invalid orders are documented with {@link Deprecated}. If those warnings
  * are ignored {@link IllegalStateException} will be thrown at the offending call.
- * 
+ *
  * @param <SELF> the type of the subclass extending this class.
  * 		Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
  * 		The pattern also resembles the <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
@@ -152,7 +152,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * {@link CommandLineParser#withArguments(Argument...)} <br>
 	 * When the parsing is done the parsed value for this
 	 * argument can be fetched with {@link ParsedArguments#get(Argument)}.
-	 * 
+	 *
 	 * @throws IllegalStateException if it's not possible to construct an {@link Argument} with the
 	 *             current settings
 	 */
@@ -168,25 +168,24 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Parses command line arguments and returns the value of the argument built
 	 * by {@link #build()}, providing a simple one liner shortcut when faced with only one argument.
 	 * </pre>
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * String[] args = {"--listen-port", "8090"};
-	 * 
+	 *
 	 * int port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").parse(args);
 	 * assertThat(port).isEqualTo(8090);
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * This is a shorthand method that should be used if only one {@link Argument} is expected as it
 	 * will throw if unexpected arguments are encountered. If several arguments are expected use
 	 * {@link CommandLineParser#withArguments(Argument...)} instead.
-	 * 
+	 *
 	 * @param actualArguments the arguments from the command line
 	 * @return the parsed value from the {@code actualArguments}
 	 * @throws ArgumentException if actualArguments isn't compatible with this
 	 *             argument
-	 *             </pre>
 	 */
 	@Nullable
 	public final T parse(String ... actualArguments) throws ArgumentException
@@ -207,13 +206,13 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * <pre>
 	 * Returns a customized parser that the {@link Argument} will use to parse values.
-	 * 
+	 *
 	 * This is a suitable place to verify the configuration of your parser.
-	 * 
+	 *
 	 * If your {@link StringParser} doesn't support any configuration you can use
 	 * {@link Arguments#withParser(StringParser)} directly instead of subclassing
 	 * {@link ArgumentBuilder}
-	 * 
+	 *
 	 * @return the {@link StringParser} that performs the actual parsing of an argument value
 	 * @throws IllegalStateException if the parser have been configured wrongly
 	 * </pre>
@@ -234,7 +233,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Specifies the argument names that triggers the argument being built. As commands sometimes
 	 * gets long and hard to understand it's recommended to also support long named arguments,
 	 * making the commands even longer but more readable instead <br>
-	 * 
+	 *
 	 * @param argumentNames <ul>
 	 *            <li>"-o" for a short named option/argument</li>
 	 *            <li>"--option-name" for a long named option/argument</li>
@@ -255,7 +254,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * Works just like {@link #names(String...)} but it takes an {@link Iterable} instead.
-	 * 
+	 *
 	 * @param argumentNames the list to use as argument names
 	 * @return this builder
 	 */
@@ -268,7 +267,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * Ignores the case of the argument names set by {@link ArgumentBuilder#names(String...)}
-	 * 
+	 *
 	 * @return this builder
 	 */
 	public final SELF ignoreCase()
@@ -281,7 +280,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <pre>
 	 * Sets {@code theDescription} of what this argument does/means. Printed with
 	 * {@link CommandLineParser#usage()}.
-	 * 
+	 *
 	 * For instance, in:
 	 * -l, --enable-logging      Output debug information to standard out
 	 *                           Default: disabled
@@ -312,13 +311,13 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Makes {@link CommandLineParser#parse(String...)} throw
 	 * {@link ArgumentException} if this argument isn't given.
 	 * If possible, it's preferred to use a {@link #defaultValue(Object) default value} instead.
-	 * 
+	 *
 	 * The {@link Argument#toString()} will be used to print each missing argument.
-	 * 
+	 *
 	 * <b>Note</b>: If you choose to use multiple {@link #required()} indexed arguments all of them
 	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages
 	 * can point out erroneous arguments better
-	 * 
+	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #defaultValue(Object)} (or
 	 *             {@link #defaultValueSupplier(Supplier)}) has been
@@ -337,11 +336,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Sets a default value to use for this argument. Overrides {@link StringParser#defaultValue()} which is used by default.
 	 * Returned by {@link ParsedArguments#get(Argument)} when no argument {@link ParsedArguments#wasGiven(Argument) was given}.
 	 * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.
-	 * 
+	 * </pre>
 	 * <b>Mutability</b>:Remember that as {@link Argument} is {@link Immutable}
 	 * this value should be so too if multiple argument parsings is going to take place.
 	 * If mutability is wanted {@link ArgumentBuilder#defaultValueSupplier(Supplier)} should be used instead.
-	 * 
+	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,
 	 * because these two methods are mutually exclusive
@@ -356,15 +355,16 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * <pre>
 	 * Sets a {@link Supplier} that can supply default values in the absence of this argument
-	 * 
+	 * </pre>
+	 *
 	 * <b>Note:</b> Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
 	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
 	 * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.
-	 * 
+	 *
 	 * <b>Note:</b> May be removed in the future if Guava is removed as a dependency
-	 * 
+	 *
 	 * Wrap your supplier with {@link Suppliers#memoize(Supplier)} if you want to cache created values.
-	 * 
+	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,
 	 * because these two methods are mutually exclusive
@@ -381,7 +381,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Provides a way to give the usage texts a better explanation of a default
 	 * value than {@link Object#toString()} provides. Always prints {@code aDescription} regardless
 	 * of what the default value is.
-	 * 
+	 *
 	 * @param aDescription the description
 	 * @return this builder
 	 * @see Describers#withConstantString(String)
@@ -394,7 +394,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * {@link Describer} version of {@link #defaultValueDescription(String)}
-	 * 
+	 *
 	 * @param describer a describer
 	 * @return this builder
 	 */
@@ -409,20 +409,20 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * By default {@link StringParser}s provides a meta description (by implementing {@link StringParser#metaDescription()}
 	 * that describes the type of data they expect. For instance, if you're writing a music player,
 	 * a user of your application would (most probably) rather see:
-	 * 
+	 *
 	 * --track-nr &lt;track nr&gt;    The track number to play (using {@code  metaDescription("<track nr>") })
-	 * 
+	 *
 	 * instead of
-	 * 
+	 *
 	 * --track-nr &lt;integer&gt;     The track number to play (the default provided by {@link StringParser#metaDescription()})
-	 * 
+	 *
 	 * So when using general data type parsers such as {@link StringParsers#integerParser()} you're better of if
 	 * you provide a meta description that explains what the {@code integer} represents in the context of this argument.
-	 * 
+	 *
 	 * <b>Note:</b> empty meta descriptions aren't allowed
-	 * <b>Note:</b> the surrounding < & > aren't enforced or added automatically but it's preferred
+	 * <b>Note:</b> the surrounding &lt; and &gt; aren't enforced or added automatically but it's preferred
 	 * to have them because it makes a clear distinction between {@link #names(String...) argument names} and their parameters.
-	 * 
+	 *
 	 * @param aMetaDescription "&lt;track nr&gt;" in the above example
 	 * @return this builder
 	 * @throws IllegalArgumentException if aMetaDescription is empty
@@ -439,7 +439,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Hides this argument so that it's not displayed in the usage texts.<br>
 	 * It's recommended that hidden arguments have a reasonable {@link #defaultValue(Object)} and
 	 * aren't {@link #required()}, in fact this is recommended for all arguments.
-	 * 
+	 *
 	 * @return this builder
 	 */
 	public final SELF hideFromUsage()
@@ -450,7 +450,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * For instance, "=" in --author=jjonsson
-	 * 
+	 *
 	 * @param aSeparator the character that separates the argument name and
 	 *            argument value, defaults to a space
 	 * @return this builder
@@ -467,22 +467,22 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Only values for which {@link Predicate#apply(Object)} returns true, will be accepted.
 	 * Other values will cause an {@link ArgumentException}.
 	 * For example {@link Range#closed(Comparable, Comparable)} only allows values within a range.
-	 * 
+	 *
 	 * To override the default error message that is generated with {@link UserErrors#DISALLOWED_VALUE}
 	 * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail
 	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage()}.
 	 * When this is needed it's generally recommended to write a parser of its own instead.
-	 * 
+	 *
 	 * <b>Note:</b>{@link Object#toString() toString()} on {@code aLimiter} will replace {@link StringParser#descriptionOfValidValues(Locale)} in the usage
-	 * 
+	 *
 	 * <b>Note:</b>The validity of any {@link #defaultValueSupplier(Supplier) default value} isn't checked until
 	 * it's actually needed when {@link ParsedArguments#get(Argument)} is called. This is so
 	 * because {@link Supplier#get()} (or {@link StringParser#defaultValue()}) could take an arbitrary long time.
-	 * 
+	 *
 	 * <b>Note:</b>Any previously set limiter will be {@link Predicates2#and(Predicate, Predicate)
 	 * and'ed} together with {@code aLimiter}.
 	 * </pre>
-	 * 
+	 *
 	 * @param aLimiter a limiter
 	 * @return this builder
 	 */
@@ -502,15 +502,15 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * "property_name" is the {@link String} key in the resulting {@link Map},
 	 * "=" is the {@link #separator(String)} (set to "=" if it hasn't been overridden already),
 	 * "value" is decoded by the previously set {@link StringParser}.
-	 * 
-	 * 
+	 *
+	 *
 	 * Tip: You can pass {@link #defaultValueDescriber(Describer)} a
 	 * {@link Describers#mapDescriber(Map)} to describe each property that you
 	 * support (given that you've used {@link ArgumentBuilder#defaultValue(Object)}
 	 * to use sane defaults for your properties).
-	 * 
+	 *
 	 * @return a new (more specific) builder
-	 * 
+	 *
 	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}
 	 * </pre>
 	 */
@@ -527,10 +527,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * where "-D" is one of the strings supplied to {@link #names(String...)},
 	 * "property_name" is decoded by {@code keyParser} and
 	 * "value" is decoded by the {@link StringParser} previously passed to the constructor.
-	 * 
+	 *
 	 * For example:
 	 * </pre>
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * Map&lt;Integer, Integer&gt; numberMap = Arguments.integerArgument("-N")
@@ -539,10 +539,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * assertThat(numberMap.get(1)).isEqualTo(5);
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * For this to work correctly it's paramount that {@code K} implements a
 	 * proper {@link Object#hashCode()} because it's going to be used a key in a {@link Map}.
-	 * 
+	 *
 	 * @return a new (more specific) builder
 	 */
 	@CheckReturnValue
@@ -556,11 +556,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * When given a "," this allows for
 	 * arguments such as:
 	 * -numbers 1,2,3
-	 * where the resulting {@code List<Integer>} would contain 1, 2 & 3.
-	 * 
+	 * where the resulting {@code List&lt;Integer&gt;} would contain 1, 2 and 3.
+	 *
 	 * Doesn't allow empty lists.
 	 * </pre>
-	 * 
+	 *
 	 * @param valueSeparator the string to split the input with
 	 * @return a new (more specific) builder
 	 */
@@ -574,23 +574,23 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Useful for handling a variable amount of parameters in the end of a
 	 * command. Uses this argument to parse values but assumes that all the following
 	 * parameters are of the same type, integer in the following example:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * String[] threeArgs = {"--numbers", "1", "2", "3"};
 	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(threeArgs);
 	 * assertThat(numbers).isEqualTo(asList(1, 2, 3));
-	 * 
+	 *
 	 * String[] twoArgs = {"--numbers", "1", "2"};
 	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").variableArity().parse(twoArgs);
 	 * assertThat(numbers).isEqualTo(asList(1, 2));
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * <b>Note:</b> if {@link #defaultValue(Object) default value} has been set before
 	 * {@link #variableArity()} is called the {@link #defaultValue(Object) default value} will be a
 	 * list with that one element in it, otherwise it will be empty.
-	 * 
+	 *
 	 * @return a new (more specific) builder
 	 */
 	@CheckReturnValue
@@ -603,22 +603,22 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <pre>
 	 * Uses this argument to parse values but assumes that {@code numberOfParameters} of the
 	 * following parameters are of the same type.
-	 * 
+	 *
 	 * {@link Integer} in the following example:
 	 * </pre>
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * List&lt;Integer&gt; numbers = integerArgument("--numbers").arity(2).parse("--numbers", "1", "2");
 	 * assertThat(numbers).isEqualTo(asList(1, 2));
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * <b>Note:</b>If the argument isn't {@link #required()} the default value
 	 * will be a list that contains {@code numberOfParameters} elements
 	 * of {@link StringParser#defaultValue()}, in the above example that would be two zeros.
 	 * If this isn't wanted use {@link #defaultValue(Object)} to override it.
-	 * 
+	 *
 	 * @return a new (more specific) builder
 	 * @throws IllegalArgumentException if {@code numberOfParameters} is less than 2
 	 */
@@ -629,10 +629,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
+	// TODO: add minimumArguments(int)?
+
 	/**
-	 * <pre>
 	 * Makes it possible to enter several values for the same argument. Such as this:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * String[] arguments = {"--number", "1", "--number", "2"};
@@ -640,10 +641,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * assertThat(numbers).isEqualTo(asList(1, 2));
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * If you want to combine {@link #repeated()} with a specific {@link #arity(int)} then call
 	 * {@link #arity(int)} before calling {@link #repeated()}:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * String[] arguments = {"--numbers", "1", "2", "--numbers", "3", "4"};
@@ -651,9 +652,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * assertThat(numberLists).isEqualTo(asList(asList(1, 2), asList(3, 4)));
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * For repeated values in a property map such as this:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * String[] arguments = {"-Nnumber=1", "-Nnumber=2"};
@@ -661,12 +662,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * assertThat(numberMap.get("number")).isEqualTo(asList(1, 2));
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * {@link #repeated()} should be called before {@link #asPropertyMap()}.
 	 * For arguments without a name (indexed arguments) use {@link #variableArity()} instead.
-	 * 
+	 *
 	 * @return a new (more specific) builder
-	 *         </pre>
 	 */
 	@CheckReturnValue
 	public RepeatedArgumentBuilder<T> repeated()
@@ -686,9 +686,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * <pre>
 	 * Copies all values from the given copy into this one, except for:
-	 * {@link #parser()}, {@link #defaultValueSupplier()} & {@link #defaultValueDescriber()}
+	 * {@link #parser()}, {@link #defaultValueSupplier()} and {@link #defaultValueDescriber()}
 	 * as they may change between different builders
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;List&lt;Boolean&gt; are not compatible)
+	 * </pre>
 	 * @param copy the ArgumentBuilder to copy from
 	 */
 	@OverridingMethodsMustInvokeSuper
@@ -708,19 +709,19 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <pre>
 	 * {@code aFinalizer} is called after {@link StringParser#parse(String, Locale)}
 	 * but before any predicates given to {@link #limitTo(Predicate)} are tested.
-	 * 
+	 *
 	 * Is used internally to finalize values produced by {@link StringParser#parse(String, Locale)}.
-	 * 
+	 *
 	 * For example {@link RepeatedArgumentParser} uses this to make the resulting {@link List} {@link Immutable}.
-	 * 
+	 *
 	 * For regular {@link StringParser}s it's recommended to use {@link SimpleForwardingStringParser}
 	 * and decorate your {@link StringParser} with any finalization there instead.
-	 * 
+	 *
 	 * <b>Note:</b> If {@link #finalizeWith(Function)} have been called before,
 	 * the given {@code aFinalizer} will be run after that finalizer.
-	 * 
+	 *
 	 * </pre>
-	 * 
+	 *
 	 * @param aFinalizer a finalizer
 	 * @return this builder
 	 */
@@ -964,7 +965,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			{
 				defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));
 			}
-			// TODO(jontejj): should meta description <foo> be expanded to <foo> <foo>?
 		}
 	}
 
@@ -1192,7 +1192,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@SuppressWarnings("unchecked")
 		@Override
 		Describer<? super Map<K, V>> defaultValueDescriber()
-		{
+				{
 			Describer<? super Map<K, V>> overriddenDescriber = super.defaultValueDescriber();
 			if(overriddenDescriber != null)
 				return overriddenDescriber;
@@ -1204,7 +1204,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 				return (Describer<? super Map<K, V>>) mapDescriber;
 			}
 			return Describers.mapDescriber(Describers.<V>toStringDescriber(), separator());
-		}
+				}
 
 		/**
 		 * @deprecated because {@link #repeated()} should be called before {@link #asPropertyMap()}
@@ -1259,7 +1259,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 	/**
 	 * An intermediate builder used by {@link #splitWith(String)}. It's mainly used to switch the T
-	 * argument of the previous builder to List<T> and to indicate invalid call orders.
+	 * argument of the previous builder to List&lt;T&gt; and to indicate invalid call orders.
 	 */
 	@NotThreadSafe
 	public static final class SplitterArgumentBuilder<T> extends ListArgumentBuilder<SplitterArgumentBuilder<T>, T>

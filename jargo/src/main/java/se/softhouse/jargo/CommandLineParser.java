@@ -104,6 +104,7 @@ import com.google.common.collect.Lists;
  * externally.
  */
 @ThreadSafe
+// TODO(jontejj): make this Immutable
 public final class CommandLineParser
 {
 	// Internally CommandLineParser is a builder for CommandLineParserInstance but the idea is to

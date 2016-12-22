@@ -28,7 +28,6 @@ import static se.softhouse.jargo.Arguments.longArgument;
 import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.shortArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
-import static se.softhouse.jargo.stringparsers.custom.DateTimeParser.dateArgument;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 import java.io.File;
@@ -41,7 +40,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.fest.assertions.Description;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import se.softhouse.common.testlib.ConcurrencyTester;
@@ -69,8 +67,6 @@ public class ConcurrencyTest
 			.build();
 
 	final Argument<Long> longArgument = longArgument("--long").build();
-
-	final Argument<DateTime> date = dateArgument("--date").build();
 
 	final Argument<Short> shortArgument = shortArgument("--short").build();
 
@@ -104,8 +100,8 @@ public class ConcurrencyTest
 	 * The shared instance that the different threads will use
 	 */
 	final CommandLineParser parser = CommandLineParser
-			.withArguments(greetingPhraseArgument, enableLoggingArgument, port, longArgument, date, shortArgument, byteArgument, fileArgument,
-							string, charArgument, boolArgument, propertyArgument, arityArgument, repeatedArgument, splittedArgument, enumArgument,
+			.withArguments(greetingPhraseArgument, enableLoggingArgument, port, longArgument, shortArgument, byteArgument, fileArgument, string,
+							charArgument, boolArgument, propertyArgument, arityArgument, repeatedArgument, splittedArgument, enumArgument,
 							variableArityArgument, bigIntegerArgument, bigDecimalArgument)
 			.programDescription("Example of most argument types that jargo can handle by default").locale(Locale.US);
 
@@ -167,7 +163,6 @@ public class ConcurrencyTest
 		private final String[] inputArgs;
 		private final int portNumber;
 		private final String greetingPhrase;
-		private final DateTime time;
 		private final char c;
 		private final boolean bool;
 		private final String enableLogging;
@@ -192,7 +187,6 @@ public class ConcurrencyTest
 			portNumber = 8090 + offset;
 
 			greetingPhrase = "Hello" + offset;
-			time = DateTime.parse(new DateTime("2010-01-01").plusMillis(offset).toString());
 			c = charFor(offset);
 			bool = offset % 2 == 0;
 			enableLogging = bool ? "-l " : "";
@@ -215,10 +209,10 @@ public class ConcurrencyTest
 			file = new File(filename);
 			bigDecimal = BigDecimal.valueOf(Long.MAX_VALUE);
 			String inputArguments = enableLogging + "-p " + portNumber + " " + greetingPhrase + " --long " + longNumber + " --big-integer "
-					+ bigInteger + " --date " + time + " --short " + shortNumber + " --byte " + byteNumber + " --file " + filename + " --string "
-					+ str + " --char " + c + " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false" + " --arity" + arityString
-					+ " --repeated 1 --repeated " + offset + " --split=1," + (2 + offset) + ",3" + " --enum " + action + " --big-decimal "
-					+ bigDecimal + " --variableArity" + variableArityIntegers;
+					+ bigInteger + " --short " + shortNumber + " --byte " + byteNumber + " --file " + filename + " --string " + str + " --char " + c
+					+ " --bool " + bool + " -Bfoo" + offset + "=true -Bbar=false" + " --arity" + arityString + " --repeated 1 --repeated " + offset
+					+ " --split=1," + (2 + offset) + ",3" + " --enum " + action + " --big-decimal " + bigDecimal + " --variableArity"
+					+ variableArityIntegers;
 			inputArgs = inputArguments.split(" ");
 		}
 
@@ -232,7 +226,6 @@ public class ConcurrencyTest
 			checkThat(greetingPhraseArgument).received(greetingPhrase);
 			checkThat(longArgument).received(longNumber);
 			checkThat(bigIntegerArgument).received(bigInteger);
-			checkThat(date).received(time);
 			checkThat(shortArgument).received(shortNumber);
 			checkThat(byteArgument).received(byteNumber);
 			checkThat(fileArgument).received(file);

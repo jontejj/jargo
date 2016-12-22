@@ -142,7 +142,7 @@ public final class ArgumentExceptions
 	/**
 	 * Thrown when {@link ArgumentBuilder#required()} has been specified but the
 	 * argument wasn't found in the input arguments
-	 * 
+	 *
 	 * @param missingArguments a collection of all the missing arguments
 	 */
 	@CheckReturnValue
@@ -184,7 +184,7 @@ public final class ArgumentExceptions
 	 * Used when
 	 * "--number 1" is expected but
 	 * "--number 1 --number 2" is given
-	 * 
+	 *
 	 * @param unhandledArgument the argument --number in this case
 	 */
 	@CheckReturnValue
@@ -199,8 +199,8 @@ public final class ArgumentExceptions
 	 * Used when
 	 * "-p 8080" is expected but
 	 * "-p" is given <br>
-	 * Prints "Missing <Integer> parameter for -p"
-	 * 
+	 * Prints "Missing &lt;Integer&gt; parameter for -p"
+	 *
 	 * @param argumentWithMissingParameter the -p argument in this case
 	 */
 	@CheckReturnValue
@@ -240,8 +240,8 @@ public final class ArgumentExceptions
 	 * Used when
 	 * "-p 8080 7080" is expected but
 	 * "-p 8080" is given<br>
-	 * Prints "Missing second <Integer> parameter for -p"
-	 * 
+	 * Prints "Missing second &lt;Integer&gt; parameter for -p"
+	 *
 	 * @param cause with a {@link MissingParameterException#parameterDescription()
 	 *            parameterDescription} such as "&lt;Integer&gt;" in this case
 	 * @param missingIndex 1 in this case
@@ -268,7 +268,7 @@ public final class ArgumentExceptions
 		protected String getMessage(String argumentNameOrCommandName)
 		{
 			return String.format(	UserErrors.MISSING_NTH_PARAMETER, numberToPositionalString(missingIndex + 1), parameterDescription,
-									argumentNameOrCommandName);
+			                     	argumentNameOrCommandName);
 		}
 
 		/**
@@ -282,7 +282,7 @@ public final class ArgumentExceptions
 	 * "1 2" is expected but
 	 * "1 2 3" is given<br>
 	 * Prints "Unexpected argument: 3, previous argument: 2"
-	 * 
+	 *
 	 * @param arguments used to print the unexpected argument, 3 in this case, 2 is also printed to
 	 *            further pinpoint where 3 is situated
 	 */
