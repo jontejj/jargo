@@ -2,7 +2,7 @@
 A tool to ease the handling of program arguments/options  
 [![Build Status](https://travis-ci.org/jontejj/jargo.png)](https://travis-ci.org/jontejj/jargo)  [Jenkins](https://jontejj.ci.cloudbees.com/job/jargo/)
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.softhouse/se.softhouse/badge.svg?style=flat)](http://search.maven.org/#search|ga|1|a%3Ajargo)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.softhouse/jargo/badge.svg)](https://maven-badges.herokuapp.com/maven-central/se.softhouse/jargo)
 
 # Most basic usage
 ```java
