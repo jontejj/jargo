@@ -41,7 +41,7 @@ public class CharacterTrieGuavaTest extends TestCase
 				}
 				return trie;
 			}
-		}).withFeatures(CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, MapFeature.GENERAL_PURPOSE, CollectionSize.ANY)
+		}).withFeatures(CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, MapFeature.GENERAL_PURPOSE, CollectionFeature.SUPPORTS_ITERATOR_REMOVE, CollectionSize.ANY)
 				.named("CharacterTrie guava-test").createTestSuite();
 	}
 }

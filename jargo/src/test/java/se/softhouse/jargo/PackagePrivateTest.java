@@ -61,7 +61,7 @@ public class PackagePrivateTest
 	{
 		assertThat(integerArgument("-i").description("foo").metaDescription("bar").toString())
 				.isEqualTo(	"DefaultArgumentBuilder{names=[-i], description=foo, metaDescription=Optional.of(bar), hideFromUsage=false"
-									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= , defaultValueDescriber=NumberDescriber}");
+									+ ", ignoreCase=false, limiter=Predicates.alwaysTrue(), required=false, separator= , defaultValueDescriber=NumberDescriber}");
 	}
 
 	@Test

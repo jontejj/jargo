@@ -71,7 +71,7 @@ public class LimiterTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage("'3' is not And([1‥2],[0‥4])");
+			assertThat(expected).hasMessage("'3' is not Predicates.and([1..2],[0..4])");
 		}
 	}
 

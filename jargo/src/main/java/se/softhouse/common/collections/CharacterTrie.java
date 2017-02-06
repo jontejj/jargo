@@ -553,6 +553,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		@Override
 		public void clear()
 		{
+			modCount++;
 			startingPoint.clear();
 		}
 	}
@@ -606,11 +607,11 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 			verifyUnmodified();
 			if(lastReturned == null)
 				throw new IllegalStateException("You probably forgot to call next before calling remove");
-			boolean failedToRemove = removeEntry(lastReturned) == null;
-			if(failedToRemove)
+			if(removeEntry(lastReturned) == null)
+			{
 				throw new IllegalStateException("You probably forgot to call next before calling remove");
-			expectedModCount = modCount;
-
+			}
+			expectedModCount++;
 		}
 
 		private void verifyUnmodified()

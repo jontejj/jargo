@@ -11,6 +11,10 @@
 	<version>0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>https://github.com/Softhouse/jargo</url>
+    <properties>
+		<!-- Use version 20 to be java 6 compatible -->
+        <guava.version>20.0</guava.version>
+    </properties>
 	<scm>
 		<url>https://github.com/jontejj/jargo</url>
 		<connection>scm:git:git://github.com/jontejj/jargo.git</connection>
@@ -67,8 +71,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -246,7 +250,7 @@
 			<!-- The stuff that java should have had from the start -->
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<!-- Annotations such as @Nonnull, @ThreadSafe etc -->
@@ -267,8 +271,8 @@
 			<!-- Includes NullPointerTester, MapTestSuiteBuilder and lots more -->
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-testlib</artifactId>
-			<version>14.0.1</version>
 			<scope>test</scope>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<!-- Mostly included for SuppressFBWarnings, unfortunately it includes 
