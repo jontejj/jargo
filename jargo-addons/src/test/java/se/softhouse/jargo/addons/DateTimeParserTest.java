@@ -43,7 +43,7 @@ public class DateTimeParserTest
 		DateTime parsedDate = dateArgument("--start").parse("--start", "2011-03-30");
 		assertThat(parsedDate).isEqualTo(new DateTime("2011-03-30"));
 
-		Usage usage = dateArgument("--start").usage();
+		Usage usage = dateArgument(DateTimeZone.forOffsetHours(2), "--start").usage();
 		assertThat(usage).isEqualTo(expected("dateTime"));
 	}
 
@@ -52,9 +52,6 @@ public class DateTimeParserTest
 	{
 		DateTime parsedDate = dateArgument(DateTimeZone.UTC).parse("2011-03-30T00:00:00.000");
 		assertThat(parsedDate).isEqualTo(new DateTime("2011-03-30T00:00:00.000", DateTimeZone.UTC));
-
-		Usage usage = dateArgument("--start").usage();
-		assertThat(usage).isEqualTo(expected("dateTime"));
 	}
 
 	@Test
@@ -70,7 +67,7 @@ public class DateTimeParserTest
 	{
 		try
 		{
-			System.out.println(dateArgument().parse("ABC"));
+			dateArgument().parse("ABC");
 			fail("Characters should be not be allowed");
 		}
 		catch(ArgumentException expected)

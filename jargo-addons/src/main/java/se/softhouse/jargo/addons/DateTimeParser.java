@@ -39,7 +39,6 @@ final class DateTimeParser implements StringParser<DateTime>
 	{
 		this.timeZone = checkNotNull(timeZone);
 		this.formatter = ISODateTimeFormat.dateOptionalTimeParser()
-				.withOffsetParsed()
 				.withZone(timeZone);
 	}
 
@@ -47,7 +46,7 @@ final class DateTimeParser implements StringParser<DateTime>
 	public String descriptionOfValidValues(Locale locale)
 	{
 		checkNotNull(locale);
-		String unmistakableDate = new DateTime("2011-02-28").withZone(timeZone).toString(ISODateTimeFormat.dateTime());
+		String unmistakableDate = new DateTime("2011-02-28", timeZone).toString(ISODateTimeFormat.dateTime());
 		return "an ISO8601 date, such as " + unmistakableDate;
 	}
 
