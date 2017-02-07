@@ -52,9 +52,6 @@ public class DateTimeParserTest
 	{
 		DateTime parsedDate = dateArgument(DateTimeZone.UTC).parse("2011-03-30T00:00:00.000");
 		assertThat(parsedDate).isEqualTo(new DateTime("2011-03-30T00:00:00.000", DateTimeZone.UTC));
-
-		Usage usage = dateArgument(DateTimeZone.forOffsetHours(2), "--start").usage();
-		assertThat(usage).isEqualTo(expected("dateTime"));
 	}
 
 	@Test
