@@ -6,10 +6,10 @@ TARGET_BRANCH="gh-pages"
 
 echo "$TRAVIS_REPO_SLUG $TRAVIS_JDK_VERSION $TRAVIS_PULL_REQUEST $TRAVIS_BRANCH"
 
-if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "$SOURCE_BRANCH" ]; then
+#if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "$SOURCE_BRANCH" ]; then
 
     echo "Saving some useful information"
-    REPO=`git config remote.origin.url`
+    REPO=git@github.com:jontejj/jargo.git
     SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
     SHA=`git rev-parse --verify HEAD`
 
@@ -17,6 +17,7 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     mvn --quiet "javadoc:javadoc"
 
     echo "Cloning the code for this repo"
+    rm -rf $TARGET_BRANCH
     git clone $REPO $TARGET_BRANCH
     cd $TARGET_BRANCH
     # Create a new empty branch if $TARGET_BRANCH doesn't exist yet (should only happen on first deploy)
@@ -27,6 +28,11 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     echo "Cleaning out old javadoc in repo"
     rm -rf javadoc/**/* || exit 0
     cd ..
+    echo "Copying module javadocs"
+    mvn --also-make dependency:tree | grep maven-dependency-plugin | awk 'NR>1 { print $(NF-1) }' | \
+    while read module ; do \
+    echo $module; done
+
     mvn --also-make dependency:tree | grep maven-dependency-plugin | awk 'NR>1 { print $(NF-1) }' | \
     while read module ; do \
     mkdir -p $TARGET_BRANCH/javadoc/$module
@@ -43,17 +49,11 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     git add --all
     git commit -m "Deploy to GitHub Pages: ${SHA}"
 
-    # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
-    ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
-    ENCRYPTED_IV_VAR="encrypted_${ENCRYPTION_LABEL}_iv"
-    ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
-    ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
-    openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy_key.enc -out deploy_key -d
-    chmod 600 deploy_key
+    chmod 600 ../id_rsa_travis
     eval `ssh-agent -s`
-    ssh-add deploy_key
+    ssh-add ../id_rsa_travis
 
     git push $SSH_REPO $TARGET_BRANCH
 
     echo -e "Update of documentation complete\n"
-fi
+#fi
