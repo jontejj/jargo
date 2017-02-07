@@ -12,3 +12,6 @@ after_success: ./scripts/update-documentation.sh
 before_install:
 - openssl aes-256-cbc -K $encrypted_5dfb394b8446_key -iv $encrypted_5dfb394b8446_iv
   -in id_rsa_travis.enc -out id_rsa_travis -d
+cache:
+  directories:
+    - $HOME/.m2

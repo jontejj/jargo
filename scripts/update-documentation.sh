@@ -13,12 +13,18 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
     SHA=`git rev-parse --verify HEAD`
 
-    echo "Generating documentation for $REPO"
+    echo "Generating documentation for $REPO, SSH: $SSH_REPO"
     mvn --quiet "javadoc:javadoc"
 
     echo "Cloning the code for this repo"
     rm -rf $TARGET_BRANCH || exit 0
-    git clone $REPO $TARGET_BRANCH
+
+    echo "Setting up automatic ssh key"
+    chmod 600 id_rsa_travis
+    eval "$(ssh-agent -s)"
+    ssh-add id_rsa_travis
+
+    git clone $SSH_REPO $TARGET_BRANCH
     cd $TARGET_BRANCH
     # Create a new empty branch if $TARGET_BRANCH doesn't exist yet (should only happen on first deploy)
     git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
@@ -48,10 +54,6 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     echo "Commit the updated files"
     git add --all
     git commit -m "Deploy to GitHub Pages: ${SHA}"
-
-    chmod 600 ../id_rsa_travis
-    eval `ssh-agent -s`
-    ssh-add ../id_rsa_travis
 
     git push $SSH_REPO $TARGET_BRANCH
 
