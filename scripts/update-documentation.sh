@@ -6,18 +6,18 @@ TARGET_BRANCH="gh-pages"
 
 echo "$TRAVIS_REPO_SLUG $TRAVIS_JDK_VERSION $TRAVIS_PULL_REQUEST $TRAVIS_BRANCH"
 
-#if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "$SOURCE_BRANCH" ]; then
+if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "$SOURCE_BRANCH" ]; then
 
     echo "Saving some useful information"
-    REPO=git@github.com:jontejj/jargo.git
+    REPO=`git config remote.origin.url`
     SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
     SHA=`git rev-parse --verify HEAD`
 
-    echo "Generating documentation"
+    echo "Generating documentation for $REPO"
     mvn --quiet "javadoc:javadoc"
 
     echo "Cloning the code for this repo"
-    rm -rf $TARGET_BRANCH
+    rm -rf $TARGET_BRANCH || exit 0
     git clone $REPO $TARGET_BRANCH
     cd $TARGET_BRANCH
     # Create a new empty branch if $TARGET_BRANCH doesn't exist yet (should only happen on first deploy)
@@ -56,4 +56,4 @@ echo "$TRAVIS_REPO_SLUG $TRAVIS_JDK_VERSION $TRAVIS_PULL_REQUEST $TRAVIS_BRANCH"
     git push $SSH_REPO $TARGET_BRANCH
 
     echo -e "Update of documentation complete\n"
-#fi
+fi
