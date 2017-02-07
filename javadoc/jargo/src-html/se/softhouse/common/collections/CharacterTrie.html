@@ -561,73 +561,74 @@
 <span class="sourceLineNo">553</span>                @Override<a name="line.553"></a>
 <span class="sourceLineNo">554</span>                public void clear()<a name="line.554"></a>
 <span class="sourceLineNo">555</span>                {<a name="line.555"></a>
-<span class="sourceLineNo">556</span>                        startingPoint.clear();<a name="line.556"></a>
-<span class="sourceLineNo">557</span>                }<a name="line.557"></a>
-<span class="sourceLineNo">558</span>        }<a name="line.558"></a>
-<span class="sourceLineNo">559</span><a name="line.559"></a>
-<span class="sourceLineNo">560</span>        private final class EntryIterator implements Iterator&lt;Map.Entry&lt;String, V&gt;&gt;<a name="line.560"></a>
-<span class="sourceLineNo">561</span>        {<a name="line.561"></a>
-<span class="sourceLineNo">562</span>                private int expectedModCount = modCount;<a name="line.562"></a>
-<span class="sourceLineNo">563</span>                private Entry&lt;V&gt; next;<a name="line.563"></a>
-<span class="sourceLineNo">564</span>                private Entry&lt;V&gt; lastReturned = null;<a name="line.564"></a>
-<span class="sourceLineNo">565</span><a name="line.565"></a>
-<span class="sourceLineNo">566</span>                private EntryIterator(Entry&lt;V&gt; startingPoint)<a name="line.566"></a>
-<span class="sourceLineNo">567</span>                {<a name="line.567"></a>
-<span class="sourceLineNo">568</span>                        next = startingPoint;<a name="line.568"></a>
-<span class="sourceLineNo">569</span>                }<a name="line.569"></a>
-<span class="sourceLineNo">570</span><a name="line.570"></a>
-<span class="sourceLineNo">571</span>                @Override<a name="line.571"></a>
-<span class="sourceLineNo">572</span>                public boolean hasNext()<a name="line.572"></a>
-<span class="sourceLineNo">573</span>                {<a name="line.573"></a>
-<span class="sourceLineNo">574</span>                        if(next == null)<a name="line.574"></a>
-<span class="sourceLineNo">575</span>                                return false;<a name="line.575"></a>
-<span class="sourceLineNo">576</span>                        // Don't recalculate next if someone calls hasNext twice without calling next<a name="line.576"></a>
-<span class="sourceLineNo">577</span>                        if(next == lastReturned || lastReturned == null)<a name="line.577"></a>
-<span class="sourceLineNo">578</span>                        {<a name="line.578"></a>
-<span class="sourceLineNo">579</span>                                if(lastReturned == null)<a name="line.579"></a>
-<span class="sourceLineNo">580</span>                                {<a name="line.580"></a>
-<span class="sourceLineNo">581</span>                                        next = next.successor(lastReturned, "", 0, true);<a name="line.581"></a>
-<span class="sourceLineNo">582</span>                                }<a name="line.582"></a>
-<span class="sourceLineNo">583</span>                                else<a name="line.583"></a>
-<span class="sourceLineNo">584</span>                                {<a name="line.584"></a>
-<span class="sourceLineNo">585</span>                                        CharSequence lastKey = lastReturned.getKey();<a name="line.585"></a>
-<span class="sourceLineNo">586</span>                                        int lastDepth = lastKey.length();<a name="line.586"></a>
-<span class="sourceLineNo">587</span>                                        next = next.successor(lastReturned, lastKey, lastDepth, true);<a name="line.587"></a>
-<span class="sourceLineNo">588</span>                                }<a name="line.588"></a>
-<span class="sourceLineNo">589</span>                        }<a name="line.589"></a>
-<span class="sourceLineNo">590</span>                        return next != null;<a name="line.590"></a>
-<span class="sourceLineNo">591</span>                }<a name="line.591"></a>
-<span class="sourceLineNo">592</span><a name="line.592"></a>
-<span class="sourceLineNo">593</span>                @Override<a name="line.593"></a>
-<span class="sourceLineNo">594</span>                public Map.Entry&lt;String, V&gt; next()<a name="line.594"></a>
-<span class="sourceLineNo">595</span>                {<a name="line.595"></a>
-<span class="sourceLineNo">596</span>                        verifyUnmodified();<a name="line.596"></a>
-<span class="sourceLineNo">597</span>                        if(!hasNext())<a name="line.597"></a>
-<span class="sourceLineNo">598</span>                                throw new NoSuchElementException();<a name="line.598"></a>
-<span class="sourceLineNo">599</span>                        lastReturned = next;<a name="line.599"></a>
-<span class="sourceLineNo">600</span>                        return next;<a name="line.600"></a>
-<span class="sourceLineNo">601</span>                }<a name="line.601"></a>
-<span class="sourceLineNo">602</span><a name="line.602"></a>
-<span class="sourceLineNo">603</span>                @Override<a name="line.603"></a>
-<span class="sourceLineNo">604</span>                public void remove()<a name="line.604"></a>
-<span class="sourceLineNo">605</span>                {<a name="line.605"></a>
-<span class="sourceLineNo">606</span>                        verifyUnmodified();<a name="line.606"></a>
-<span class="sourceLineNo">607</span>                        if(lastReturned == null)<a name="line.607"></a>
-<span class="sourceLineNo">608</span>                                throw new IllegalStateException("You probably forgot to call next before calling remove");<a name="line.608"></a>
-<span class="sourceLineNo">609</span>                        boolean failedToRemove = removeEntry(lastReturned) == null;<a name="line.609"></a>
-<span class="sourceLineNo">610</span>                        if(failedToRemove)<a name="line.610"></a>
-<span class="sourceLineNo">611</span>                                throw new IllegalStateException("You probably forgot to call next before calling remove");<a name="line.611"></a>
-<span class="sourceLineNo">612</span>                        expectedModCount = modCount;<a name="line.612"></a>
-<span class="sourceLineNo">613</span><a name="line.613"></a>
-<span class="sourceLineNo">614</span>                }<a name="line.614"></a>
-<span class="sourceLineNo">615</span><a name="line.615"></a>
-<span class="sourceLineNo">616</span>                private void verifyUnmodified()<a name="line.616"></a>
-<span class="sourceLineNo">617</span>                {<a name="line.617"></a>
-<span class="sourceLineNo">618</span>                        if(expectedModCount != modCount)<a name="line.618"></a>
-<span class="sourceLineNo">619</span>                                throw new ConcurrentModificationException("Trie modified during iteration");<a name="line.619"></a>
-<span class="sourceLineNo">620</span>                }<a name="line.620"></a>
-<span class="sourceLineNo">621</span>        }<a name="line.621"></a>
-<span class="sourceLineNo">622</span>}<a name="line.622"></a>
+<span class="sourceLineNo">556</span>                        modCount++;<a name="line.556"></a>
+<span class="sourceLineNo">557</span>                        startingPoint.clear();<a name="line.557"></a>
+<span class="sourceLineNo">558</span>                }<a name="line.558"></a>
+<span class="sourceLineNo">559</span>        }<a name="line.559"></a>
+<span class="sourceLineNo">560</span><a name="line.560"></a>
+<span class="sourceLineNo">561</span>        private final class EntryIterator implements Iterator&lt;Map.Entry&lt;String, V&gt;&gt;<a name="line.561"></a>
+<span class="sourceLineNo">562</span>        {<a name="line.562"></a>
+<span class="sourceLineNo">563</span>                private int expectedModCount = modCount;<a name="line.563"></a>
+<span class="sourceLineNo">564</span>                private Entry&lt;V&gt; next;<a name="line.564"></a>
+<span class="sourceLineNo">565</span>                private Entry&lt;V&gt; lastReturned = null;<a name="line.565"></a>
+<span class="sourceLineNo">566</span><a name="line.566"></a>
+<span class="sourceLineNo">567</span>                private EntryIterator(Entry&lt;V&gt; startingPoint)<a name="line.567"></a>
+<span class="sourceLineNo">568</span>                {<a name="line.568"></a>
+<span class="sourceLineNo">569</span>                        next = startingPoint;<a name="line.569"></a>
+<span class="sourceLineNo">570</span>                }<a name="line.570"></a>
+<span class="sourceLineNo">571</span><a name="line.571"></a>
+<span class="sourceLineNo">572</span>                @Override<a name="line.572"></a>
+<span class="sourceLineNo">573</span>                public boolean hasNext()<a name="line.573"></a>
+<span class="sourceLineNo">574</span>                {<a name="line.574"></a>
+<span class="sourceLineNo">575</span>                        if(next == null)<a name="line.575"></a>
+<span class="sourceLineNo">576</span>                                return false;<a name="line.576"></a>
+<span class="sourceLineNo">577</span>                        // Don't recalculate next if someone calls hasNext twice without calling next<a name="line.577"></a>
+<span class="sourceLineNo">578</span>                        if(next == lastReturned || lastReturned == null)<a name="line.578"></a>
+<span class="sourceLineNo">579</span>                        {<a name="line.579"></a>
+<span class="sourceLineNo">580</span>                                if(lastReturned == null)<a name="line.580"></a>
+<span class="sourceLineNo">581</span>                                {<a name="line.581"></a>
+<span class="sourceLineNo">582</span>                                        next = next.successor(lastReturned, "", 0, true);<a name="line.582"></a>
+<span class="sourceLineNo">583</span>                                }<a name="line.583"></a>
+<span class="sourceLineNo">584</span>                                else<a name="line.584"></a>
+<span class="sourceLineNo">585</span>                                {<a name="line.585"></a>
+<span class="sourceLineNo">586</span>                                        CharSequence lastKey = lastReturned.getKey();<a name="line.586"></a>
+<span class="sourceLineNo">587</span>                                        int lastDepth = lastKey.length();<a name="line.587"></a>
+<span class="sourceLineNo">588</span>                                        next = next.successor(lastReturned, lastKey, lastDepth, true);<a name="line.588"></a>
+<span class="sourceLineNo">589</span>                                }<a name="line.589"></a>
+<span class="sourceLineNo">590</span>                        }<a name="line.590"></a>
+<span class="sourceLineNo">591</span>                        return next != null;<a name="line.591"></a>
+<span class="sourceLineNo">592</span>                }<a name="line.592"></a>
+<span class="sourceLineNo">593</span><a name="line.593"></a>
+<span class="sourceLineNo">594</span>                @Override<a name="line.594"></a>
+<span class="sourceLineNo">595</span>                public Map.Entry&lt;String, V&gt; next()<a name="line.595"></a>
+<span class="sourceLineNo">596</span>                {<a name="line.596"></a>
+<span class="sourceLineNo">597</span>                        verifyUnmodified();<a name="line.597"></a>
+<span class="sourceLineNo">598</span>                        if(!hasNext())<a name="line.598"></a>
+<span class="sourceLineNo">599</span>                                throw new NoSuchElementException();<a name="line.599"></a>
+<span class="sourceLineNo">600</span>                        lastReturned = next;<a name="line.600"></a>
+<span class="sourceLineNo">601</span>                        return next;<a name="line.601"></a>
+<span class="sourceLineNo">602</span>                }<a name="line.602"></a>
+<span class="sourceLineNo">603</span><a name="line.603"></a>
+<span class="sourceLineNo">604</span>                @Override<a name="line.604"></a>
+<span class="sourceLineNo">605</span>                public void remove()<a name="line.605"></a>
+<span class="sourceLineNo">606</span>                {<a name="line.606"></a>
+<span class="sourceLineNo">607</span>                        verifyUnmodified();<a name="line.607"></a>
+<span class="sourceLineNo">608</span>                        if(lastReturned == null)<a name="line.608"></a>
+<span class="sourceLineNo">609</span>                                throw new IllegalStateException("You probably forgot to call next before calling remove");<a name="line.609"></a>
+<span class="sourceLineNo">610</span>                        if(removeEntry(lastReturned) == null)<a name="line.610"></a>
+<span class="sourceLineNo">611</span>                        {<a name="line.611"></a>
+<span class="sourceLineNo">612</span>                                throw new IllegalStateException("You probably forgot to call next before calling remove");<a name="line.612"></a>
+<span class="sourceLineNo">613</span>                        }<a name="line.613"></a>
+<span class="sourceLineNo">614</span>                        expectedModCount++;<a name="line.614"></a>
+<span class="sourceLineNo">615</span>                }<a name="line.615"></a>
+<span class="sourceLineNo">616</span><a name="line.616"></a>
+<span class="sourceLineNo">617</span>                private void verifyUnmodified()<a name="line.617"></a>
+<span class="sourceLineNo">618</span>                {<a name="line.618"></a>
+<span class="sourceLineNo">619</span>                        if(expectedModCount != modCount)<a name="line.619"></a>
+<span class="sourceLineNo">620</span>                                throw new ConcurrentModificationException("Trie modified during iteration");<a name="line.620"></a>
+<span class="sourceLineNo">621</span>                }<a name="line.621"></a>
+<span class="sourceLineNo">622</span>        }<a name="line.622"></a>
+<span class="sourceLineNo">623</span>}<a name="line.623"></a>
 
 
 

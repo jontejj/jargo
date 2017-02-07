@@ -80,14 +80,14 @@
 <span class="sourceLineNo">072</span> * &lt;pre&gt;<a name="line.72"></a>
 <span class="sourceLineNo">073</span> * Responsible for configuring and building {@link Argument} instances.<a name="line.73"></a>
 <span class="sourceLineNo">074</span> * Example builders can be created with {@link Arguments}.<a name="line.74"></a>
-<span class="sourceLineNo">075</span> * <a name="line.75"></a>
+<span class="sourceLineNo">075</span> *<a name="line.75"></a>
 <span class="sourceLineNo">076</span> * &lt;b&gt;Note:&lt;/b&gt;The code examples (for each method) assumes that all methods in {@link Arguments} have been statically imported.<a name="line.76"></a>
-<span class="sourceLineNo">077</span> * <a name="line.77"></a>
+<span class="sourceLineNo">077</span> *<a name="line.77"></a>
 <span class="sourceLineNo">078</span> * &lt;b&gt;Note:&lt;/b&gt;Some methods needs to be called in a specific order<a name="line.78"></a>
 <span class="sourceLineNo">079</span> * (to make the generic type system produce the correct type) and to guide the<a name="line.79"></a>
 <span class="sourceLineNo">080</span> * caller, such invalid orders are documented with {@link Deprecated}. If those warnings<a name="line.80"></a>
 <span class="sourceLineNo">081</span> * are ignored {@link IllegalStateException} will be thrown at the offending call.<a name="line.81"></a>
-<span class="sourceLineNo">082</span> * <a name="line.82"></a>
+<span class="sourceLineNo">082</span> *<a name="line.82"></a>
 <span class="sourceLineNo">083</span> * @param &lt;SELF&gt; the type of the subclass extending this class.<a name="line.83"></a>
 <span class="sourceLineNo">084</span> *              Concept borrowed from: &lt;a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation"&gt;Ansgar.Konermann's blog&lt;/a&gt;<a name="line.84"></a>
 <span class="sourceLineNo">085</span> *              The pattern also resembles the &lt;a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern"&gt;Curiously recurring template pattern&lt;/a&gt;<a name="line.85"></a>
@@ -160,7 +160,7 @@
 <span class="sourceLineNo">152</span>         * {@link CommandLineParser#withArguments(Argument...)} &lt;br&gt;<a name="line.152"></a>
 <span class="sourceLineNo">153</span>         * When the parsing is done the parsed value for this<a name="line.153"></a>
 <span class="sourceLineNo">154</span>         * argument can be fetched with {@link ParsedArguments#get(Argument)}.<a name="line.154"></a>
-<span class="sourceLineNo">155</span>         * <a name="line.155"></a>
+<span class="sourceLineNo">155</span>         *<a name="line.155"></a>
 <span class="sourceLineNo">156</span>         * @throws IllegalStateException if it's not possible to construct an {@link Argument} with the<a name="line.156"></a>
 <span class="sourceLineNo">157</span>         *             current settings<a name="line.157"></a>
 <span class="sourceLineNo">158</span>         */<a name="line.158"></a>
@@ -176,203 +176,203 @@
 <span class="sourceLineNo">168</span>         * Parses command line arguments and returns the value of the argument built<a name="line.168"></a>
 <span class="sourceLineNo">169</span>         * by {@link #build()}, providing a simple one liner shortcut when faced with only one argument.<a name="line.169"></a>
 <span class="sourceLineNo">170</span>         * &lt;/pre&gt;<a name="line.170"></a>
-<span class="sourceLineNo">171</span>         * <a name="line.171"></a>
+<span class="sourceLineNo">171</span>         *<a name="line.171"></a>
 <span class="sourceLineNo">172</span>         * &lt;pre class="prettyprint"&gt;<a name="line.172"></a>
 <span class="sourceLineNo">173</span>         * &lt;code class="language-java"&gt;<a name="line.173"></a>
 <span class="sourceLineNo">174</span>         * String[] args = {"--listen-port", "8090"};<a name="line.174"></a>
-<span class="sourceLineNo">175</span>         * <a name="line.175"></a>
+<span class="sourceLineNo">175</span>         *<a name="line.175"></a>
 <span class="sourceLineNo">176</span>         * int port = integerArgument("-p", "--listen-port").defaultValue(8080).description("The port clients should connect to.").parse(args);<a name="line.176"></a>
 <span class="sourceLineNo">177</span>         * assertThat(port).isEqualTo(8090);<a name="line.177"></a>
 <span class="sourceLineNo">178</span>         * &lt;/code&gt;<a name="line.178"></a>
 <span class="sourceLineNo">179</span>         * &lt;/pre&gt;<a name="line.179"></a>
-<span class="sourceLineNo">180</span>         * <a name="line.180"></a>
+<span class="sourceLineNo">180</span>         *<a name="line.180"></a>
 <span class="sourceLineNo">181</span>         * This is a shorthand method that should be used if only one {@link Argument} is expected as it<a name="line.181"></a>
 <span class="sourceLineNo">182</span>         * will throw if unexpected arguments are encountered. If several arguments are expected use<a name="line.182"></a>
 <span class="sourceLineNo">183</span>         * {@link CommandLineParser#withArguments(Argument...)} instead.<a name="line.183"></a>
-<span class="sourceLineNo">184</span>         * <a name="line.184"></a>
+<span class="sourceLineNo">184</span>         *<a name="line.184"></a>
 <span class="sourceLineNo">185</span>         * @param actualArguments the arguments from the command line<a name="line.185"></a>
 <span class="sourceLineNo">186</span>         * @return the parsed value from the {@code actualArguments}<a name="line.186"></a>
 <span class="sourceLineNo">187</span>         * @throws ArgumentException if actualArguments isn't compatible with this<a name="line.187"></a>
 <span class="sourceLineNo">188</span>         *             argument<a name="line.188"></a>
-<span class="sourceLineNo">189</span>         *             &lt;/pre&gt;<a name="line.189"></a>
-<span class="sourceLineNo">190</span>         */<a name="line.190"></a>
-<span class="sourceLineNo">191</span>        @Nullable<a name="line.191"></a>
-<span class="sourceLineNo">192</span>        public final T parse(String ... actualArguments) throws ArgumentException<a name="line.192"></a>
-<span class="sourceLineNo">193</span>        {<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                return build().parse(actualArguments);<a name="line.194"></a>
-<span class="sourceLineNo">195</span>        }<a name="line.195"></a>
-<span class="sourceLineNo">196</span><a name="line.196"></a>
-<span class="sourceLineNo">197</span>        /**<a name="line.197"></a>
-<span class="sourceLineNo">198</span>         * Returns a usage string for the argument that this builder builds.<a name="line.198"></a>
-<span class="sourceLineNo">199</span>         * Should only be used if one argument is supported,<a name="line.199"></a>
-<span class="sourceLineNo">200</span>         * otherwise the {@link CommandLineParser#usage()} method should be used instead.<a name="line.200"></a>
-<span class="sourceLineNo">201</span>         */<a name="line.201"></a>
-<span class="sourceLineNo">202</span>        public final Usage usage()<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        {<a name="line.203"></a>
-<span class="sourceLineNo">204</span>                return build().usage();<a name="line.204"></a>
-<span class="sourceLineNo">205</span>        }<a name="line.205"></a>
-<span class="sourceLineNo">206</span><a name="line.206"></a>
-<span class="sourceLineNo">207</span>        /**<a name="line.207"></a>
-<span class="sourceLineNo">208</span>         * &lt;pre&gt;<a name="line.208"></a>
-<span class="sourceLineNo">209</span>         * Returns a customized parser that the {@link Argument} will use to parse values.<a name="line.209"></a>
-<span class="sourceLineNo">210</span>         * <a name="line.210"></a>
-<span class="sourceLineNo">211</span>         * This is a suitable place to verify the configuration of your parser.<a name="line.211"></a>
-<span class="sourceLineNo">212</span>         * <a name="line.212"></a>
-<span class="sourceLineNo">213</span>         * If your {@link StringParser} doesn't support any configuration you can use<a name="line.213"></a>
-<span class="sourceLineNo">214</span>         * {@link Arguments#withParser(StringParser)} directly instead of subclassing<a name="line.214"></a>
-<span class="sourceLineNo">215</span>         * {@link ArgumentBuilder}<a name="line.215"></a>
-<span class="sourceLineNo">216</span>         * <a name="line.216"></a>
-<span class="sourceLineNo">217</span>         * @return the {@link StringParser} that performs the actual parsing of an argument value<a name="line.217"></a>
-<span class="sourceLineNo">218</span>         * @throws IllegalStateException if the parser have been configured wrongly<a name="line.218"></a>
-<span class="sourceLineNo">219</span>         * &lt;/pre&gt;<a name="line.219"></a>
-<span class="sourceLineNo">220</span>         */<a name="line.220"></a>
-<span class="sourceLineNo">221</span>        @Nonnull<a name="line.221"></a>
-<span class="sourceLineNo">222</span>        protected abstract StringParser&lt;T&gt; parser();<a name="line.222"></a>
-<span class="sourceLineNo">223</span><a name="line.223"></a>
-<span class="sourceLineNo">224</span>        @Nonnull<a name="line.224"></a>
-<span class="sourceLineNo">225</span>        InternalStringParser&lt;T&gt; internalParser()<a name="line.225"></a>
-<span class="sourceLineNo">226</span>        {<a name="line.226"></a>
-<span class="sourceLineNo">227</span>                StringParser&lt;T&gt; parser = parser();<a name="line.227"></a>
-<span class="sourceLineNo">228</span>                if(parser != InternalArgumentBuilder.MARKER)<a name="line.228"></a>
-<span class="sourceLineNo">229</span>                        return new StringParserBridge&lt;T&gt;(parser);<a name="line.229"></a>
-<span class="sourceLineNo">230</span>                return internalStringParser;<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        }<a name="line.231"></a>
-<span class="sourceLineNo">232</span><a name="line.232"></a>
-<span class="sourceLineNo">233</span>        /**<a name="line.233"></a>
-<span class="sourceLineNo">234</span>         * Specifies the argument names that triggers the argument being built. As commands sometimes<a name="line.234"></a>
-<span class="sourceLineNo">235</span>         * gets long and hard to understand it's recommended to also support long named arguments,<a name="line.235"></a>
-<span class="sourceLineNo">236</span>         * making the commands even longer but more readable instead &lt;br&gt;<a name="line.236"></a>
-<span class="sourceLineNo">237</span>         * <a name="line.237"></a>
-<span class="sourceLineNo">238</span>         * @param argumentNames &lt;ul&gt;<a name="line.238"></a>
-<span class="sourceLineNo">239</span>         *            &lt;li&gt;"-o" for a short named option/argument&lt;/li&gt;<a name="line.239"></a>
-<span class="sourceLineNo">240</span>         *            &lt;li&gt;"--option-name" for a long named option/argument&lt;/li&gt;<a name="line.240"></a>
-<span class="sourceLineNo">241</span>         *            &lt;li&gt;"-o", "--option-name" to give the user both choices&lt;/li&gt;<a name="line.241"></a>
-<span class="sourceLineNo">242</span>         *            &lt;li&gt;zero elements: makes this an indexed argument, meaning that the argument must<a name="line.242"></a>
-<span class="sourceLineNo">243</span>         *            be given at the same position on the command line as it is given to<a name="line.243"></a>
-<span class="sourceLineNo">244</span>         *            {@link CommandLineParser#withArguments(Argument...)} (not counting named<a name="line.244"></a>
-<span class="sourceLineNo">245</span>         *            arguments).&lt;/li&gt;<a name="line.245"></a>
-<span class="sourceLineNo">246</span>         *            &lt;/ul&gt;<a name="line.246"></a>
-<span class="sourceLineNo">247</span>         * @return this builder<a name="line.247"></a>
-<span class="sourceLineNo">248</span>         */<a name="line.248"></a>
-<span class="sourceLineNo">249</span>        public SELF names(final String ... argumentNames)<a name="line.249"></a>
-<span class="sourceLineNo">250</span>        {<a name="line.250"></a>
-<span class="sourceLineNo">251</span>                checkNoSpaces(asList(argumentNames));<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                names = copyOf(argumentNames);<a name="line.252"></a>
-<span class="sourceLineNo">253</span>                return myself;<a name="line.253"></a>
-<span class="sourceLineNo">254</span>        }<a name="line.254"></a>
-<span class="sourceLineNo">255</span><a name="line.255"></a>
-<span class="sourceLineNo">256</span>        /**<a name="line.256"></a>
-<span class="sourceLineNo">257</span>         * Works just like {@link #names(String...)} but it takes an {@link Iterable} instead.<a name="line.257"></a>
-<span class="sourceLineNo">258</span>         * <a name="line.258"></a>
-<span class="sourceLineNo">259</span>         * @param argumentNames the list to use as argument names<a name="line.259"></a>
-<span class="sourceLineNo">260</span>         * @return this builder<a name="line.260"></a>
-<span class="sourceLineNo">261</span>         */<a name="line.261"></a>
-<span class="sourceLineNo">262</span>        public SELF names(final Iterable&lt;String&gt; argumentNames)<a name="line.262"></a>
-<span class="sourceLineNo">263</span>        {<a name="line.263"></a>
-<span class="sourceLineNo">264</span>                checkNoSpaces(argumentNames);<a name="line.264"></a>
-<span class="sourceLineNo">265</span>                names = copyOf(argumentNames);<a name="line.265"></a>
-<span class="sourceLineNo">266</span>                return myself;<a name="line.266"></a>
-<span class="sourceLineNo">267</span>        }<a name="line.267"></a>
-<span class="sourceLineNo">268</span><a name="line.268"></a>
-<span class="sourceLineNo">269</span>        /**<a name="line.269"></a>
-<span class="sourceLineNo">270</span>         * Ignores the case of the argument names set by {@link ArgumentBuilder#names(String...)}<a name="line.270"></a>
-<span class="sourceLineNo">271</span>         * <a name="line.271"></a>
-<span class="sourceLineNo">272</span>         * @return this builder<a name="line.272"></a>
-<span class="sourceLineNo">273</span>         */<a name="line.273"></a>
-<span class="sourceLineNo">274</span>        public final SELF ignoreCase()<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        {<a name="line.275"></a>
-<span class="sourceLineNo">276</span>                ignoreCase = true;<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                return myself;<a name="line.277"></a>
-<span class="sourceLineNo">278</span>        }<a name="line.278"></a>
-<span class="sourceLineNo">279</span><a name="line.279"></a>
-<span class="sourceLineNo">280</span>        /**<a name="line.280"></a>
-<span class="sourceLineNo">281</span>         * &lt;pre&gt;<a name="line.281"></a>
-<span class="sourceLineNo">282</span>         * Sets {@code theDescription} of what this argument does/means. Printed with<a name="line.282"></a>
-<span class="sourceLineNo">283</span>         * {@link CommandLineParser#usage()}.<a name="line.283"></a>
-<span class="sourceLineNo">284</span>         * <a name="line.284"></a>
-<span class="sourceLineNo">285</span>         * For instance, in:<a name="line.285"></a>
-<span class="sourceLineNo">286</span>         * -l, --enable-logging      Output debug information to standard out<a name="line.286"></a>
-<span class="sourceLineNo">287</span>         *                           Default: disabled<a name="line.287"></a>
-<span class="sourceLineNo">288</span>         * "Output debug information to standard out" is {@code theDescription}<a name="line.288"></a>
-<span class="sourceLineNo">289</span>         * @return this builder<a name="line.289"></a>
-<span class="sourceLineNo">290</span>         * &lt;/pre&gt;<a name="line.290"></a>
-<span class="sourceLineNo">291</span>         */<a name="line.291"></a>
-<span class="sourceLineNo">292</span>        public final SELF description(final String theDescription)<a name="line.292"></a>
-<span class="sourceLineNo">293</span>        {<a name="line.293"></a>
-<span class="sourceLineNo">294</span>                description = withString(theDescription);<a name="line.294"></a>
-<span class="sourceLineNo">295</span>                return myself;<a name="line.295"></a>
-<span class="sourceLineNo">296</span>        }<a name="line.296"></a>
-<span class="sourceLineNo">297</span><a name="line.297"></a>
-<span class="sourceLineNo">298</span>        /**<a name="line.298"></a>
-<span class="sourceLineNo">299</span>         * &lt;pre&gt;<a name="line.299"></a>
-<span class="sourceLineNo">300</span>         * {@link Describable} version of {@link #description(String)}.<a name="line.300"></a>
-<span class="sourceLineNo">301</span>         * @return this builder<a name="line.301"></a>
-<span class="sourceLineNo">302</span>         * &lt;/pre&gt;<a name="line.302"></a>
-<span class="sourceLineNo">303</span>         */<a name="line.303"></a>
-<span class="sourceLineNo">304</span>        public final SELF description(final Describable theDescription)<a name="line.304"></a>
-<span class="sourceLineNo">305</span>        {<a name="line.305"></a>
-<span class="sourceLineNo">306</span>                description = checkNotNull(theDescription);<a name="line.306"></a>
-<span class="sourceLineNo">307</span>                return myself;<a name="line.307"></a>
-<span class="sourceLineNo">308</span>        }<a name="line.308"></a>
-<span class="sourceLineNo">309</span><a name="line.309"></a>
-<span class="sourceLineNo">310</span>        /**<a name="line.310"></a>
-<span class="sourceLineNo">311</span>         * &lt;pre&gt;<a name="line.311"></a>
-<span class="sourceLineNo">312</span>         * Makes {@link CommandLineParser#parse(String...)} throw<a name="line.312"></a>
-<span class="sourceLineNo">313</span>         * {@link ArgumentException} if this argument isn't given.<a name="line.313"></a>
-<span class="sourceLineNo">314</span>         * If possible, it's preferred to use a {@link #defaultValue(Object) default value} instead.<a name="line.314"></a>
-<span class="sourceLineNo">315</span>         * <a name="line.315"></a>
-<span class="sourceLineNo">316</span>         * The {@link Argument#toString()} will be used to print each missing argument.<a name="line.316"></a>
-<span class="sourceLineNo">317</span>         * <a name="line.317"></a>
-<span class="sourceLineNo">318</span>         * &lt;b&gt;Note&lt;/b&gt;: If you choose to use multiple {@link #required()} indexed arguments all of them<a name="line.318"></a>
-<span class="sourceLineNo">319</span>         * must have unique {@link #metaDescription(String)}s. This ensures that error messages<a name="line.319"></a>
-<span class="sourceLineNo">320</span>         * can point out erroneous arguments better<a name="line.320"></a>
-<span class="sourceLineNo">321</span>         * <a name="line.321"></a>
-<span class="sourceLineNo">322</span>         * @return this builder<a name="line.322"></a>
-<span class="sourceLineNo">323</span>         * @throws IllegalStateException if {@link #defaultValue(Object)} (or<a name="line.323"></a>
-<span class="sourceLineNo">324</span>         *             {@link #defaultValueSupplier(Supplier)}) has been<a name="line.324"></a>
-<span class="sourceLineNo">325</span>         *             called, because these are mutually exclusive with {@link #required()}<a name="line.325"></a>
-<span class="sourceLineNo">326</span>         * &lt;/pre&gt;<a name="line.326"></a>
-<span class="sourceLineNo">327</span>         */<a name="line.327"></a>
-<span class="sourceLineNo">328</span>        public SELF required()<a name="line.328"></a>
-<span class="sourceLineNo">329</span>        {<a name="line.329"></a>
-<span class="sourceLineNo">330</span>                checkState(defaultValueSupplier == null, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);<a name="line.330"></a>
-<span class="sourceLineNo">331</span>                required = true;<a name="line.331"></a>
-<span class="sourceLineNo">332</span>                return myself;<a name="line.332"></a>
-<span class="sourceLineNo">333</span>        }<a name="line.333"></a>
-<span class="sourceLineNo">334</span><a name="line.334"></a>
-<span class="sourceLineNo">335</span>        /**<a name="line.335"></a>
-<span class="sourceLineNo">336</span>         * &lt;pre&gt;<a name="line.336"></a>
-<span class="sourceLineNo">337</span>         * Sets a default value to use for this argument. Overrides {@link StringParser#defaultValue()} which is used by default.<a name="line.337"></a>
-<span class="sourceLineNo">338</span>         * Returned by {@link ParsedArguments#get(Argument)} when no argument {@link ParsedArguments#wasGiven(Argument) was given}.<a name="line.338"></a>
-<span class="sourceLineNo">339</span>         * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.<a name="line.339"></a>
-<span class="sourceLineNo">340</span>         * <a name="line.340"></a>
-<span class="sourceLineNo">341</span>         * &lt;b&gt;Mutability&lt;/b&gt;:Remember that as {@link Argument} is {@link Immutable}<a name="line.341"></a>
-<span class="sourceLineNo">342</span>         * this value should be so too if multiple argument parsings is going to take place.<a name="line.342"></a>
-<span class="sourceLineNo">343</span>         * If mutability is wanted {@link ArgumentBuilder#defaultValueSupplier(Supplier)} should be used instead.<a name="line.343"></a>
-<span class="sourceLineNo">344</span>         * <a name="line.344"></a>
-<span class="sourceLineNo">345</span>         * @return this builder<a name="line.345"></a>
-<span class="sourceLineNo">346</span>         * @throws IllegalStateException if {@link #required()} has been called,<a name="line.346"></a>
-<span class="sourceLineNo">347</span>         * because these two methods are mutually exclusive<a name="line.347"></a>
-<span class="sourceLineNo">348</span>         */<a name="line.348"></a>
-<span class="sourceLineNo">349</span>        public SELF defaultValue(@Nullable final T value)<a name="line.349"></a>
-<span class="sourceLineNo">350</span>        {<a name="line.350"></a>
-<span class="sourceLineNo">351</span>                checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);<a name="line.351"></a>
-<span class="sourceLineNo">352</span>                defaultValueSupplier = Suppliers.ofInstance(value);<a name="line.352"></a>
-<span class="sourceLineNo">353</span>                return myself;<a name="line.353"></a>
-<span class="sourceLineNo">354</span>        }<a name="line.354"></a>
-<span class="sourceLineNo">355</span><a name="line.355"></a>
-<span class="sourceLineNo">356</span>        /**<a name="line.356"></a>
-<span class="sourceLineNo">357</span>         * &lt;pre&gt;<a name="line.357"></a>
-<span class="sourceLineNo">358</span>         * Sets a {@link Supplier} that can supply default values in the absence of this argument<a name="line.358"></a>
-<span class="sourceLineNo">359</span>         * <a name="line.359"></a>
+<span class="sourceLineNo">189</span>         */<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        @Nullable<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        public final T parse(String ... actualArguments) throws ArgumentException<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        {<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                return build().parse(actualArguments);<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
+<span class="sourceLineNo">195</span><a name="line.195"></a>
+<span class="sourceLineNo">196</span>        /**<a name="line.196"></a>
+<span class="sourceLineNo">197</span>         * Returns a usage string for the argument that this builder builds.<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * Should only be used if one argument is supported,<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         * otherwise the {@link CommandLineParser#usage()} method should be used instead.<a name="line.199"></a>
+<span class="sourceLineNo">200</span>         */<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        public final Usage usage()<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        {<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                return build().usage();<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        }<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>        /**<a name="line.206"></a>
+<span class="sourceLineNo">207</span>         * &lt;pre&gt;<a name="line.207"></a>
+<span class="sourceLineNo">208</span>         * Returns a customized parser that the {@link Argument} will use to parse values.<a name="line.208"></a>
+<span class="sourceLineNo">209</span>         *<a name="line.209"></a>
+<span class="sourceLineNo">210</span>         * This is a suitable place to verify the configuration of your parser.<a name="line.210"></a>
+<span class="sourceLineNo">211</span>         *<a name="line.211"></a>
+<span class="sourceLineNo">212</span>         * If your {@link StringParser} doesn't support any configuration you can use<a name="line.212"></a>
+<span class="sourceLineNo">213</span>         * {@link Arguments#withParser(StringParser)} directly instead of subclassing<a name="line.213"></a>
+<span class="sourceLineNo">214</span>         * {@link ArgumentBuilder}<a name="line.214"></a>
+<span class="sourceLineNo">215</span>         *<a name="line.215"></a>
+<span class="sourceLineNo">216</span>         * @return the {@link StringParser} that performs the actual parsing of an argument value<a name="line.216"></a>
+<span class="sourceLineNo">217</span>         * @throws IllegalStateException if the parser have been configured wrongly<a name="line.217"></a>
+<span class="sourceLineNo">218</span>         * &lt;/pre&gt;<a name="line.218"></a>
+<span class="sourceLineNo">219</span>         */<a name="line.219"></a>
+<span class="sourceLineNo">220</span>        @Nonnull<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        protected abstract StringParser&lt;T&gt; parser();<a name="line.221"></a>
+<span class="sourceLineNo">222</span><a name="line.222"></a>
+<span class="sourceLineNo">223</span>        @Nonnull<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        InternalStringParser&lt;T&gt; internalParser()<a name="line.224"></a>
+<span class="sourceLineNo">225</span>        {<a name="line.225"></a>
+<span class="sourceLineNo">226</span>                StringParser&lt;T&gt; parser = parser();<a name="line.226"></a>
+<span class="sourceLineNo">227</span>                if(parser != InternalArgumentBuilder.MARKER)<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                        return new StringParserBridge&lt;T&gt;(parser);<a name="line.228"></a>
+<span class="sourceLineNo">229</span>                return internalStringParser;<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        }<a name="line.230"></a>
+<span class="sourceLineNo">231</span><a name="line.231"></a>
+<span class="sourceLineNo">232</span>        /**<a name="line.232"></a>
+<span class="sourceLineNo">233</span>         * Specifies the argument names that triggers the argument being built. As commands sometimes<a name="line.233"></a>
+<span class="sourceLineNo">234</span>         * gets long and hard to understand it's recommended to also support long named arguments,<a name="line.234"></a>
+<span class="sourceLineNo">235</span>         * making the commands even longer but more readable instead &lt;br&gt;<a name="line.235"></a>
+<span class="sourceLineNo">236</span>         *<a name="line.236"></a>
+<span class="sourceLineNo">237</span>         * @param argumentNames &lt;ul&gt;<a name="line.237"></a>
+<span class="sourceLineNo">238</span>         *            &lt;li&gt;"-o" for a short named option/argument&lt;/li&gt;<a name="line.238"></a>
+<span class="sourceLineNo">239</span>         *            &lt;li&gt;"--option-name" for a long named option/argument&lt;/li&gt;<a name="line.239"></a>
+<span class="sourceLineNo">240</span>         *            &lt;li&gt;"-o", "--option-name" to give the user both choices&lt;/li&gt;<a name="line.240"></a>
+<span class="sourceLineNo">241</span>         *            &lt;li&gt;zero elements: makes this an indexed argument, meaning that the argument must<a name="line.241"></a>
+<span class="sourceLineNo">242</span>         *            be given at the same position on the command line as it is given to<a name="line.242"></a>
+<span class="sourceLineNo">243</span>         *            {@link CommandLineParser#withArguments(Argument...)} (not counting named<a name="line.243"></a>
+<span class="sourceLineNo">244</span>         *            arguments).&lt;/li&gt;<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         *            &lt;/ul&gt;<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         * @return this builder<a name="line.246"></a>
+<span class="sourceLineNo">247</span>         */<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        public SELF names(final String ... argumentNames)<a name="line.248"></a>
+<span class="sourceLineNo">249</span>        {<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                checkNoSpaces(asList(argumentNames));<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                names = copyOf(argumentNames);<a name="line.251"></a>
+<span class="sourceLineNo">252</span>                return myself;<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        }<a name="line.253"></a>
+<span class="sourceLineNo">254</span><a name="line.254"></a>
+<span class="sourceLineNo">255</span>        /**<a name="line.255"></a>
+<span class="sourceLineNo">256</span>         * Works just like {@link #names(String...)} but it takes an {@link Iterable} instead.<a name="line.256"></a>
+<span class="sourceLineNo">257</span>         *<a name="line.257"></a>
+<span class="sourceLineNo">258</span>         * @param argumentNames the list to use as argument names<a name="line.258"></a>
+<span class="sourceLineNo">259</span>         * @return this builder<a name="line.259"></a>
+<span class="sourceLineNo">260</span>         */<a name="line.260"></a>
+<span class="sourceLineNo">261</span>        public SELF names(final Iterable&lt;String&gt; argumentNames)<a name="line.261"></a>
+<span class="sourceLineNo">262</span>        {<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                checkNoSpaces(argumentNames);<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                names = copyOf(argumentNames);<a name="line.264"></a>
+<span class="sourceLineNo">265</span>                return myself;<a name="line.265"></a>
+<span class="sourceLineNo">266</span>        }<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span>        /**<a name="line.268"></a>
+<span class="sourceLineNo">269</span>         * Ignores the case of the argument names set by {@link ArgumentBuilder#names(String...)}<a name="line.269"></a>
+<span class="sourceLineNo">270</span>         *<a name="line.270"></a>
+<span class="sourceLineNo">271</span>         * @return this builder<a name="line.271"></a>
+<span class="sourceLineNo">272</span>         */<a name="line.272"></a>
+<span class="sourceLineNo">273</span>        public final SELF ignoreCase()<a name="line.273"></a>
+<span class="sourceLineNo">274</span>        {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                ignoreCase = true;<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                return myself;<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        }<a name="line.277"></a>
+<span class="sourceLineNo">278</span><a name="line.278"></a>
+<span class="sourceLineNo">279</span>        /**<a name="line.279"></a>
+<span class="sourceLineNo">280</span>         * &lt;pre&gt;<a name="line.280"></a>
+<span class="sourceLineNo">281</span>         * Sets {@code theDescription} of what this argument does/means. Printed with<a name="line.281"></a>
+<span class="sourceLineNo">282</span>         * {@link CommandLineParser#usage()}.<a name="line.282"></a>
+<span class="sourceLineNo">283</span>         *<a name="line.283"></a>
+<span class="sourceLineNo">284</span>         * For instance, in:<a name="line.284"></a>
+<span class="sourceLineNo">285</span>         * -l, --enable-logging      Output debug information to standard out<a name="line.285"></a>
+<span class="sourceLineNo">286</span>         *                           Default: disabled<a name="line.286"></a>
+<span class="sourceLineNo">287</span>         * "Output debug information to standard out" is {@code theDescription}<a name="line.287"></a>
+<span class="sourceLineNo">288</span>         * @return this builder<a name="line.288"></a>
+<span class="sourceLineNo">289</span>         * &lt;/pre&gt;<a name="line.289"></a>
+<span class="sourceLineNo">290</span>         */<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        public final SELF description(final String theDescription)<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        {<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                description = withString(theDescription);<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                return myself;<a name="line.294"></a>
+<span class="sourceLineNo">295</span>        }<a name="line.295"></a>
+<span class="sourceLineNo">296</span><a name="line.296"></a>
+<span class="sourceLineNo">297</span>        /**<a name="line.297"></a>
+<span class="sourceLineNo">298</span>         * &lt;pre&gt;<a name="line.298"></a>
+<span class="sourceLineNo">299</span>         * {@link Describable} version of {@link #description(String)}.<a name="line.299"></a>
+<span class="sourceLineNo">300</span>         * @return this builder<a name="line.300"></a>
+<span class="sourceLineNo">301</span>         * &lt;/pre&gt;<a name="line.301"></a>
+<span class="sourceLineNo">302</span>         */<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        public final SELF description(final Describable theDescription)<a name="line.303"></a>
+<span class="sourceLineNo">304</span>        {<a name="line.304"></a>
+<span class="sourceLineNo">305</span>                description = checkNotNull(theDescription);<a name="line.305"></a>
+<span class="sourceLineNo">306</span>                return myself;<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        }<a name="line.307"></a>
+<span class="sourceLineNo">308</span><a name="line.308"></a>
+<span class="sourceLineNo">309</span>        /**<a name="line.309"></a>
+<span class="sourceLineNo">310</span>         * &lt;pre&gt;<a name="line.310"></a>
+<span class="sourceLineNo">311</span>         * Makes {@link CommandLineParser#parse(String...)} throw<a name="line.311"></a>
+<span class="sourceLineNo">312</span>         * {@link ArgumentException} if this argument isn't given.<a name="line.312"></a>
+<span class="sourceLineNo">313</span>         * If possible, it's preferred to use a {@link #defaultValue(Object) default value} instead.<a name="line.313"></a>
+<span class="sourceLineNo">314</span>         *<a name="line.314"></a>
+<span class="sourceLineNo">315</span>         * The {@link Argument#toString()} will be used to print each missing argument.<a name="line.315"></a>
+<span class="sourceLineNo">316</span>         *<a name="line.316"></a>
+<span class="sourceLineNo">317</span>         * &lt;b&gt;Note&lt;/b&gt;: If you choose to use multiple {@link #required()} indexed arguments all of them<a name="line.317"></a>
+<span class="sourceLineNo">318</span>         * must have unique {@link #metaDescription(String)}s. This ensures that error messages<a name="line.318"></a>
+<span class="sourceLineNo">319</span>         * can point out erroneous arguments better<a name="line.319"></a>
+<span class="sourceLineNo">320</span>         *<a name="line.320"></a>
+<span class="sourceLineNo">321</span>         * @return this builder<a name="line.321"></a>
+<span class="sourceLineNo">322</span>         * @throws IllegalStateException if {@link #defaultValue(Object)} (or<a name="line.322"></a>
+<span class="sourceLineNo">323</span>         *             {@link #defaultValueSupplier(Supplier)}) has been<a name="line.323"></a>
+<span class="sourceLineNo">324</span>         *             called, because these are mutually exclusive with {@link #required()}<a name="line.324"></a>
+<span class="sourceLineNo">325</span>         * &lt;/pre&gt;<a name="line.325"></a>
+<span class="sourceLineNo">326</span>         */<a name="line.326"></a>
+<span class="sourceLineNo">327</span>        public SELF required()<a name="line.327"></a>
+<span class="sourceLineNo">328</span>        {<a name="line.328"></a>
+<span class="sourceLineNo">329</span>                checkState(defaultValueSupplier == null, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);<a name="line.329"></a>
+<span class="sourceLineNo">330</span>                required = true;<a name="line.330"></a>
+<span class="sourceLineNo">331</span>                return myself;<a name="line.331"></a>
+<span class="sourceLineNo">332</span>        }<a name="line.332"></a>
+<span class="sourceLineNo">333</span><a name="line.333"></a>
+<span class="sourceLineNo">334</span>        /**<a name="line.334"></a>
+<span class="sourceLineNo">335</span>         * &lt;pre&gt;<a name="line.335"></a>
+<span class="sourceLineNo">336</span>         * Sets a default value to use for this argument. Overrides {@link StringParser#defaultValue()} which is used by default.<a name="line.336"></a>
+<span class="sourceLineNo">337</span>         * Returned by {@link ParsedArguments#get(Argument)} when no argument {@link ParsedArguments#wasGiven(Argument) was given}.<a name="line.337"></a>
+<span class="sourceLineNo">338</span>         * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.<a name="line.338"></a>
+<span class="sourceLineNo">339</span>         * &lt;/pre&gt;<a name="line.339"></a>
+<span class="sourceLineNo">340</span>         * &lt;b&gt;Mutability&lt;/b&gt;:Remember that as {@link Argument} is {@link Immutable}<a name="line.340"></a>
+<span class="sourceLineNo">341</span>         * this value should be so too if multiple argument parsings is going to take place.<a name="line.341"></a>
+<span class="sourceLineNo">342</span>         * If mutability is wanted {@link ArgumentBuilder#defaultValueSupplier(Supplier)} should be used instead.<a name="line.342"></a>
+<span class="sourceLineNo">343</span>         *<a name="line.343"></a>
+<span class="sourceLineNo">344</span>         * @return this builder<a name="line.344"></a>
+<span class="sourceLineNo">345</span>         * @throws IllegalStateException if {@link #required()} has been called,<a name="line.345"></a>
+<span class="sourceLineNo">346</span>         * because these two methods are mutually exclusive<a name="line.346"></a>
+<span class="sourceLineNo">347</span>         */<a name="line.347"></a>
+<span class="sourceLineNo">348</span>        public SELF defaultValue(@Nullable final T value)<a name="line.348"></a>
+<span class="sourceLineNo">349</span>        {<a name="line.349"></a>
+<span class="sourceLineNo">350</span>                checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);<a name="line.350"></a>
+<span class="sourceLineNo">351</span>                defaultValueSupplier = Suppliers.ofInstance(value);<a name="line.351"></a>
+<span class="sourceLineNo">352</span>                return myself;<a name="line.352"></a>
+<span class="sourceLineNo">353</span>        }<a name="line.353"></a>
+<span class="sourceLineNo">354</span><a name="line.354"></a>
+<span class="sourceLineNo">355</span>        /**<a name="line.355"></a>
+<span class="sourceLineNo">356</span>         * &lt;pre&gt;<a name="line.356"></a>
+<span class="sourceLineNo">357</span>         * Sets a {@link Supplier} that can supply default values in the absence of this argument<a name="line.357"></a>
+<span class="sourceLineNo">358</span>         * &lt;/pre&gt;<a name="line.358"></a>
+<span class="sourceLineNo">359</span>         *<a name="line.359"></a>
 <span class="sourceLineNo">360</span>         * &lt;b&gt;Note:&lt;/b&gt; Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called<a name="line.360"></a>
 <span class="sourceLineNo">361</span>         * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the<a name="line.361"></a>
 <span class="sourceLineNo">362</span>         * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.<a name="line.362"></a>
-<span class="sourceLineNo">363</span>         * <a name="line.363"></a>
+<span class="sourceLineNo">363</span>         *<a name="line.363"></a>
 <span class="sourceLineNo">364</span>         * &lt;b&gt;Note:&lt;/b&gt; May be removed in the future if Guava is removed as a dependency<a name="line.364"></a>
-<span class="sourceLineNo">365</span>         * <a name="line.365"></a>
+<span class="sourceLineNo">365</span>         *<a name="line.365"></a>
 <span class="sourceLineNo">366</span>         * Wrap your supplier with {@link Suppliers#memoize(Supplier)} if you want to cache created values.<a name="line.366"></a>
-<span class="sourceLineNo">367</span>         * <a name="line.367"></a>
+<span class="sourceLineNo">367</span>         *<a name="line.367"></a>
 <span class="sourceLineNo">368</span>         * @return this builder<a name="line.368"></a>
 <span class="sourceLineNo">369</span>         * @throws IllegalStateException if {@link #required()} has been called,<a name="line.369"></a>
 <span class="sourceLineNo">370</span>         * because these two methods are mutually exclusive<a name="line.370"></a>
@@ -389,7 +389,7 @@
 <span class="sourceLineNo">381</span>         * Provides a way to give the usage texts a better explanation of a default<a name="line.381"></a>
 <span class="sourceLineNo">382</span>         * value than {@link Object#toString()} provides. Always prints {@code aDescription} regardless<a name="line.382"></a>
 <span class="sourceLineNo">383</span>         * of what the default value is.<a name="line.383"></a>
-<span class="sourceLineNo">384</span>         * <a name="line.384"></a>
+<span class="sourceLineNo">384</span>         *<a name="line.384"></a>
 <span class="sourceLineNo">385</span>         * @param aDescription the description<a name="line.385"></a>
 <span class="sourceLineNo">386</span>         * @return this builder<a name="line.386"></a>
 <span class="sourceLineNo">387</span>         * @see Describers#withConstantString(String)<a name="line.387"></a>
@@ -402,7 +402,7 @@
 <span class="sourceLineNo">394</span><a name="line.394"></a>
 <span class="sourceLineNo">395</span>        /**<a name="line.395"></a>
 <span class="sourceLineNo">396</span>         * {@link Describer} version of {@link #defaultValueDescription(String)}<a name="line.396"></a>
-<span class="sourceLineNo">397</span>         * <a name="line.397"></a>
+<span class="sourceLineNo">397</span>         *<a name="line.397"></a>
 <span class="sourceLineNo">398</span>         * @param describer a describer<a name="line.398"></a>
 <span class="sourceLineNo">399</span>         * @return this builder<a name="line.399"></a>
 <span class="sourceLineNo">400</span>         */<a name="line.400"></a>
@@ -417,20 +417,20 @@
 <span class="sourceLineNo">409</span>         * By default {@link StringParser}s provides a meta description (by implementing {@link StringParser#metaDescription()}<a name="line.409"></a>
 <span class="sourceLineNo">410</span>         * that describes the type of data they expect. For instance, if you're writing a music player,<a name="line.410"></a>
 <span class="sourceLineNo">411</span>         * a user of your application would (most probably) rather see:<a name="line.411"></a>
-<span class="sourceLineNo">412</span>         * <a name="line.412"></a>
+<span class="sourceLineNo">412</span>         *<a name="line.412"></a>
 <span class="sourceLineNo">413</span>         * --track-nr &amp;lt;track nr&amp;gt;    The track number to play (using {@code  metaDescription("&lt;track nr&gt;") })<a name="line.413"></a>
-<span class="sourceLineNo">414</span>         * <a name="line.414"></a>
+<span class="sourceLineNo">414</span>         *<a name="line.414"></a>
 <span class="sourceLineNo">415</span>         * instead of<a name="line.415"></a>
-<span class="sourceLineNo">416</span>         * <a name="line.416"></a>
+<span class="sourceLineNo">416</span>         *<a name="line.416"></a>
 <span class="sourceLineNo">417</span>         * --track-nr &amp;lt;integer&amp;gt;     The track number to play (the default provided by {@link StringParser#metaDescription()})<a name="line.417"></a>
-<span class="sourceLineNo">418</span>         * <a name="line.418"></a>
+<span class="sourceLineNo">418</span>         *<a name="line.418"></a>
 <span class="sourceLineNo">419</span>         * So when using general data type parsers such as {@link StringParsers#integerParser()} you're better of if<a name="line.419"></a>
 <span class="sourceLineNo">420</span>         * you provide a meta description that explains what the {@code integer} represents in the context of this argument.<a name="line.420"></a>
-<span class="sourceLineNo">421</span>         * <a name="line.421"></a>
+<span class="sourceLineNo">421</span>         *<a name="line.421"></a>
 <span class="sourceLineNo">422</span>         * &lt;b&gt;Note:&lt;/b&gt; empty meta descriptions aren't allowed<a name="line.422"></a>
-<span class="sourceLineNo">423</span>         * &lt;b&gt;Note:&lt;/b&gt; the surrounding &lt; &amp; &gt; aren't enforced or added automatically but it's preferred<a name="line.423"></a>
+<span class="sourceLineNo">423</span>         * &lt;b&gt;Note:&lt;/b&gt; the surrounding &amp;lt; and &amp;gt; aren't enforced or added automatically but it's preferred<a name="line.423"></a>
 <span class="sourceLineNo">424</span>         * to have them because it makes a clear distinction between {@link #names(String...) argument names} and their parameters.<a name="line.424"></a>
-<span class="sourceLineNo">425</span>         * <a name="line.425"></a>
+<span class="sourceLineNo">425</span>         *<a name="line.425"></a>
 <span class="sourceLineNo">426</span>         * @param aMetaDescription "&amp;lt;track nr&amp;gt;" in the above example<a name="line.426"></a>
 <span class="sourceLineNo">427</span>         * @return this builder<a name="line.427"></a>
 <span class="sourceLineNo">428</span>         * @throws IllegalArgumentException if aMetaDescription is empty<a name="line.428"></a>
@@ -447,7 +447,7 @@
 <span class="sourceLineNo">439</span>         * Hides this argument so that it's not displayed in the usage texts.&lt;br&gt;<a name="line.439"></a>
 <span class="sourceLineNo">440</span>         * It's recommended that hidden arguments have a reasonable {@link #defaultValue(Object)} and<a name="line.440"></a>
 <span class="sourceLineNo">441</span>         * aren't {@link #required()}, in fact this is recommended for all arguments.<a name="line.441"></a>
-<span class="sourceLineNo">442</span>         * <a name="line.442"></a>
+<span class="sourceLineNo">442</span>         *<a name="line.442"></a>
 <span class="sourceLineNo">443</span>         * @return this builder<a name="line.443"></a>
 <span class="sourceLineNo">444</span>         */<a name="line.444"></a>
 <span class="sourceLineNo">445</span>        public final SELF hideFromUsage()<a name="line.445"></a>
@@ -458,7 +458,7 @@
 <span class="sourceLineNo">450</span><a name="line.450"></a>
 <span class="sourceLineNo">451</span>        /**<a name="line.451"></a>
 <span class="sourceLineNo">452</span>         * For instance, "=" in --author=jjonsson<a name="line.452"></a>
-<span class="sourceLineNo">453</span>         * <a name="line.453"></a>
+<span class="sourceLineNo">453</span>         *<a name="line.453"></a>
 <span class="sourceLineNo">454</span>         * @param aSeparator the character that separates the argument name and<a name="line.454"></a>
 <span class="sourceLineNo">455</span>         *            argument value, defaults to a space<a name="line.455"></a>
 <span class="sourceLineNo">456</span>         * @return this builder<a name="line.456"></a>
@@ -475,22 +475,22 @@
 <span class="sourceLineNo">467</span>         * Only values for which {@link Predicate#apply(Object)} returns true, will be accepted.<a name="line.467"></a>
 <span class="sourceLineNo">468</span>         * Other values will cause an {@link ArgumentException}.<a name="line.468"></a>
 <span class="sourceLineNo">469</span>         * For example {@link Range#closed(Comparable, Comparable)} only allows values within a range.<a name="line.469"></a>
-<span class="sourceLineNo">470</span>         * <a name="line.470"></a>
+<span class="sourceLineNo">470</span>         *<a name="line.470"></a>
 <span class="sourceLineNo">471</span>         * To override the default error message that is generated with {@link UserErrors#DISALLOWED_VALUE}<a name="line.471"></a>
 <span class="sourceLineNo">472</span>         * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail<a name="line.472"></a>
 <span class="sourceLineNo">473</span>         * message of that exception will be used by {@link ArgumentException#getMessageAndUsage()}.<a name="line.473"></a>
 <span class="sourceLineNo">474</span>         * When this is needed it's generally recommended to write a parser of its own instead.<a name="line.474"></a>
-<span class="sourceLineNo">475</span>         * <a name="line.475"></a>
+<span class="sourceLineNo">475</span>         *<a name="line.475"></a>
 <span class="sourceLineNo">476</span>         * &lt;b&gt;Note:&lt;/b&gt;{@link Object#toString() toString()} on {@code aLimiter} will replace {@link StringParser#descriptionOfValidValues(Locale)} in the usage<a name="line.476"></a>
-<span class="sourceLineNo">477</span>         * <a name="line.477"></a>
+<span class="sourceLineNo">477</span>         *<a name="line.477"></a>
 <span class="sourceLineNo">478</span>         * &lt;b&gt;Note:&lt;/b&gt;The validity of any {@link #defaultValueSupplier(Supplier) default value} isn't checked until<a name="line.478"></a>
 <span class="sourceLineNo">479</span>         * it's actually needed when {@link ParsedArguments#get(Argument)} is called. This is so<a name="line.479"></a>
 <span class="sourceLineNo">480</span>         * because {@link Supplier#get()} (or {@link StringParser#defaultValue()}) could take an arbitrary long time.<a name="line.480"></a>
-<span class="sourceLineNo">481</span>         * <a name="line.481"></a>
+<span class="sourceLineNo">481</span>         *<a name="line.481"></a>
 <span class="sourceLineNo">482</span>         * &lt;b&gt;Note:&lt;/b&gt;Any previously set limiter will be {@link Predicates2#and(Predicate, Predicate)<a name="line.482"></a>
 <span class="sourceLineNo">483</span>         * and'ed} together with {@code aLimiter}.<a name="line.483"></a>
 <span class="sourceLineNo">484</span>         * &lt;/pre&gt;<a name="line.484"></a>
-<span class="sourceLineNo">485</span>         * <a name="line.485"></a>
+<span class="sourceLineNo">485</span>         *<a name="line.485"></a>
 <span class="sourceLineNo">486</span>         * @param aLimiter a limiter<a name="line.486"></a>
 <span class="sourceLineNo">487</span>         * @return this builder<a name="line.487"></a>
 <span class="sourceLineNo">488</span>         */<a name="line.488"></a>
@@ -510,15 +510,15 @@
 <span class="sourceLineNo">502</span>         * "property_name" is the {@link String} key in the resulting {@link Map},<a name="line.502"></a>
 <span class="sourceLineNo">503</span>         * "=" is the {@link #separator(String)} (set to "=" if it hasn't been overridden already),<a name="line.503"></a>
 <span class="sourceLineNo">504</span>         * "value" is decoded by the previously set {@link StringParser}.<a name="line.504"></a>
-<span class="sourceLineNo">505</span>         * <a name="line.505"></a>
-<span class="sourceLineNo">506</span>         * <a name="line.506"></a>
+<span class="sourceLineNo">505</span>         *<a name="line.505"></a>
+<span class="sourceLineNo">506</span>         *<a name="line.506"></a>
 <span class="sourceLineNo">507</span>         * Tip: You can pass {@link #defaultValueDescriber(Describer)} a<a name="line.507"></a>
 <span class="sourceLineNo">508</span>         * {@link Describers#mapDescriber(Map)} to describe each property that you<a name="line.508"></a>
 <span class="sourceLineNo">509</span>         * support (given that you've used {@link ArgumentBuilder#defaultValue(Object)}<a name="line.509"></a>
 <span class="sourceLineNo">510</span>         * to use sane defaults for your properties).<a name="line.510"></a>
-<span class="sourceLineNo">511</span>         * <a name="line.511"></a>
+<span class="sourceLineNo">511</span>         *<a name="line.511"></a>
 <span class="sourceLineNo">512</span>         * @return a new (more specific) builder<a name="line.512"></a>
-<span class="sourceLineNo">513</span>         * <a name="line.513"></a>
+<span class="sourceLineNo">513</span>         *<a name="line.513"></a>
 <span class="sourceLineNo">514</span>         * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}<a name="line.514"></a>
 <span class="sourceLineNo">515</span>         * &lt;/pre&gt;<a name="line.515"></a>
 <span class="sourceLineNo">516</span>         */<a name="line.516"></a>
@@ -535,10 +535,10 @@
 <span class="sourceLineNo">527</span>         * where "-D" is one of the strings supplied to {@link #names(String...)},<a name="line.527"></a>
 <span class="sourceLineNo">528</span>         * "property_name" is decoded by {@code keyParser} and<a name="line.528"></a>
 <span class="sourceLineNo">529</span>         * "value" is decoded by the {@link StringParser} previously passed to the constructor.<a name="line.529"></a>
-<span class="sourceLineNo">530</span>         * <a name="line.530"></a>
+<span class="sourceLineNo">530</span>         *<a name="line.530"></a>
 <span class="sourceLineNo">531</span>         * For example:<a name="line.531"></a>
 <span class="sourceLineNo">532</span>         * &lt;/pre&gt;<a name="line.532"></a>
-<span class="sourceLineNo">533</span>         * <a name="line.533"></a>
+<span class="sourceLineNo">533</span>         *<a name="line.533"></a>
 <span class="sourceLineNo">534</span>         * &lt;pre class="prettyprint"&gt;<a name="line.534"></a>
 <span class="sourceLineNo">535</span>         * &lt;code class="language-java"&gt;<a name="line.535"></a>
 <span class="sourceLineNo">536</span>         * Map&amp;lt;Integer, Integer&amp;gt; numberMap = Arguments.integerArgument("-N")<a name="line.536"></a>
@@ -547,10 +547,10 @@
 <span class="sourceLineNo">539</span>         * assertThat(numberMap.get(1)).isEqualTo(5);<a name="line.539"></a>
 <span class="sourceLineNo">540</span>         * &lt;/code&gt;<a name="line.540"></a>
 <span class="sourceLineNo">541</span>         * &lt;/pre&gt;<a name="line.541"></a>
-<span class="sourceLineNo">542</span>         * <a name="line.542"></a>
+<span class="sourceLineNo">542</span>         *<a name="line.542"></a>
 <span class="sourceLineNo">543</span>         * For this to work correctly it's paramount that {@code K} implements a<a name="line.543"></a>
 <span class="sourceLineNo">544</span>         * proper {@link Object#hashCode()} because it's going to be used a key in a {@link Map}.<a name="line.544"></a>
-<span class="sourceLineNo">545</span>         * <a name="line.545"></a>
+<span class="sourceLineNo">545</span>         *<a name="line.545"></a>
 <span class="sourceLineNo">546</span>         * @return a new (more specific) builder<a name="line.546"></a>
 <span class="sourceLineNo">547</span>         */<a name="line.547"></a>
 <span class="sourceLineNo">548</span>        @CheckReturnValue<a name="line.548"></a>
@@ -564,11 +564,11 @@
 <span class="sourceLineNo">556</span>         * When given a "," this allows for<a name="line.556"></a>
 <span class="sourceLineNo">557</span>         * arguments such as:<a name="line.557"></a>
 <span class="sourceLineNo">558</span>         * -numbers 1,2,3<a name="line.558"></a>
-<span class="sourceLineNo">559</span>         * where the resulting {@code List&lt;Integer&gt;} would contain 1, 2 &amp; 3.<a name="line.559"></a>
-<span class="sourceLineNo">560</span>         * <a name="line.560"></a>
+<span class="sourceLineNo">559</span>         * where the resulting {@code List&amp;lt;Integer&amp;gt;} would contain 1, 2 and 3.<a name="line.559"></a>
+<span class="sourceLineNo">560</span>         *<a name="line.560"></a>
 <span class="sourceLineNo">561</span>         * Doesn't allow empty lists.<a name="line.561"></a>
 <span class="sourceLineNo">562</span>         * &lt;/pre&gt;<a name="line.562"></a>
-<span class="sourceLineNo">563</span>         * <a name="line.563"></a>
+<span class="sourceLineNo">563</span>         *<a name="line.563"></a>
 <span class="sourceLineNo">564</span>         * @param valueSeparator the string to split the input with<a name="line.564"></a>
 <span class="sourceLineNo">565</span>         * @return a new (more specific) builder<a name="line.565"></a>
 <span class="sourceLineNo">566</span>         */<a name="line.566"></a>
@@ -582,23 +582,23 @@
 <span class="sourceLineNo">574</span>         * Useful for handling a variable amount of parameters in the end of a<a name="line.574"></a>
 <span class="sourceLineNo">575</span>         * command. Uses this argument to parse values but assumes that all the following<a name="line.575"></a>
 <span class="sourceLineNo">576</span>         * parameters are of the same type, integer in the following example:<a name="line.576"></a>
-<span class="sourceLineNo">577</span>         * <a name="line.577"></a>
+<span class="sourceLineNo">577</span>         *<a name="line.577"></a>
 <span class="sourceLineNo">578</span>         * &lt;pre class="prettyprint"&gt;<a name="line.578"></a>
 <span class="sourceLineNo">579</span>         * &lt;code class="language-java"&gt;<a name="line.579"></a>
 <span class="sourceLineNo">580</span>         * String[] threeArgs = {"--numbers", "1", "2", "3"};<a name="line.580"></a>
 <span class="sourceLineNo">581</span>         * List&amp;lt;Integer&amp;gt; numbers = integerArgument("--numbers").variableArity().parse(threeArgs);<a name="line.581"></a>
 <span class="sourceLineNo">582</span>         * assertThat(numbers).isEqualTo(asList(1, 2, 3));<a name="line.582"></a>
-<span class="sourceLineNo">583</span>         * <a name="line.583"></a>
+<span class="sourceLineNo">583</span>         *<a name="line.583"></a>
 <span class="sourceLineNo">584</span>         * String[] twoArgs = {"--numbers", "1", "2"};<a name="line.584"></a>
 <span class="sourceLineNo">585</span>         * List&amp;lt;Integer&amp;gt; numbers = integerArgument("--numbers").variableArity().parse(twoArgs);<a name="line.585"></a>
 <span class="sourceLineNo">586</span>         * assertThat(numbers).isEqualTo(asList(1, 2));<a name="line.586"></a>
 <span class="sourceLineNo">587</span>         * &lt;/code&gt;<a name="line.587"></a>
 <span class="sourceLineNo">588</span>         * &lt;/pre&gt;<a name="line.588"></a>
-<span class="sourceLineNo">589</span>         * <a name="line.589"></a>
+<span class="sourceLineNo">589</span>         *<a name="line.589"></a>
 <span class="sourceLineNo">590</span>         * &lt;b&gt;Note:&lt;/b&gt; if {@link #defaultValue(Object) default value} has been set before<a name="line.590"></a>
 <span class="sourceLineNo">591</span>         * {@link #variableArity()} is called the {@link #defaultValue(Object) default value} will be a<a name="line.591"></a>
 <span class="sourceLineNo">592</span>         * list with that one element in it, otherwise it will be empty.<a name="line.592"></a>
-<span class="sourceLineNo">593</span>         * <a name="line.593"></a>
+<span class="sourceLineNo">593</span>         *<a name="line.593"></a>
 <span class="sourceLineNo">594</span>         * @return a new (more specific) builder<a name="line.594"></a>
 <span class="sourceLineNo">595</span>         */<a name="line.595"></a>
 <span class="sourceLineNo">596</span>        @CheckReturnValue<a name="line.596"></a>
@@ -611,22 +611,22 @@
 <span class="sourceLineNo">603</span>         * &lt;pre&gt;<a name="line.603"></a>
 <span class="sourceLineNo">604</span>         * Uses this argument to parse values but assumes that {@code numberOfParameters} of the<a name="line.604"></a>
 <span class="sourceLineNo">605</span>         * following parameters are of the same type.<a name="line.605"></a>
-<span class="sourceLineNo">606</span>         * <a name="line.606"></a>
+<span class="sourceLineNo">606</span>         *<a name="line.606"></a>
 <span class="sourceLineNo">607</span>         * {@link Integer} in the following example:<a name="line.607"></a>
 <span class="sourceLineNo">608</span>         * &lt;/pre&gt;<a name="line.608"></a>
-<span class="sourceLineNo">609</span>         * <a name="line.609"></a>
+<span class="sourceLineNo">609</span>         *<a name="line.609"></a>
 <span class="sourceLineNo">610</span>         * &lt;pre class="prettyprint"&gt;<a name="line.610"></a>
 <span class="sourceLineNo">611</span>         * &lt;code class="language-java"&gt;<a name="line.611"></a>
 <span class="sourceLineNo">612</span>         * List&amp;lt;Integer&amp;gt; numbers = integerArgument("--numbers").arity(2).parse("--numbers", "1", "2");<a name="line.612"></a>
 <span class="sourceLineNo">613</span>         * assertThat(numbers).isEqualTo(asList(1, 2));<a name="line.613"></a>
 <span class="sourceLineNo">614</span>         * &lt;/code&gt;<a name="line.614"></a>
 <span class="sourceLineNo">615</span>         * &lt;/pre&gt;<a name="line.615"></a>
-<span class="sourceLineNo">616</span>         * <a name="line.616"></a>
+<span class="sourceLineNo">616</span>         *<a name="line.616"></a>
 <span class="sourceLineNo">617</span>         * &lt;b&gt;Note:&lt;/b&gt;If the argument isn't {@link #required()} the default value<a name="line.617"></a>
 <span class="sourceLineNo">618</span>         * will be a list that contains {@code numberOfParameters} elements<a name="line.618"></a>
 <span class="sourceLineNo">619</span>         * of {@link StringParser#defaultValue()}, in the above example that would be two zeros.<a name="line.619"></a>
 <span class="sourceLineNo">620</span>         * If this isn't wanted use {@link #defaultValue(Object)} to override it.<a name="line.620"></a>
-<span class="sourceLineNo">621</span>         * <a name="line.621"></a>
+<span class="sourceLineNo">621</span>         *<a name="line.621"></a>
 <span class="sourceLineNo">622</span>         * @return a new (more specific) builder<a name="line.622"></a>
 <span class="sourceLineNo">623</span>         * @throws IllegalArgumentException if {@code numberOfParameters} is less than 2<a name="line.623"></a>
 <span class="sourceLineNo">624</span>         */<a name="line.624"></a>
@@ -637,44 +637,44 @@
 <span class="sourceLineNo">629</span>                return new ArityArgumentBuilder&lt;T&gt;(this, numberOfParameters);<a name="line.629"></a>
 <span class="sourceLineNo">630</span>        }<a name="line.630"></a>
 <span class="sourceLineNo">631</span><a name="line.631"></a>
-<span class="sourceLineNo">632</span>        /**<a name="line.632"></a>
-<span class="sourceLineNo">633</span>         * &lt;pre&gt;<a name="line.633"></a>
-<span class="sourceLineNo">634</span>         * Makes it possible to enter several values for the same argument. Such as this:<a name="line.634"></a>
-<span class="sourceLineNo">635</span>         * <a name="line.635"></a>
-<span class="sourceLineNo">636</span>         * &lt;pre class="prettyprint"&gt;<a name="line.636"></a>
-<span class="sourceLineNo">637</span>         * &lt;code class="language-java"&gt;<a name="line.637"></a>
-<span class="sourceLineNo">638</span>         * String[] arguments = {"--number", "1", "--number", "2"};<a name="line.638"></a>
-<span class="sourceLineNo">639</span>         * List&amp;lt;Integer&amp;gt; numbers = integerArgument("--number").repeated().parse(arguments);<a name="line.639"></a>
-<span class="sourceLineNo">640</span>         * assertThat(numbers).isEqualTo(asList(1, 2));<a name="line.640"></a>
-<span class="sourceLineNo">641</span>         * &lt;/code&gt;<a name="line.641"></a>
-<span class="sourceLineNo">642</span>         * &lt;/pre&gt;<a name="line.642"></a>
-<span class="sourceLineNo">643</span>         * <a name="line.643"></a>
-<span class="sourceLineNo">644</span>         * If you want to combine {@link #repeated()} with a specific {@link #arity(int)} then call<a name="line.644"></a>
-<span class="sourceLineNo">645</span>         * {@link #arity(int)} before calling {@link #repeated()}:<a name="line.645"></a>
-<span class="sourceLineNo">646</span>         * <a name="line.646"></a>
-<span class="sourceLineNo">647</span>         * &lt;pre class="prettyprint"&gt;<a name="line.647"></a>
-<span class="sourceLineNo">648</span>         * &lt;code class="language-java"&gt;<a name="line.648"></a>
-<span class="sourceLineNo">649</span>         * String[] arguments = {"--numbers", "1", "2", "--numbers", "3", "4"};<a name="line.649"></a>
-<span class="sourceLineNo">650</span>         * List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; numberLists = integerArgument("--numbers").arity(2).repeated().parse(arguments);<a name="line.650"></a>
-<span class="sourceLineNo">651</span>         * assertThat(numberLists).isEqualTo(asList(asList(1, 2), asList(3, 4)));<a name="line.651"></a>
-<span class="sourceLineNo">652</span>         * &lt;/code&gt;<a name="line.652"></a>
-<span class="sourceLineNo">653</span>         * &lt;/pre&gt;<a name="line.653"></a>
-<span class="sourceLineNo">654</span>         * <a name="line.654"></a>
-<span class="sourceLineNo">655</span>         * For repeated values in a property map such as this:<a name="line.655"></a>
-<span class="sourceLineNo">656</span>         * <a name="line.656"></a>
-<span class="sourceLineNo">657</span>         * &lt;pre class="prettyprint"&gt;<a name="line.657"></a>
-<span class="sourceLineNo">658</span>         * &lt;code class="language-java"&gt;<a name="line.658"></a>
-<span class="sourceLineNo">659</span>         * String[] arguments = {"-Nnumber=1", "-Nnumber=2"};<a name="line.659"></a>
-<span class="sourceLineNo">660</span>         * Map&amp;lt;String, List&amp;lt;Integer&amp;gt;&amp;gt; numberMap = integerArgument("-N").repeated().asPropertyMap().parse(arguments);<a name="line.660"></a>
-<span class="sourceLineNo">661</span>         * assertThat(numberMap.get("number")).isEqualTo(asList(1, 2));<a name="line.661"></a>
-<span class="sourceLineNo">662</span>         * &lt;/code&gt;<a name="line.662"></a>
-<span class="sourceLineNo">663</span>         * &lt;/pre&gt;<a name="line.663"></a>
-<span class="sourceLineNo">664</span>         * <a name="line.664"></a>
-<span class="sourceLineNo">665</span>         * {@link #repeated()} should be called before {@link #asPropertyMap()}.<a name="line.665"></a>
-<span class="sourceLineNo">666</span>         * For arguments without a name (indexed arguments) use {@link #variableArity()} instead.<a name="line.666"></a>
-<span class="sourceLineNo">667</span>         * <a name="line.667"></a>
-<span class="sourceLineNo">668</span>         * @return a new (more specific) builder<a name="line.668"></a>
-<span class="sourceLineNo">669</span>         *         &lt;/pre&gt;<a name="line.669"></a>
+<span class="sourceLineNo">632</span>        // TODO: add minimumArguments(int)?<a name="line.632"></a>
+<span class="sourceLineNo">633</span><a name="line.633"></a>
+<span class="sourceLineNo">634</span>        /**<a name="line.634"></a>
+<span class="sourceLineNo">635</span>         * Makes it possible to enter several values for the same argument. Such as this:<a name="line.635"></a>
+<span class="sourceLineNo">636</span>         *<a name="line.636"></a>
+<span class="sourceLineNo">637</span>         * &lt;pre class="prettyprint"&gt;<a name="line.637"></a>
+<span class="sourceLineNo">638</span>         * &lt;code class="language-java"&gt;<a name="line.638"></a>
+<span class="sourceLineNo">639</span>         * String[] arguments = {"--number", "1", "--number", "2"};<a name="line.639"></a>
+<span class="sourceLineNo">640</span>         * List&amp;lt;Integer&amp;gt; numbers = integerArgument("--number").repeated().parse(arguments);<a name="line.640"></a>
+<span class="sourceLineNo">641</span>         * assertThat(numbers).isEqualTo(asList(1, 2));<a name="line.641"></a>
+<span class="sourceLineNo">642</span>         * &lt;/code&gt;<a name="line.642"></a>
+<span class="sourceLineNo">643</span>         * &lt;/pre&gt;<a name="line.643"></a>
+<span class="sourceLineNo">644</span>         *<a name="line.644"></a>
+<span class="sourceLineNo">645</span>         * If you want to combine {@link #repeated()} with a specific {@link #arity(int)} then call<a name="line.645"></a>
+<span class="sourceLineNo">646</span>         * {@link #arity(int)} before calling {@link #repeated()}:<a name="line.646"></a>
+<span class="sourceLineNo">647</span>         *<a name="line.647"></a>
+<span class="sourceLineNo">648</span>         * &lt;pre class="prettyprint"&gt;<a name="line.648"></a>
+<span class="sourceLineNo">649</span>         * &lt;code class="language-java"&gt;<a name="line.649"></a>
+<span class="sourceLineNo">650</span>         * String[] arguments = {"--numbers", "1", "2", "--numbers", "3", "4"};<a name="line.650"></a>
+<span class="sourceLineNo">651</span>         * List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; numberLists = integerArgument("--numbers").arity(2).repeated().parse(arguments);<a name="line.651"></a>
+<span class="sourceLineNo">652</span>         * assertThat(numberLists).isEqualTo(asList(asList(1, 2), asList(3, 4)));<a name="line.652"></a>
+<span class="sourceLineNo">653</span>         * &lt;/code&gt;<a name="line.653"></a>
+<span class="sourceLineNo">654</span>         * &lt;/pre&gt;<a name="line.654"></a>
+<span class="sourceLineNo">655</span>         *<a name="line.655"></a>
+<span class="sourceLineNo">656</span>         * For repeated values in a property map such as this:<a name="line.656"></a>
+<span class="sourceLineNo">657</span>         *<a name="line.657"></a>
+<span class="sourceLineNo">658</span>         * &lt;pre class="prettyprint"&gt;<a name="line.658"></a>
+<span class="sourceLineNo">659</span>         * &lt;code class="language-java"&gt;<a name="line.659"></a>
+<span class="sourceLineNo">660</span>         * String[] arguments = {"-Nnumber=1", "-Nnumber=2"};<a name="line.660"></a>
+<span class="sourceLineNo">661</span>         * Map&amp;lt;String, List&amp;lt;Integer&amp;gt;&amp;gt; numberMap = integerArgument("-N").repeated().asPropertyMap().parse(arguments);<a name="line.661"></a>
+<span class="sourceLineNo">662</span>         * assertThat(numberMap.get("number")).isEqualTo(asList(1, 2));<a name="line.662"></a>
+<span class="sourceLineNo">663</span>         * &lt;/code&gt;<a name="line.663"></a>
+<span class="sourceLineNo">664</span>         * &lt;/pre&gt;<a name="line.664"></a>
+<span class="sourceLineNo">665</span>         *<a name="line.665"></a>
+<span class="sourceLineNo">666</span>         * {@link #repeated()} should be called before {@link #asPropertyMap()}.<a name="line.666"></a>
+<span class="sourceLineNo">667</span>         * For arguments without a name (indexed arguments) use {@link #variableArity()} instead.<a name="line.667"></a>
+<span class="sourceLineNo">668</span>         *<a name="line.668"></a>
+<span class="sourceLineNo">669</span>         * @return a new (more specific) builder<a name="line.669"></a>
 <span class="sourceLineNo">670</span>         */<a name="line.670"></a>
 <span class="sourceLineNo">671</span>        @CheckReturnValue<a name="line.671"></a>
 <span class="sourceLineNo">672</span>        public RepeatedArgumentBuilder&lt;T&gt; repeated()<a name="line.672"></a>
@@ -694,285 +694,285 @@
 <span class="sourceLineNo">686</span>        /**<a name="line.686"></a>
 <span class="sourceLineNo">687</span>         * &lt;pre&gt;<a name="line.687"></a>
 <span class="sourceLineNo">688</span>         * Copies all values from the given copy into this one, except for:<a name="line.688"></a>
-<span class="sourceLineNo">689</span>         * {@link #parser()}, {@link #defaultValueSupplier()} &amp; {@link #defaultValueDescriber()}<a name="line.689"></a>
+<span class="sourceLineNo">689</span>         * {@link #parser()}, {@link #defaultValueSupplier()} and {@link #defaultValueDescriber()}<a name="line.689"></a>
 <span class="sourceLineNo">690</span>         * as they may change between different builders<a name="line.690"></a>
 <span class="sourceLineNo">691</span>         * (e.g the default value for Argument&amp;lt;Boolean&amp;gt; and Argument&amp;lt;List&amp;lt;Boolean&amp;gt; are not compatible)<a name="line.691"></a>
-<span class="sourceLineNo">692</span>         * @param copy the ArgumentBuilder to copy from<a name="line.692"></a>
-<span class="sourceLineNo">693</span>         */<a name="line.693"></a>
-<span class="sourceLineNo">694</span>        @OverridingMethodsMustInvokeSuper<a name="line.694"></a>
-<span class="sourceLineNo">695</span>        void copy(final ArgumentBuilder&lt;?, ?&gt; copy)<a name="line.695"></a>
-<span class="sourceLineNo">696</span>        {<a name="line.696"></a>
-<span class="sourceLineNo">697</span>                this.names = copy.names;<a name="line.697"></a>
-<span class="sourceLineNo">698</span>                this.description = copy.description;<a name="line.698"></a>
-<span class="sourceLineNo">699</span>                this.required = copy.required;<a name="line.699"></a>
-<span class="sourceLineNo">700</span>                this.separator = copy.separator;<a name="line.700"></a>
-<span class="sourceLineNo">701</span>                this.ignoreCase = copy.ignoreCase;<a name="line.701"></a>
-<span class="sourceLineNo">702</span>                this.isAllowedToRepeat = copy.isAllowedToRepeat;<a name="line.702"></a>
-<span class="sourceLineNo">703</span>                this.metaDescription = copy.metaDescription;<a name="line.703"></a>
-<span class="sourceLineNo">704</span>                this.hideFromUsage = copy.hideFromUsage;<a name="line.704"></a>
-<span class="sourceLineNo">705</span>        }<a name="line.705"></a>
-<span class="sourceLineNo">706</span><a name="line.706"></a>
-<span class="sourceLineNo">707</span>        /**<a name="line.707"></a>
-<span class="sourceLineNo">708</span>         * &lt;pre&gt;<a name="line.708"></a>
-<span class="sourceLineNo">709</span>         * {@code aFinalizer} is called after {@link StringParser#parse(String, Locale)}<a name="line.709"></a>
-<span class="sourceLineNo">710</span>         * but before any predicates given to {@link #limitTo(Predicate)} are tested.<a name="line.710"></a>
-<span class="sourceLineNo">711</span>         * <a name="line.711"></a>
-<span class="sourceLineNo">712</span>         * Is used internally to finalize values produced by {@link StringParser#parse(String, Locale)}.<a name="line.712"></a>
-<span class="sourceLineNo">713</span>         * <a name="line.713"></a>
-<span class="sourceLineNo">714</span>         * For example {@link RepeatedArgumentParser} uses this to make the resulting {@link List} {@link Immutable}.<a name="line.714"></a>
-<span class="sourceLineNo">715</span>         * <a name="line.715"></a>
-<span class="sourceLineNo">716</span>         * For regular {@link StringParser}s it's recommended to use {@link SimpleForwardingStringParser}<a name="line.716"></a>
-<span class="sourceLineNo">717</span>         * and decorate your {@link StringParser} with any finalization there instead.<a name="line.717"></a>
-<span class="sourceLineNo">718</span>         * <a name="line.718"></a>
-<span class="sourceLineNo">719</span>         * &lt;b&gt;Note:&lt;/b&gt; If {@link #finalizeWith(Function)} have been called before,<a name="line.719"></a>
-<span class="sourceLineNo">720</span>         * the given {@code aFinalizer} will be run after that finalizer.<a name="line.720"></a>
-<span class="sourceLineNo">721</span>         * <a name="line.721"></a>
-<span class="sourceLineNo">722</span>         * &lt;/pre&gt;<a name="line.722"></a>
-<span class="sourceLineNo">723</span>         * <a name="line.723"></a>
-<span class="sourceLineNo">724</span>         * @param aFinalizer a finalizer<a name="line.724"></a>
-<span class="sourceLineNo">725</span>         * @return this builder<a name="line.725"></a>
-<span class="sourceLineNo">726</span>         */<a name="line.726"></a>
-<span class="sourceLineNo">727</span>        final SELF finalizeWith(Function&lt;T, T&gt; aFinalizer)<a name="line.727"></a>
-<span class="sourceLineNo">728</span>        {<a name="line.728"></a>
-<span class="sourceLineNo">729</span>                finalizer = Functions2.compound(finalizer, aFinalizer);<a name="line.729"></a>
-<span class="sourceLineNo">730</span>                return myself;<a name="line.730"></a>
-<span class="sourceLineNo">731</span>        }<a name="line.731"></a>
-<span class="sourceLineNo">732</span><a name="line.732"></a>
-<span class="sourceLineNo">733</span>        final void allowRepeatedArguments()<a name="line.733"></a>
-<span class="sourceLineNo">734</span>        {<a name="line.734"></a>
-<span class="sourceLineNo">735</span>                isAllowedToRepeat = true;<a name="line.735"></a>
-<span class="sourceLineNo">736</span>        }<a name="line.736"></a>
-<span class="sourceLineNo">737</span><a name="line.737"></a>
-<span class="sourceLineNo">738</span>        final void setAsPropertyMap()<a name="line.738"></a>
-<span class="sourceLineNo">739</span>        {<a name="line.739"></a>
-<span class="sourceLineNo">740</span>                isPropertyMap = true;<a name="line.740"></a>
-<span class="sourceLineNo">741</span>        }<a name="line.741"></a>
-<span class="sourceLineNo">742</span><a name="line.742"></a>
-<span class="sourceLineNo">743</span>        /**<a name="line.743"></a>
-<span class="sourceLineNo">744</span>         * @formatter.off<a name="line.744"></a>
-<span class="sourceLineNo">745</span>         */<a name="line.745"></a>
-<span class="sourceLineNo">746</span>        @Nonnull final List&lt;String&gt; names(){ return names; }<a name="line.746"></a>
-<span class="sourceLineNo">747</span><a name="line.747"></a>
-<span class="sourceLineNo">748</span>        @Nullable Describer&lt;? super T&gt; defaultValueDescriber(){ return defaultValueDescriber; }<a name="line.748"></a>
-<span class="sourceLineNo">749</span><a name="line.749"></a>
-<span class="sourceLineNo">750</span>        @Nonnull Describable description(){ return description; }<a name="line.750"></a>
-<span class="sourceLineNo">751</span><a name="line.751"></a>
-<span class="sourceLineNo">752</span>        final boolean isRequired(){ return required; }<a name="line.752"></a>
-<span class="sourceLineNo">753</span><a name="line.753"></a>
-<span class="sourceLineNo">754</span>        @Nullable final String separator(){ return separator; }<a name="line.754"></a>
-<span class="sourceLineNo">755</span><a name="line.755"></a>
-<span class="sourceLineNo">756</span>        final boolean isIgnoringCase(){ return ignoreCase; }<a name="line.756"></a>
-<span class="sourceLineNo">757</span><a name="line.757"></a>
-<span class="sourceLineNo">758</span>        final boolean isPropertyMap(){ return isPropertyMap; }<a name="line.758"></a>
-<span class="sourceLineNo">759</span><a name="line.759"></a>
-<span class="sourceLineNo">760</span>        final boolean isAllowedToRepeat(){ return isAllowedToRepeat; }<a name="line.760"></a>
-<span class="sourceLineNo">761</span><a name="line.761"></a>
-<span class="sourceLineNo">762</span>        @Nullable final Optional&lt;String&gt; metaDescription(){ return metaDescription; }<a name="line.762"></a>
-<span class="sourceLineNo">763</span>        final boolean isHiddenFromUsage(){ return hideFromUsage; }<a name="line.763"></a>
-<span class="sourceLineNo">764</span><a name="line.764"></a>
-<span class="sourceLineNo">765</span>        @Nullable final Supplier&lt;? extends T&gt; defaultValueSupplier(){ return defaultValueSupplier; }<a name="line.765"></a>
-<span class="sourceLineNo">766</span><a name="line.766"></a>
-<span class="sourceLineNo">767</span>        @Nonnull final Function&lt;T, T&gt; finalizer(){ return finalizer; }<a name="line.767"></a>
-<span class="sourceLineNo">768</span>        @Nonnull final Predicate&lt;? super T&gt; limiter(){ return limiter; }<a name="line.768"></a>
-<span class="sourceLineNo">769</span><a name="line.769"></a>
-<span class="sourceLineNo">770</span>        private void checkNoSpaces(Iterable&lt;String&gt; argumentNames)<a name="line.770"></a>
-<span class="sourceLineNo">771</span>        {<a name="line.771"></a>
-<span class="sourceLineNo">772</span>                for(String name : argumentNames)<a name="line.772"></a>
-<span class="sourceLineNo">773</span>                {<a name="line.773"></a>
-<span class="sourceLineNo">774</span>                        checkArgument(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);<a name="line.774"></a>
-<span class="sourceLineNo">775</span>                }<a name="line.775"></a>
-<span class="sourceLineNo">776</span>        }<a name="line.776"></a>
-<span class="sourceLineNo">777</span><a name="line.777"></a>
-<span class="sourceLineNo">778</span>        /**<a name="line.778"></a>
-<span class="sourceLineNo">779</span>         * @formatter.on<a name="line.779"></a>
-<span class="sourceLineNo">780</span>         */<a name="line.780"></a>
-<span class="sourceLineNo">781</span><a name="line.781"></a>
-<span class="sourceLineNo">782</span>        /**<a name="line.782"></a>
-<span class="sourceLineNo">783</span>         * A very simple version of an {@link ArgumentBuilder}, it's exposed mainly to<a name="line.783"></a>
-<span class="sourceLineNo">784</span>         * lessen the exposure of the {@code SELF_TYPE} argument of the {@link ArgumentBuilder}.<a name="line.784"></a>
-<span class="sourceLineNo">785</span>         */<a name="line.785"></a>
-<span class="sourceLineNo">786</span>        @NotThreadSafe<a name="line.786"></a>
-<span class="sourceLineNo">787</span>        public static final class DefaultArgumentBuilder&lt;T&gt; extends ArgumentBuilder&lt;DefaultArgumentBuilder&lt;T&gt;, T&gt;<a name="line.787"></a>
-<span class="sourceLineNo">788</span>        {<a name="line.788"></a>
-<span class="sourceLineNo">789</span>                private final StringParser&lt;T&gt; parser;<a name="line.789"></a>
-<span class="sourceLineNo">790</span><a name="line.790"></a>
-<span class="sourceLineNo">791</span>                DefaultArgumentBuilder(final StringParser&lt;T&gt; aParser)<a name="line.791"></a>
-<span class="sourceLineNo">792</span>                {<a name="line.792"></a>
-<span class="sourceLineNo">793</span>                        parser = checkNotNull(aParser);<a name="line.793"></a>
-<span class="sourceLineNo">794</span>                }<a name="line.794"></a>
-<span class="sourceLineNo">795</span><a name="line.795"></a>
-<span class="sourceLineNo">796</span>                @Override<a name="line.796"></a>
-<span class="sourceLineNo">797</span>                protected StringParser&lt;T&gt; parser()<a name="line.797"></a>
-<span class="sourceLineNo">798</span>                {<a name="line.798"></a>
-<span class="sourceLineNo">799</span>                        return parser;<a name="line.799"></a>
-<span class="sourceLineNo">800</span>                }<a name="line.800"></a>
-<span class="sourceLineNo">801</span>        }<a name="line.801"></a>
-<span class="sourceLineNo">802</span><a name="line.802"></a>
-<span class="sourceLineNo">803</span>        // Non-Interesting builders below, most declarations under here handles<a name="line.803"></a>
-<span class="sourceLineNo">804</span>        // (by deprecating) invalid invariants between different argument properties<a name="line.804"></a>
-<span class="sourceLineNo">805</span><a name="line.805"></a>
-<span class="sourceLineNo">806</span>        private abstract static class InternalArgumentBuilder&lt;BUILDER extends InternalArgumentBuilder&lt;BUILDER, T&gt;, T&gt; extends ArgumentBuilder&lt;BUILDER, T&gt;<a name="line.806"></a>
-<span class="sourceLineNo">807</span>        {<a name="line.807"></a>
-<span class="sourceLineNo">808</span>                /**<a name="line.808"></a>
-<span class="sourceLineNo">809</span>                 * Only used to flag that this builder is an internal one, not used for parsing<a name="line.809"></a>
-<span class="sourceLineNo">810</span>                 */<a name="line.810"></a>
-<span class="sourceLineNo">811</span>                static final StringParser&lt;?&gt; MARKER = new StringParserBridge&lt;String&gt;(StringParsers.stringParser());<a name="line.811"></a>
-<span class="sourceLineNo">812</span><a name="line.812"></a>
-<span class="sourceLineNo">813</span>                InternalArgumentBuilder()<a name="line.813"></a>
-<span class="sourceLineNo">814</span>                {<a name="line.814"></a>
-<span class="sourceLineNo">815</span><a name="line.815"></a>
-<span class="sourceLineNo">816</span>                }<a name="line.816"></a>
-<span class="sourceLineNo">817</span><a name="line.817"></a>
-<span class="sourceLineNo">818</span>                InternalArgumentBuilder(InternalStringParser&lt;T&gt; parser)<a name="line.818"></a>
-<span class="sourceLineNo">819</span>                {<a name="line.819"></a>
-<span class="sourceLineNo">820</span>                        super(parser);<a name="line.820"></a>
-<span class="sourceLineNo">821</span>                }<a name="line.821"></a>
-<span class="sourceLineNo">822</span><a name="line.822"></a>
-<span class="sourceLineNo">823</span>                @SuppressWarnings("unchecked")<a name="line.823"></a>
-<span class="sourceLineNo">824</span>                @Override<a name="line.824"></a>
-<span class="sourceLineNo">825</span>                protected StringParser&lt;T&gt; parser()<a name="line.825"></a>
-<span class="sourceLineNo">826</span>                {<a name="line.826"></a>
-<span class="sourceLineNo">827</span>                        return (StringParser&lt;T&gt;) MARKER;<a name="line.827"></a>
-<span class="sourceLineNo">828</span>                }<a name="line.828"></a>
-<span class="sourceLineNo">829</span>        }<a name="line.829"></a>
-<span class="sourceLineNo">830</span><a name="line.830"></a>
-<span class="sourceLineNo">831</span>        /**<a name="line.831"></a>
-<span class="sourceLineNo">832</span>         * The {@link InternalStringParser} equivalent to<a name="line.832"></a>
-<span class="sourceLineNo">833</span>         * {@link se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder}<a name="line.833"></a>
-<span class="sourceLineNo">834</span>         */<a name="line.834"></a>
-<span class="sourceLineNo">835</span>        static final class SimpleArgumentBuilder&lt;T&gt; extends InternalArgumentBuilder&lt;SimpleArgumentBuilder&lt;T&gt;, T&gt;<a name="line.835"></a>
-<span class="sourceLineNo">836</span>        {<a name="line.836"></a>
-<span class="sourceLineNo">837</span>                SimpleArgumentBuilder(InternalStringParser&lt;T&gt; parser)<a name="line.837"></a>
-<span class="sourceLineNo">838</span>                {<a name="line.838"></a>
-<span class="sourceLineNo">839</span>                        super(parser);<a name="line.839"></a>
-<span class="sourceLineNo">840</span>                }<a name="line.840"></a>
-<span class="sourceLineNo">841</span>        }<a name="line.841"></a>
-<span class="sourceLineNo">842</span><a name="line.842"></a>
-<span class="sourceLineNo">843</span>        /**<a name="line.843"></a>
-<span class="sourceLineNo">844</span>         * Builder for {@link Command}s. Created with {@link Arguments#command(Command)}.<a name="line.844"></a>
-<span class="sourceLineNo">845</span>         */<a name="line.845"></a>
-<span class="sourceLineNo">846</span>        @NotThreadSafe<a name="line.846"></a>
-<span class="sourceLineNo">847</span>        public static final class CommandBuilder extends InternalArgumentBuilder&lt;CommandBuilder, ParsedArguments&gt;<a name="line.847"></a>
-<span class="sourceLineNo">848</span>        {<a name="line.848"></a>
-<span class="sourceLineNo">849</span>                CommandBuilder(final Command command)<a name="line.849"></a>
-<span class="sourceLineNo">850</span>                {<a name="line.850"></a>
-<span class="sourceLineNo">851</span>                        super(command);<a name="line.851"></a>
-<span class="sourceLineNo">852</span>                }<a name="line.852"></a>
-<span class="sourceLineNo">853</span><a name="line.853"></a>
-<span class="sourceLineNo">854</span>                /**<a name="line.854"></a>
-<span class="sourceLineNo">855</span>                 * @deprecated Commands shouldn't be required<a name="line.855"></a>
-<span class="sourceLineNo">856</span>                 */<a name="line.856"></a>
-<span class="sourceLineNo">857</span>                @Deprecated<a name="line.857"></a>
-<span class="sourceLineNo">858</span>                @Override<a name="line.858"></a>
-<span class="sourceLineNo">859</span>                public CommandBuilder required()<a name="line.859"></a>
-<span class="sourceLineNo">860</span>                {<a name="line.860"></a>
-<span class="sourceLineNo">861</span>                        throw new IllegalStateException();<a name="line.861"></a>
-<span class="sourceLineNo">862</span>                }<a name="line.862"></a>
-<span class="sourceLineNo">863</span><a name="line.863"></a>
-<span class="sourceLineNo">864</span>                /**<a name="line.864"></a>
-<span class="sourceLineNo">865</span>                 * @deprecated Commands shouldn't have default values<a name="line.865"></a>
-<span class="sourceLineNo">866</span>                 */<a name="line.866"></a>
-<span class="sourceLineNo">867</span>                @Deprecated<a name="line.867"></a>
-<span class="sourceLineNo">868</span>                @Override<a name="line.868"></a>
-<span class="sourceLineNo">869</span>                public CommandBuilder defaultValue(ParsedArguments defaultValue)<a name="line.869"></a>
-<span class="sourceLineNo">870</span>                {<a name="line.870"></a>
-<span class="sourceLineNo">871</span>                        throw new IllegalStateException();<a name="line.871"></a>
-<span class="sourceLineNo">872</span>                }<a name="line.872"></a>
-<span class="sourceLineNo">873</span><a name="line.873"></a>
-<span class="sourceLineNo">874</span>                /**<a name="line.874"></a>
-<span class="sourceLineNo">875</span>                 * @deprecated Commands shouldn't have default values<a name="line.875"></a>
-<span class="sourceLineNo">876</span>                 */<a name="line.876"></a>
-<span class="sourceLineNo">877</span>                @Deprecated<a name="line.877"></a>
-<span class="sourceLineNo">878</span>                @Override<a name="line.878"></a>
-<span class="sourceLineNo">879</span>                public CommandBuilder defaultValueSupplier(Supplier&lt;? extends ParsedArguments&gt; defaultValueSupplier)<a name="line.879"></a>
-<span class="sourceLineNo">880</span>                {<a name="line.880"></a>
-<span class="sourceLineNo">881</span>                        throw new IllegalStateException();<a name="line.881"></a>
-<span class="sourceLineNo">882</span>                }<a name="line.882"></a>
-<span class="sourceLineNo">883</span><a name="line.883"></a>
-<span class="sourceLineNo">884</span>                /**<a name="line.884"></a>
-<span class="sourceLineNo">885</span>                 * @deprecated Commands can't have default values, so no description can be useful<a name="line.885"></a>
-<span class="sourceLineNo">886</span>                 */<a name="line.886"></a>
-<span class="sourceLineNo">887</span>                @Deprecated<a name="line.887"></a>
-<span class="sourceLineNo">888</span>                @Override<a name="line.888"></a>
-<span class="sourceLineNo">889</span>                public CommandBuilder defaultValueDescription(String defaultValueDescription)<a name="line.889"></a>
-<span class="sourceLineNo">890</span>                {<a name="line.890"></a>
-<span class="sourceLineNo">891</span>                        throw new IllegalStateException();<a name="line.891"></a>
-<span class="sourceLineNo">892</span>                }<a name="line.892"></a>
-<span class="sourceLineNo">893</span><a name="line.893"></a>
-<span class="sourceLineNo">894</span>                /**<a name="line.894"></a>
-<span class="sourceLineNo">895</span>                 * @deprecated Commands can't have default values, so no description can be useful<a name="line.895"></a>
-<span class="sourceLineNo">896</span>                 */<a name="line.896"></a>
-<span class="sourceLineNo">897</span>                @Deprecated<a name="line.897"></a>
-<span class="sourceLineNo">898</span>                @Override<a name="line.898"></a>
-<span class="sourceLineNo">899</span>                public CommandBuilder defaultValueDescriber(Describer&lt;? super ParsedArguments&gt; defaultValueDescriber)<a name="line.899"></a>
-<span class="sourceLineNo">900</span>                {<a name="line.900"></a>
-<span class="sourceLineNo">901</span>                        throw new IllegalStateException();<a name="line.901"></a>
-<span class="sourceLineNo">902</span>                }<a name="line.902"></a>
-<span class="sourceLineNo">903</span><a name="line.903"></a>
-<span class="sourceLineNo">904</span>                /**<a name="line.904"></a>
-<span class="sourceLineNo">905</span>                 * @deprecated Commands can't be limited<a name="line.905"></a>
-<span class="sourceLineNo">906</span>                 */<a name="line.906"></a>
-<span class="sourceLineNo">907</span>                @Deprecated<a name="line.907"></a>
-<span class="sourceLineNo">908</span>                @Override<a name="line.908"></a>
-<span class="sourceLineNo">909</span>                public CommandBuilder limitTo(Predicate&lt;? super ParsedArguments&gt; limiter)<a name="line.909"></a>
-<span class="sourceLineNo">910</span>                {<a name="line.910"></a>
-<span class="sourceLineNo">911</span>                        throw new IllegalStateException();<a name="line.911"></a>
-<span class="sourceLineNo">912</span>                }<a name="line.912"></a>
-<span class="sourceLineNo">913</span><a name="line.913"></a>
-<span class="sourceLineNo">914</span>                /**<a name="line.914"></a>
-<span class="sourceLineNo">915</span>                 * @deprecated Commands can't be split<a name="line.915"></a>
-<span class="sourceLineNo">916</span>                 */<a name="line.916"></a>
-<span class="sourceLineNo">917</span>                @Deprecated<a name="line.917"></a>
-<span class="sourceLineNo">918</span>                @Override<a name="line.918"></a>
-<span class="sourceLineNo">919</span>                public SplitterArgumentBuilder&lt;ParsedArguments&gt; splitWith(String valueSeparator)<a name="line.919"></a>
-<span class="sourceLineNo">920</span>                {<a name="line.920"></a>
-<span class="sourceLineNo">921</span>                        throw new IllegalStateException();<a name="line.921"></a>
-<span class="sourceLineNo">922</span>                }<a name="line.922"></a>
-<span class="sourceLineNo">923</span><a name="line.923"></a>
-<span class="sourceLineNo">924</span>                /**<a name="line.924"></a>
-<span class="sourceLineNo">925</span>                 * @deprecated pass any {@link Argument}s to your {@link Command} to<a name="line.925"></a>
-<span class="sourceLineNo">926</span>                 *             {@link Command#Command(Argument...)}<a name="line.926"></a>
-<span class="sourceLineNo">927</span>                 */<a name="line.927"></a>
-<span class="sourceLineNo">928</span>                @Deprecated<a name="line.928"></a>
-<span class="sourceLineNo">929</span>                @Override<a name="line.929"></a>
-<span class="sourceLineNo">930</span>                public ArityArgumentBuilder&lt;ParsedArguments&gt; arity(int arity)<a name="line.930"></a>
-<span class="sourceLineNo">931</span>                {<a name="line.931"></a>
-<span class="sourceLineNo">932</span>                        throw new IllegalStateException();<a name="line.932"></a>
-<span class="sourceLineNo">933</span>                }<a name="line.933"></a>
-<span class="sourceLineNo">934</span><a name="line.934"></a>
-<span class="sourceLineNo">935</span>                /**<a name="line.935"></a>
-<span class="sourceLineNo">936</span>                 * @deprecated pass any {@link Argument}s to your {@link Command} to<a name="line.936"></a>
-<span class="sourceLineNo">937</span>                 *             {@link Command#Command(Argument...)}<a name="line.937"></a>
-<span class="sourceLineNo">938</span>                 */<a name="line.938"></a>
-<span class="sourceLineNo">939</span>                @Deprecated<a name="line.939"></a>
-<span class="sourceLineNo">940</span>                @Override<a name="line.940"></a>
-<span class="sourceLineNo">941</span>                public ArityArgumentBuilder&lt;ParsedArguments&gt; variableArity()<a name="line.941"></a>
-<span class="sourceLineNo">942</span>                {<a name="line.942"></a>
-<span class="sourceLineNo">943</span>                        throw new IllegalStateException();<a name="line.943"></a>
-<span class="sourceLineNo">944</span>                }<a name="line.944"></a>
-<span class="sourceLineNo">945</span>        }<a name="line.945"></a>
-<span class="sourceLineNo">946</span><a name="line.946"></a>
-<span class="sourceLineNo">947</span>        private static class ListArgumentBuilder&lt;BUILDER extends ListArgumentBuilder&lt;BUILDER, T&gt;, T&gt; extends InternalArgumentBuilder&lt;BUILDER, List&lt;T&gt;&gt;<a name="line.947"></a>
-<span class="sourceLineNo">948</span>        {<a name="line.948"></a>
-<span class="sourceLineNo">949</span>                ListArgumentBuilder(InternalStringParser&lt;List&lt;T&gt;&gt; parser)<a name="line.949"></a>
-<span class="sourceLineNo">950</span>                {<a name="line.950"></a>
-<span class="sourceLineNo">951</span>                        super(parser);<a name="line.951"></a>
-<span class="sourceLineNo">952</span>                }<a name="line.952"></a>
-<span class="sourceLineNo">953</span><a name="line.953"></a>
-<span class="sourceLineNo">954</span>                void copyAsListBuilder(ArgumentBuilder&lt;?, T&gt; builder, int nrOfElementsInDefaultValue)<a name="line.954"></a>
-<span class="sourceLineNo">955</span>                {<a name="line.955"></a>
-<span class="sourceLineNo">956</span>                        finalizeWith(listTransformer(builder.finalizer));<a name="line.956"></a>
-<span class="sourceLineNo">957</span>                        finalizeWith(Functions2.&lt;T&gt;unmodifiableList());<a name="line.957"></a>
-<span class="sourceLineNo">958</span>                        limitTo(listPredicate(builder.limiter));<a name="line.958"></a>
-<span class="sourceLineNo">959</span>                        if(builder.defaultValueSupplier != null)<a name="line.959"></a>
-<span class="sourceLineNo">960</span>                        {<a name="line.960"></a>
-<span class="sourceLineNo">961</span>                                defaultValueSupplier(Suppliers2.ofRepeatedElements(builder.defaultValueSupplier, nrOfElementsInDefaultValue));<a name="line.961"></a>
-<span class="sourceLineNo">962</span>                        }<a name="line.962"></a>
-<span class="sourceLineNo">963</span>                        if(builder.defaultValueDescriber != null)<a name="line.963"></a>
-<span class="sourceLineNo">964</span>                        {<a name="line.964"></a>
-<span class="sourceLineNo">965</span>                                defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));<a name="line.965"></a>
-<span class="sourceLineNo">966</span>                        }<a name="line.966"></a>
-<span class="sourceLineNo">967</span>                        // TODO(jontejj): should meta description &lt;foo&gt; be expanded to &lt;foo&gt; &lt;foo&gt;?<a name="line.967"></a>
+<span class="sourceLineNo">692</span>         * &lt;/pre&gt;<a name="line.692"></a>
+<span class="sourceLineNo">693</span>         * @param copy the ArgumentBuilder to copy from<a name="line.693"></a>
+<span class="sourceLineNo">694</span>         */<a name="line.694"></a>
+<span class="sourceLineNo">695</span>        @OverridingMethodsMustInvokeSuper<a name="line.695"></a>
+<span class="sourceLineNo">696</span>        void copy(final ArgumentBuilder&lt;?, ?&gt; copy)<a name="line.696"></a>
+<span class="sourceLineNo">697</span>        {<a name="line.697"></a>
+<span class="sourceLineNo">698</span>                this.names = copy.names;<a name="line.698"></a>
+<span class="sourceLineNo">699</span>                this.description = copy.description;<a name="line.699"></a>
+<span class="sourceLineNo">700</span>                this.required = copy.required;<a name="line.700"></a>
+<span class="sourceLineNo">701</span>                this.separator = copy.separator;<a name="line.701"></a>
+<span class="sourceLineNo">702</span>                this.ignoreCase = copy.ignoreCase;<a name="line.702"></a>
+<span class="sourceLineNo">703</span>                this.isAllowedToRepeat = copy.isAllowedToRepeat;<a name="line.703"></a>
+<span class="sourceLineNo">704</span>                this.metaDescription = copy.metaDescription;<a name="line.704"></a>
+<span class="sourceLineNo">705</span>                this.hideFromUsage = copy.hideFromUsage;<a name="line.705"></a>
+<span class="sourceLineNo">706</span>        }<a name="line.706"></a>
+<span class="sourceLineNo">707</span><a name="line.707"></a>
+<span class="sourceLineNo">708</span>        /**<a name="line.708"></a>
+<span class="sourceLineNo">709</span>         * &lt;pre&gt;<a name="line.709"></a>
+<span class="sourceLineNo">710</span>         * {@code aFinalizer} is called after {@link StringParser#parse(String, Locale)}<a name="line.710"></a>
+<span class="sourceLineNo">711</span>         * but before any predicates given to {@link #limitTo(Predicate)} are tested.<a name="line.711"></a>
+<span class="sourceLineNo">712</span>         *<a name="line.712"></a>
+<span class="sourceLineNo">713</span>         * Is used internally to finalize values produced by {@link StringParser#parse(String, Locale)}.<a name="line.713"></a>
+<span class="sourceLineNo">714</span>         *<a name="line.714"></a>
+<span class="sourceLineNo">715</span>         * For example {@link RepeatedArgumentParser} uses this to make the resulting {@link List} {@link Immutable}.<a name="line.715"></a>
+<span class="sourceLineNo">716</span>         *<a name="line.716"></a>
+<span class="sourceLineNo">717</span>         * For regular {@link StringParser}s it's recommended to use {@link SimpleForwardingStringParser}<a name="line.717"></a>
+<span class="sourceLineNo">718</span>         * and decorate your {@link StringParser} with any finalization there instead.<a name="line.718"></a>
+<span class="sourceLineNo">719</span>         *<a name="line.719"></a>
+<span class="sourceLineNo">720</span>         * &lt;b&gt;Note:&lt;/b&gt; If {@link #finalizeWith(Function)} have been called before,<a name="line.720"></a>
+<span class="sourceLineNo">721</span>         * the given {@code aFinalizer} will be run after that finalizer.<a name="line.721"></a>
+<span class="sourceLineNo">722</span>         *<a name="line.722"></a>
+<span class="sourceLineNo">723</span>         * &lt;/pre&gt;<a name="line.723"></a>
+<span class="sourceLineNo">724</span>         *<a name="line.724"></a>
+<span class="sourceLineNo">725</span>         * @param aFinalizer a finalizer<a name="line.725"></a>
+<span class="sourceLineNo">726</span>         * @return this builder<a name="line.726"></a>
+<span class="sourceLineNo">727</span>         */<a name="line.727"></a>
+<span class="sourceLineNo">728</span>        final SELF finalizeWith(Function&lt;T, T&gt; aFinalizer)<a name="line.728"></a>
+<span class="sourceLineNo">729</span>        {<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                finalizer = Functions2.compound(finalizer, aFinalizer);<a name="line.730"></a>
+<span class="sourceLineNo">731</span>                return myself;<a name="line.731"></a>
+<span class="sourceLineNo">732</span>        }<a name="line.732"></a>
+<span class="sourceLineNo">733</span><a name="line.733"></a>
+<span class="sourceLineNo">734</span>        final void allowRepeatedArguments()<a name="line.734"></a>
+<span class="sourceLineNo">735</span>        {<a name="line.735"></a>
+<span class="sourceLineNo">736</span>                isAllowedToRepeat = true;<a name="line.736"></a>
+<span class="sourceLineNo">737</span>        }<a name="line.737"></a>
+<span class="sourceLineNo">738</span><a name="line.738"></a>
+<span class="sourceLineNo">739</span>        final void setAsPropertyMap()<a name="line.739"></a>
+<span class="sourceLineNo">740</span>        {<a name="line.740"></a>
+<span class="sourceLineNo">741</span>                isPropertyMap = true;<a name="line.741"></a>
+<span class="sourceLineNo">742</span>        }<a name="line.742"></a>
+<span class="sourceLineNo">743</span><a name="line.743"></a>
+<span class="sourceLineNo">744</span>        /**<a name="line.744"></a>
+<span class="sourceLineNo">745</span>         * @formatter.off<a name="line.745"></a>
+<span class="sourceLineNo">746</span>         */<a name="line.746"></a>
+<span class="sourceLineNo">747</span>        @Nonnull final List&lt;String&gt; names(){ return names; }<a name="line.747"></a>
+<span class="sourceLineNo">748</span><a name="line.748"></a>
+<span class="sourceLineNo">749</span>        @Nullable Describer&lt;? super T&gt; defaultValueDescriber(){ return defaultValueDescriber; }<a name="line.749"></a>
+<span class="sourceLineNo">750</span><a name="line.750"></a>
+<span class="sourceLineNo">751</span>        @Nonnull Describable description(){ return description; }<a name="line.751"></a>
+<span class="sourceLineNo">752</span><a name="line.752"></a>
+<span class="sourceLineNo">753</span>        final boolean isRequired(){ return required; }<a name="line.753"></a>
+<span class="sourceLineNo">754</span><a name="line.754"></a>
+<span class="sourceLineNo">755</span>        @Nullable final String separator(){ return separator; }<a name="line.755"></a>
+<span class="sourceLineNo">756</span><a name="line.756"></a>
+<span class="sourceLineNo">757</span>        final boolean isIgnoringCase(){ return ignoreCase; }<a name="line.757"></a>
+<span class="sourceLineNo">758</span><a name="line.758"></a>
+<span class="sourceLineNo">759</span>        final boolean isPropertyMap(){ return isPropertyMap; }<a name="line.759"></a>
+<span class="sourceLineNo">760</span><a name="line.760"></a>
+<span class="sourceLineNo">761</span>        final boolean isAllowedToRepeat(){ return isAllowedToRepeat; }<a name="line.761"></a>
+<span class="sourceLineNo">762</span><a name="line.762"></a>
+<span class="sourceLineNo">763</span>        @Nullable final Optional&lt;String&gt; metaDescription(){ return metaDescription; }<a name="line.763"></a>
+<span class="sourceLineNo">764</span>        final boolean isHiddenFromUsage(){ return hideFromUsage; }<a name="line.764"></a>
+<span class="sourceLineNo">765</span><a name="line.765"></a>
+<span class="sourceLineNo">766</span>        @Nullable final Supplier&lt;? extends T&gt; defaultValueSupplier(){ return defaultValueSupplier; }<a name="line.766"></a>
+<span class="sourceLineNo">767</span><a name="line.767"></a>
+<span class="sourceLineNo">768</span>        @Nonnull final Function&lt;T, T&gt; finalizer(){ return finalizer; }<a name="line.768"></a>
+<span class="sourceLineNo">769</span>        @Nonnull final Predicate&lt;? super T&gt; limiter(){ return limiter; }<a name="line.769"></a>
+<span class="sourceLineNo">770</span><a name="line.770"></a>
+<span class="sourceLineNo">771</span>        private void checkNoSpaces(Iterable&lt;String&gt; argumentNames)<a name="line.771"></a>
+<span class="sourceLineNo">772</span>        {<a name="line.772"></a>
+<span class="sourceLineNo">773</span>                for(String name : argumentNames)<a name="line.773"></a>
+<span class="sourceLineNo">774</span>                {<a name="line.774"></a>
+<span class="sourceLineNo">775</span>                        checkArgument(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);<a name="line.775"></a>
+<span class="sourceLineNo">776</span>                }<a name="line.776"></a>
+<span class="sourceLineNo">777</span>        }<a name="line.777"></a>
+<span class="sourceLineNo">778</span><a name="line.778"></a>
+<span class="sourceLineNo">779</span>        /**<a name="line.779"></a>
+<span class="sourceLineNo">780</span>         * @formatter.on<a name="line.780"></a>
+<span class="sourceLineNo">781</span>         */<a name="line.781"></a>
+<span class="sourceLineNo">782</span><a name="line.782"></a>
+<span class="sourceLineNo">783</span>        /**<a name="line.783"></a>
+<span class="sourceLineNo">784</span>         * A very simple version of an {@link ArgumentBuilder}, it's exposed mainly to<a name="line.784"></a>
+<span class="sourceLineNo">785</span>         * lessen the exposure of the {@code SELF_TYPE} argument of the {@link ArgumentBuilder}.<a name="line.785"></a>
+<span class="sourceLineNo">786</span>         */<a name="line.786"></a>
+<span class="sourceLineNo">787</span>        @NotThreadSafe<a name="line.787"></a>
+<span class="sourceLineNo">788</span>        public static final class DefaultArgumentBuilder&lt;T&gt; extends ArgumentBuilder&lt;DefaultArgumentBuilder&lt;T&gt;, T&gt;<a name="line.788"></a>
+<span class="sourceLineNo">789</span>        {<a name="line.789"></a>
+<span class="sourceLineNo">790</span>                private final StringParser&lt;T&gt; parser;<a name="line.790"></a>
+<span class="sourceLineNo">791</span><a name="line.791"></a>
+<span class="sourceLineNo">792</span>                DefaultArgumentBuilder(final StringParser&lt;T&gt; aParser)<a name="line.792"></a>
+<span class="sourceLineNo">793</span>                {<a name="line.793"></a>
+<span class="sourceLineNo">794</span>                        parser = checkNotNull(aParser);<a name="line.794"></a>
+<span class="sourceLineNo">795</span>                }<a name="line.795"></a>
+<span class="sourceLineNo">796</span><a name="line.796"></a>
+<span class="sourceLineNo">797</span>                @Override<a name="line.797"></a>
+<span class="sourceLineNo">798</span>                protected StringParser&lt;T&gt; parser()<a name="line.798"></a>
+<span class="sourceLineNo">799</span>                {<a name="line.799"></a>
+<span class="sourceLineNo">800</span>                        return parser;<a name="line.800"></a>
+<span class="sourceLineNo">801</span>                }<a name="line.801"></a>
+<span class="sourceLineNo">802</span>        }<a name="line.802"></a>
+<span class="sourceLineNo">803</span><a name="line.803"></a>
+<span class="sourceLineNo">804</span>        // Non-Interesting builders below, most declarations under here handles<a name="line.804"></a>
+<span class="sourceLineNo">805</span>        // (by deprecating) invalid invariants between different argument properties<a name="line.805"></a>
+<span class="sourceLineNo">806</span><a name="line.806"></a>
+<span class="sourceLineNo">807</span>        private abstract static class InternalArgumentBuilder&lt;BUILDER extends InternalArgumentBuilder&lt;BUILDER, T&gt;, T&gt; extends ArgumentBuilder&lt;BUILDER, T&gt;<a name="line.807"></a>
+<span class="sourceLineNo">808</span>        {<a name="line.808"></a>
+<span class="sourceLineNo">809</span>                /**<a name="line.809"></a>
+<span class="sourceLineNo">810</span>                 * Only used to flag that this builder is an internal one, not used for parsing<a name="line.810"></a>
+<span class="sourceLineNo">811</span>                 */<a name="line.811"></a>
+<span class="sourceLineNo">812</span>                static final StringParser&lt;?&gt; MARKER = new StringParserBridge&lt;String&gt;(StringParsers.stringParser());<a name="line.812"></a>
+<span class="sourceLineNo">813</span><a name="line.813"></a>
+<span class="sourceLineNo">814</span>                InternalArgumentBuilder()<a name="line.814"></a>
+<span class="sourceLineNo">815</span>                {<a name="line.815"></a>
+<span class="sourceLineNo">816</span><a name="line.816"></a>
+<span class="sourceLineNo">817</span>                }<a name="line.817"></a>
+<span class="sourceLineNo">818</span><a name="line.818"></a>
+<span class="sourceLineNo">819</span>                InternalArgumentBuilder(InternalStringParser&lt;T&gt; parser)<a name="line.819"></a>
+<span class="sourceLineNo">820</span>                {<a name="line.820"></a>
+<span class="sourceLineNo">821</span>                        super(parser);<a name="line.821"></a>
+<span class="sourceLineNo">822</span>                }<a name="line.822"></a>
+<span class="sourceLineNo">823</span><a name="line.823"></a>
+<span class="sourceLineNo">824</span>                @SuppressWarnings("unchecked")<a name="line.824"></a>
+<span class="sourceLineNo">825</span>                @Override<a name="line.825"></a>
+<span class="sourceLineNo">826</span>                protected StringParser&lt;T&gt; parser()<a name="line.826"></a>
+<span class="sourceLineNo">827</span>                {<a name="line.827"></a>
+<span class="sourceLineNo">828</span>                        return (StringParser&lt;T&gt;) MARKER;<a name="line.828"></a>
+<span class="sourceLineNo">829</span>                }<a name="line.829"></a>
+<span class="sourceLineNo">830</span>        }<a name="line.830"></a>
+<span class="sourceLineNo">831</span><a name="line.831"></a>
+<span class="sourceLineNo">832</span>        /**<a name="line.832"></a>
+<span class="sourceLineNo">833</span>         * The {@link InternalStringParser} equivalent to<a name="line.833"></a>
+<span class="sourceLineNo">834</span>         * {@link se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder}<a name="line.834"></a>
+<span class="sourceLineNo">835</span>         */<a name="line.835"></a>
+<span class="sourceLineNo">836</span>        static final class SimpleArgumentBuilder&lt;T&gt; extends InternalArgumentBuilder&lt;SimpleArgumentBuilder&lt;T&gt;, T&gt;<a name="line.836"></a>
+<span class="sourceLineNo">837</span>        {<a name="line.837"></a>
+<span class="sourceLineNo">838</span>                SimpleArgumentBuilder(InternalStringParser&lt;T&gt; parser)<a name="line.838"></a>
+<span class="sourceLineNo">839</span>                {<a name="line.839"></a>
+<span class="sourceLineNo">840</span>                        super(parser);<a name="line.840"></a>
+<span class="sourceLineNo">841</span>                }<a name="line.841"></a>
+<span class="sourceLineNo">842</span>        }<a name="line.842"></a>
+<span class="sourceLineNo">843</span><a name="line.843"></a>
+<span class="sourceLineNo">844</span>        /**<a name="line.844"></a>
+<span class="sourceLineNo">845</span>         * Builder for {@link Command}s. Created with {@link Arguments#command(Command)}.<a name="line.845"></a>
+<span class="sourceLineNo">846</span>         */<a name="line.846"></a>
+<span class="sourceLineNo">847</span>        @NotThreadSafe<a name="line.847"></a>
+<span class="sourceLineNo">848</span>        public static final class CommandBuilder extends InternalArgumentBuilder&lt;CommandBuilder, ParsedArguments&gt;<a name="line.848"></a>
+<span class="sourceLineNo">849</span>        {<a name="line.849"></a>
+<span class="sourceLineNo">850</span>                CommandBuilder(final Command command)<a name="line.850"></a>
+<span class="sourceLineNo">851</span>                {<a name="line.851"></a>
+<span class="sourceLineNo">852</span>                        super(command);<a name="line.852"></a>
+<span class="sourceLineNo">853</span>                }<a name="line.853"></a>
+<span class="sourceLineNo">854</span><a name="line.854"></a>
+<span class="sourceLineNo">855</span>                /**<a name="line.855"></a>
+<span class="sourceLineNo">856</span>                 * @deprecated Commands shouldn't be required<a name="line.856"></a>
+<span class="sourceLineNo">857</span>                 */<a name="line.857"></a>
+<span class="sourceLineNo">858</span>                @Deprecated<a name="line.858"></a>
+<span class="sourceLineNo">859</span>                @Override<a name="line.859"></a>
+<span class="sourceLineNo">860</span>                public CommandBuilder required()<a name="line.860"></a>
+<span class="sourceLineNo">861</span>                {<a name="line.861"></a>
+<span class="sourceLineNo">862</span>                        throw new IllegalStateException();<a name="line.862"></a>
+<span class="sourceLineNo">863</span>                }<a name="line.863"></a>
+<span class="sourceLineNo">864</span><a name="line.864"></a>
+<span class="sourceLineNo">865</span>                /**<a name="line.865"></a>
+<span class="sourceLineNo">866</span>                 * @deprecated Commands shouldn't have default values<a name="line.866"></a>
+<span class="sourceLineNo">867</span>                 */<a name="line.867"></a>
+<span class="sourceLineNo">868</span>                @Deprecated<a name="line.868"></a>
+<span class="sourceLineNo">869</span>                @Override<a name="line.869"></a>
+<span class="sourceLineNo">870</span>                public CommandBuilder defaultValue(ParsedArguments defaultValue)<a name="line.870"></a>
+<span class="sourceLineNo">871</span>                {<a name="line.871"></a>
+<span class="sourceLineNo">872</span>                        throw new IllegalStateException();<a name="line.872"></a>
+<span class="sourceLineNo">873</span>                }<a name="line.873"></a>
+<span class="sourceLineNo">874</span><a name="line.874"></a>
+<span class="sourceLineNo">875</span>                /**<a name="line.875"></a>
+<span class="sourceLineNo">876</span>                 * @deprecated Commands shouldn't have default values<a name="line.876"></a>
+<span class="sourceLineNo">877</span>                 */<a name="line.877"></a>
+<span class="sourceLineNo">878</span>                @Deprecated<a name="line.878"></a>
+<span class="sourceLineNo">879</span>                @Override<a name="line.879"></a>
+<span class="sourceLineNo">880</span>                public CommandBuilder defaultValueSupplier(Supplier&lt;? extends ParsedArguments&gt; defaultValueSupplier)<a name="line.880"></a>
+<span class="sourceLineNo">881</span>                {<a name="line.881"></a>
+<span class="sourceLineNo">882</span>                        throw new IllegalStateException();<a name="line.882"></a>
+<span class="sourceLineNo">883</span>                }<a name="line.883"></a>
+<span class="sourceLineNo">884</span><a name="line.884"></a>
+<span class="sourceLineNo">885</span>                /**<a name="line.885"></a>
+<span class="sourceLineNo">886</span>                 * @deprecated Commands can't have default values, so no description can be useful<a name="line.886"></a>
+<span class="sourceLineNo">887</span>                 */<a name="line.887"></a>
+<span class="sourceLineNo">888</span>                @Deprecated<a name="line.888"></a>
+<span class="sourceLineNo">889</span>                @Override<a name="line.889"></a>
+<span class="sourceLineNo">890</span>                public CommandBuilder defaultValueDescription(String defaultValueDescription)<a name="line.890"></a>
+<span class="sourceLineNo">891</span>                {<a name="line.891"></a>
+<span class="sourceLineNo">892</span>                        throw new IllegalStateException();<a name="line.892"></a>
+<span class="sourceLineNo">893</span>                }<a name="line.893"></a>
+<span class="sourceLineNo">894</span><a name="line.894"></a>
+<span class="sourceLineNo">895</span>                /**<a name="line.895"></a>
+<span class="sourceLineNo">896</span>                 * @deprecated Commands can't have default values, so no description can be useful<a name="line.896"></a>
+<span class="sourceLineNo">897</span>                 */<a name="line.897"></a>
+<span class="sourceLineNo">898</span>                @Deprecated<a name="line.898"></a>
+<span class="sourceLineNo">899</span>                @Override<a name="line.899"></a>
+<span class="sourceLineNo">900</span>                public CommandBuilder defaultValueDescriber(Describer&lt;? super ParsedArguments&gt; defaultValueDescriber)<a name="line.900"></a>
+<span class="sourceLineNo">901</span>                {<a name="line.901"></a>
+<span class="sourceLineNo">902</span>                        throw new IllegalStateException();<a name="line.902"></a>
+<span class="sourceLineNo">903</span>                }<a name="line.903"></a>
+<span class="sourceLineNo">904</span><a name="line.904"></a>
+<span class="sourceLineNo">905</span>                /**<a name="line.905"></a>
+<span class="sourceLineNo">906</span>                 * @deprecated Commands can't be limited<a name="line.906"></a>
+<span class="sourceLineNo">907</span>                 */<a name="line.907"></a>
+<span class="sourceLineNo">908</span>                @Deprecated<a name="line.908"></a>
+<span class="sourceLineNo">909</span>                @Override<a name="line.909"></a>
+<span class="sourceLineNo">910</span>                public CommandBuilder limitTo(Predicate&lt;? super ParsedArguments&gt; limiter)<a name="line.910"></a>
+<span class="sourceLineNo">911</span>                {<a name="line.911"></a>
+<span class="sourceLineNo">912</span>                        throw new IllegalStateException();<a name="line.912"></a>
+<span class="sourceLineNo">913</span>                }<a name="line.913"></a>
+<span class="sourceLineNo">914</span><a name="line.914"></a>
+<span class="sourceLineNo">915</span>                /**<a name="line.915"></a>
+<span class="sourceLineNo">916</span>                 * @deprecated Commands can't be split<a name="line.916"></a>
+<span class="sourceLineNo">917</span>                 */<a name="line.917"></a>
+<span class="sourceLineNo">918</span>                @Deprecated<a name="line.918"></a>
+<span class="sourceLineNo">919</span>                @Override<a name="line.919"></a>
+<span class="sourceLineNo">920</span>                public SplitterArgumentBuilder&lt;ParsedArguments&gt; splitWith(String valueSeparator)<a name="line.920"></a>
+<span class="sourceLineNo">921</span>                {<a name="line.921"></a>
+<span class="sourceLineNo">922</span>                        throw new IllegalStateException();<a name="line.922"></a>
+<span class="sourceLineNo">923</span>                }<a name="line.923"></a>
+<span class="sourceLineNo">924</span><a name="line.924"></a>
+<span class="sourceLineNo">925</span>                /**<a name="line.925"></a>
+<span class="sourceLineNo">926</span>                 * @deprecated pass any {@link Argument}s to your {@link Command} to<a name="line.926"></a>
+<span class="sourceLineNo">927</span>                 *             {@link Command#Command(Argument...)}<a name="line.927"></a>
+<span class="sourceLineNo">928</span>                 */<a name="line.928"></a>
+<span class="sourceLineNo">929</span>                @Deprecated<a name="line.929"></a>
+<span class="sourceLineNo">930</span>                @Override<a name="line.930"></a>
+<span class="sourceLineNo">931</span>                public ArityArgumentBuilder&lt;ParsedArguments&gt; arity(int arity)<a name="line.931"></a>
+<span class="sourceLineNo">932</span>                {<a name="line.932"></a>
+<span class="sourceLineNo">933</span>                        throw new IllegalStateException();<a name="line.933"></a>
+<span class="sourceLineNo">934</span>                }<a name="line.934"></a>
+<span class="sourceLineNo">935</span><a name="line.935"></a>
+<span class="sourceLineNo">936</span>                /**<a name="line.936"></a>
+<span class="sourceLineNo">937</span>                 * @deprecated pass any {@link Argument}s to your {@link Command} to<a name="line.937"></a>
+<span class="sourceLineNo">938</span>                 *             {@link Command#Command(Argument...)}<a name="line.938"></a>
+<span class="sourceLineNo">939</span>                 */<a name="line.939"></a>
+<span class="sourceLineNo">940</span>                @Deprecated<a name="line.940"></a>
+<span class="sourceLineNo">941</span>                @Override<a name="line.941"></a>
+<span class="sourceLineNo">942</span>                public ArityArgumentBuilder&lt;ParsedArguments&gt; variableArity()<a name="line.942"></a>
+<span class="sourceLineNo">943</span>                {<a name="line.943"></a>
+<span class="sourceLineNo">944</span>                        throw new IllegalStateException();<a name="line.944"></a>
+<span class="sourceLineNo">945</span>                }<a name="line.945"></a>
+<span class="sourceLineNo">946</span>        }<a name="line.946"></a>
+<span class="sourceLineNo">947</span><a name="line.947"></a>
+<span class="sourceLineNo">948</span>        private static class ListArgumentBuilder&lt;BUILDER extends ListArgumentBuilder&lt;BUILDER, T&gt;, T&gt; extends InternalArgumentBuilder&lt;BUILDER, List&lt;T&gt;&gt;<a name="line.948"></a>
+<span class="sourceLineNo">949</span>        {<a name="line.949"></a>
+<span class="sourceLineNo">950</span>                ListArgumentBuilder(InternalStringParser&lt;List&lt;T&gt;&gt; parser)<a name="line.950"></a>
+<span class="sourceLineNo">951</span>                {<a name="line.951"></a>
+<span class="sourceLineNo">952</span>                        super(parser);<a name="line.952"></a>
+<span class="sourceLineNo">953</span>                }<a name="line.953"></a>
+<span class="sourceLineNo">954</span><a name="line.954"></a>
+<span class="sourceLineNo">955</span>                void copyAsListBuilder(ArgumentBuilder&lt;?, T&gt; builder, int nrOfElementsInDefaultValue)<a name="line.955"></a>
+<span class="sourceLineNo">956</span>                {<a name="line.956"></a>
+<span class="sourceLineNo">957</span>                        finalizeWith(listTransformer(builder.finalizer));<a name="line.957"></a>
+<span class="sourceLineNo">958</span>                        finalizeWith(Functions2.&lt;T&gt;unmodifiableList());<a name="line.958"></a>
+<span class="sourceLineNo">959</span>                        limitTo(listPredicate(builder.limiter));<a name="line.959"></a>
+<span class="sourceLineNo">960</span>                        if(builder.defaultValueSupplier != null)<a name="line.960"></a>
+<span class="sourceLineNo">961</span>                        {<a name="line.961"></a>
+<span class="sourceLineNo">962</span>                                defaultValueSupplier(Suppliers2.ofRepeatedElements(builder.defaultValueSupplier, nrOfElementsInDefaultValue));<a name="line.962"></a>
+<span class="sourceLineNo">963</span>                        }<a name="line.963"></a>
+<span class="sourceLineNo">964</span>                        if(builder.defaultValueDescriber != null)<a name="line.964"></a>
+<span class="sourceLineNo">965</span>                        {<a name="line.965"></a>
+<span class="sourceLineNo">966</span>                                defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));<a name="line.966"></a>
+<span class="sourceLineNo">967</span>                        }<a name="line.967"></a>
 <span class="sourceLineNo">968</span>                }<a name="line.968"></a>
 <span class="sourceLineNo">969</span>        }<a name="line.969"></a>
 <span class="sourceLineNo">970</span><a name="line.970"></a>
@@ -1200,7 +1200,7 @@
 <span class="sourceLineNo">1192</span>                @SuppressWarnings("unchecked")<a name="line.1192"></a>
 <span class="sourceLineNo">1193</span>                @Override<a name="line.1193"></a>
 <span class="sourceLineNo">1194</span>                Describer&lt;? super Map&lt;K, V&gt;&gt; defaultValueDescriber()<a name="line.1194"></a>
-<span class="sourceLineNo">1195</span>                {<a name="line.1195"></a>
+<span class="sourceLineNo">1195</span>                                {<a name="line.1195"></a>
 <span class="sourceLineNo">1196</span>                        Describer&lt;? super Map&lt;K, V&gt;&gt; overriddenDescriber = super.defaultValueDescriber();<a name="line.1196"></a>
 <span class="sourceLineNo">1197</span>                        if(overriddenDescriber != null)<a name="line.1197"></a>
 <span class="sourceLineNo">1198</span>                                return overriddenDescriber;<a name="line.1198"></a>
@@ -1212,7 +1212,7 @@
 <span class="sourceLineNo">1204</span>                                return (Describer&lt;? super Map&lt;K, V&gt;&gt;) mapDescriber;<a name="line.1204"></a>
 <span class="sourceLineNo">1205</span>                        }<a name="line.1205"></a>
 <span class="sourceLineNo">1206</span>                        return Describers.mapDescriber(Describers.&lt;V&gt;toStringDescriber(), separator());<a name="line.1206"></a>
-<span class="sourceLineNo">1207</span>                }<a name="line.1207"></a>
+<span class="sourceLineNo">1207</span>                                }<a name="line.1207"></a>
 <span class="sourceLineNo">1208</span><a name="line.1208"></a>
 <span class="sourceLineNo">1209</span>                /**<a name="line.1209"></a>
 <span class="sourceLineNo">1210</span>                 * @deprecated because {@link #repeated()} should be called before {@link #asPropertyMap()}<a name="line.1210"></a>
@@ -1267,7 +1267,7 @@
 <span class="sourceLineNo">1259</span><a name="line.1259"></a>
 <span class="sourceLineNo">1260</span>        /**<a name="line.1260"></a>
 <span class="sourceLineNo">1261</span>         * An intermediate builder used by {@link #splitWith(String)}. It's mainly used to switch the T<a name="line.1261"></a>
-<span class="sourceLineNo">1262</span>         * argument of the previous builder to List&lt;T&gt; and to indicate invalid call orders.<a name="line.1262"></a>
+<span class="sourceLineNo">1262</span>         * argument of the previous builder to List&amp;lt;T&amp;gt; and to indicate invalid call orders.<a name="line.1262"></a>
 <span class="sourceLineNo">1263</span>         */<a name="line.1263"></a>
 <span class="sourceLineNo">1264</span>        @NotThreadSafe<a name="line.1264"></a>
 <span class="sourceLineNo">1265</span>        public static final class SplitterArgumentBuilder&lt;T&gt; extends ListArgumentBuilder&lt;SplitterArgumentBuilder&lt;T&gt;, T&gt;<a name="line.1265"></a>
