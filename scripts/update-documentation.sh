@@ -16,9 +16,6 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     echo "Generating documentation"
     mvn --quiet "javadoc:javadoc"
 
-    IFS=$'\n'
-    modules=($(mvn help:evaluate -Dexpression=project.modules | grep -v "^\[" | grep -v "<\/*strings>" | sed 's/<\/*string>//g' | sed 's/[[:space:]]//'))
-
     echo "Cloning the code for this repo"
     git clone $REPO $TARGET_BRANCH
     cd $TARGET_BRANCH
@@ -29,12 +26,13 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
 
     echo "Cleaning out old javadoc in repo"
     rm -rf javadoc/**/* || exit 0
+    cd ..
+    mvn --also-make dependency:tree | grep maven-dependency-plugin | awk 'NR>1 { print $(NF-1) }' | \
+    while read module ; do \
+    mkdir -p $TARGET_BRANCH/javadoc/$module
+    cp -R $module/target/site/apidocs/* $TARGET_BRANCH/javadoc/$module/; done
 
-    for module in "${modules[@]}"
-    do
-        mkdir -p javadoc/$module
-        cp -R ../$module/target/site/apidocs/* javadoc/$module/
-    done
+    cd $TARGET_BRANCH
 
     if [ -z `git diff --exit-code` ]; then
         echo "No changes to the documentation on this push; exiting."
