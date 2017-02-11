@@ -14,10 +14,15 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Arrays.asList;
-import static se.softhouse.jargo.Arguments.command;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
+import se.softhouse.jargo.StringParsers.RunnableParser;
 
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -25,16 +30,9 @@ import java.util.Locale;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
-
-import se.softhouse.common.strings.Describable;
-import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
-import se.softhouse.jargo.StringParsers.RunnableParser;
-
-import com.google.common.collect.Lists;
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.jargo.Arguments.command;
 
 /**
  * Manages multiple {@link Argument}s and/or {@link Command}s. The brain of this API.
@@ -57,7 +55,7 @@ import com.google.common.collect.Lists;
  * 						.defaultValue(8080)
  * 						.description("The port clients should connect to.")
  * 						.metaDescription("&lt;port&gt;")
- * 						.limitTo(Range.closed(0, 65536))
+ * 						.limitTo(number -> number >= 0 && number <= 65536)
  * 						.repeated().build();
  * 
  * try
@@ -287,7 +285,7 @@ public final class CommandLineParser
 		try
 		{
 			modifyGuard.lock();
-			List<Argument<?>> newDefinitions = Lists.newArrayList(parser().allArguments());
+			List<Argument<?>> newDefinitions = new ArrayList<>(parser().allArguments());
 			newDefinitions.addAll(argumentsToAdd);
 			cachedParser = new CommandLineParserInstance(newDefinitions, parser().programInformation(), parser().locale(), false);
 		}
@@ -354,7 +352,7 @@ public final class CommandLineParser
 		try
 		{
 			modifyGuard.lock();
-			cachedParser = new CommandLineParserInstance(parser().allArguments(), parser().programInformation(), checkNotNull(localeToUse), false);
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), parser().programInformation(), requireNonNull(localeToUse), false);
 		}
 		finally
 		{
@@ -374,7 +372,7 @@ public final class CommandLineParser
 
 	private static List<Argument<?>> commandsToArguments(final Command ... commands)
 	{
-		List<Argument<?>> commandsAsArguments = Lists.newArrayListWithExpectedSize(commands.length);
+		List<Argument<?>> commandsAsArguments = new ArrayList<>(commands.length);
 		for(Command c : commands)
 		{
 			commandsAsArguments.add(command(c).build());
@@ -384,7 +382,7 @@ public final class CommandLineParser
 
 	private static <E extends Enum<E> & Runnable & Describable> List<Argument<?>> commandsToArguments(Class<E> commandEnum)
 	{
-		List<Argument<?>> commandsAsArguments = Lists.newArrayList();
+		List<Argument<?>> commandsAsArguments = new ArrayList<>();
 		for(E command : commandEnum.getEnumConstants())
 		{
 			Argument<Object> commandAsArgument = new SimpleArgumentBuilder<Object>(new RunnableParser(command)) //

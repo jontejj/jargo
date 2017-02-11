@@ -14,7 +14,7 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.collect.Lists.asList;
+import static se.softhouse.common.guavaextensions.Lists2.asList;
 import static se.softhouse.common.strings.Describers.booleanAsEnabledDisabled;
 import static se.softhouse.common.strings.Describers.characterDescriber;
 import static se.softhouse.common.strings.Describers.fileDescriber;
@@ -39,6 +39,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import se.softhouse.common.guavaextensions.Lists2;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;

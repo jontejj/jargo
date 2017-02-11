@@ -14,12 +14,12 @@
  */
 package se.softhouse.jargo.limiters;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 final class LowNumbers implements Predicate<Number>
 {
 	@Override
-	public boolean apply(Number input)
+	public boolean test(Number input)
 	{
 		return input.byteValue() <= 4 && input.byteValue() >= 0;
 	}

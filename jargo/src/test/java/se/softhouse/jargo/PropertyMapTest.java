@@ -14,6 +14,22 @@
  */
 package se.softhouse.jargo;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Range;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.junit.Test;
+import se.softhouse.common.testlib.Explanation;
+import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
+import se.softhouse.jargo.internal.Texts.UserErrors;
+import se.softhouse.jargo.limiters.LimiterTest;
+import se.softhouse.jargo.stringparsers.custom.LimitedKeyParser;
+import se.softhouse.jargo.stringparsers.custom.ObjectParser;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.lang.String.format;
@@ -28,27 +44,8 @@ import static se.softhouse.jargo.StringParsers.byteParser;
 import static se.softhouse.jargo.StringParsers.integerParser;
 import static se.softhouse.jargo.internal.Texts.UserErrors.DISALLOWED_PROPERTY_VALUE;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-
-import se.softhouse.common.testlib.Explanation;
-import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
-import se.softhouse.jargo.internal.Texts.UserErrors;
-import se.softhouse.jargo.stringparsers.custom.LimitedKeyParser;
-import se.softhouse.jargo.stringparsers.custom.ObjectParser;
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Range;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 /**
  * Tests for {@link ArgumentBuilder#asPropertyMap()} and
@@ -164,7 +161,7 @@ public class PropertyMapTest
 	@Test
 	public void testLimitationOfPropertyMapKeysAndValues()
 	{
-		Predicate<Integer> zeroToTen = Range.closed(0, 10);
+		Predicate<Integer> zeroToTen = LimiterTest.java(Range.closed(0, 10));
 		Argument<Map<String, Integer>> argument = integerArgument("-I").limitTo(zeroToTen)
 				.asKeyValuesWithKeyParser(new LimitedKeyParser("foo", "bar")).build();
 
@@ -397,13 +394,7 @@ public class PropertyMapTest
 	public void testThatSystemPropertiesCanBeUsedAsTargetMap() throws Exception
 	{
 		Map<Object, Object> map = Arguments.withParser(new ObjectParser()).names("-D").asKeyValuesWithKeyParser(new ObjectParser())
-				.defaultValueSupplier(new Supplier<Map<Object, Object>>(){
-					@Override
-					public Map<Object, Object> get()
-					{
-						return System.getProperties();
-					}
-				}).parse("-Dsys.prop.test=foo");
+				.defaultValueSupplier(() -> System.getProperties()).parse("-Dsys.prop.test=foo");
 
 		assertThat(map.get("sys.prop.test")).isEqualTo("foo");
 		assertThat(System.getProperty("sys.prop.test")).isEqualTo("foo");

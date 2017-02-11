@@ -14,22 +14,26 @@
  */
 package se.softhouse.jargo;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 
 /**
  * <pre>
@@ -100,9 +104,9 @@ import com.google.common.collect.ImmutableList;
 @Immutable
 public abstract class Command extends InternalStringParser<ParsedArguments> implements Describable
 {
-	@Nonnull private final ImmutableList<Argument<?>> commandArguments;
+	@Nonnull private final List<Argument<?>> commandArguments;
 
-	@Nonnull private final Supplier<CommandLineParserInstance> commandArgumentParser = Suppliers.memoize(new Supplier<CommandLineParserInstance>(){
+	@Nonnull private final Supplier<CommandLineParserInstance> commandArgumentParser = Suppliers2.memoize(new Supplier<CommandLineParserInstance>(){
 		@Override
 		public CommandLineParserInstance get()
 		{
@@ -115,7 +119,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	 */
 	protected Command(Argument<?> ... commandArguments)
 	{
-		this.commandArguments = ImmutableList.copyOf(commandArguments);
+		this.commandArguments = unmodifiableList(asList(commandArguments));
 	}
 
 	/**

@@ -14,38 +14,30 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.not;
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Math.max;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.spaces;
-import static se.softhouse.jargo.Argument.IS_INDEXED;
-import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
-import static se.softhouse.jargo.Argument.IS_VISIBLE;
-
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.concurrent.NotThreadSafe;
-
 import se.softhouse.common.strings.Lines;
 import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static java.lang.Math.max;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.repeat;
+import static se.softhouse.jargo.Argument.IS_INDEXED;
+import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
+import static se.softhouse.jargo.Argument.IS_VISIBLE;
 
 /**
  * Responsible for formatting usage texts for {@link CommandLineParser#usage()} and
@@ -73,7 +65,6 @@ public final class Usage implements Serializable
 	/**
 	 * Corresponds to usage for a single {@link Argument}
 	 */
-	@VisibleForTesting
 	static final class Row
 	{
 		private final StringBuilder nameColumn = new StringBuilder();
@@ -106,7 +97,7 @@ public final class Usage implements Serializable
 	 * </pre>
 	 */
 	private transient int indexOfDescriptionColumn;
-	private transient ImmutableList<Argument<?>> argumentsToPrint;
+	private transient List<Argument<?>> argumentsToPrint;
 
 	Usage(Collection<Argument<?>> arguments, Locale locale, ProgramInformation program, boolean forCommand)
 	{
@@ -136,7 +127,7 @@ public final class Usage implements Serializable
 	 */
 	Usage withErrorMessage(String message)
 	{
-		this.errorMessage = checkNotNull(message);
+		this.errorMessage = requireNonNull(message);
 		return this;
 	}
 
@@ -259,22 +250,22 @@ public final class Usage implements Serializable
 		{
 			// The lack of synchronization is deliberate, repeated invocations will result in the
 			// same variables anyway
-			Collection<Argument<?>> visibleArguments = filter(unfilteredArguments, IS_VISIBLE);
-			this.argumentsToPrint = copyOf(sortedArguments(visibleArguments));
+			Stream<Argument<?>> visibleArguments = unfilteredArguments.stream().filter(IS_VISIBLE);
+			this.argumentsToPrint = sortedArguments(visibleArguments);
 			this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 		}
 	}
 
-	private Iterable<Argument<?>> sortedArguments(Collection<Argument<?>> arguments)
+	private List<Argument<?>> sortedArguments(Stream<Argument<?>> arguments)
 	{
-		Collection<Argument<?>> indexedArguments = filter(arguments, IS_INDEXED);
-		Iterable<Argument<?>> indexedWithoutVariableArity = filter(indexedArguments, not(IS_OF_VARIABLE_ARITY));
-		Iterable<Argument<?>> indexedWithVariableArity = filter(indexedArguments, IS_OF_VARIABLE_ARITY);
+		Stream<Argument<?>> indexedArguments = arguments.filter(IS_INDEXED);
+		Stream<Argument<?>> indexedWithoutVariableArity = indexedArguments.filter(IS_OF_VARIABLE_ARITY.negate());
+		Stream<Argument<?>> indexedWithVariableArity = indexedArguments.filter(IS_OF_VARIABLE_ARITY);
 
-		List<Argument<?>> sortedArgumentsByName = newArrayList(filter(arguments, not(IS_INDEXED)));
-		Collections.sort(sortedArgumentsByName, Argument.NAME_COMPARATOR);
+		Stream<Argument<?>> sortedArgumentsByName = arguments.filter(IS_INDEXED.negate()).sorted(Argument.NAME_COMPARATOR);
 
-		return Iterables.concat(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity);
+		Stream<Argument<?>> result = Stream.of(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity).flatMap(x -> x);
+		return unmodifiableList(result.collect(toList()));
 	}
 
 	private int determineLongestNameColumn()
@@ -321,8 +312,6 @@ public final class Usage implements Serializable
 		return !argumentsToPrint.isEmpty();
 	}
 
-	private static final Joiner NAME_JOINER = Joiner.on(UsageTexts.NAME_SEPARATOR);
-
 	/**
 	 * <pre>
 	 * Left column  | Right column:
@@ -341,8 +330,8 @@ public final class Usage implements Serializable
 	private Row usageForArgument(final Argument<?> arg)
 	{
 		Row row = new Row();
-
-		NAME_JOINER.appendTo(row.nameColumn, arg.names());
+;
+		row.nameColumn.append(String.join(UsageTexts.NAME_SEPARATOR, arg.names()));
 		row.nameColumn.append(arg.metaDescriptionInLeftColumn());
 
 		String description = arg.description();
@@ -391,18 +380,21 @@ public final class Usage implements Serializable
 			{
 				target.append(NEWLINE);
 			}
-			String spaces = spaces(UsageTexts.DEFAULT_VALUE_START.length());
+			String spaces = repeat(" ", UsageTexts.DEFAULT_VALUE_START.length());
 			descriptionOfDefaultValue = descriptionOfDefaultValue.replace(NEWLINE, NEWLINE + spaces);
 			target.append(UsageTexts.DEFAULT_VALUE_START).append(descriptionOfDefaultValue);
 		}
 	}
 
+	private static final Pattern BY_NEWLINE = Pattern.compile(NEWLINE);
+
 	private void appendRowTo(Row row, Appendable target) throws IOException
 	{
+
 		StringBuilder nameColumn = Lines.wrap(row.nameColumn, indexOfDescriptionColumn, locale);
 		String descriptionColumn = row.descriptionColumn.toString();
-		Iterable<String> nameLines = Splitter.on(NEWLINE).split(nameColumn);
-		Iterator<String> descriptionLines = Splitter.on(NEWLINE).split(descriptionColumn).iterator();
+		String[] nameLines = BY_NEWLINE.split(nameColumn);
+		Iterator<String> descriptionLines = BY_NEWLINE.splitAsStream(descriptionColumn).iterator();
 		for(String nameLine : nameLines)
 		{
 			target.append(nameLine);
@@ -410,14 +402,14 @@ public final class Usage implements Serializable
 			{
 				int lengthOfNameColumn = nameLine.length();
 				int paddingWidth = Math.max(1, indexOfDescriptionColumn - lengthOfNameColumn);
-				target.append(spaces(paddingWidth));
+				target.append(repeat(" ", paddingWidth));
 				target.append(descriptionLines.next());
 			}
 			target.append(NEWLINE);
 		}
 		while(descriptionLines.hasNext())
 		{
-			target.append(spaces(indexOfDescriptionColumn));
+			target.append(repeat(" ", indexOfDescriptionColumn));
 			target.append(descriptionLines.next());
 			target.append(NEWLINE);
 		}

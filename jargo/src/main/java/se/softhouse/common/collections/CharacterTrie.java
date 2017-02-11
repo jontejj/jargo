@@ -14,8 +14,6 @@
  */
 package se.softhouse.common.collections;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collections;
@@ -29,6 +27,8 @@ import java.util.TreeMap;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * <pre>
@@ -385,8 +385,8 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 	@Override
 	public V put(final String key, final V value)
 	{
-		checkNotNull(key, "Null key given, CharacterTrie does not support null keys as they are error-prone");
-		checkNotNull(value, "Null value given, CharacterTrie does not support null values as they are error-prone. "
+		requireNonNull(key, "Null key given, CharacterTrie does not support null keys as they are error-prone");
+		requireNonNull(value, "Null value given, CharacterTrie does not support null values as they are error-prone. "
 				+ "Use the Null Object Pattern instead.");
 
 		// Start at the root and search the tree for the entry to insert the

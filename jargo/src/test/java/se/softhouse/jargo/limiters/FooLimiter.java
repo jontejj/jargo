@@ -14,7 +14,7 @@
 */
 package se.softhouse.jargo.limiters;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 public class FooLimiter implements Predicate<String>
 {
@@ -24,7 +24,7 @@ public class FooLimiter implements Predicate<String>
 	}
 
 	@Override
-	public boolean apply(String value)
+	public boolean test(String value)
 	{
 		return "foo".equals(value);
 	}

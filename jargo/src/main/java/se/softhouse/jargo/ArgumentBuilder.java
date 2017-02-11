@@ -14,32 +14,6 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Objects.toStringHelper;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Iterables.isEmpty;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
-import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
-import static se.softhouse.common.strings.Describables.EMPTY_STRING;
-import static se.softhouse.common.strings.Describables.withString;
-import static se.softhouse.jargo.StringParsers.optionParser;
-import static se.softhouse.jargo.StringParsers.stringParser;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-
 import se.softhouse.common.guavaextensions.Functions2;
 import se.softhouse.common.guavaextensions.Predicates2;
 import se.softhouse.common.guavaextensions.Suppliers2;
@@ -57,16 +31,36 @@ import se.softhouse.jargo.StringParsers.VariableArityParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
-import com.google.common.annotations.Beta;
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Range;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
+import static se.softhouse.common.guavaextensions.Lists2.isEmpty;
+import static se.softhouse.common.guavaextensions.Lists2.newArrayList;
+import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
+import static se.softhouse.common.strings.Describables.EMPTY_STRING;
+import static se.softhouse.common.strings.Describables.withString;
+import static se.softhouse.jargo.StringParsers.optionParser;
+import static se.softhouse.jargo.StringParsers.stringParser;
 
 /**
  * <pre>
@@ -98,7 +92,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Nonnull private String separator = DEFAULT_SEPARATOR;
 	private boolean ignoreCase = false;
 	private boolean isAllowedToRepeat = false;
-	@Nonnull private Optional<String> metaDescription = Optional.absent();
+	@Nonnull private Optional<String> metaDescription = Optional.empty();
 	private boolean hideFromUsage = false;
 
 	private boolean isPropertyMap = false;
@@ -107,8 +101,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	// ListArgumentBuilder#copyAsListBuilder() when adding new ones
 	@Nullable private Supplier<? extends T> defaultValueSupplier = null;
 	@Nullable private Describer<? super T> defaultValueDescriber = null;
-	@Nonnull private Function<T, T> finalizer = Functions.identity();
-	@Nonnull private Predicate<? super T> limiter = Predicates.alwaysTrue();
+	@Nonnull private Function<T, T> finalizer = Function.identity();
+	@Nonnull private Predicate<? super T> limiter = (a) -> true;
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
@@ -248,7 +242,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	public SELF names(final String ... argumentNames)
 	{
 		checkNoSpaces(asList(argumentNames));
-		names = copyOf(argumentNames);
+		names = Arrays.asList(argumentNames);
 		return myself;
 	}
 
@@ -261,7 +255,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	public SELF names(final Iterable<String> argumentNames)
 	{
 		checkNoSpaces(argumentNames);
-		names = copyOf(argumentNames);
+		names = unmodifiableList(newArrayList(argumentNames));
 		return myself;
 	}
 
@@ -302,7 +296,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public final SELF description(final Describable theDescription)
 	{
-		description = checkNotNull(theDescription);
+		description = requireNonNull(theDescription);
 		return myself;
 	}
 
@@ -348,7 +342,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	public SELF defaultValue(@Nullable final T value)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
-		defaultValueSupplier = Suppliers.ofInstance(value);
+		defaultValueSupplier = () -> value;
 		return myself;
 	}
 
@@ -361,19 +355,16 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
 	 * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.
 	 *
-	 * <b>Note:</b> May be removed in the future if Guava is removed as a dependency
-	 *
 	 * Wrap your supplier with {@link Suppliers#memoize(Supplier)} if you want to cache created values.
 	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,
 	 * because these two methods are mutually exclusive
 	 */
-	@Beta
 	public SELF defaultValueSupplier(final Supplier<? extends T> aDefaultValueSupplier)
 	{
 		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
-		defaultValueSupplier = checkNotNull(aDefaultValueSupplier);
+		defaultValueSupplier = requireNonNull(aDefaultValueSupplier);
 		return myself;
 	}
 
@@ -400,7 +391,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF defaultValueDescriber(final Describer<? super T> describer)
 	{
-		this.defaultValueDescriber = checkNotNull(describer);
+		this.defaultValueDescriber = requireNonNull(describer);
 		return myself;
 	}
 
@@ -430,7 +421,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public final SELF metaDescription(final String aMetaDescription)
 	{
-		checkArgument(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
+		checkState(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
 		this.metaDescription = Optional.of(aMetaDescription);
 		return myself;
 	}
@@ -457,19 +448,18 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF separator(final String aSeparator)
 	{
-		separator = checkNotNull(aSeparator);
+		separator = requireNonNull(aSeparator);
 		return myself;
 	}
 
 	/**
 	 * <pre>
 	 * Limits values parsed so that they conform to some specific rule.
-	 * Only values for which {@link Predicate#apply(Object)} returns true, will be accepted.
+	 * Only values for which {@link Predicate#test(Object)} returns true, will be accepted.
 	 * Other values will cause an {@link ArgumentException}.
-	 * For example {@link Range#closed(Comparable, Comparable)} only allows values within a range.
 	 *
 	 * To override the default error message that is generated with {@link UserErrors#DISALLOWED_VALUE}
-	 * you can throw {@link IllegalArgumentException} from {@link Predicate#apply(Object)}. The detail
+	 * you can throw {@link IllegalArgumentException} from {@link Predicate#test(Object)}. The detail
 	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage()}.
 	 * When this is needed it's generally recommended to write a parser of its own instead.
 	 *
@@ -486,7 +476,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * @param aLimiter a limiter
 	 * @return this builder
 	 */
-	@Beta
 	public SELF limitTo(Predicate<? super T> aLimiter)
 	{
 		limiter = Predicates2.<T>and(limiter, aLimiter);
@@ -548,7 +537,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@CheckReturnValue
 	public final <K> MapArgumentBuilder<K, T> asKeyValuesWithKeyParser(StringParser<K> keyParser)
 	{
-		return new MapArgumentBuilder<K, T>(this, checkNotNull(keyParser));
+		return new MapArgumentBuilder<K, T>(this, requireNonNull(keyParser));
 	}
 
 	/**
@@ -558,7 +547,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * -numbers 1,2,3
 	 * where the resulting {@code List&lt;Integer&gt;} would contain 1, 2 and 3.
 	 *
-	 * Doesn't allow empty lists.
+	 * <b>Note:</b> Doesn't allow empty lists. Leading and trailing whitespace will be trimmed for each element.
 	 * </pre>
 	 *
 	 * @param valueSeparator the string to split the input with
@@ -625,7 +614,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
 	{
-		checkArgument(numberOfParameters > 1, ProgrammaticErrors.TO_SMALL_ARITY, numberOfParameters);
+		checkState(numberOfParameters > 1, ProgrammaticErrors.TO_SMALL_ARITY, numberOfParameters);
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
@@ -677,10 +666,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Override
 	public String toString()
 	{
-		return toStringHelper(this).omitNullValues().add("names", names).add("description", description).add("metaDescription", metaDescription)
-				.add("hideFromUsage", hideFromUsage).add("ignoreCase", ignoreCase).add("limiter", limiter).add("required", required)
-				.add("separator", separator).add("defaultValueDescriber", defaultValueDescriber).add("defaultValueSupplier", defaultValueSupplier)
-				.add("internalStringParser", internalStringParser).toString();
+		return new StringJoiner(", ", ArgumentBuilder.class.getSimpleName() + "[", "]")
+				.add("names=" + names).add("description=" + description).add("metaDescription=" + metaDescription)
+				.add("hideFromUsage=" + hideFromUsage).add("ignoreCase=" + ignoreCase).add("limiter=" + limiter).add("required=" + required)
+				.add("separator=" + separator).add("defaultValueDescriber=" + defaultValueDescriber).add("defaultValueSupplier=" + defaultValueSupplier)
+				.add("internalStringParser=" + internalStringParser).toString();
 	}
 
 	/**
@@ -772,7 +762,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	{
 		for(String name : argumentNames)
 		{
-			checkArgument(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);
+			checkState(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);
 		}
 	}
 
@@ -791,7 +781,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		DefaultArgumentBuilder(final StringParser<T> aParser)
 		{
-			parser = checkNotNull(aParser);
+			parser = requireNonNull(aParser);
 		}
 
 		@Override
@@ -1077,21 +1067,21 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@Override
 		public OptionArgumentBuilder defaultValue(@Nonnull Boolean value)
 		{
-			checkNotNull(value, ProgrammaticErrors.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
+			requireNonNull(value, ProgrammaticErrors.OPTION_DOES_NOT_ALLOW_NULL_AS_DEFAULT);
 			return super.defaultValue(value);
 		}
 
 		@Override
 		public OptionArgumentBuilder names(Iterable<String> argumentNames)
 		{
-			checkArgument(!isEmpty(argumentNames), ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
+			checkState(!isEmpty(argumentNames), ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
 		@Override
 		public OptionArgumentBuilder names(String ... argumentNames)
 		{
-			checkArgument(argumentNames.length >= 1, ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
+			checkState(argumentNames.length >= 1, ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
@@ -1253,7 +1243,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@Override
 		public MapArgumentBuilder<K, V> defaultValue(Map<K, V> defaultKeyValues)
 		{
-			return super.defaultValue(Maps.newLinkedHashMap(defaultKeyValues));
+			return super.defaultValue(new LinkedHashMap<>(defaultKeyValues));
 		}
 	}
 

@@ -14,11 +14,11 @@
  */
 package se.softhouse.jargo;
 
-import java.util.Locale;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * Parses {@link String}s into values of the type {@code T}.
@@ -79,7 +79,7 @@ import javax.annotation.concurrent.Immutable;
  * @see StringParsers
  */
 @Immutable
-public interface StringParser<T>
+public interface StringParser<T> extends Function<String, T>
 {
 	/**
 	 * Parses the given {@link String} into the type {@code T}
@@ -92,6 +92,27 @@ public interface StringParser<T>
 	 */
 	@Nonnull
 	T parse(String argument, Locale locale) throws ArgumentException;
+
+	/**
+	 * <pre>
+	 * Uses {@link StringParser#parse(String, Locale) parse} for input {@link String}s.
+	 * </pre>
+	 *
+	 * For example:
+	 *
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * List&lt;Integer&gt; result =  Arrays.asList("1", "3", "2").stream().map(StringParsers.integerParser()).collect(Collectors.toList());
+	 * </code>
+	 * </pre>
+	 *
+	 * <b>Note:</b>The parser will pass the {@link Locale#getDefault()} to
+	 * {@link StringParser#parse(String, Locale) parse}. Use
+	 * {@link StringParsers#asFunction(StringParser, Locale)} to specify a specific {@link Locale}
+	 * @param argument the string to convert
+	 * @return the parsed value
+	 */
+	default T apply(String argument){ return parse(argument, Locale.getDefault()); }
 
 	/**
 	 * Describes what values this {@link StringParser} accepts

@@ -14,19 +14,17 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 /**
- * Additional {@link Preconditions pre-condition} checks
+ * Some pre-condition checks for fail-fast behaviour
  */
 @Immutable
 public final class Preconditions2
@@ -36,11 +34,23 @@ public final class Preconditions2
 	}
 
 	/**
+	 * Checks that an expression is true
+	 *
+	 * @param expression a boolean expression
+	 * @param errorMessage the exception message to use if the check fails; will be converted to a
+	 *     string using {@link String#valueOf(Object)}
+	 * @throws IllegalStateException if {@code expression} is false
+	 */
+	public static void checkState(boolean expression, @Nullable String errorMessage, @Nullable Object ...args) {
+		if (!expression) {
+			throw new IllegalStateException(String.format(errorMessage, args));
+		}
+	}
+
+	/**
 	 * <pre>
 	 * Returns {@code items} as a <i>modifiable</i> {@link List} that's guaranteed not to contain
 	 * any nulls.
-	 * Use {@link ImmutableList#copyOf(Iterable)} if the returned list doesn't have to be
-	 * <i>modifiable</i> and a {@code message} isn't needed.
 	 * 
 	 * @throws NullPointerException with {@code message} (plus the index of the first
 	 *             <code>null</code> element) if any element in {@code items} is <code>null</code>
@@ -49,15 +59,18 @@ public final class Preconditions2
 	@Nonnull
 	public static <T> List<T> checkNulls(Iterable<T> items, String message)
 	{
-		checkNotNull(message, "a message describing what it is that is containing the elements must be given");
-		List<T> nullCheckedList = Lists.newArrayList(items);
+		requireNonNull(message, "a message describing what it is that is containing the elements must be given");
+		List<T> nullCheckedList = new ArrayList<T>();
 		int index = 0;
-		for(T element : nullCheckedList)
+		for(T element : items)
 		{
 			if(element == null)
 				throw new NullPointerException(message + " (discovered one at index " + index + ")");
+			nullCheckedList.add(element);
 			index++;
 		}
 		return nullCheckedList;
 	}
+
+
 }

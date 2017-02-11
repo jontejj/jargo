@@ -18,8 +18,9 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
+import se.softhouse.common.guavaextensions.Suppliers2;
+
+import java.util.function.Supplier;
 
 /**
  * Utilities for working with {@link Class} instances
@@ -45,23 +46,20 @@ public final class Classes
 		return MAIN_CLASS_NAME.get();
 	}
 
-	private static final Supplier<String> MAIN_CLASS_NAME = Suppliers.memoize(new Supplier<String>(){
-		@Override
-		public String get()
+	private static final Supplier<String> MAIN_CLASS_NAME = Suppliers2.memoize(() ->
+	{
+		Iterable<StackTraceElement[]> stacks = Thread.getAllStackTraces().values();
+		for(StackTraceElement[] currentStack : stacks)
 		{
-			Iterable<StackTraceElement[]> stacks = Thread.getAllStackTraces().values();
-			for(StackTraceElement[] currentStack : stacks)
+			if(currentStack.length == 0)
 			{
-				if(currentStack.length == 0)
-				{
-					continue;
-				}
-				StackTraceElement startMethod = currentStack[currentStack.length - 1];
-				if(startMethod.getMethodName().equals("main"))
-					return classNameFor(startMethod);
+				continue;
 			}
-			throw new IllegalStateException("No main method found in the stack traces, could it be that the main thread has been terminated?");
+			StackTraceElement startMethod = currentStack[currentStack.length - 1];
+			if(startMethod.getMethodName().equals("main"))
+				return classNameFor(startMethod);
 		}
+		throw new IllegalStateException("No main method found in the stack traces, could it be that the main thread has been terminated?");
 	});
 
 	private static String classNameFor(StackTraceElement element)

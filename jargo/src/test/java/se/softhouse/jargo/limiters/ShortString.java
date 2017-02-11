@@ -14,12 +14,12 @@
 */
 package se.softhouse.jargo.limiters;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 public class ShortString implements Predicate<String>
 {
 	@Override
-	public boolean apply(final String value)
+	public boolean test(final String value)
 	{
 		return value.length() < 10;
 	}

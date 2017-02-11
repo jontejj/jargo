@@ -20,6 +20,12 @@
 			<artifactId>guava-testlib</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
+		<dependency>
+			<!-- The stuff that java should have had from the start -->
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

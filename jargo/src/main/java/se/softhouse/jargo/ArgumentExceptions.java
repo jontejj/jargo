@@ -14,7 +14,7 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 import static se.softhouse.common.strings.StringsUtil.numberToPositionalString;
 
 import java.io.Serializable;
@@ -123,7 +123,7 @@ public final class ArgumentExceptions
 
 		WrappedArgumentException(final Throwable wrappedException)
 		{
-			this.wrappedException = checkNotNull(wrappedException);
+			this.wrappedException = requireNonNull(wrappedException);
 			initCause(wrappedException);
 		}
 
@@ -191,7 +191,7 @@ public final class ArgumentExceptions
 	@Nonnull
 	static ArgumentException forUnallowedRepetitionArgument(final String unhandledArgument)
 	{
-		checkNotNull(unhandledArgument);
+		requireNonNull(unhandledArgument);
 		return new SimpleArgumentException(Describables.format(UserErrors.DISALLOWED_REPETITION, unhandledArgument));
 	}
 

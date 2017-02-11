@@ -14,7 +14,7 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 
 import java.io.Serializable;
@@ -71,7 +71,7 @@ public abstract class ArgumentException extends RuntimeException
 	 */
 	public final ArgumentException andCause(Throwable cause)
 	{
-		initCause(checkNotNull(cause));
+		initCause(requireNonNull(cause));
 		return this;
 	}
 
@@ -120,7 +120,7 @@ public abstract class ArgumentException extends RuntimeException
 	 */
 	private Usage getUsage()
 	{
-		checkNotNull(usage, ProgrammaticErrors.NO_USAGE_AVAILABLE);
+		requireNonNull(usage, ProgrammaticErrors.NO_USAGE_AVAILABLE);
 		return usage;
 	}
 
@@ -145,7 +145,7 @@ public abstract class ArgumentException extends RuntimeException
 	 */
 	void withUsageReference(final String usageReference)
 	{
-		usageReferenceName = checkNotNull(usageReference);
+		usageReferenceName = requireNonNull(usageReference);
 	}
 
 	ArgumentException withUsageReference(final Argument<?> usageReference)

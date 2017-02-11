@@ -14,6 +14,28 @@
  */
 package se.softhouse.jargo.defaultvalues;
 
+import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.junit.Test;
+import se.softhouse.common.strings.Describer;
+import se.softhouse.common.testlib.Explanation;
+import se.softhouse.jargo.Argument;
+import se.softhouse.jargo.ArgumentBuilder;
+import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
+import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.ForwardingStringParser;
+import se.softhouse.jargo.StringParser;
+import se.softhouse.jargo.Usage;
+import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
+import se.softhouse.jargo.internal.Texts.UserErrors;
+import se.softhouse.jargo.stringparsers.custom.NullReturningParser;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -29,32 +51,6 @@ import static se.softhouse.jargo.limiters.FooLimiter.foos;
 import static se.softhouse.jargo.stringparsers.custom.ObjectParser.objectArgument;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.junit.Test;
-
-import se.softhouse.common.strings.Describer;
-import se.softhouse.common.testlib.Explanation;
-import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.ArgumentBuilder;
-import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;
-import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.ForwardingStringParser;
-import se.softhouse.jargo.StringParser;
-import se.softhouse.jargo.Usage;
-import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
-import se.softhouse.jargo.internal.Texts.UserErrors;
-import se.softhouse.jargo.stringparsers.custom.NullReturningParser;
-
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Range;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Tests for {@link StringParser#defaultValue()}, {@link ArgumentBuilder#defaultValue(Object)} and
@@ -106,7 +102,7 @@ public class DefaultValueTest
 	public void testThatDefaultValueSupplierIsNotUsedWhenArgumentIsGiven() throws ArgumentException
 	{
 		ProfilingSupplier profiler = new ProfilingSupplier();
-		int one = integerArgument().defaultValueSupplier(profiler).limitTo(Range.closed(0, 10)).parse("1");
+		int one = integerArgument().defaultValueSupplier(profiler).parse("1");
 		assertThat(one).isEqualTo(1);
 		assertThat(profiler.callsToGet).isZero();
 	}
