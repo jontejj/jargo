@@ -28,7 +28,7 @@ import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 
 
@@ -266,7 +266,7 @@ public final class Describers
 				result.append("=");
 				result.append(entry.getValue());
 				String descriptionForEntry = descriptions.get(key);
-				checkState(descriptionForEntry != null, "Undescribed key: %s", key);
+				check(descriptionForEntry != null, "Undescribed key: %s", key);
 				result.append(NEWLINE).append(" ").append(descriptionForEntry).append(NEWLINE);
 			}
 			return result.toString();

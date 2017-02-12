@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.of;
 import static se.softhouse.common.guavaextensions.Lists2.isEmpty;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 
 /**
  * Utilities for working with {@link String}s
@@ -110,7 +110,7 @@ public final class StringsUtil
 	public static String closestMatch(final String input, final Iterable<String> validOptions)
 	{
 		requireNonNull(input);
-		checkState(!isEmpty(validOptions), "No valid options to match the input against");
+		check(!isEmpty(validOptions), "No valid options to match the input against");
 
 		int shortestDistance = Integer.MAX_VALUE;
 		String bestGuess = null;
@@ -196,7 +196,7 @@ public final class StringsUtil
 	{
 		requireNonNull(left);
 		requireNonNull(right);
-		checkState(maxDistance >= 0, "only zero or positive distance supported. Not ", maxDistance);
+		check(maxDistance >= 0, "only zero or positive distance supported. Not ", maxDistance);
 
 		// a "cleaner" version of the org.apache.commons-lang algorithm which in
 		// turn was inspired by http://www.merriampark.com/ldjava.htm
@@ -263,7 +263,7 @@ public final class StringsUtil
 	@CheckReturnValue
 	public static String numberToPositionalString(int number)
 	{
-		checkState(number >= 0, "Negative numbers don't have positions");
+		check(number >= 0, "Negative numbers don't have positions");
 		switch(number)
 		{
 		case 0:
@@ -296,7 +296,7 @@ public final class StringsUtil
 	{
 		requireNonNull(haystack);
 		requireNonNull(needle);
-		checkState(nth > 0, "nth must be at least 1 (was %s)", nth);
+		check(nth > 0, "nth must be at least 1 (was %s)", nth);
 		int occurencesFound = 0;
 		int index = -1;
 		while(occurencesFound < nth)
@@ -320,6 +320,7 @@ public final class StringsUtil
 	@CheckReturnValue
 	public static String repeat(String part, int times)
 	{
+		check(times >= 0, "Negative repitions is not supported. Was: ", times);
 		StringBuilder builder = new StringBuilder(part.length() * times);
 		for(int i = 0; i < times; i++)
 			builder.append(part);

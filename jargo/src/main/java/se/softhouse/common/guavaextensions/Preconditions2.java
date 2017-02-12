@@ -14,14 +14,13 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Some pre-condition checks for fail-fast behaviour
@@ -41,9 +40,9 @@ public final class Preconditions2
 	 *     string using {@link String#valueOf(Object)}
 	 * @throws IllegalStateException if {@code expression} is false
 	 */
-	public static void checkState(boolean expression, @Nullable String errorMessage, @Nullable Object ...args) {
+	public static void check(boolean expression, @Nullable String errorMessage, @Nullable Object ...args) {
 		if (!expression) {
-			throw new IllegalStateException(String.format(errorMessage, args));
+			throw new IllegalArgumentException(String.format(errorMessage, args));
 		}
 	}
 

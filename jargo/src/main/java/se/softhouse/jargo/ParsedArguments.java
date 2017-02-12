@@ -29,7 +29,7 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.guavaextensions.Predicates2.in;
 import static se.softhouse.jargo.Argument.IS_REQUIRED;
 
@@ -69,7 +69,7 @@ public final class ParsedArguments
 	{
 		if(!wasGiven(argumentToFetch))
 		{
-			checkState(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
+			check(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
 			return argumentToFetch.defaultValue();
 		}
 		return getValue(argumentToFetch);

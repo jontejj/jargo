@@ -85,7 +85,7 @@ public class FinalizerTest
 		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage()).contains("Default: foo");
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatDefaultValueIsFinalizedBeforeLimitIsChecked()
 	{

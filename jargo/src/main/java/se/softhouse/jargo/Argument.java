@@ -107,13 +107,7 @@ public final class Argument<T>
 		}
 		else
 		{
-			this.defaultValue = new Supplier<T>(){
-				@Override
-				public T get()
-				{
-					return parser.defaultValue();
-				}
-			};
+			this.defaultValue = (Supplier<T>) parser::defaultValue;
 		}
 
 		// Fail-fast for invalid default values that are created already
@@ -230,18 +224,23 @@ public final class Argument<T>
 
 	private void checkLimitForDefaultValue(@Nullable final T value)
 	{
+		boolean error = false;
 		try
 		{
 			if(!limiter.test(value))
 			{
-				String disallowedValue = String.format(UserErrors.DISALLOWED_VALUE, value, limiter);
-				throw new IllegalStateException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, disallowedValue));
+				error = true;
 			}
 		}
 		catch(IllegalArgumentException invalidDefaultValue)
 		{
-			throw new IllegalStateException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, invalidDefaultValue.getMessage()),
+			throw new IllegalArgumentException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, invalidDefaultValue.getMessage()),
 					invalidDefaultValue);
+		}
+		if(error)
+		{
+			String disallowedValue = String.format(UserErrors.DISALLOWED_VALUE, value, limiter);
+			throw new IllegalArgumentException(String.format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, disallowedValue));
 		}
 	}
 

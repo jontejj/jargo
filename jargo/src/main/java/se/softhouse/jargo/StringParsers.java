@@ -45,6 +45,7 @@ import java.util.regex.Pattern;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.common.strings.StringsUtil.repeat;
 import static se.softhouse.jargo.ArgumentExceptions.forMissingNthParameter;
@@ -312,10 +313,9 @@ public final class StringParsers
 		public String descriptionOfValidValues(Locale locale)
 		{
 			E[] enumValues = enumType.getEnumConstants();
-			StringBuilder values = StringBuilders.withExpectedSize(enumValues.length * AVERAGE_ENUM_NAME_LENGTH);
 			StringJoiner joiner = new StringJoiner(" | ", "{", "}");
 			Arrays.stream(enumValues).forEach(e -> joiner.add(e.toString()));
-			return values.toString();
+			return joiner.toString();
 		}
 
 		private static final int AVERAGE_ENUM_NAME_LENGTH = 10;
@@ -832,6 +832,7 @@ public final class StringParsers
 		StringSplitterParser(final String valueSeparator, final InternalStringParser<T> parser)
 		{
 			super(parser);
+			check(!valueSeparator.isEmpty(), "Splitting with an empty string is not supported");
 			this.valueSeparator = valueSeparator;
 			this.splitter = Pattern.compile(valueSeparator);
 		}

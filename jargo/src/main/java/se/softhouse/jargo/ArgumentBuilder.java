@@ -55,7 +55,7 @@ import static java.util.Objects.requireNonNull;
 import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
 import static se.softhouse.common.guavaextensions.Lists2.isEmpty;
 import static se.softhouse.common.guavaextensions.Lists2.newArrayList;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
 import static se.softhouse.common.strings.Describables.EMPTY_STRING;
 import static se.softhouse.common.strings.Describables.withString;
@@ -102,7 +102,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Nullable private Supplier<? extends T> defaultValueSupplier = null;
 	@Nullable private Describer<? super T> defaultValueDescriber = null;
 	@Nonnull private Function<T, T> finalizer = Function.identity();
-	@Nonnull private Predicate<? super T> limiter = (a) -> true;
+	@Nonnull private Predicate<? super T> limiter = Predicates2.alwaysTrue();
 
 	@Nullable private final InternalStringParser<T> internalStringParser;
 
@@ -320,7 +320,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF required()
 	{
-		checkState(defaultValueSupplier == null, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
+		check(defaultValueSupplier == null, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		required = true;
 		return myself;
 	}
@@ -341,8 +341,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF defaultValue(@Nullable final T value)
 	{
-		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
-		defaultValueSupplier = () -> value;
+		check(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
+		defaultValueSupplier = Suppliers2.ofInstance(value);
 		return myself;
 	}
 
@@ -363,7 +363,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF defaultValueSupplier(final Supplier<? extends T> aDefaultValueSupplier)
 	{
-		checkState(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
+		check(!required, ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		defaultValueSupplier = requireNonNull(aDefaultValueSupplier);
 		return myself;
 	}
@@ -421,7 +421,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public final SELF metaDescription(final String aMetaDescription)
 	{
-		checkState(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
+		check(aMetaDescription.length() > 0, ProgrammaticErrors.INVALID_META_DESCRIPTION);
 		this.metaDescription = Optional.of(aMetaDescription);
 		return myself;
 	}
@@ -614,7 +614,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@CheckReturnValue
 	public ArityArgumentBuilder<T> arity(final int numberOfParameters)
 	{
-		checkState(numberOfParameters > 1, ProgrammaticErrors.TO_SMALL_ARITY, numberOfParameters);
+		check(numberOfParameters > 1, ProgrammaticErrors.TO_SMALL_ARITY, numberOfParameters);
 		return new ArityArgumentBuilder<T>(this, numberOfParameters);
 	}
 
@@ -666,7 +666,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Override
 	public String toString()
 	{
-		return new StringJoiner(", ", ArgumentBuilder.class.getSimpleName() + "[", "]")
+		return new StringJoiner(", ", ArgumentBuilder.class.getSimpleName() + "{", "}")
 				.add("names=" + names).add("description=" + description).add("metaDescription=" + metaDescription)
 				.add("hideFromUsage=" + hideFromUsage).add("ignoreCase=" + ignoreCase).add("limiter=" + limiter).add("required=" + required)
 				.add("separator=" + separator).add("defaultValueDescriber=" + defaultValueDescriber).add("defaultValueSupplier=" + defaultValueSupplier)
@@ -762,7 +762,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	{
 		for(String name : argumentNames)
 		{
-			checkState(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);
+			check(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);
 		}
 	}
 
@@ -1074,14 +1074,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@Override
 		public OptionArgumentBuilder names(Iterable<String> argumentNames)
 		{
-			checkState(!isEmpty(argumentNames), ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
+			check(!isEmpty(argumentNames), ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
 		@Override
 		public OptionArgumentBuilder names(String ... argumentNames)
 		{
-			checkState(argumentNames.length >= 1, ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
+			check(argumentNames.length >= 1, ProgrammaticErrors.OPTIONS_REQUIRES_AT_LEAST_ONE_NAME);
 			return super.names(argumentNames);
 		}
 
@@ -1162,14 +1162,14 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@Override
 		InternalStringParser<Map<K, V>> internalParser()
 		{
-			checkState(names().size() > 0, ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
+			check(names().size() > 0, ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
 			if(separator().equals(DEFAULT_SEPARATOR))
 			{
 				separator("=");
 			}
 			else
 			{
-				checkState(separator().length() > 0, ProgrammaticErrors.EMPTY_SEPARATOR);
+				check(separator().length() > 0, ProgrammaticErrors.EMPTY_SEPARATOR);
 			}
 			return new KeyValueParser<K, V>(keyParser,
 					valueBuilder.internalParser(),

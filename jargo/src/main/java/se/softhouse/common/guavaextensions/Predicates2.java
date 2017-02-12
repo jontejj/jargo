@@ -138,11 +138,27 @@ public final class Predicates2
 	 */
 	public static <T> Predicate<? super T> and(Predicate<? super T> first, Predicate<? super T> second)
 	{
+		requireNonNull(first);
+		requireNonNull(second);
 		if(first == alwaysTrue())
-			return requireNonNull(second);
+			return second;
 		else if(second == alwaysTrue())
-			return requireNonNull(first);
-		return t -> first.test(t) && second.test(t);
+			return first;
+
+		return new Predicate<T>()
+		{
+			@Override
+			public boolean test(T o)
+			{
+				return first.test(o) && second.test(o);
+			}
+
+			@Override
+			public String toString()
+			{
+				return "AND(" + first + ", " + second + ")";
+			}
+		} ;
 	}
 
 	/**
@@ -153,6 +169,7 @@ public final class Predicates2
 	 */
 	public static <T> Predicate<T> in(Collection<? extends T> target)
 	{
+		requireNonNull(target);
 		return (e) -> target.contains(e);
 	}
 }

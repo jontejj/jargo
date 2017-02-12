@@ -14,20 +14,19 @@
  */
 package se.softhouse.jargo;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Locale;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import se.softhouse.jargo.utils.NastyStringBuilder;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Locale;
+
+import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Fail.fail;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({NastyStringBuilder.class, Usage.class})

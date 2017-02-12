@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.strings.StringsUtil.UTF8;
 
 /**
@@ -186,7 +186,7 @@ public final class Functions2
 	public static <T> Function<T, T> repeat(Function<T, T> function, long times)
 	{
 		requireNonNull(function);
-		checkState(times >= 0, "times (%s) must be positive", times);
+		check(times >= 0, "times (%s) must be positive", times);
 		return new FunctionRepeater<T>(function, times);
 	}
 

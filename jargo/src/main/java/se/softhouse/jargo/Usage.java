@@ -246,23 +246,21 @@ public final class Usage implements Serializable
 
 	private void init()
 	{
+		// The lack of synchronization is deliberate, repeated invocations will result in the
+		// same variables anyway
 		if(argumentsToPrint == null)
 		{
-			// The lack of synchronization is deliberate, repeated invocations will result in the
-			// same variables anyway
-			Stream<Argument<?>> visibleArguments = unfilteredArguments.stream().filter(IS_VISIBLE);
-			this.argumentsToPrint = sortedArguments(visibleArguments);
+			this.argumentsToPrint = sortedArguments();
 			this.indexOfDescriptionColumn = determineLongestNameColumn() + SPACES_BETWEEN_COLUMNS;
 		}
 	}
 
-	private List<Argument<?>> sortedArguments(Stream<Argument<?>> arguments)
+	private List<Argument<?>> sortedArguments()
 	{
-		Stream<Argument<?>> indexedArguments = arguments.filter(IS_INDEXED);
-		Stream<Argument<?>> indexedWithoutVariableArity = indexedArguments.filter(IS_OF_VARIABLE_ARITY.negate());
-		Stream<Argument<?>> indexedWithVariableArity = indexedArguments.filter(IS_OF_VARIABLE_ARITY);
+		Stream<Argument<?>> indexedWithoutVariableArity = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED).and(IS_OF_VARIABLE_ARITY.negate()));
+		Stream<Argument<?>> indexedWithVariableArity = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED).and(IS_OF_VARIABLE_ARITY));
 
-		Stream<Argument<?>> sortedArgumentsByName = arguments.filter(IS_INDEXED.negate()).sorted(Argument.NAME_COMPARATOR);
+		Stream<Argument<?>> sortedArgumentsByName = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED.negate())).sorted(Argument.NAME_COMPARATOR);
 
 		Stream<Argument<?>> result = Stream.of(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity).flatMap(x -> x);
 		return unmodifiableList(result.collect(toList()));

@@ -37,6 +37,7 @@ import static org.fest.assertions.Assertions.*;
 import static org.junit.Assert.fail;
 import static se.softhouse.common.strings.Describers.asFunction;
 import static se.softhouse.common.strings.Describers.booleanAsEnabledDisabled;
+import static se.softhouse.common.strings.Describers.booleanAsOnOff;
 import static se.softhouse.common.strings.Describers.characterDescriber;
 import static se.softhouse.common.strings.Describers.fileDescriber;
 import static se.softhouse.common.strings.Describers.mapDescriber;
@@ -137,7 +138,7 @@ public class DescribersTest
 	public void testBooleanAsOnOff()
 	{
 		List<Boolean> booleans = asList(true, false);
-		List<String> describedBooleans = booleans.stream().map(booleanAsEnabledDisabled()).collect(toList());
+		List<String> describedBooleans = booleans.stream().map(booleanAsOnOff()).collect(toList());
 		assertThat(describedBooleans).isEqualTo(asList("on", "off"));
 	}
 
@@ -222,7 +223,7 @@ public class DescribersTest
 			describer.describe(map, locale);
 			fail("population should have to be described");
 		}
-		catch(NullPointerException expected)
+		catch(IllegalArgumentException expected)
 		{
 			assertThat(expected).hasMessage("Undescribed key: population");
 		}

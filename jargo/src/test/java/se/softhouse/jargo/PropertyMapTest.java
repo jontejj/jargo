@@ -103,7 +103,7 @@ public class PropertyMapTest
 			integerArgument().asPropertyMap().build();
 			fail("a property map must be prefixed with an identifier otherwise it would consume all arguments");
 		}
-		catch(IllegalStateException expected)
+		catch(IllegalArgumentException expected)
 		{
 			assertThat(expected).hasMessage(ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
 		}
@@ -307,7 +307,7 @@ public class PropertyMapTest
 			stringArgument("-N").separator("").asPropertyMap().build();
 			fail("an empty separator must be forbidden, otherwise it would be impossible to distinguish where the key ends and the value starts");
 		}
-		catch(IllegalStateException expected)
+		catch(IllegalArgumentException expected)
 		{
 			assertThat(expected).hasMessage(ProgrammaticErrors.EMPTY_SEPARATOR);
 		}

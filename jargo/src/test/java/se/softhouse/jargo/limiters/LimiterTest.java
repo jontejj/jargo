@@ -69,7 +69,7 @@ public class LimiterTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage("'3' is not Predicates.and([1..2],[0..4])");
+			assertThat(expected).hasMessage("'3' is not AND([1..2], [0..4])");
 		}
 	}
 
@@ -109,7 +109,7 @@ public class LimiterTest
 		stringArgument("-n").separator("=").limitTo(foos()).splitWith(",").parse("-n=foo,bar");
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatDefaultValuesAreLimited()
 	{

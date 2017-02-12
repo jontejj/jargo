@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptySet;
 import static se.softhouse.common.guavaextensions.Lists2.size;
 import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkState;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.guavaextensions.Sets2.union;
 import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
@@ -148,7 +148,7 @@ final class CommandLineParserInstance
 			}
 		}
 		boolean added = allArguments().add(definition);
-		checkState(added, ProgrammaticErrors.UNIQUE_ARGUMENT, definition);
+		check(added, ProgrammaticErrors.UNIQUE_ARGUMENT, definition);
 	}
 
 	private void addNamedArgumentDefinition(final String name, final Argument<?> definition)
@@ -171,7 +171,7 @@ final class CommandLineParserInstance
 		{
 			helpArguments.put(name, definition);
 		}
-		checkState(oldDefinition == null, ProgrammaticErrors.NAME_COLLISION, name);
+		check(oldDefinition == null, ProgrammaticErrors.NAME_COLLISION, name);
 	}
 
 	/**
@@ -194,7 +194,7 @@ final class CommandLineParserInstance
 				firstOptionalIndexedArgument = i;
 			}
 		}
-		checkState(	lastRequiredIndexedArgument <= firstOptionalIndexedArgument, ProgrammaticErrors.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
+		check(	lastRequiredIndexedArgument <= firstOptionalIndexedArgument, ProgrammaticErrors.REQUIRED_ARGUMENTS_BEFORE_OPTIONAL,
 						firstOptionalIndexedArgument, lastRequiredIndexedArgument);
 	}
 
@@ -208,7 +208,7 @@ final class CommandLineParserInstance
 		{
 			String meta = indexedArgument.metaDescriptionInRightColumn();
 			boolean metaWasUnique = metasForRequiredAndIndexedArguments.add(meta);
-			checkState(metaWasUnique, ProgrammaticErrors.UNIQUE_METAS, meta);
+			check(metaWasUnique, ProgrammaticErrors.UNIQUE_METAS, meta);
 		});
 	}
 
@@ -218,7 +218,7 @@ final class CommandLineParserInstance
 	private void verifyThatOnlyOneArgumentIsOfVariableArity()
 	{
 		Collection<Argument<?>> indexedVariableArityArguments = indexedArguments.stream().filter(IS_OF_VARIABLE_ARITY).collect(Collectors.toList());
-		checkState(indexedVariableArityArguments.size() <= 1, ProgrammaticErrors.SEVERAL_VARIABLE_ARITY_PARSERS, indexedVariableArityArguments);
+		check(indexedVariableArityArguments.size() <= 1, ProgrammaticErrors.SEVERAL_VARIABLE_ARITY_PARSERS, indexedVariableArityArguments);
 	}
 
 	@Nonnull

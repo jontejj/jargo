@@ -25,6 +25,8 @@ import static java.util.Objects.requireNonNull;
 
 public final class Lists2
 {
+	private Lists2(){}
+
 	public static <E> ArrayList<E> newArrayList(Iterable<? extends E> elements)
 	{
 		requireNonNull(elements);

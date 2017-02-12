@@ -71,7 +71,7 @@ public class DefaultValueTest
 		assertThat(numbers).isEmpty();
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testThatInvalidDefaultValueFromStringParserIsInvalidated() throws ArgumentException
 	{
 		withParser(new ForwardingStringParser.SimpleForwardingStringParser<String>(stringParser()){
@@ -92,7 +92,7 @@ public class DefaultValueTest
 			stringArgument("-n").defaultValueSupplier(new BarSupplier()).limitTo(foos()).parse();
 			fail("only foo should be allowed, not bar");
 		}
-		catch(IllegalStateException e)
+		catch(IllegalArgumentException e)
 		{
 			assertThat(e).hasMessage(format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, format(UserErrors.DISALLOWED_VALUE, "bar", "foo")));
 		}
@@ -117,7 +117,7 @@ public class DefaultValueTest
 			stringArgument("-n").defaultValue("bar").limitTo(foos()).repeated().build();
 			fail("only foo should be allowed, not bar");
 		}
-		catch(IllegalStateException e)
+		catch(IllegalArgumentException e)
 		{
 			assertThat(e).hasMessage(format(ProgrammaticErrors.INVALID_DEFAULT_VALUE, format(UserErrors.DISALLOWED_VALUE, "bar", "foo")));
 			assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
