@@ -14,23 +14,7 @@
  */
 package se.softhouse.jargo;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesign;
-import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesignForAllClassesAround;
-import static se.softhouse.jargo.Arguments.integerArgument;
-import static se.softhouse.jargo.Arguments.stringArgument;
-import static se.softhouse.jargo.ProgramInformation.withProgramName;
-import static se.softhouse.jargo.StringParsers.optionParser;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Locale;
-
 import org.junit.Test;
-
 import se.softhouse.common.numbers.NumberType;
 import se.softhouse.common.testlib.EnumTester;
 import se.softhouse.jargo.Argument.ParameterArity;
@@ -41,6 +25,21 @@ import se.softhouse.jargo.commands.Build;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Locale;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesign;
+import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesignForAllClassesAround;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.ProgramInformation.withProgramName;
+import static se.softhouse.jargo.StringParsers.optionParser;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 /**
  * Tests implementation details that has no meaning in the public API but can serve other purposes
@@ -60,8 +59,8 @@ public class PackagePrivateTest
 	public void testArgumentBuilderToString()
 	{
 		assertThat(integerArgument("-i").description("foo").metaDescription("bar").toString())
-				.isEqualTo(	"DefaultArgumentBuilder{names=[-i], description=foo, metaDescription=Optional.of(bar), hideFromUsage=false"
-									+ ", ignoreCase=false, limiter=Predicates.alwaysTrue(), required=false, separator= , defaultValueDescriber=NumberDescriber}");
+				.isEqualTo(	"ArgumentBuilder{names=[-i], description=foo, metaDescription=Optional[bar], hideFromUsage=false"
+									+ ", ignoreCase=false, limiter=ALWAYS_TRUE, required=false, separator= , defaultValueDescriber=NumberDescriber, defaultValueSupplier=null, internalStringParser=null}");
 	}
 
 	@Test

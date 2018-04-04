@@ -14,7 +14,7 @@
 */
 package se.softhouse.jargo.defaultvalues;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 public class ChangingSupplier implements Supplier<Integer>
 {

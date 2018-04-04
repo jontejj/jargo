@@ -14,7 +14,7 @@
 */
 package se.softhouse.jargo.functions;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 public class AddBar implements Function<String, String>
 {

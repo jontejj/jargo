@@ -14,22 +14,10 @@
  */
 package se.softhouse.jargo.commands;
 
-import static java.util.Collections.emptyList;
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
-import static se.softhouse.jargo.Arguments.command;
-import static se.softhouse.jargo.Arguments.stringArgument;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
-import static se.softhouse.jargo.utils.ExpectedTexts.expected;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.junit.Test;
-
+import se.softhouse.common.guavaextensions.Predicates2;
+import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.Argument;
@@ -44,9 +32,19 @@ import se.softhouse.jargo.commands.Commit.Repository;
 import se.softhouse.jargo.commands.Commit.Revision;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
-import com.google.common.base.Predicates;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.fail;
+import static org.fest.assertions.Assertions.assertThat;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
+import static se.softhouse.jargo.Arguments.command;
+import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
+import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 /**
  * Tests for subclassing {@link Command}
@@ -546,7 +544,7 @@ public class CommandTest
 		}
 		try
 		{
-			builder.defaultValueSupplier(Suppliers.<ParsedArguments>ofInstance(null));
+			builder.defaultValueSupplier(Suppliers2.ofInstance(null));
 			fail("method should throw as it's deprecated");
 		}
 		catch(IllegalStateException expected)
@@ -562,7 +560,7 @@ public class CommandTest
 		}
 		try
 		{
-			builder.limitTo(Predicates.alwaysFalse());
+			builder.limitTo(Predicates2.alwaysFalse());
 			fail("method should throw as it's deprecated");
 		}
 		catch(IllegalStateException expected)

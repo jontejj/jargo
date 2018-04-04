@@ -14,8 +14,7 @@
  */
 package se.softhouse.jargo.internal;
 
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
+import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
@@ -24,7 +23,8 @@ import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.StringParsers;
 
-import com.google.common.base.Charsets;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
 
 /**
  * Contains {@link String#format(String, Object...)} ready strings.
@@ -76,7 +76,7 @@ public final class Texts
 
 		/**
 		 * Indicates that if a file called with what comes after the @ sign exists, arguments should
-		 * be read from it (in {@link Charsets#UTF_8}) before continuing on with the parsing.
+		 * be read from it (in {@link StringsUtil#UTF8}) before continuing on with the parsing.
 		 */
 		public static final String FILE_REFERENCE_PREFIX = "@";
 	}

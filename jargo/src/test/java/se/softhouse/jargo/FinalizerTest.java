@@ -14,27 +14,23 @@
  */
 package se.softhouse.jargo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.junit.Test;
+import se.softhouse.common.testlib.Explanation;
+import se.softhouse.jargo.functions.AddBar;
+import se.softhouse.jargo.functions.AddFoo;
+import se.softhouse.jargo.limiters.FooLimiter;
+
+import java.util.Map;
+
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
-import java.util.Map;
-
-import org.junit.Test;
-
-import se.softhouse.common.testlib.Explanation;
-import se.softhouse.jargo.functions.AddBar;
-import se.softhouse.jargo.functions.AddFoo;
-import se.softhouse.jargo.limiters.FooLimiter;
-
-import com.google.common.base.Function;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
- * Tests for {@link ArgumentBuilder#finalizeWith(Function)}
+ * Tests for {@link ArgumentBuilder#finalizeWith(java.util.function.Function)}
  */
 public class FinalizerTest
 {
@@ -89,7 +85,7 @@ public class FinalizerTest
 		assertThat(stringArgument("-n").finalizeWith(new AddFoo()).usage()).contains("Default: foo");
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatDefaultValueIsFinalizedBeforeLimitIsChecked()
 	{

@@ -14,28 +14,25 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.and;
-import static com.google.common.base.Predicates.in;
-import static com.google.common.base.Predicates.not;
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Maps.newLinkedHashMap;
-import static se.softhouse.jargo.Argument.IS_REQUIRED;
-
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
+import static se.softhouse.common.guavaextensions.Predicates2.in;
+import static se.softhouse.jargo.Argument.IS_REQUIRED;
 
-import com.google.common.collect.Sets;
 
 /**
  * Holds parsed arguments for a {@link CommandLineParser#parse(String...)} invocation.
@@ -47,7 +44,7 @@ public final class ParsedArguments
 	/**
 	 * Stores results from {@link StringParser#parse(String, Locale)}
 	 */
-	@Nonnull private final Map<Argument<?>, Object> parsedArguments = newLinkedHashMap();
+	@Nonnull private final Map<Argument<?>, Object> parsedArguments = new LinkedHashMap<>();
 	@Nonnull private final Set<Argument<?>> allArguments;
 	/**
 	 * Keeps a running total of how many indexed arguments that have been parsed
@@ -72,7 +69,7 @@ public final class ParsedArguments
 	{
 		if(!wasGiven(argumentToFetch))
 		{
-			checkArgument(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
+			check(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
 			return argumentToFetch.defaultValue();
 		}
 		return getValue(argumentToFetch);
@@ -86,7 +83,7 @@ public final class ParsedArguments
 	 */
 	public boolean wasGiven(Argument<?> argument)
 	{
-		return parsedArguments.containsKey(checkNotNull(argument));
+		return parsedArguments.containsKey(requireNonNull(argument));
 	}
 
 	@Override
@@ -144,7 +141,7 @@ public final class ParsedArguments
 
 	Collection<Argument<?>> requiredArgumentsLeft()
 	{
-		return filter(allArguments, and(not(in(parsedArguments.keySet())), IS_REQUIRED));
+		return allArguments.stream().filter(IS_REQUIRED.and(in(parsedArguments.keySet()).negate())).collect(toList());
 	}
 
 	int indexedArgumentsParsed()
@@ -159,7 +156,7 @@ public final class ParsedArguments
 
 	Set<String> nonParsedArguments()
 	{
-		Set<String> validArguments = Sets.newHashSetWithExpectedSize(allArguments.size());
+		Set<String> validArguments = new HashSet<>(allArguments.size());
 		for(Argument<?> argument : allArguments)
 		{
 			boolean wasGiven = wasGiven(argument);

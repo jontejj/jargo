@@ -14,40 +14,32 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import static com.google.common.base.Charsets.UTF_8;
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
-import static se.softhouse.common.guavaextensions.Functions2.unmodifiableList;
-import static se.softhouse.common.guavaextensions.Functions2.unmodifiableMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.io.Files;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
-import org.junit.Test;
-
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
+import static com.google.common.base.Charsets.UTF_8;
+import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.guavaextensions.Functions2.unmodifiableList;
+import static se.softhouse.common.guavaextensions.Functions2.unmodifiableMap;
 
 /**
  * Tests for {@link Functions2}
  */
 public class Functions2Test
 {
-	static final Function<Integer, Integer> ADD_ONE = new Function<Integer, Integer>(){
-		@Override
-		public Integer apply(Integer input)
-		{
-			return input + 1;
-		}
-	};
+	static final Function<Integer, Integer> ADD_ONE = input -> input + 1;
 
 	@Test
 	public void testRepeatTwoTimes()
@@ -71,7 +63,7 @@ public class Functions2Test
 	public void testCompoundFunction()
 	{
 		assertThat(Functions2.compound(ADD_ONE, ADD_ONE).apply(2)).isEqualTo(4);
-		Function<Integer, Integer> noOp = Functions.identity();
+		Function<Integer, Integer> noOp = Function.identity();
 		assertThat(Functions2.compound(noOp, ADD_ONE).apply(2)).isEqualTo(3);
 	}
 
@@ -91,7 +83,7 @@ public class Functions2Test
 	@Test
 	public void testThatListTransformerReturnsIdentityFunctionWhenGivenIdentityFunction()
 	{
-		assertThat(Functions2.listTransformer(Functions.identity())).isSameAs(Functions.identity());
+		assertThat(Functions2.listTransformer(Function.identity())).isSameAs(Function.identity());
 	}
 
 	@Test
@@ -107,13 +99,13 @@ public class Functions2Test
 	@Test(expected = UnsupportedOperationException.class)
 	public void testThatMapTransformerReturnsImmutableList()
 	{
-		Functions2.mapValueTransformer(ADD_ONE).apply(Maps.<Object, Integer>newHashMap()).clear();
+		Functions2.mapValueTransformer(ADD_ONE).apply(Maps.newHashMap()).clear();
 	}
 
 	@Test
 	public void testThatMapTransformerReturnsIdentityFunctionWhenGivenIdentityFunction()
 	{
-		assertThat(Functions2.mapValueTransformer(Functions.identity())).isSameAs(Functions.identity());
+		assertThat(Functions2.mapValueTransformer(Function.identity())).isSameAs(Function.identity());
 	}
 
 	@Test

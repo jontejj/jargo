@@ -14,10 +14,26 @@
  */
 package se.softhouse.common.strings;
 
-import static com.google.common.collect.Lists.transform;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+import org.junit.Test;
+import se.softhouse.common.strings.Describers.BooleanDescribers;
+import se.softhouse.common.testlib.Locales;
+import se.softhouse.common.testlib.ResourceLoader;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Arrays.asList;
-import static org.fest.assertions.Assertions.assertThat;
+import static java.util.stream.Collectors.toList;
+import static org.fest.assertions.Assertions.*;
 import static org.junit.Assert.fail;
 import static se.softhouse.common.strings.Describers.asFunction;
 import static se.softhouse.common.strings.Describers.booleanAsEnabledDisabled;
@@ -30,25 +46,6 @@ import static se.softhouse.common.strings.Describers.toStringDescriber;
 import static se.softhouse.common.strings.Describers.withConstantString;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.testlib.Locales.TURKISH;
-
-import java.io.File;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.junit.Test;
-
-import se.softhouse.common.strings.Describers.BooleanDescribers;
-import se.softhouse.common.testlib.Locales;
-import se.softhouse.common.testlib.ResourceLoader;
-
-import com.google.common.collect.Lists;
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
 
 /**
  * Tests for {@link Describers}
@@ -115,7 +112,7 @@ public class DescribersTest
 	public void testDescriberAsAFunction()
 	{
 		List<Boolean> booleans = asList(true, false);
-		List<String> describedBooleans = transform(booleans, asFunction(booleanAsEnabledDisabled()));
+		List<String> describedBooleans = booleans.stream().map(booleanAsEnabledDisabled()).collect(toList());
 		assertThat(describedBooleans).isEqualTo(asList("enabled", "disabled"));
 	}
 
@@ -125,7 +122,7 @@ public class DescribersTest
 		Locales.setDefault(Locales.SWEDISH);
 		List<Integer> numbers = Arrays.asList(1000, 2000);
 
-		List<String> describedNumbers = Lists.transform(numbers, asFunction(numberDescriber(), Locale.US));
+		List<String> describedNumbers = numbers.stream().map(asFunction(numberDescriber(), Locale.US)).collect(toList());
 		assertThat(describedNumbers).isEqualTo(asList("1,000", "2,000"));
 		Locales.resetDefaultLocale();
 	}
@@ -133,7 +130,7 @@ public class DescribersTest
 	@Test
 	public void testFunctionAsADescriber()
 	{
-		String describedBoolean = Describers.usingFunction(asFunction(booleanAsEnabledDisabled())).describe(false, locale);
+		String describedBoolean = Describers.usingFunction(booleanAsEnabledDisabled()).describe(false, locale);
 		assertThat(describedBoolean).isEqualTo("disabled");
 	}
 
@@ -141,7 +138,7 @@ public class DescribersTest
 	public void testBooleanAsOnOff()
 	{
 		List<Boolean> booleans = asList(true, false);
-		List<String> describedBooleans = transform(booleans, asFunction(booleanAsOnOff()));
+		List<String> describedBooleans = booleans.stream().map(booleanAsOnOff()).collect(toList());
 		assertThat(describedBooleans).isEqualTo(asList("on", "off"));
 	}
 
@@ -226,7 +223,7 @@ public class DescribersTest
 			describer.describe(map, locale);
 			fail("population should have to be described");
 		}
-		catch(NullPointerException expected)
+		catch(IllegalArgumentException expected)
 		{
 			assertThat(expected).hasMessage("Undescribed key: population");
 		}

@@ -14,14 +14,14 @@
 */
 package se.softhouse.jargo.limiters;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 final class ProfilingLimiter<T> implements Predicate<T>
 {
 	int limitationsMade;
 
 	@Override
-	public boolean apply(T value)
+	public boolean test(T value)
 	{
 		limitationsMade++;
 		return true;

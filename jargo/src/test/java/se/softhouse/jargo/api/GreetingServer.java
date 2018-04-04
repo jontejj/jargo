@@ -14,10 +14,13 @@
  */
 package se.softhouse.jargo.api;
 
-import static se.softhouse.jargo.Arguments.integerArgument;
-import static se.softhouse.jargo.Arguments.optionArgument;
-import static se.softhouse.jargo.Arguments.stringArgument;
-import static se.softhouse.jargo.CommandLineParser.withArguments;
+import com.google.common.base.Ascii;
+import com.google.common.base.Charsets;
+import se.softhouse.common.strings.Describers;
+import se.softhouse.jargo.Argument;
+import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.CommandLineParser;
+import se.softhouse.jargo.ParsedArguments;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,15 +29,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
-import se.softhouse.common.strings.Describers;
-import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.CommandLineParser;
-import se.softhouse.jargo.ParsedArguments;
-
-import com.google.common.base.Ascii;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Range;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.CommandLineParser.withArguments;
 
 public class GreetingServer
 {
@@ -42,7 +40,7 @@ public class GreetingServer
 	static final Argument<Boolean> ENABLE_LOGGING = optionArgument("-l", "--enable-logging").description("Output debug information to standard out")
 			.build();
 
-	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(Range.closed(0, 65536)).defaultValue(10000)
+	static final Argument<List<Integer>> PORTS = integerArgument("-p", "--listen-port").limitTo(n -> n >= 0 && n <= 65536).defaultValue(10000)
 			.defaultValueDescriber(Describers.toStringDescriber()).repeated().description("The port clients should connect to")
 			.metaDescription("port").build();
 

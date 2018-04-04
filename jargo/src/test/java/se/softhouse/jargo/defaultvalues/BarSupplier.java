@@ -14,7 +14,7 @@
 */
 package se.softhouse.jargo.defaultvalues;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 public class BarSupplier implements Supplier<String>
 {

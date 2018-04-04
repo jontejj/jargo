@@ -14,18 +14,17 @@
  */
 package se.softhouse.jargo.stringparsers;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
-import static se.softhouse.jargo.Arguments.charArgument;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
-
 import org.junit.Test;
-
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.StringParsers;
 import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.internal.Texts.UserErrors;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+import static se.softhouse.jargo.Arguments.charArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
 
 /**
  * Tests for {@link Arguments#charArgument(String...)} and {@link StringParsers#charParser()}

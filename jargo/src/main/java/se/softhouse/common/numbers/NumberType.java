@@ -14,7 +14,9 @@
  */
 package se.softhouse.common.numbers;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 import static se.softhouse.common.strings.Describables.illegalArgument;
 import static se.softhouse.common.strings.Describers.numberDescriber;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
@@ -26,6 +28,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,12 +37,9 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import se.softhouse.common.guavaextensions.Lists2;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describables;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Longs;
 
 /**
  * A class that exposes static fields (and functions), such as {@link Integer#MAX_VALUE} and
@@ -94,11 +95,11 @@ public abstract class NumberType<T extends Number>
 	 * href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">data size</a>)
 	 * {@link List} of {@link NumberType}s
 	 */
-	public static final ImmutableList<NumberType<?>> TYPES = ImmutableList.<NumberType<?>>of(BYTE, SHORT, INTEGER, LONG, BIG_INTEGER, BIG_DECIMAL);
+	public static final List<NumberType<?>> TYPES = unmodifiableList(asList(BYTE, SHORT, INTEGER, LONG, BIG_INTEGER, BIG_DECIMAL));
 	/**
 	 * {@link NumberType}s that doesn't have any {@link #minValue()} or {@link #maxValue()}
 	 */
-	public static final ImmutableList<NumberType<?>> UNLIMITED_TYPES = ImmutableList.<NumberType<?>>of(BIG_INTEGER, BIG_DECIMAL);
+	public static final List<NumberType<?>> UNLIMITED_TYPES = unmodifiableList(asList(BIG_INTEGER, BIG_DECIMAL));
 
 	/**
 	 * <pre>
@@ -108,7 +109,7 @@ public abstract class NumberType<T extends Number>
 	 * 3rd %s = the maximum allowed value
 	 * </pre>
 	 */
-	@VisibleForTesting static final String OUT_OF_RANGE = "'%s' is not in the range %s to %s";
+	static final String OUT_OF_RANGE = "'%s' is not in the range %s to %s";
 
 	/**
 	 * @return the static {@code MIN_VALUE} field of {@code T}
@@ -367,7 +368,17 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public boolean inRange(Number number)
 		{
-			return number instanceof Long || Longs.tryParse(number.toString()) != null;
+			if(number instanceof Long)
+				return true;
+			try
+			{
+				Long.parseLong(number.toString());
+				return true;
+			}
+			catch(NumberFormatException wrongNumber)
+			{
+				return false;
+			}
 		}
 	}
 
@@ -435,7 +446,7 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public boolean inRange(Number number)
 		{
-			checkNotNull(number);
+			requireNonNull(number);
 			if(number instanceof BigDecimal)
 				return ((BigDecimal) number).scale() <= 0;
 			return true;
@@ -458,7 +469,7 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public String descriptionOfValidValues(Locale inLocale)
 		{
-			checkNotNull(inLocale);
+			requireNonNull(inLocale);
 			return "an arbitrary integer number (practically no limits)";
 		}
 	}
@@ -474,7 +485,7 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public boolean inRange(Number number)
 		{
-			checkNotNull(number);
+			requireNonNull(number);
 			return true;
 		}
 
@@ -491,7 +502,7 @@ public abstract class NumberType<T extends Number>
 		@Override
 		public String descriptionOfValidValues(Locale inLocale)
 		{
-			checkNotNull(inLocale);
+			requireNonNull(inLocale);
 			return "an arbitrary decimal number (practically no limits)";
 		}
 	}

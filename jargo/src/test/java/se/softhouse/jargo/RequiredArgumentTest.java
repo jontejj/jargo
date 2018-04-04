@@ -14,17 +14,16 @@
  */
 package se.softhouse.jargo;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static se.softhouse.jargo.Arguments.integerArgument;
-import static se.softhouse.jargo.Arguments.optionArgument;
-
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Test;
-
 import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import static org.fest.assertions.Assertions.*;
+import static org.junit.Assert.fail;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
 
 /**
  * Tests for {@link ArgumentBuilder#required()}
@@ -99,13 +98,13 @@ public class RequiredArgumentTest
 			integerArgument("-l").required().defaultValue(42);
 			fail("setting a default value on a required argument should be forbidden");
 		}
-		catch(IllegalStateException expected)
+		catch(IllegalArgumentException expected)
 		{
 			assertThat(expected).hasMessage(ProgrammaticErrors.DEFAULT_VALUE_AND_REQUIRED);
 		}
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalArgumentException.class)
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testMakingARequiredArgumentWithDefaultValue()
 	{

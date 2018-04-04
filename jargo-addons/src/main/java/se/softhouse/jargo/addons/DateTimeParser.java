@@ -14,18 +14,17 @@
  */
 package se.softhouse.jargo.addons;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Locale;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.ArgumentExceptions;
 import se.softhouse.jargo.StringParser;
+
+import java.util.Locale;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Parser for <a href="http://joda-time.sourceforge.net/">joda-time</a> {@link DateTime dates}
@@ -37,7 +36,7 @@ final class DateTimeParser implements StringParser<DateTime>
 
 	DateTimeParser(DateTimeZone timeZone)
 	{
-		this.timeZone = checkNotNull(timeZone);
+		this.timeZone = requireNonNull(timeZone);
 		this.formatter = ISODateTimeFormat.dateOptionalTimeParser()
 				.withZone(timeZone);
 	}
@@ -45,7 +44,7 @@ final class DateTimeParser implements StringParser<DateTime>
 	@Override
 	public String descriptionOfValidValues(Locale locale)
 	{
-		checkNotNull(locale);
+		requireNonNull(locale);
 		String unmistakableDate = new DateTime("2011-02-28", timeZone).toString(ISODateTimeFormat.dateTime());
 		return "an ISO8601 date, such as " + unmistakableDate;
 	}
@@ -53,7 +52,7 @@ final class DateTimeParser implements StringParser<DateTime>
 	@Override
 	public DateTime parse(final String value, Locale locale) throws ArgumentException
 	{
-		checkNotNull(locale);
+		requireNonNull(locale);
 		try
 		{
 			return DateTime.parse(value, formatter);

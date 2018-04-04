@@ -14,16 +14,16 @@
  */
 package se.softhouse.jargo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static se.softhouse.common.strings.Describables.cache;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import se.softhouse.common.classes.Classes;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describables;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.common.classes.Classes;
-import se.softhouse.common.strings.Describable;
-import se.softhouse.common.strings.Describables;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.strings.Describables.cache;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 
 /**
  * Information about a program, printed in {@link Usage} before any {@link Argument}s are described.
@@ -81,7 +81,7 @@ final class ProgramInformation
 	@CheckReturnValue
 	ProgramInformation programDescription(String aProgramDescription)
 	{
-		checkNotNull(aProgramDescription);
+		requireNonNull(aProgramDescription);
 		return new ProgramInformation(programName, NEWLINE + aProgramDescription + NEWLINE);
 	}
 

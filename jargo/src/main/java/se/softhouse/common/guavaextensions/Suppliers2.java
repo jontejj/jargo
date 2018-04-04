@@ -14,20 +14,20 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayListWithCapacity;
 
-import java.util.List;
-
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 
 /**
- * Additional implementations of the {@link Supplier} interface, as a complement of
- * {@link Suppliers}
+ * Additional implementations of the {@link Supplier} interface
  */
 @Immutable
 public final class Suppliers2
@@ -42,10 +42,11 @@ public final class Suppliers2
 	 * 
 	 * @throws IllegalArgumentException if {@code elementsToSupply} is less than zero
 	 */
+	@CheckReturnValue
 	public static <T> Supplier<List<T>> ofRepeatedElements(Supplier<? extends T> elementSupplier, int elementsToSupply)
 	{
-		checkNotNull(elementSupplier);
-		checkArgument(elementsToSupply >= 0, "elementsToSupply may not be negative");
+		requireNonNull(elementSupplier);
+		check(elementsToSupply >= 0, "elementsToSupply may not be negative");
 		return new ListSupplier<T>(elementSupplier, elementsToSupply);
 	}
 
@@ -63,7 +64,7 @@ public final class Suppliers2
 		@Override
 		public List<T> get()
 		{
-			List<T> result = newArrayListWithCapacity(elementsToSupply);
+			List<T> result = new ArrayList<T>(elementsToSupply);
 			for(int i = 0; i < elementsToSupply; i++)
 			{
 				result.add(elementSupplier.get());
@@ -73,20 +74,85 @@ public final class Suppliers2
 	}
 
 	/**
+	 * Creates a {@link Supplier} that always returns {@code instance}.
+	 * @param instance the instance to supply
+	 * @param <T> the type
+	 * @return the newly created supplier
+	 */
+	@CheckReturnValue
+	public static <T> Supplier<T> ofInstance(@Nullable T instance)
+	{
+		return new InstanceSupplier<T>(instance);
+	}
+
+	private static final class InstanceSupplier<T> implements Supplier<T>
+	{
+		private final T instance;
+
+		private InstanceSupplier(T instance)
+		{
+			this.instance = instance;
+		}
+		@Override
+		public T get()
+		{
+			return instance;
+		}
+	}
+
+	/**
 	 * Returns true if {@code Supplier} is likely to supply values very fast
 	 */
 	public static boolean isSuppliedAlready(Supplier<?> supplier)
 	{
-		if(supplier.getClass().equals(OF_INSTANCE))
+		if(supplier.getClass().equals(InstanceSupplier.class))
 			return true;
 		else if(supplier instanceof ListSupplier<?>)
 		{
 			ListSupplier<?> listSupplier = (ListSupplier<?>) supplier;
-			if(listSupplier.elementSupplier.getClass().equals(OF_INSTANCE))
+			if(listSupplier.elementSupplier.getClass().equals(InstanceSupplier.class))
 				return true;
 		}
 		return false;
 	}
 
-	private static final Class<?> OF_INSTANCE = Suppliers.ofInstance(null).getClass();
+	/**
+	 * Returns a supplier which caches the instance retrieved during the first call to {@code get()}
+	 * and returns that value on subsequent calls to {@code get()}. See:
+	 * <a href="http://en.wikipedia.org/wiki/Memoization">memoization</a>
+	 */
+	public static <T> Supplier<T> memoize(Supplier<T> delegate) {
+		return (delegate instanceof MemoizingSupplier)
+				? delegate
+				: new MemoizingSupplier<T>(requireNonNull(delegate));
+	}
+
+	private static class MemoizingSupplier<T> implements Supplier<T>, Serializable
+	{
+		final Supplier<T> delegate;
+		transient volatile boolean initialized;
+		// "value" does not need to be volatile; visibility piggy-backs
+		// on volatile read of "initialized".
+		transient T value;
+
+		MemoizingSupplier(Supplier<T> delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public T get() {
+			// A 2-field variant of Double Checked Locking.
+			if (!initialized) {
+				synchronized (this) {
+					if (!initialized) {
+						T t = delegate.get();
+						value = t;
+						initialized = true;
+						return t;
+					}
+				}
+			}
+			return value;
+		}
+	}
 }

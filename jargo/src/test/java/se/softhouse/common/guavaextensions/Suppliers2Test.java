@@ -14,18 +14,16 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import static java.util.Collections.emptyList;
-import static org.fest.assertions.Assertions.assertThat;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
-import org.junit.Test;
-
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
+import static java.util.Collections.emptyList;
+import static org.fest.assertions.Assertions.*;
 
 /**
  * Tests for {@link Suppliers2}
@@ -35,13 +33,13 @@ public class Suppliers2Test
 	@Test
 	public void testThatInstanceOfIsSuppliedAlready()
 	{
-		assertThat(Suppliers2.isSuppliedAlready(Suppliers.ofInstance("foo"))).isTrue();
+		assertThat(Suppliers2.isSuppliedAlready(Suppliers2.ofInstance("foo"))).isTrue();
 	}
 
 	@Test
 	public void testThatInstanceOfIsSuppliedAlreadyForList()
 	{
-		Supplier<List<String>> listSupplier = Suppliers2.ofRepeatedElements(Suppliers.ofInstance("foo"), 3);
+		Supplier<List<String>> listSupplier = Suppliers2.ofRepeatedElements(Suppliers2.ofInstance("foo"), 3);
 		assertThat(Suppliers2.isSuppliedAlready(listSupplier)).isTrue();
 	}
 
@@ -51,13 +49,7 @@ public class Suppliers2Test
 		assertThat(Suppliers2.isSuppliedAlready(FOO_SUPPLIER)).isFalse();
 	}
 
-	private static final Supplier<String> FOO_SUPPLIER = new Supplier<String>(){
-		@Override
-		public String get()
-		{
-			return "foo";
-		}
-	};
+	private static final Supplier<String> FOO_SUPPLIER = () -> "foo";
 
 	@Test
 	public void testThatInstanceOfIsNotSuppliedForArbitrarySupplierInList()

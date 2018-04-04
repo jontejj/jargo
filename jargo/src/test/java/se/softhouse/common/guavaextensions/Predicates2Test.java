@@ -14,21 +14,20 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import static com.google.common.base.Predicates.alwaysFalse;
-import static com.google.common.base.Predicates.alwaysTrue;
-import static java.util.Arrays.asList;
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
-import static se.softhouse.common.guavaextensions.Predicates2.and;
-import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
-
-import java.util.List;
-
-import org.junit.Test;
-
-import com.google.common.base.Predicate;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.Arrays.asList;
+import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.guavaextensions.Predicates2.alwaysTrue;
+import static se.softhouse.common.guavaextensions.Predicates2.alwaysFalse;
+import static se.softhouse.common.guavaextensions.Predicates2.and;
+import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
 
 /**
  * Tests for {@link Predicates2}
@@ -37,7 +36,7 @@ public class Predicates2Test
 {
 	static final Predicate<Integer> ABOVE_ZERO = new Predicate<Integer>(){
 		@Override
-		public boolean apply(Integer input)
+		public boolean test(Integer input)
 		{
 			return input > 0;
 		}
@@ -52,7 +51,7 @@ public class Predicates2Test
 	@Test
 	public void testListPredicate()
 	{
-		assertThat(listPredicate(ABOVE_ZERO).apply(asList(1, 2, 3))).isTrue();
+		assertThat(listPredicate(ABOVE_ZERO).test(asList(1, 2, 3))).isTrue();
 	}
 
 	@Test
@@ -62,7 +61,7 @@ public class Predicates2Test
 
 		try
 		{
-			listPredicate(ABOVE_ZERO).apply(numbers);
+			listPredicate(ABOVE_ZERO).test(numbers);
 			fail("-1 should not be above zero");
 		}
 		catch(IllegalArgumentException expected)
@@ -98,8 +97,8 @@ public class Predicates2Test
 	@Test
 	public void testThatBothPredicatesNeedsToBeTheSameInAndPredicate() throws Exception
 	{
-		assertThat(and(alwaysTrue(), alwaysTrue()).apply(null)).isTrue();
-		assertThat(and(alwaysFalse(), alwaysFalse()).apply(null)).isFalse();
+		assertThat(and(alwaysTrue(), alwaysTrue()).test(null)).isTrue();
+		assertThat(and(alwaysFalse(), alwaysFalse()).test(null)).isFalse();
 	}
 
 	@Test
