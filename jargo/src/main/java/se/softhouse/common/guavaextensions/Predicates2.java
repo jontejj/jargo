@@ -48,9 +48,7 @@ public final class Predicates2
 	private enum ObjectPredicates implements Predicate<Object>
 	{
 		ALWAYS_TRUE((i) -> true),
-		ALWAYS_FALSE((i) -> false),
-		IS_NULL((i) -> i == null),
-		NOT_NULL((i) -> i != null);
+		ALWAYS_FALSE((i) -> false);
 
 		private Predicate<Object> predicate;
 

@@ -14,6 +14,8 @@
  */
 package se.softhouse.common.guavaextensions;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,18 +23,19 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class Lists2
 {
-	private Lists2(){}
+	private Lists2()
+	{
+	}
 
 	public static <E> ArrayList<E> newArrayList(Iterable<? extends E> elements)
 	{
 		requireNonNull(elements);
-		return (elements instanceof Collection)
-				? new ArrayList<E>(cast(elements))
-				: newArrayList(elements.iterator());
+		return (elements instanceof Collection) ? new ArrayList<E>(cast(elements)) : newArrayList(elements.iterator());
 	}
 
 	public static <E> ArrayList<E> newArrayList(Iterator<? extends E> elements)
@@ -42,10 +45,10 @@ public final class Lists2
 		return list;
 	}
 
-	public static <E> ArrayList<E> asList(E firstElement, E[] rest)
+	public static <E> ArrayList<E> asList(@Nonnull E firstElement, E[] rest)
 	{
 		final ArrayList<E> objects = new ArrayList<>();
-		objects.add(firstElement);
+		objects.add(requireNonNull(firstElement));
 		objects.addAll(Arrays.asList(rest));
 		return objects;
 	}
@@ -55,10 +58,8 @@ public final class Lists2
 	 */
 	public static boolean isEmpty(Iterable<?> iterable)
 	{
-		if (iterable instanceof Collection)
-		{
+		if(iterable instanceof Collection)
 			return ((Collection<?>) iterable).isEmpty();
-		}
 		return !iterable.iterator().hasNext();
 	}
 
@@ -67,10 +68,11 @@ public final class Lists2
 	 * List<Character>}
 	 *
 	 * @param sequence the character sequence to view as a {@code List} of
-	 *        characters
+	 *            characters
 	 * @return an {@code List<Character>} view of the character sequence
 	 */
-	public static List<Character> charactersOf(CharSequence sequence) {
+	public static List<Character> charactersOf(CharSequence sequence)
+	{
 		return new CharSequenceAsList(requireNonNull(sequence));
 	}
 
@@ -78,22 +80,26 @@ public final class Lists2
 	{
 		private final CharSequence sequence;
 
-		CharSequenceAsList(CharSequence sequence) {
+		CharSequenceAsList(CharSequence sequence)
+		{
 			this.sequence = sequence;
 		}
 
 		@Override
-		public Character get(int index) {
+		public Character get(int index)
+		{
 			return sequence.charAt(index);
 		}
 
 		@Override
-		public int size() {
+		public int size()
+		{
 			return sequence.length();
 		}
 	}
 
-	public static int size(Iterator<?> iterator) {
+	public static int size(Iterator<?> iterator)
+	{
 		int i = 0;
 		while(iterator.hasNext())
 		{
@@ -103,29 +109,32 @@ public final class Lists2
 		return i;
 	}
 
-	public static int size(Iterable<?> iterable) {
+	public static int size(Iterable<?> iterable)
+	{
 		if(iterable instanceof Collection)
-				return ((Collection<?>) iterable).size();
+			return ((Collection<?>) iterable).size();
 		return size(iterable.iterator());
 	}
 
-	public static <T> Iterator<T> unmodifiableIterator(
-			final Iterator<? extends T> iterator) {
+	public static <T> Iterator<T> unmodifiableIterator(final Iterator<? extends T> iterator)
+	{
 		requireNonNull(iterator);
-		return new Iterator<T>() {
+		return new Iterator<T>(){
 			@Override
-			public boolean hasNext() {
+			public boolean hasNext()
+			{
 				return iterator.hasNext();
 			}
 
 			@Override
-			public T next() {
+			public T next()
+			{
 				return iterator.next();
 			}
 		};
 	}
 
-	static <T> Collection<T> cast(Iterable<T> iterable)
+	static <T> Collection<T> cast(@Nullable Iterable<T> iterable)
 	{
 		return (Collection<T>) iterable;
 	}

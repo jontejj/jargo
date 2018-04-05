@@ -14,16 +14,17 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
-import org.junit.Test;
+import static java.util.Collections.emptyList;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static java.util.Collections.emptyList;
-import static org.fest.assertions.Assertions.*;
+import org.junit.Test;
+
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 
 /**
  * Tests for {@link Suppliers2}
@@ -34,6 +35,14 @@ public class Suppliers2Test
 	public void testThatInstanceOfIsSuppliedAlready()
 	{
 		assertThat(Suppliers2.isSuppliedAlready(Suppliers2.ofInstance("foo"))).isTrue();
+	}
+
+	@Test
+	public void testThatRepeatedMemoizeReturnsSameMemoizeInstance()
+	{
+		Supplier<String> first = Suppliers2.memoize(Suppliers2.ofInstance("foo"));
+		Supplier<String> second = Suppliers2.memoize(first);
+		assertThat(second).isSameAs(first);
 	}
 
 	@Test

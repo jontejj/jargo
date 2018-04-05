@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -451,18 +450,6 @@ public final class StringParsers
 	}
 
 	/**
-	 * {@link Locale} version of {@link StringParser#apply(String)}
-	 */
-	@Nonnull
-	@CheckReturnValue
-	public static <T> Function<String, T> asFunction(final StringParser<T> parser, final Locale localeToUse)
-	{
-		requireNonNull(parser);
-		requireNonNull(localeToUse);
-		return input -> parser.parse(input, localeToUse);
-	}
-
-	/**
 	 * <pre>
 	 * Makes it possible to convert several (or zero) {@link String}s into a single {@code T} value.
 	 * For a simpler one use {@link StringParser}.
@@ -470,9 +457,9 @@ public final class StringParsers
 	 * {@link Argument} is passed to the functions that produces text for the usage,
 	 * it can't be a member of this class because one parser can be referenced
 	 * from multiple different {@link Argument}s so this is extrinsic state.
-	 *
-	 * &#64;param <T> the type this parser parses strings into
 	 * </pre>
+	 *
+	 * @param <T> the type this parser parses strings into
 	 */
 	abstract static class InternalStringParser<T>
 	{
