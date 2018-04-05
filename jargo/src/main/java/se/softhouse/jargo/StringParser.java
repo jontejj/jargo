@@ -14,11 +14,12 @@
  */
 package se.softhouse.jargo;
 
+import java.util.Locale;
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.util.Locale;
-import java.util.function.Function;
 
 /**
  * Parses {@link String}s into values of the type {@code T}.
@@ -107,12 +108,16 @@ public interface StringParser<T> extends Function<String, T>
 	 * </pre>
 	 *
 	 * <b>Note:</b>The parser will pass the {@link Locale#getDefault()} to
-	 * {@link StringParser#parse(String, Locale) parse}. Use
-	 * {@link StringParsers#asFunction(StringParser, Locale)} to specify a specific {@link Locale}
+	 * {@link StringParser#parse(String, Locale) parse}.
+	 * 
 	 * @param argument the string to convert
 	 * @return the parsed value
 	 */
-	default T apply(String argument){ return parse(argument, Locale.getDefault()); }
+	@Override
+	default T apply(String argument)
+	{
+		return parse(argument, Locale.getDefault());
+	}
 
 	/**
 	 * Describes what values this {@link StringParser} accepts
@@ -138,7 +143,6 @@ public interface StringParser<T> extends Function<String, T>
 	 *
 	 * For instance:
 	 * {@link StringParsers#integerParser()}s {@link #metaDescription()} is &lt;integer&gt;
-	 *
 	 * </pre>
 	 *
 	 * @return a meta description that very briefly explains what value this parser expects
