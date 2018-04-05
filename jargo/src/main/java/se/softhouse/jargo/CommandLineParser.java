@@ -14,14 +14,10 @@
  */
 package se.softhouse.jargo;
 
-import se.softhouse.common.strings.Describable;
-import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
-import se.softhouse.jargo.StringParsers.RunnableParser;
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.jargo.Arguments.command;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,9 +26,14 @@ import java.util.Locale;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
-import static se.softhouse.jargo.Arguments.command;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+
+import se.softhouse.common.strings.Describable;
+import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
+import se.softhouse.jargo.StringParsers.RunnableParser;
 
 /**
  * Manages multiple {@link Argument}s and/or {@link Command}s. The brain of this API.
@@ -41,13 +42,13 @@ import static se.softhouse.jargo.Arguments.command;
  * concurrently). Different {@link CommandLineParser}s can even share {@link Argument}
  * configurations as {@link Argument} instances are immutable as well. Documentation through
  * example:
- * 
+ *
  * <pre class="prettyprint">
  * <code class="language-java">
  * import static se.softhouse.jargo.Arguments.*;
  * ...
  * String[] args = {"--enable-logging", "--listen-port", "8090", "Hello"};
- * 
+ *
  * Argument&lt;?&gt; helpArgument = helpArgument("-h", "--help"); //Will throw when -h is encountered
  * Argument&lt;Boolean&gt; enableLogging = optionArgument("-l", "--enable-logging").description("Output debug information to standard out").build();
  * Argument&lt;String&gt; greetingPhrase = stringArgument().description("A greeting phrase to greet new connections with").build();
@@ -55,9 +56,9 @@ import static se.softhouse.jargo.Arguments.command;
  * 						.defaultValue(8080)
  * 						.description("The port clients should connect to.")
  * 						.metaDescription("&lt;port&gt;")
- * 						.limitTo(number -> number >= 0 && number <= 65536)
+ * 						.limitTo(number -&gt; number &gt;= 0 &amp;&amp; number &lt;= 65536)
  * 						.repeated().build();
- * 
+ *
  * try
  * {
  *   ParsedArguments arguments = CommandLineParser.withArguments(helpArgument, greetingPhrase, enableLogging, ports).parse(args);
@@ -72,12 +73,12 @@ import static se.softhouse.jargo.Arguments.command;
  * }
  * </code>
  * </pre>
- * 
+ *
  * <pre>
  * For this program the usage would look like ("YourProgramName" is fetched from stack traces by default):
  * <code>
  * Usage: YourProgramName [Arguments]
- * 
+ *
  * Arguments:
  * &lt;string&gt;                       A greeting phrase to greet new connections with
  *                                &lt;string&gt;: any string
@@ -92,7 +93,7 @@ import static se.softhouse.jargo.Arguments.command;
  * it will be described by the ArgumentException. Use {@link ArgumentException#getMessageAndUsage()} if you
  * want to explain what went wrong to the user.
  * </pre>
- * 
+ *
  * <b>Internationalization</b> By default {@link Locale#US} is used for parsing strings and printing
  * usages. To change this use {@link #locale(Locale)}.<br>
  * <b>Thread safety concerns:</b> If there is a parsing occurring while any modifying method is
@@ -131,7 +132,7 @@ public final class CommandLineParser
 	/**
 	 * Creates a {@link CommandLineParser} with support for the given {@code argumentDefinitions}.
 	 * {@link Command}s can be added later with {@link #andCommands(Command...)}.
-	 * 
+	 *
 	 * @param argumentDefinitions {@link Argument}s produced with {@link Arguments} or
 	 *            with your own disciples of {@link ArgumentBuilder}
 	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
@@ -161,7 +162,7 @@ public final class CommandLineParser
 	 * Creates a {@link CommandLineParser} with support for {@code commands}. To add additional
 	 * {@link Argument}s or {@link Command}s there is {@link #andArguments(Argument...)} and
 	 * {@link #andCommands(Command...)}.
-	 * 
+	 *
 	 * @param commands the commands to support initially
 	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
 	 *         and get {@link ParsedArguments} out of.
@@ -179,7 +180,7 @@ public final class CommandLineParser
 	 * href="http://en.wikipedia.org/wiki/Command_pattern">Command
 	 * Pattern</a>. This alternative is viable if the commands don't accept any parameters.
 	 * Example enum:
-	 * 
+	 *
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 * public enum Service implements Runnable, Describable
@@ -189,7 +190,7 @@ public final class CommandLineParser
 	 * 	   public void run(){
 	 * 	     //Start service here
 	 * 	   }
-	 * 
+	 *
 	 * 	   &#64;Override
 	 * 	   public String description(){
 	 * 	     return "Starts the service";
@@ -198,10 +199,10 @@ public final class CommandLineParser
 	 * }
 	 * </code>
 	 * </pre>
-	 * 
+	 *
 	 * The {@link ArgumentBuilder#names(String...) name} for each command will be the enum constants
 	 * {@link Enum#name() name} in {@link String#toLowerCase(Locale) lower case}.
-	 * 
+	 *
 	 * @param commandEnum the {@link Class} <i>literal</i> for {@code Service} in the example above
 	 * @return a CommandLineParser which you can call {@link CommandLineParser#parse(String...)} on
 	 */
@@ -214,7 +215,7 @@ public final class CommandLineParser
 	 * Parses {@code actualArguments} (typically from the command line, i.e argv) and returns the
 	 * parsed values in a {@link ParsedArguments} container. {@link Locale#US} is used to parse
 	 * strings by default. Use {@link #locale(Locale)} to change it.
-	 * 
+	 *
 	 * @throws ArgumentException if an invalid argument is encountered during the parsing
 	 */
 	@Nonnull
@@ -246,7 +247,7 @@ public final class CommandLineParser
 	/**
 	 * Adds support for {@code commandsToAlsoSupport} in this {@link CommandLineParser}. Typically
 	 * used in a chained fashion when faced with many supported {@link Command}s.
-	 * 
+	 *
 	 * @param commandsToAlsoSupport the commands to add support for
 	 * @return this {@link CommandLineParser} to allow for chained calls
 	 */
@@ -263,8 +264,8 @@ public final class CommandLineParser
 	 * Adds support for {@code argumentsToAlsoSupport} in this {@link CommandLineParser}.
 	 * Typically used in a chained fashion when faced with many supported arguments.
 	 * Another usage is simply for readability: group arguments by logical groups
-	 * 
-	 * @param argumentsToAlsoSupport the arguments to add support for
+	 *
+	 * &#64;param argumentsToAlsoSupport the arguments to add support for
 	 * @return this {@link CommandLineParser} to allow for chained calls
 	 * </pre>
 	 */
@@ -297,7 +298,7 @@ public final class CommandLineParser
 
 	/**
 	 * Sets the {@code programName} to print with {@link #usage()}
-	 * 
+	 *
 	 * @return this parser
 	 */
 	public CommandLineParser programName(String programName)
@@ -317,7 +318,7 @@ public final class CommandLineParser
 
 	/**
 	 * Sets the {@code programDescription} to print with {@link #usage()}
-	 * 
+	 *
 	 * @return this parser
 	 */
 	public CommandLineParser programDescription(String programDescription)
@@ -341,7 +342,7 @@ public final class CommandLineParser
 	 * {@link Locale#US} is used by default instead.
 	 * If {@link Locale#getDefault()} is wanted, use {@link #locale(Locale)
 	 * locale(Locale.getDefault())}.
-	 * 
+	 *
 	 * @param localeToUse the {@link Locale} to parse input strings with (it will be passed to
 	 *            {@link StringParser#parse(String, Locale)} and
 	 *            {@link StringParser#descriptionOfValidValues(Locale)})

@@ -326,32 +326,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>sonatype-oss-release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<!-- To make sure the configuration for the javadoc plugin above is 
-							used during releasing, this is copy-pasted to here from the oss-parent pom 
-							and the version of the javadoc plugin is specifially updated -->
-						<version>3.0.0</version>
-						<configuration>
-							<additionalOptions>--allow-script-in-comments</additionalOptions>
-						</configuration>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

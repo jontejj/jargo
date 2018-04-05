@@ -74,15 +74,16 @@ import se.softhouse.jargo.internal.Texts.UserErrors;
  * (to make the generic type system produce the correct type) and to guide the
  * caller, such invalid orders are documented with {@link Deprecated}. If those warnings
  * are ignored {@link IllegalStateException} will be thrown at the offending call.
- *
- * &#64;param <SELF> the type of the subclass extending this class.
- * 		Concept borrowed from: <a href=
-"http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
- * 		The pattern also resembles the <a href=
-"http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
- * @param <T> the type of arguments the built {@link Argument} instance should handle,
- * 	such as {@link Integer} in the case of {@link Arguments#integerArgument(String...)}
  * </pre>
+ *
+ * @param <SELF> the type of the subclass extending this class.
+ *            Concept borrowed from: <a href=
+ *            "http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's
+ *            blog</a> The pattern also resembles the
+ *            <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously
+ *            recurring template pattern</a>
+ * @param <T> the type of arguments the built {@link Argument} instance should handle,
+ *            such as {@link Integer} in the case of {@link Arguments#integerArgument(String...)}
  */
 @NotThreadSafe
 public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
@@ -335,7 +336,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Returned by {@link ParsedArguments#get(Argument)} when no argument {@link ParsedArguments#wasGiven(Argument) was given}.
 	 * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.
 	 * </pre>
-	 * 
+	 *
 	 * <b>Mutability</b>:Remember that as {@link Argument} is {@link Immutable}
 	 * this value should be so too if multiple argument parsings is going to take place.
 	 * If mutability is wanted {@link ArgumentBuilder#defaultValueSupplier(Supplier)} should be used
@@ -685,7 +686,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * as they may change between different builders
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;List&lt;Boolean&gt; are not compatible)
 	 * </pre>
-	 * 
+	 *
 	 * @param copy the ArgumentBuilder to copy from
 	 */
 	@OverridingMethodsMustInvokeSuper
@@ -992,7 +993,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		/**
 		 * @deprecated
-		 * 
+		 *
 		 *             <pre>
 		 * This doesn't work with {@link ArgumentBuilder#arity(int)} or {@link ArgumentBuilder#variableArity()}
 		 * I.e --foo 1,2 3,4
