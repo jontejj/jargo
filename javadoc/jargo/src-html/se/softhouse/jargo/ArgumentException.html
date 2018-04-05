@@ -22,7 +22,7 @@
 <span class="sourceLineNo">014</span> */<a name="line.14"></a>
 <span class="sourceLineNo">015</span>package se.softhouse.jargo;<a name="line.15"></a>
 <span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>import static com.google.common.base.Preconditions.checkNotNull;<a name="line.17"></a>
+<span class="sourceLineNo">017</span>import static java.util.Objects.requireNonNull;<a name="line.17"></a>
 <span class="sourceLineNo">018</span>import static se.softhouse.common.strings.StringsUtil.NEWLINE;<a name="line.18"></a>
 <span class="sourceLineNo">019</span><a name="line.19"></a>
 <span class="sourceLineNo">020</span>import java.io.Serializable;<a name="line.20"></a>
@@ -79,7 +79,7 @@
 <span class="sourceLineNo">071</span>         */<a name="line.71"></a>
 <span class="sourceLineNo">072</span>        public final ArgumentException andCause(Throwable cause)<a name="line.72"></a>
 <span class="sourceLineNo">073</span>        {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                initCause(checkNotNull(cause));<a name="line.74"></a>
+<span class="sourceLineNo">074</span>                initCause(requireNonNull(cause));<a name="line.74"></a>
 <span class="sourceLineNo">075</span>                return this;<a name="line.75"></a>
 <span class="sourceLineNo">076</span>        }<a name="line.76"></a>
 <span class="sourceLineNo">077</span><a name="line.77"></a>
@@ -128,7 +128,7 @@
 <span class="sourceLineNo">120</span>         */<a name="line.120"></a>
 <span class="sourceLineNo">121</span>        private Usage getUsage()<a name="line.121"></a>
 <span class="sourceLineNo">122</span>        {<a name="line.122"></a>
-<span class="sourceLineNo">123</span>                checkNotNull(usage, ProgrammaticErrors.NO_USAGE_AVAILABLE);<a name="line.123"></a>
+<span class="sourceLineNo">123</span>                requireNonNull(usage, ProgrammaticErrors.NO_USAGE_AVAILABLE);<a name="line.123"></a>
 <span class="sourceLineNo">124</span>                return usage;<a name="line.124"></a>
 <span class="sourceLineNo">125</span>        }<a name="line.125"></a>
 <span class="sourceLineNo">126</span><a name="line.126"></a>
@@ -153,7 +153,7 @@
 <span class="sourceLineNo">145</span>         */<a name="line.145"></a>
 <span class="sourceLineNo">146</span>        void withUsageReference(final String usageReference)<a name="line.146"></a>
 <span class="sourceLineNo">147</span>        {<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                usageReferenceName = checkNotNull(usageReference);<a name="line.148"></a>
+<span class="sourceLineNo">148</span>                usageReferenceName = requireNonNull(usageReference);<a name="line.148"></a>
 <span class="sourceLineNo">149</span>        }<a name="line.149"></a>
 <span class="sourceLineNo">150</span><a name="line.150"></a>
 <span class="sourceLineNo">151</span>        ArgumentException withUsageReference(final Argument&lt;?&gt; usageReference)<a name="line.151"></a>

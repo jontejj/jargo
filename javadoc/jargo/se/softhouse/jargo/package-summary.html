@@ -70,7 +70,7 @@
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div class="header">
-<p><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/ParametersAreNonnullByDefault.html?is-external=true" title="class or interface in javax.annotation">@ParametersAreNonnullByDefault</a>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/ParametersAreNonnullByDefault.html?is-external=true" title="class or interface in javax.annotation">@ParametersAreNonnullByDefault</a>
 </p>
 <h1 title="Package" class="title">Package&nbsp;se.softhouse.jargo</h1>
 <div class="docSummary">
@@ -91,7 +91,7 @@
 <tr class="altColor">
 <td class="colFirst"><a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;</td>
 <td class="colLast">
-<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into values of the type <code>T</code>.</div>
+<div class="block">Parses <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into values of the type <code>T</code>.</div>
 </td>
 </tr>
 </tbody>
@@ -248,33 +248,37 @@
 </a>
 <h2 title="Package se.softhouse.jargo Description">Package se.softhouse.jargo Description</h2>
 <div class="block">An argument and options parser for java
-
  <h2>Glossary</h2>
  <ul>
-  <li><b>Option</b> a simple flag parameter such as "-l", created with <a href="../../../se/softhouse/jargo/Arguments.html#optionArgument-java.lang.String-java.lang.String...-"><code>Arguments.optionArgument(String, String...)</code></a>. Doesn't accept any <i>Parameter</i></li>
-  <li><b>Parameter</b> the second part of an <i>Argument, parsed with a <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a></i></li>
-        <li><b><a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a></b> both the name and the parameter, such as "--numbers 1,2,3"</li>
-  <li><b>Named Argument</b> an argument with a name such as "--numbers"</li>
-  <li><b>Indexed Argument</b> an argument without a name, such as "file_to_build" in "buildProgram file_to_build"</li>
-  <li><b><a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a></b> Understands how to manage several <i>Argument</i>s</li>
+ <li><b>Option</b> a simple flag parameter such as "-l", created with
+ <a href="../../../se/softhouse/jargo/Arguments.html#optionArgument-java.lang.String-java.lang.String...-"><code>Arguments.optionArgument(String, String...)</code></a>. Doesn't accept any
+ <i>Parameter</i></li>
+ <li><b>Parameter</b> the second part of an <i>Argument, parsed with a
+ <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a></i></li>
+ <li><b><a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a></b> both the name and the parameter, such as
+ "--numbers 1,2,3"</li>
+ <li><b>Named Argument</b> an argument with a name such as "--numbers"</li>
+ <li><b>Indexed Argument</b> an argument without a name, such as "file_to_build" in "buildProgram
+ file_to_build"</li>
+ <li><b><a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a></b> Understands how to manage several
+ <i>Argument</i>s</li>
  </ul>
  <h2>Examples</h2>
- See <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a>, <a href="../../../se/softhouse/jargo/Arguments.html" title="class in se.softhouse.jargo"><code>Arguments</code></a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo"><code>ArgumentBuilder</code></a> for how to use this API
+ See <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a>, <a href="../../../se/softhouse/jargo/Arguments.html" title="class in se.softhouse.jargo"><code>Arguments</code></a>,
+ <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo"><code>ArgumentBuilder</code></a> for how to use this API
  <h2>Localization</h2>
- <a href="../../../se/softhouse/jargo/Arguments.html#integerArgument-java.lang.String...-"><code>Arguments.integerArgument(String...)</code></a>, <a href="../../../se/softhouse/jargo/Arguments.html#longArgument-java.lang.String...-"><code>Arguments.longArgument(String...)</code></a> and so on,
- <a href="../../../se/softhouse/common/strings/Describers.html#numberDescriber--"><code>formats</code></a> and <a href="../../../se/softhouse/common/numbers/NumberType.html#parse-java.lang.String-java.util.Locale-"><code>parses</code></a> numbers in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> sensitive way.
- <h2>API compatibility notes</h2>
- Public methods that have Guava types in their method signature such as:
- <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#limitTo-com.google.common.base.Predicate-"><code>ArgumentBuilder.limitTo(com.google.common.base.Predicate)</code></a>
- <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueSupplier-com.google.common.base.Supplier-"><code>ArgumentBuilder.defaultValueSupplier(com.google.common.base.Supplier)</code></a>
- <a href="../../../se/softhouse/jargo/StringParsers.html#asFunction-se.softhouse.jargo.StringParser-"><code>StringParsers.asFunction(StringParser)</code></a>
- May be changed when JDK 8 is here as it will contain those interfaces without the need of Guava. For now they are marked with <code>Beta</code>
+ <a href="../../../se/softhouse/jargo/Arguments.html#integerArgument-java.lang.String...-"><code>Arguments.integerArgument(String...)</code></a>,
+ <a href="../../../se/softhouse/jargo/Arguments.html#longArgument-java.lang.String...-"><code>Arguments.longArgument(String...)</code></a> and so on,
+ <a href="../../../se/softhouse/common/strings/Describers.html#numberDescriber--"><code>formats</code></a> and
+ <a href="../../../se/softhouse/common/numbers/NumberType.html#parse-java.lang.String-java.util.Locale-"><code>parses</code></a> numbers in
+ a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> sensitive way.
  <h2>Inspiration (a.k.a Credits)</h2>
  If you recognize any features in this API it may come from:
  <ul>
-  <li><b>git</b> - the <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> feature, suggestions for invalid arguments</li>
-  <li><b>maven</b> - executing several commands</li>
-  <li><b>jcommander</b> - almost everything else (this is what I based the feature set on)</li>
+ <li><b>git</b> - the <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> feature, suggestions for invalid
+ arguments</li>
+ <li><b>maven</b> - executing several commands</li>
+ <li><b>jcommander</b> - almost everything else (this is what I based the feature set on)</li>
  </ul></div>
 </div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
@@ -324,6 +328,6 @@
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013-2017. All Rights Reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2018. All rights reserved.</small></p>
 </body>
 </html>

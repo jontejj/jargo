@@ -97,7 +97,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
-<li><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
 <li>
 <ul class="inheritance">
 <li>se.softhouse.jargo.Command</li>
@@ -113,22 +113,22 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public abstract class <a href="../../../src-html/se/softhouse/jargo/Command.html#line.101">Command</a>
-extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
+public abstract class <a href="../../../src-html/se/softhouse/jargo/Command.html#line.102">Command</a>
+extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements <a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a></pre>
 <div class="block"><pre>
  <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s automatically gets an invocation of execute when given on the command line.
  This is particularly useful to avoid a never ending switch statement.
- 
+
  <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s have a <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a> themselves (and thereby sub-commands are allowed as well), that is,
  they execute a command and may support contextual arguments as specified by the constructor <a href="../../../se/softhouse/jargo/Command.html#Command-se.softhouse.jargo.Argument...-"><code>Command(Argument...)</code></a>.
- 
+
  Sub-commands are executed before their parent <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>.
- 
+
  To integrate your <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> into an <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> use <a href="../../../se/softhouse/jargo/Arguments.html#command-se.softhouse.jargo.Command-"><code>Arguments.command(Command)</code></a>
  or <a href="../../../se/softhouse/jargo/CommandLineParser.html#withCommands-se.softhouse.jargo.Command...-"><code>CommandLineParser.withCommands(Command...)</code></a> if you have several commands.
- 
+
  If you support several commands and a user enters several of them at the same
  time they will be executed in the order given to <a href="../../../se/softhouse/jargo/CommandLineParser.html#parse-java.lang.String...-"><code>CommandLineParser.parse(String...)</code></a>.
  If any <a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-"><code>parse</code></a> errors occurs (for <a href="../../../se/softhouse/jargo/Command.html#Command-se.softhouse.jargo.Argument...-"><code>command arguments</code></a>) the <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>
@@ -136,30 +136,30 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
  all <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s given before the <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> with <a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-"><code>parse errors</code></a> will have been executed.
  This is so because <a href="../../../se/softhouse/jargo/Command.html#Command-se.softhouse.jargo.Argument...-"><code>command arguments</code></a> are allowed to be dependent on earlier <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s being executed.
  So it's recommended to let the user know when you've executed a <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>.
- 
- <b>Mutability note:</b> although a <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> should be <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation"><code>Immutable</code></a>
+
+ <b>Mutability note:</b> although a <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> should be <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation"><code>Immutable</code></a>
  the objects it handles doesn't have to be. So repeated invocations of execute
  is allowed to yield different results or to affect external state.
  </pre>
- 
+
  Example subclass:
- 
+
  <pre class="prettyprint">
  <code class="language-java">
  public class Build extends Command
  {
    private static final Argument&lt;File&gt; PATH = Arguments.fileArgument().description("the directory to build").build();
- 
+
    public Build()
    {
      super(PATH);
    }
- 
+
    public String description()
    {
      return "Builds a target";
    }
- 
+
    protected void execute(ParsedArguments parsedArguments)
    {
      File pathToBuild = parsedArguments.get(PATH);
@@ -168,15 +168,15 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
  }
  </code>
  </pre>
- 
+
  And the glue needed to integrate the Build <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> with a <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a>:
- 
+
  <pre class="prettyprint">
  <code class="language-java">
  CommandLineParser.withCommands(new Build()).parse("build", "some_directory_that_needs_building");
  </code>
  </pre>
- 
+
  As can be seen in the example the command name is the class name in lower case by default. This
  may be overridden with <a href="../../../se/softhouse/jargo/Command.html#commandName--"><code>commandName()</code></a>.<br>
  If your commands don't require any arguments you can use
@@ -219,13 +219,13 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colFirst"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/Command.html#commandName--">commandName</a></span>()</code>
 <div class="block">The name that triggers this command.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/Command.html#description--">description</a></span>()</code>
 <div class="block">Override to provide a description to print in the usage text for this command.</div>
 </td>
@@ -237,7 +237,7 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/Command.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
@@ -245,8 +245,8 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;java.lang.<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -268,7 +268,7 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Command</h4>
-<pre>protected&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.116">Command</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;...&nbsp;commandArguments)</pre>
+<pre>protected&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.117">Command</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;...&nbsp;commandArguments)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>commandArguments</code> - the arguments that this command supports.</dd>
@@ -289,10 +289,10 @@ implements <a href="../../../se/softhouse/common/strings/Describable.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>commandName</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-protected&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.127">commandName</a>()</pre>
-<div class="block">The name that triggers this command. Defaults to <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true#getSimpleName--" title="class or interface in java.lang"><code>Class.getSimpleName()</code></a> in lower
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.128">commandName</a>()</pre>
+<div class="block">The name that triggers this command. Defaults to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true#getSimpleName--" title="class or interface in java.lang"><code>Class.getSimpleName()</code></a> in lower
  case. For several names override this with <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#names-java.lang.String...-"><code>ArgumentBuilder.names(String...)</code></a></div>
 </li>
 </ul>
@@ -302,8 +302,8 @@ protected&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/S
 <ul class="blockList">
 <li class="blockList">
 <h4>description</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.148">description</a>()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.149">description</a>()</pre>
 <div class="block">Override to provide a description to print in the usage text for this command.
  This is essentially an alternative to <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#description-se.softhouse.common.strings.Describable-"><code>ArgumentBuilder.description(Describable)</code></a></div>
 <dl>
@@ -320,7 +320,7 @@ public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Stri
 <ul class="blockList">
 <li class="blockList">
 <h4>execute</h4>
-<pre>protected abstract&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.138">execute</a>(<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a>&nbsp;parsedArguments)</pre>
+<pre>protected abstract&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.139">execute</a>(<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a>&nbsp;parsedArguments)</pre>
 <div class="block">Called when this command is encountered on the command line</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -335,10 +335,10 @@ public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Stri
 <ul class="blockListLast">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.154">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Command.html#line.155">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -411,6 +411,6 @@ public&nbsp;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Stri
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013-2017. All Rights Reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2018. All rights reserved.</small></p>
 </body>
 </html>

@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -97,7 +97,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
-<li><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
 <li>
 <ul class="inheritance">
 <li>se.softhouse.common.strings.Describers</li>
@@ -109,9 +109,9 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.41">Describers</a>
-extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
+public final class <a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.39">Describers</a>
+extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Gives you static access to implementations of the <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> interface.</div>
 </li>
 </ul>
@@ -132,125 +132,118 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;com.google.common.base.Function&lt;? super T,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#asFunction-se.softhouse.common.strings.Describer-">asFunction</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;describer)</code>
-<div class="block">
- Exposes a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> as a Guava <code>Function</code>.</div>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;? super T,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#asFunction-se.softhouse.common.strings.Describer-java.util.Locale-">asFunction</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;describer,
+          <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</code>
+<div class="block">Like <a href="../../../../se/softhouse/common/strings/Describer.html#apply-T-"><code>Describer.apply(Object)</code></a> but with <code>locale</code> instead of
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true#getDefault--" title="class or interface in java.util"><code>Locale.getDefault()</code></a>.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;com.google.common.base.Function&lt;? super T,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#asFunction-se.softhouse.common.strings.Describer-java.util.Locale-">asFunction</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;describer,
-          <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</code>
-<div class="block">Like <a href="../../../../se/softhouse/common/strings/Describers.html#asFunction-se.softhouse.common.strings.Describer-"><code>asFunction(Describer)</code></a> but with <code>locale</code> instead of
- <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault--" title="class or interface in java.util"><code>Locale.getDefault()</code></a>.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;</code></td>
+<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#booleanAsEnabledDisabled--">booleanAsEnabledDisabled</a></span>()</code>
 <div class="block">Describes a boolean as enabled when <code>true</code> and disabled when <code>false</code></div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;</code></td>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#booleanAsOnOff--">booleanAsOnOff</a></span>()</code>
 <div class="block">Describes a boolean as on when <code>true</code> and off when <code>false</code></div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</a>&gt;</code></td>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#characterDescriber--">characterDescriber</a></span>()</code>
-<div class="block">Describes <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a>s by printing explanations for unprintable characters.</div>
+<div class="block">Describes <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a>s by printing explanations for unprintable characters.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#fileDescriber--">fileDescriber</a></span>()</code>
+<div class="block">Describes <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s with <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true#getAbsolutePath--" title="class or interface in java.io"><code>File.getAbsolutePath()</code></a> instead of <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true#getPath--" title="class or interface in java.io"><code>File.getPath()</code></a>
+ as <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true#toString--" title="class or interface in java.io"><code>File.toString()</code></a> does.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#fileDescriber--">fileDescriber</a></span>()</code>
-<div class="block">Describes <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s with <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#getAbsolutePath--" title="class or interface in java.io"><code>File.getAbsolutePath()</code></a> instead of <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#getPath--" title="class or interface in java.io"><code>File.getPath()</code></a>
- as <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#toString--" title="class or interface in java.io"><code>File.toString()</code></a> does.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;</code></td>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#listDescriber-se.softhouse.common.strings.Describer-">listDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;valueDescriber)</code>
 <div class="block">Describes values in lists with <code>valueDescriber</code> and separates
  elements with ", ".</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;</code></td>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#listDescriber-se.softhouse.common.strings.Describer-java.lang.String-">listDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;valueDescriber,
-             <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</code>
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</code>
 <div class="block">Describes values in lists with <code>valueDescriber</code> and separates
  values with <code>valueSeperator</code>.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-se.softhouse.common.strings.Describer-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
             <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber)</code>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-se.softhouse.common.strings.Describer-java.lang.String-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
+            <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</code>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-se.softhouse.common.strings.Describer-java.lang.String-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
-            <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
-            <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</code>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber)</code>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
-<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber)</code>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-java.lang.String-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</code>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
-<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-se.softhouse.common.strings.Describer-java.lang.String-">mapDescriber</a></span>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
-            <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</code>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>.</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-">mapDescriber</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions)</code>
-<div class="block">Describes what a key=value in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> means by fetching a
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-">mapDescriber</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions)</code>
+<div class="block">Describes what a key=value in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> means by fetching a
  description from <code>descriptions</code> for each key in a given map.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-se.softhouse.common.strings.Describer-">mapDescriber</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions,
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-se.softhouse.common.strings.Describer-">mapDescriber</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions,
             <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber)</code>
-<div class="block">Works like <a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-"><code>mapDescriber(Map)</code></a> but it describes keys in any given <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> with
- <code>keyDescriber</code> instead of with <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a></div>
+<div class="block">Works like <a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-"><code>mapDescriber(Map)</code></a> but it describes keys in any given <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> with
+ <code>keyDescriber</code> instead of with <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a></div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#numberDescriber--">numberDescriber</a></span>()</code>
+<div class="block">Describes <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><code>Number</code></a>s in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> sensitive manner using <a href="https://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text"><code>NumberFormat</code></a>.</div>
 </td>
 </tr>
 <tr id="i14" class="altColor">
-<td class="colFirst"><code>static <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#numberDescriber--">numberDescriber</a></span>()</code>
-<div class="block">Describes <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><code>Number</code></a>s in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> sensitive manner using <a href="http://download.oracle.com/javase/6/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text"><code>NumberFormat</code></a>.</div>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber--">toStringDescriber</a></span>()</code>
+<div class="block">Calls <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true#valueOf-java.lang.Object-" title="class or interface in java.lang"><code>String.valueOf(Object)</code></a> for input values.</div>
 </td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber--">toStringDescriber</a></span>()</code>
-<div class="block">Calls <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#valueOf-java.lang.Object-" title="class or interface in java.lang"><code>String.valueOf(Object)</code></a> for input values.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#usingFunction-java.util.function.Function-">usingFunction</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;T,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;describerFunction)</code>
+<div class="block">
+ Exposes a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function"><code>Function</code></a> as a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a>.</div>
 </td>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#usingFunction-com.google.common.base.Function-">usingFunction</a></span>(com.google.common.base.Function&lt;T,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;describerFunction)</code>
-<div class="block">
- Exposes a <code>Function</code> as a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a>.</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#withConstantString-java.lang.String-">withConstantString</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;constant)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/Describers.html#withConstantString-java.lang.String-">withConstantString</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;constant)</code>
 <div class="block">Always describes any value of type <code>T</code> with the given <code>constant</code>.</div>
 </td>
 </tr>
@@ -259,8 +252,8 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;java.lang.<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -276,41 +269,18 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="asFunction-se.softhouse.common.strings.Describer-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>asFunction</h4>
-<pre>@Beta
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;com.google.common.base.Function&lt;? super T,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.417">asFunction</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;describer)</pre>
-<div class="block"><pre>
- Exposes a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> as a Guava <code>Function</code>.
- <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>describer</code> - the describer to convert to a <code>Function</code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <code>Function</code> that uses <a href="../../../../se/softhouse/common/strings/Describer.html#describe-T-java.util.Locale-"><code>describe(input, Locale.getDefault()</code></a>.
- </pre></dd>
-</dl>
-</li>
-</ul>
 <a name="asFunction-se.softhouse.common.strings.Describer-java.util.Locale-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>asFunction</h4>
-<pre>@Beta
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;com.google.common.base.Function&lt;? super T,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.436">asFunction</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;describer,
-                                                                                                                  <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</pre>
-<div class="block">Like <a href="../../../../se/softhouse/common/strings/Describers.html#asFunction-se.softhouse.common.strings.Describer-"><code>asFunction(Describer)</code></a> but with <code>locale</code> instead of
- <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true#getDefault--" title="class or interface in java.util"><code>Locale.getDefault()</code></a>.</div>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;? super T,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.376">asFunction</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;describer,
+                                                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</pre>
+<div class="block">Like <a href="../../../../se/softhouse/common/strings/Describer.html#apply-T-"><code>Describer.apply(Object)</code></a> but with <code>locale</code> instead of
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true#getDefault--" title="class or interface in java.util"><code>Locale.getDefault()</code></a>.</div>
 </li>
 </ul>
 <a name="booleanAsEnabledDisabled--">
@@ -319,9 +289,9 @@ public static&nbsp;&lt;T&gt;&nbsp;com.google.common.base.Function&lt;? super T,<
 <ul class="blockList">
 <li class="blockList">
 <h4>booleanAsEnabledDisabled</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.162">booleanAsEnabledDisabled</a>()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.128">booleanAsEnabledDisabled</a>()</pre>
 <div class="block">Describes a boolean as enabled when <code>true</code> and disabled when <code>false</code></div>
 </li>
 </ul>
@@ -331,9 +301,9 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>booleanAsOnOff</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.172">booleanAsOnOff</a>()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.138">booleanAsOnOff</a>()</pre>
 <div class="block">Describes a boolean as on when <code>true</code> and off when <code>false</code></div>
 </li>
 </ul>
@@ -343,10 +313,10 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>characterDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.113">characterDescriber</a>()</pre>
-<div class="block">Describes <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a>s by printing explanations for unprintable characters.</div>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang">Character</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.79">characterDescriber</a>()</pre>
+<div class="block">Describes <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html?is-external=true" title="class or interface in java.lang"><code>Character</code></a>s by printing explanations for unprintable characters.</div>
 </li>
 </ul>
 <a name="fileDescriber--">
@@ -355,11 +325,11 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>fileDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.139">fileDescriber</a>()</pre>
-<div class="block">Describes <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s with <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#getAbsolutePath--" title="class or interface in java.io"><code>File.getAbsolutePath()</code></a> instead of <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#getPath--" title="class or interface in java.io"><code>File.getPath()</code></a>
- as <a href="http://download.oracle.com/javase/6/docs/api/java/io/File.html?is-external=true#toString--" title="class or interface in java.io"><code>File.toString()</code></a> does.</div>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.105">fileDescriber</a>()</pre>
+<div class="block">Describes <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s with <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true#getAbsolutePath--" title="class or interface in java.io"><code>File.getAbsolutePath()</code></a> instead of <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true#getPath--" title="class or interface in java.io"><code>File.getPath()</code></a>
+ as <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true#toString--" title="class or interface in java.io"><code>File.toString()</code></a> does.</div>
 </li>
 </ul>
 <a name="listDescriber-se.softhouse.common.strings.Describer-">
@@ -368,11 +338,11 @@ public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>listDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.480">listDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;valueDescriber)</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.406">listDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;valueDescriber)</pre>
 <div class="block">Describes values in lists with <code>valueDescriber</code> and separates
- elements with ", ". Lists with <a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true#size--" title="class or interface in java.util"><code>List.size()</code></a> = zero is described
+ elements with ", ". Lists with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true#size--" title="class or interface in java.util"><code>List.size()</code></a> = zero is described
  with the string "Empty List".</div>
 </li>
 </ul>
@@ -382,12 +352,12 @@ public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strin
 <ul class="blockList">
 <li class="blockList">
 <h4>listDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.492">listDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;valueDescriber,
-                                                                                         <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends T&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.418">listDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;valueDescriber,
+                                                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
 <div class="block">Describes values in lists with <code>valueDescriber</code> and separates
- values with <code>valueSeperator</code>. Lists with <a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true#size--" title="class or interface in java.util"><code>List.size()</code></a> = zero
+ values with <code>valueSeperator</code>. Lists with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true#size--" title="class or interface in java.util"><code>List.size()</code></a> = zero
  is described with the string "Empty List".</div>
 </li>
 </ul>
@@ -397,11 +367,11 @@ public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strin
 <ul class="blockList">
 <li class="blockList">
 <h4>mapDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.344">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.309">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
                                                                                  <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber)</pre>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with <code>keyDescriber</code> and
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with <code>keyDescriber</code> and
  values with <code>valueDescriber</code>.
  "=" is used as the separator between key and value. <a href="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><code>StringsUtil.NEWLINE</code></a> separates
  entries.</div>
@@ -413,12 +383,12 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>mapDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.356">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.321">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber,
                                                                                  <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
-                                                                                 <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with <code>keyDescriber</code> and
+                                                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with <code>keyDescriber</code> and
  values with <code>valueDescriber</code>. <code>valueSeparator</code> is used as the separator between
  key and value. <a href="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><code>StringsUtil.NEWLINE</code></a> separates entries.</div>
 </li>
@@ -429,10 +399,10 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>mapDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.318">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber)</pre>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.283">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber)</pre>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with
  <a href="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber--"><code>toStringDescriber()</code></a> and values with <code>valueDescriber</code>. "=" is used as
  the separator between key and value. <a href="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><code>StringsUtil.NEWLINE</code></a> separates entries.</div>
 </li>
@@ -443,11 +413,11 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>mapDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.331">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
-                                                                                 <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
-<div class="block">Describes key values in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.296">mapDescriber</a>(<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;V&gt;&nbsp;valueDescriber,
+                                                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
+<div class="block">Describes key values in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a>. Keys are described with
  <a href="../../../../se/softhouse/common/strings/Describers.html#toStringDescriber--"><code>toStringDescriber()</code></a> and values with <code>valueDescriber</code>.
  <code>valueSeparator</code> is used as the separator between key and value.
  <a href="../../../../se/softhouse/common/strings/StringsUtil.html#NEWLINE"><code>StringsUtil.NEWLINE</code></a> separates entries.</div>
@@ -459,13 +429,13 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>mapDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.263">mapDescriber</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions)</pre>
-<div class="block">Describes what a key=value in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> means by fetching a
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.228">mapDescriber</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions)</pre>
+<div class="block">Describes what a key=value in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> means by fetching a
  description from <code>descriptions</code> for each key in a given map. So <code>descriptions</code>
  need to have values (descriptions) for all keys in any given map,
- otherwise a <a href="http://download.oracle.com/javase/6/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang"><code>NullPointerException</code></a> is thrown. For example:
+ otherwise a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang"><code>NullPointerException</code></a> is thrown. For example:
  
  <pre class="prettyprint">
  <code class="language-java">
@@ -504,14 +474,14 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>mapDescriber</h4>
-<pre>public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.277">mapDescriber</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions,
+<pre>public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,V&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.242">mapDescriber</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;K,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;descriptions,
                                                      <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;K&gt;&nbsp;keyDescriber)</pre>
-<div class="block">Works like <a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-"><code>mapDescriber(Map)</code></a> but it describes keys in any given <a href="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> with
- <code>keyDescriber</code> instead of with <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a></div>
+<div class="block">Works like <a href="../../../../se/softhouse/common/strings/Describers.html#mapDescriber-java.util.Map-"><code>mapDescriber(Map)</code></a> but it describes keys in any given <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> with
+ <code>keyDescriber</code> instead of with <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>descriptions</code> - a map with strings describing what each key in it means</dd>
-<dd><code>keyDescriber</code> - <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> used to transform keys into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s with</dd>
+<dd><code>keyDescriber</code> - <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> used to transform keys into <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s with</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> that can describe a map of the type <code>Map&lt;K, V&gt;</code> and where
          each key must have a corresponding description in <code>descriptions</code></dd>
@@ -524,8 +494,8 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>numberDescriber</h4>
-<pre>public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.201">numberDescriber</a>()</pre>
-<div class="block">Describes <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><code>Number</code></a>s in a <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> sensitive manner using <a href="http://download.oracle.com/javase/6/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text"><code>NumberFormat</code></a>.</div>
+<pre>public static&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang">Number</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.166">numberDescriber</a>()</pre>
+<div class="block">Describes <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html?is-external=true" title="class or interface in java.lang"><code>Number</code></a>s in a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util"><code>Locale</code></a> sensitive manner using <a href="https://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text"><code>NumberFormat</code></a>.</div>
 </li>
 </ul>
 <a name="toStringDescriber--">
@@ -534,33 +504,31 @@ public static&nbsp;&lt;K,V&gt;&nbsp;<a href="../../../../se/softhouse/common/str
 <ul class="blockList">
 <li class="blockList">
 <h4>toStringDescriber</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.86">toStringDescriber</a>()</pre>
-<div class="block">Calls <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true#valueOf-java.lang.Object-" title="class or interface in java.lang"><code>String.valueOf(Object)</code></a> for input values. As this goes
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.69">toStringDescriber</a>()</pre>
+<div class="block">Calls <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true#valueOf-java.lang.Object-" title="class or interface in java.lang"><code>String.valueOf(Object)</code></a> for input values. As this goes
  against the very purpose of the <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> interface it may seem
  odd but this <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> works really well as a null object, it can
  also act as a functor for calling toString.</div>
 </li>
 </ul>
-<a name="usingFunction-com.google.common.base.Function-">
+<a name="usingFunction-java.util.function.Function-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>usingFunction</h4>
-<pre>@Beta
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.461">usingFunction</a>(com.google.common.base.Function&lt;T,<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;describerFunction)</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.393">usingFunction</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;T,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;describerFunction)</pre>
 <div class="block"><pre>
- Exposes a <code>Function</code> as a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a>.
- <b>Note:</b>This method may be removed in the future if Guava is removed as a dependency.</div>
+ Exposes a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function"><code>Function</code></a> as a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>describerFunction</code> - a function that can convert <code>T</code> values into <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s</dd>
+<dd><code>describerFunction</code> - a function that can convert <code>T</code> values into <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> that applies <code>Function.apply(Object)</code> to <a href="../../../../se/softhouse/common/strings/Describer.html#describe-T-java.util.Locale-"><code>Describer.describe(Object, Locale)</code></a> input values.
+<dd>a <a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> that applies <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true#apply-T-" title="class or interface in java.util.function"><code>Function.apply(Object)</code></a> to <a href="../../../../se/softhouse/common/strings/Describer.html#describe-T-java.util.Locale-"><code>Describer.describe(Object, Locale)</code></a> input values.
  </pre></dd>
 </dl>
 </li>
@@ -571,9 +539,9 @@ public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strin
 <ul class="blockListLast">
 <li class="blockList">
 <h4>withConstantString</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
- <a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.57">withConstantString</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;constant)</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+ <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/Describers.html#line.55">withConstantString</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;constant)</pre>
 <div class="block">Always describes any value of type <code>T</code> with the given <code>constant</code>. For instance,
  if you have implemented a time related parser and don't want different times in the
  usage depending on when the usage is printed you could pass in "The current time", then this
@@ -649,6 +617,6 @@ public static&nbsp;&lt;T&gt;&nbsp;<a href="../../../../se/softhouse/common/strin
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013-2017. All Rights Reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2018. All rights reserved.</small></p>
 </body>
 </html>

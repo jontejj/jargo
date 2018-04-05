@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":18,"i1":6,"i2":6,"i3":6,"i4":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -101,7 +101,11 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>T</code> - the type to parse <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into</dd>
+<dd><code>T</code> - the type to parse <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into</dd>
+</dl>
+<dl>
+<dt>All Superinterfaces:</dt>
+<dd><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;</dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
@@ -109,9 +113,10 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.82">StringParser</a>&lt;T&gt;</pre>
-<div class="block">Parses <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into values of the type <code>T</code>.
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
+public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.83">StringParser</a>&lt;T&gt;
+extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,T&gt;</pre>
+<div class="block">Parses <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s into values of the type <code>T</code>.
  Create an <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> for your <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> with
  <a href="../../../se/softhouse/jargo/Arguments.html#withParser-se.softhouse.jargo.StringParser-"><code>Arguments.withParser(StringParser)</code></a>.
  An example implementation for handling joda-time dates:
@@ -181,38 +186,52 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>default <a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#apply-java.lang.String-">apply</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;argument)</code>
+<div class="block">
+ Uses <a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-"><code>parse</code></a> for input <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#defaultValue--">defaultValue</a></span>()</code>
 <div class="block">Used when the <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> this parser is connected to wasn't given.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues-java.util.Locale-">descriptionOfValidValues</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</code>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues-java.util.Locale-">descriptionOfValidValues</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</code>
 <div class="block">Describes what values this <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> accepts</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#metaDescription--">metaDescription</a></span>()</code>
 <div class="block">
  The meta description is the text displayed after the argument names.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-">parse</a></span>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;argument,
-     <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</code>
-<div class="block">Parses the given <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> into the type <code>T</code></div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-">parse</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;argument,
+     <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</code>
+<div class="block">Parses the given <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> into the type <code>T</code></div>
 </td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.java.util.function.Function">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;java.util.function.<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a></h3>
+<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true#andThen-java.util.function.Function-" title="class or interface in java.util.function">andThen</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true#compose-java.util.function.Function-" title="class or interface in java.util.function">compose</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true#identity--" title="class or interface in java.util.function">identity</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
@@ -227,14 +246,45 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="apply-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>apply</h4>
+<pre>default&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.117">apply</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;argument)</pre>
+<div class="block"><pre>
+ Uses <a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-"><code>parse</code></a> for input <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s.
+ </pre>
+
+ For example:
+
+ <pre class="prettyprint">
+ <code class="language-java">
+ List&lt;Integer&gt; result =  Arrays.asList("1", "3", "2").stream().map(StringParsers.integerParser()).collect(Collectors.toList());
+ </code>
+ </pre>
+
+ <b>Note:</b>The parser will pass the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true#getDefault--" title="class or interface in java.util"><code>Locale.getDefault()</code></a> to
+ <a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-"><code>parse</code></a>.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true#apply-T-" title="class or interface in java.util.function">apply</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a>&gt;</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>argument</code> - the string to convert</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the parsed value</dd>
+</dl>
+</li>
+</ul>
 <a name="defaultValue--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>defaultValue</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
-<a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.110">defaultValue</a>()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+<a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.136">defaultValue</a>()</pre>
 <div class="block">Used when the <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> this parser is connected to wasn't given.
  Used as a fall-back mechanism when <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue-T-"><code>ArgumentBuilder.defaultValue(Object)</code></a> isn't used.</div>
 </li>
@@ -245,8 +295,8 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 <ul class="blockList">
 <li class="blockList">
 <h4>descriptionOfValidValues</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.103">descriptionOfValidValues</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.129">descriptionOfValidValues</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</pre>
 <div class="block">Describes what values this <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> accepts</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -262,8 +312,8 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 <ul class="blockList">
 <li class="blockList">
 <h4>metaDescription</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.126">metaDescription</a>()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.151">metaDescription</a>()</pre>
 <div class="block"><pre>
  The meta description is the text displayed after the argument names.
  Typically surrounded by &lt; and &gt;
@@ -271,7 +321,6 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 
  For instance:
  <a href="../../../se/softhouse/jargo/StringParsers.html#integerParser--"><code>StringParsers.integerParser()</code></a>s <a href="../../../se/softhouse/jargo/StringParser.html#metaDescription--"><code>metaDescription()</code></a> is &lt;integer&gt;
-
  </pre></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -285,11 +334,11 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>parse</h4>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-<a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.94">parse</a>(<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;argument,
-                 <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
+<a href="../../../se/softhouse/jargo/StringParser.html" title="type parameter in StringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/StringParser.html#line.95">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;argument,
+                 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)
           throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a></pre>
-<div class="block">Parses the given <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> into the type <code>T</code></div>
+<div class="block">Parses the given <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> into the type <code>T</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>argument</code> - the string as given from the command line</dd>
@@ -371,6 +420,6 @@ public interface <a href="../../../src-html/se/softhouse/jargo/StringParser.html
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013-2017. All Rights Reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2018. All rights reserved.</small></p>
 </body>
 </html>

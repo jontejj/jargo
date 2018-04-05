@@ -22,145 +22,135 @@
 <span class="sourceLineNo">014</span> */<a name="line.14"></a>
 <span class="sourceLineNo">015</span>package se.softhouse.common.testlib;<a name="line.15"></a>
 <span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>import static org.fest.assertions.Assertions.assertThat;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>import static se.softhouse.common.testlib.ReflectionUtil.hasInstanceFields;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>import static se.softhouse.common.testlib.ReflectionUtil.isStatic;<a name="line.19"></a>
-<span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>import java.io.IOException;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.lang.reflect.Constructor;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.lang.reflect.InvocationTargetException;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.lang.reflect.Method;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import java.lang.reflect.Modifier;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import java.util.Arrays;<a name="line.26"></a>
-<span class="sourceLineNo">027</span><a name="line.27"></a>
-<span class="sourceLineNo">028</span>import javax.annotation.concurrent.Immutable;<a name="line.28"></a>
-<span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>import com.google.common.base.Function;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>import com.google.common.base.Predicate;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>import com.google.common.collect.FluentIterable;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>import com.google.common.collect.ImmutableSet;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>import com.google.common.reflect.ClassPath;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>import com.google.common.reflect.ClassPath.ClassInfo;<a name="line.35"></a>
-<span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>/**<a name="line.37"></a>
-<span class="sourceLineNo">038</span> * The reasoning behind testing code that doesn't do anything is to achieve 100%<a name="line.38"></a>
-<span class="sourceLineNo">039</span> * code coverage and to notice when the code<a name="line.39"></a>
-<span class="sourceLineNo">040</span> * coverage drops. Otherwise one could always think, hey I don't have 100% code<a name="line.40"></a>
-<span class="sourceLineNo">041</span> * coverage anymore but it's PROBABLY because of my private constructors<a name="line.41"></a>
-<span class="sourceLineNo">042</span> * (or any other code that's not used but preferred to have).<a name="line.42"></a>
-<span class="sourceLineNo">043</span> * This makes it easy to spot untested methods without having to check that it<a name="line.43"></a>
-<span class="sourceLineNo">044</span> * only was a private constructor etc.<a name="line.44"></a>
-<span class="sourceLineNo">045</span> */<a name="line.45"></a>
-<span class="sourceLineNo">046</span>@Immutable<a name="line.46"></a>
-<span class="sourceLineNo">047</span>public final class UtilityClassTester<a name="line.47"></a>
-<span class="sourceLineNo">048</span>{<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        private UtilityClassTester()<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        }<a name="line.51"></a>
-<span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>        /**<a name="line.53"></a>
-<span class="sourceLineNo">054</span>         * Detects if a utility class isn't final or if its no-args constructor<a name="line.54"></a>
-<span class="sourceLineNo">055</span>         * isn't private. Also calls the constructor to get code coverage for it.<a name="line.55"></a>
-<span class="sourceLineNo">056</span>         * The constructor is allowed to throw exceptions.<a name="line.56"></a>
-<span class="sourceLineNo">057</span>         */<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        public static void testUtilityClassDesign(Class&lt;?&gt; ... utilityClasses)<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                testUtilityClassDesign(Arrays.asList(utilityClasses));<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        }<a name="line.61"></a>
-<span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>        /**<a name="line.63"></a>
-<span class="sourceLineNo">064</span>         * {@link Iterable} version of {@link #testUtilityClassDesign(Class...)}.<a name="line.64"></a>
-<span class="sourceLineNo">065</span>         */<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        public static void testUtilityClassDesign(Iterable&lt;Class&lt;?&gt;&gt; utilityClasses)<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        {<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                for(Class&lt;?&gt; clazz : utilityClasses)<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                        try<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                        {<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                                Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor();<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                                assertThat(constructor.getModifiers() &amp; Modifier.PRIVATE).as("Constructor for " + clazz + " should be private.")<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                                                .isEqualTo(Modifier.PRIVATE);<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                                constructor.setAccessible(true);<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                                assertThat(constructor.newInstance()).isNotNull();<a name="line.76"></a>
-<span class="sourceLineNo">077</span>                                assertThat(clazz.getModifiers() &amp; Modifier.FINAL).as("Utility class " + clazz + " not final").isEqualTo(Modifier.FINAL);<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                        }<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                        catch(NoSuchMethodException e)<a name="line.79"></a>
-<span class="sourceLineNo">080</span>                        {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                                throw new IllegalArgumentException("No no-arg constructor found for " + clazz, e);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                        }<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                        catch(InvocationTargetException e)<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                        {<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                                // Some utility classes like to throw from their private constructor just to be on<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                                // the safe side, let's accept that<a name="line.86"></a>
-<span class="sourceLineNo">087</span>                        }<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                        catch(InstantiationException e)<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                        {<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                                throw new IllegalArgumentException("Utility " + clazz + " may not be abstract", e);<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                        }<a name="line.91"></a>
-<span class="sourceLineNo">092</span>                        catch(IllegalAccessException e)<a name="line.92"></a>
-<span class="sourceLineNo">093</span>                        {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                                // Let's just say that if we're not able to create an instance it's fine, after all<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                                // that's what we're testing here<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                        }<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                }<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        }<a name="line.98"></a>
-<span class="sourceLineNo">099</span><a name="line.99"></a>
-<span class="sourceLineNo">100</span>        /**<a name="line.100"></a>
-<span class="sourceLineNo">101</span>         * Goes through all {@link ClassLoader#loadClass(String) loadable} classes around {@code klazz}<a name="line.101"></a>
-<span class="sourceLineNo">102</span>         * (and sub packages) and makes sure that the class is marked as final and that its constructor<a name="line.102"></a>
-<span class="sourceLineNo">103</span>         * is private if all publicly available methods are static (by using<a name="line.103"></a>
-<span class="sourceLineNo">104</span>         * {@link #testUtilityClassDesign(Iterable)}).&lt;br&gt;<a name="line.104"></a>
-<span class="sourceLineNo">105</span>         * &lt;b&gt;Note:&lt;/b&gt; Nested classes are not tested (yet)<a name="line.105"></a>
-<span class="sourceLineNo">106</span>         * <a name="line.106"></a>
-<span class="sourceLineNo">107</span>         * @throws IOException if the attempt to read class path resources (jar files or directories)<a name="line.107"></a>
-<span class="sourceLineNo">108</span>         *             failed.<a name="line.108"></a>
-<span class="sourceLineNo">109</span>         * @throws IllegalArgumentException if no utility classes were found<a name="line.109"></a>
-<span class="sourceLineNo">110</span>         */<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        public static void testUtilityClassDesignForAllClassesAround(Class&lt;?&gt; klazz) throws IOException<a name="line.111"></a>
-<span class="sourceLineNo">112</span>        {<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                String packageName = klazz.getPackage().getName();<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                ImmutableSet&lt;ClassInfo&gt; classes = ClassPath.from(klazz.getClassLoader()).getTopLevelClassesRecursive(packageName);<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                Iterable&lt;Class&lt;?&gt;&gt; utilityClasses = FluentIterable.from(classes).transform(loadClasses()).filter(lookingLikeAUtilityClass()).toList();<a name="line.115"></a>
-<span class="sourceLineNo">116</span><a name="line.116"></a>
-<span class="sourceLineNo">117</span>                assertThat(utilityClasses).as("No utitlity classes exists in " + packageName).isNotEmpty();<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                testUtilityClassDesign(utilityClasses);<a name="line.118"></a>
-<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>        private static Predicate&lt;Class&lt;?&gt;&gt; lookingLikeAUtilityClass()<a name="line.121"></a>
-<span class="sourceLineNo">122</span>        {<a name="line.122"></a>
-<span class="sourceLineNo">123</span>                return new Predicate&lt;Class&lt;?&gt;&gt;(){<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                        @Override<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                        public boolean apply(Class&lt;?&gt; input)<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                        {<a name="line.126"></a>
-<span class="sourceLineNo">127</span>                                for(Method method : input.getDeclaredMethods())<a name="line.127"></a>
-<span class="sourceLineNo">128</span>                                {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                                        if(method.isSynthetic())// Don't count injected code<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                                        {<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                                                continue;<a name="line.131"></a>
-<span class="sourceLineNo">132</span>                                        }<a name="line.132"></a>
-<span class="sourceLineNo">133</span>                                        if(!isStatic(method))<a name="line.133"></a>
-<span class="sourceLineNo">134</span>                                                return false;<a name="line.134"></a>
-<span class="sourceLineNo">135</span>                                }<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                                if(input.isInterface())<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                                        return false;<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                                if(hasInstanceFields(input))<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                                        return false;<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                                return true;<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                        }<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                };<a name="line.142"></a>
-<span class="sourceLineNo">143</span>        }<a name="line.143"></a>
-<span class="sourceLineNo">144</span><a name="line.144"></a>
-<span class="sourceLineNo">145</span>        private static Function&lt;ClassInfo, Class&lt;?&gt;&gt; loadClasses()<a name="line.145"></a>
-<span class="sourceLineNo">146</span>        {<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                return new Function&lt;ClassInfo, Class&lt;?&gt;&gt;(){<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                        @Override<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                        public Class&lt;?&gt; apply(ClassInfo input)<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                        {<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                                return input.load();<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                        }<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                };<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
-<span class="sourceLineNo">155</span>}<a name="line.155"></a>
+<span class="sourceLineNo">017</span>import com.google.common.base.Function;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import com.google.common.base.Predicate;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import com.google.common.collect.FluentIterable;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import com.google.common.collect.ImmutableSet;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import com.google.common.reflect.ClassPath;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import com.google.common.reflect.ClassPath.ClassInfo;<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>import javax.annotation.concurrent.Immutable;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.io.IOException;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.lang.reflect.Constructor;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.lang.reflect.InvocationTargetException;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import java.lang.reflect.Method;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import java.lang.reflect.Modifier;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import java.util.Arrays;<a name="line.30"></a>
+<span class="sourceLineNo">031</span><a name="line.31"></a>
+<span class="sourceLineNo">032</span>import static org.fest.assertions.Assertions.*;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import static se.softhouse.common.testlib.ReflectionUtil.hasInstanceFields;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import static se.softhouse.common.testlib.ReflectionUtil.isStatic;<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>/**<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * The reasoning behind testing code that doesn't do anything is to achieve 100%<a name="line.37"></a>
+<span class="sourceLineNo">038</span> * code coverage and to notice when the code<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * coverage drops. Otherwise one could always think, hey I don't have 100% code<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * coverage anymore but it's PROBABLY because of my private constructors<a name="line.40"></a>
+<span class="sourceLineNo">041</span> * (or any other code that's not used but preferred to have).<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * This makes it easy to spot untested methods without having to check that it<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * only was a private constructor etc.<a name="line.43"></a>
+<span class="sourceLineNo">044</span> */<a name="line.44"></a>
+<span class="sourceLineNo">045</span>@Immutable<a name="line.45"></a>
+<span class="sourceLineNo">046</span>public final class UtilityClassTester<a name="line.46"></a>
+<span class="sourceLineNo">047</span>{<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        private UtilityClassTester()<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        {<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        }<a name="line.50"></a>
+<span class="sourceLineNo">051</span><a name="line.51"></a>
+<span class="sourceLineNo">052</span>        /**<a name="line.52"></a>
+<span class="sourceLineNo">053</span>         * Detects if a utility class isn't final or if its no-args constructor<a name="line.53"></a>
+<span class="sourceLineNo">054</span>         * isn't private. Also calls the constructor to get code coverage for it.<a name="line.54"></a>
+<span class="sourceLineNo">055</span>         * The constructor is allowed to throw exceptions.<a name="line.55"></a>
+<span class="sourceLineNo">056</span>         */<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        public static void testUtilityClassDesign(Class&lt;?&gt; ... utilityClasses)<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        {<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                testUtilityClassDesign(Arrays.asList(utilityClasses));<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        }<a name="line.60"></a>
+<span class="sourceLineNo">061</span><a name="line.61"></a>
+<span class="sourceLineNo">062</span>        /**<a name="line.62"></a>
+<span class="sourceLineNo">063</span>         * {@link Iterable} version of {@link #testUtilityClassDesign(Class...)}.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>         */<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        public static void testUtilityClassDesign(Iterable&lt;Class&lt;?&gt;&gt; utilityClasses)<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                for(Class&lt;?&gt; clazz : utilityClasses)<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                        try<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                        {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                                Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor();<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                                assertThat(constructor.getModifiers() &amp; Modifier.PRIVATE).as("Constructor for " + clazz + " should be private.")<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                                                .isEqualTo(Modifier.PRIVATE);<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                                constructor.setAccessible(true);<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                                assertThat(constructor.newInstance()).isNotNull();<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                                assertThat(clazz.getModifiers() &amp; Modifier.FINAL).as("Utility class " + clazz + " not final").isEqualTo(Modifier.FINAL);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                        }<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                        catch(NoSuchMethodException e)<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                        {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                                throw new IllegalArgumentException("No no-arg constructor found for " + clazz, e);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                        }<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                        catch(InvocationTargetException e)<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                        {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                                // Some utility classes like to throw from their private constructor just to be on<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                                // the safe side, let's accept that<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        }<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                        catch(InstantiationException e)<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                        {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                                throw new IllegalArgumentException("Utility " + clazz + " may not be abstract", e);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                        }<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                        catch(IllegalAccessException e)<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                        {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                                // Let's just say that if we're not able to create an instance it's fine, after all<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                                // that's what we're testing here<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                        }<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                }<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        }<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>        /**<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         * Goes through all {@link ClassLoader#loadClass(String) loadable} classes around {@code klazz}<a name="line.100"></a>
+<span class="sourceLineNo">101</span>         * (and sub packages) and makes sure that the class is marked as final and that its constructor<a name="line.101"></a>
+<span class="sourceLineNo">102</span>         * is private if all publicly available methods are static (by using<a name="line.102"></a>
+<span class="sourceLineNo">103</span>         * {@link #testUtilityClassDesign(Iterable)}).&lt;br&gt;<a name="line.103"></a>
+<span class="sourceLineNo">104</span>         * &lt;b&gt;Note:&lt;/b&gt; Nested classes are not tested (yet)<a name="line.104"></a>
+<span class="sourceLineNo">105</span>         * <a name="line.105"></a>
+<span class="sourceLineNo">106</span>         * @throws IOException if the attempt to read class path resources (jar files or directories)<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         *             failed.<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         * @throws IllegalArgumentException if no utility classes were found<a name="line.108"></a>
+<span class="sourceLineNo">109</span>         */<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        public static void testUtilityClassDesignForAllClassesAround(Class&lt;?&gt; klazz) throws IOException<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                String packageName = klazz.getPackage().getName();<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                ImmutableSet&lt;ClassInfo&gt; classes = ClassPath.from(klazz.getClassLoader()).getTopLevelClassesRecursive(packageName);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                Iterable&lt;Class&lt;?&gt;&gt; utilityClasses = FluentIterable.from(classes).transform(loadClasses()).filter(lookingLikeAUtilityClass()).toList();<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>                assertThat(utilityClasses).as("No utitlity classes exists in " + packageName).isNotEmpty();<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                testUtilityClassDesign(utilityClasses);<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        }<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>        private static Predicate&lt;Class&lt;?&gt;&gt; lookingLikeAUtilityClass()<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                return input -&gt;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                        for(Method method : input.getDeclaredMethods())<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                        {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                                if(method.isSynthetic())// Don't count injected code<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                                {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                                        continue;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                                }<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                                if(!isStatic(method))<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                                        return false;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                        }<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                        if(input.isInterface())<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                                return false;<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                        if(hasInstanceFields(input))<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                                return false;<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                        return true;<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                };<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        }<a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span>        private static Function&lt;ClassInfo, Class&lt;?&gt;&gt; loadClasses()<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        {<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                return ClassInfo::load;<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        }<a name="line.144"></a>
+<span class="sourceLineNo">145</span>}<a name="line.145"></a>
 
 
 

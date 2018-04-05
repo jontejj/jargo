@@ -23,116 +23,141 @@
 <span class="sourceLineNo">015</span>package se.softhouse.jargo;<a name="line.15"></a>
 <span class="sourceLineNo">016</span><a name="line.16"></a>
 <span class="sourceLineNo">017</span>import java.util.Locale;<a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>import javax.annotation.Nonnull;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import javax.annotation.Nullable;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>import javax.annotation.concurrent.Immutable;<a name="line.21"></a>
-<span class="sourceLineNo">022</span><a name="line.22"></a>
-<span class="sourceLineNo">023</span>/**<a name="line.23"></a>
-<span class="sourceLineNo">024</span> * Parses {@link String}s into values of the type {@code T}.<a name="line.24"></a>
-<span class="sourceLineNo">025</span> * Create an {@link Argument} for your {@link StringParser} with<a name="line.25"></a>
-<span class="sourceLineNo">026</span> * {@link Arguments#withParser(StringParser)}.<a name="line.26"></a>
-<span class="sourceLineNo">027</span> * An example implementation for handling joda-time dates:<a name="line.27"></a>
-<span class="sourceLineNo">028</span> *<a name="line.28"></a>
-<span class="sourceLineNo">029</span> * &lt;pre class="prettyprint"&gt;<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * &lt;code class="language-java"&gt;<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * public class DateTimeParser implements StringParser&amp;lt;DateTime&amp;gt;<a name="line.31"></a>
-<span class="sourceLineNo">032</span> * {<a name="line.32"></a>
-<span class="sourceLineNo">033</span> *      public static DefaultArgumentBuilder&amp;lt;DateTime&amp;gt; dateArgument(String ... names)<a name="line.33"></a>
-<span class="sourceLineNo">034</span> *      {<a name="line.34"></a>
-<span class="sourceLineNo">035</span> *              return Arguments.withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);<a name="line.35"></a>
-<span class="sourceLineNo">036</span> *      }<a name="line.36"></a>
-<span class="sourceLineNo">037</span> *<a name="line.37"></a>
-<span class="sourceLineNo">038</span> *      public String descriptionOfValidValues()<a name="line.38"></a>
-<span class="sourceLineNo">039</span> *      {<a name="line.39"></a>
-<span class="sourceLineNo">040</span> *              return "an ISO8601 date, such as 2011-02-28";<a name="line.40"></a>
-<span class="sourceLineNo">041</span> *      }<a name="line.41"></a>
-<span class="sourceLineNo">042</span> *<a name="line.42"></a>
-<span class="sourceLineNo">043</span> *      public DateTime parse(String value, Locale locale) throws ArgumentException<a name="line.43"></a>
-<span class="sourceLineNo">044</span> *      {<a name="line.44"></a>
-<span class="sourceLineNo">045</span> *              try<a name="line.45"></a>
-<span class="sourceLineNo">046</span> *              {<a name="line.46"></a>
-<span class="sourceLineNo">047</span> *                      return DateTime.parse(value);<a name="line.47"></a>
-<span class="sourceLineNo">048</span> *              }<a name="line.48"></a>
-<span class="sourceLineNo">049</span> *              catch(IllegalArgumentException wrongDateFormat)<a name="line.49"></a>
-<span class="sourceLineNo">050</span> *              {<a name="line.50"></a>
-<span class="sourceLineNo">051</span> *                      throw ArgumentExceptions.withMessage(wrongDateFormat.getLocalizedMessage());<a name="line.51"></a>
-<span class="sourceLineNo">052</span> *              }<a name="line.52"></a>
-<span class="sourceLineNo">053</span> *      }<a name="line.53"></a>
-<span class="sourceLineNo">054</span> *<a name="line.54"></a>
-<span class="sourceLineNo">055</span> *      public DateTime defaultValue()<a name="line.55"></a>
-<span class="sourceLineNo">056</span> *      {<a name="line.56"></a>
-<span class="sourceLineNo">057</span> *              return DateTime.now();<a name="line.57"></a>
-<span class="sourceLineNo">058</span> *      }<a name="line.58"></a>
-<span class="sourceLineNo">059</span> *<a name="line.59"></a>
-<span class="sourceLineNo">060</span> *      public String metaDescription()<a name="line.60"></a>
-<span class="sourceLineNo">061</span> *      {<a name="line.61"></a>
-<span class="sourceLineNo">062</span> *              return "&amp;lt;date&amp;gt;";<a name="line.62"></a>
-<span class="sourceLineNo">063</span> *      }<a name="line.63"></a>
-<span class="sourceLineNo">064</span> * }<a name="line.64"></a>
-<span class="sourceLineNo">065</span> * &lt;/code&gt;<a name="line.65"></a>
-<span class="sourceLineNo">066</span> * &lt;/pre&gt;<a name="line.66"></a>
-<span class="sourceLineNo">067</span> *<a name="line.67"></a>
-<span class="sourceLineNo">068</span> * &lt;pre&gt;<a name="line.68"></a>
-<span class="sourceLineNo">069</span> * When printed in usage, this would look like:<a name="line.69"></a>
-<span class="sourceLineNo">070</span> * &lt;code&gt;<a name="line.70"></a>
-<span class="sourceLineNo">071</span> * --start &amp;lt;date&amp;gt; &amp;lt;date&amp;gt;: an ISO8601 date, such as 2011-02-28<a name="line.71"></a>
-<span class="sourceLineNo">072</span> *                Default: Current time<a name="line.72"></a>
-<span class="sourceLineNo">073</span> * &lt;/code&gt;<a name="line.73"></a>
-<span class="sourceLineNo">074</span> * &lt;/pre&gt;<a name="line.74"></a>
-<span class="sourceLineNo">075</span> *<a name="line.75"></a>
-<span class="sourceLineNo">076</span> * Btw, this parser can be found in jargo-addons.<a name="line.76"></a>
-<span class="sourceLineNo">077</span> *<a name="line.77"></a>
-<span class="sourceLineNo">078</span> * @param &lt;T&gt; the type to parse {@link String}s into<a name="line.78"></a>
-<span class="sourceLineNo">079</span> * @see StringParsers<a name="line.79"></a>
-<span class="sourceLineNo">080</span> */<a name="line.80"></a>
-<span class="sourceLineNo">081</span>@Immutable<a name="line.81"></a>
-<span class="sourceLineNo">082</span>public interface StringParser&lt;T&gt;<a name="line.82"></a>
-<span class="sourceLineNo">083</span>{<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        /**<a name="line.84"></a>
-<span class="sourceLineNo">085</span>         * Parses the given {@link String} into the type {@code T}<a name="line.85"></a>
-<span class="sourceLineNo">086</span>         *<a name="line.86"></a>
-<span class="sourceLineNo">087</span>         * @param argument the string as given from the command line<a name="line.87"></a>
-<span class="sourceLineNo">088</span>         * @param locale the locale to parse strings with, may matter when parsing numbers, dates etc<a name="line.88"></a>
-<span class="sourceLineNo">089</span>         * @return the parsed value<a name="line.89"></a>
-<span class="sourceLineNo">090</span>         * @throws ArgumentException if the string isn't valid according to<a name="line.90"></a>
-<span class="sourceLineNo">091</span>         *             {@link #descriptionOfValidValues(Locale)}<a name="line.91"></a>
-<span class="sourceLineNo">092</span>         */<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        @Nonnull<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        T parse(String argument, Locale locale) throws ArgumentException;<a name="line.94"></a>
-<span class="sourceLineNo">095</span><a name="line.95"></a>
-<span class="sourceLineNo">096</span>        /**<a name="line.96"></a>
-<span class="sourceLineNo">097</span>         * Describes what values this {@link StringParser} accepts<a name="line.97"></a>
-<span class="sourceLineNo">098</span>         *<a name="line.98"></a>
-<span class="sourceLineNo">099</span>         * @param locale the locale to print the description with<a name="line.99"></a>
-<span class="sourceLineNo">100</span>         * @return a description string to show in usage texts<a name="line.100"></a>
-<span class="sourceLineNo">101</span>         */<a name="line.101"></a>
-<span class="sourceLineNo">102</span>        @Nonnull<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        String descriptionOfValidValues(Locale locale);<a name="line.103"></a>
-<span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
-<span class="sourceLineNo">106</span>         * Used when the {@link Argument} this parser is connected to wasn't given.<a name="line.106"></a>
-<span class="sourceLineNo">107</span>         * Used as a fall-back mechanism when {@link ArgumentBuilder#defaultValue(Object)} isn't used.<a name="line.107"></a>
-<span class="sourceLineNo">108</span>         */<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        @Nullable<a name="line.109"></a>
-<span class="sourceLineNo">110</span>        T defaultValue();<a name="line.110"></a>
-<span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span>        /**<a name="line.112"></a>
-<span class="sourceLineNo">113</span>         * &lt;pre&gt;<a name="line.113"></a>
-<span class="sourceLineNo">114</span>         * The meta description is the text displayed after the argument names.<a name="line.114"></a>
-<span class="sourceLineNo">115</span>         * Typically surrounded by &amp;lt; and &amp;gt;<a name="line.115"></a>
-<span class="sourceLineNo">116</span>         * Sort of like the default value of {@link ArgumentBuilder#metaDescription(String)}.<a name="line.116"></a>
-<span class="sourceLineNo">117</span>         *<a name="line.117"></a>
-<span class="sourceLineNo">118</span>         * For instance:<a name="line.118"></a>
-<span class="sourceLineNo">119</span>         * {@link StringParsers#integerParser()}s {@link #metaDescription()} is &amp;lt;integer&amp;gt;<a name="line.119"></a>
-<span class="sourceLineNo">120</span>         *<a name="line.120"></a>
-<span class="sourceLineNo">121</span>         * &lt;/pre&gt;<a name="line.121"></a>
-<span class="sourceLineNo">122</span>         *<a name="line.122"></a>
-<span class="sourceLineNo">123</span>         * @return a meta description that very briefly explains what value this parser expects<a name="line.123"></a>
-<span class="sourceLineNo">124</span>         */<a name="line.124"></a>
-<span class="sourceLineNo">125</span>        @Nonnull<a name="line.125"></a>
-<span class="sourceLineNo">126</span>        String metaDescription();<a name="line.126"></a>
-<span class="sourceLineNo">127</span>}<a name="line.127"></a>
+<span class="sourceLineNo">018</span>import java.util.function.Function;<a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span>import javax.annotation.Nonnull;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import javax.annotation.Nullable;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import javax.annotation.concurrent.Immutable;<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>/**<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * Parses {@link String}s into values of the type {@code T}.<a name="line.25"></a>
+<span class="sourceLineNo">026</span> * Create an {@link Argument} for your {@link StringParser} with<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * {@link Arguments#withParser(StringParser)}.<a name="line.27"></a>
+<span class="sourceLineNo">028</span> * An example implementation for handling joda-time dates:<a name="line.28"></a>
+<span class="sourceLineNo">029</span> *<a name="line.29"></a>
+<span class="sourceLineNo">030</span> * &lt;pre class="prettyprint"&gt;<a name="line.30"></a>
+<span class="sourceLineNo">031</span> * &lt;code class="language-java"&gt;<a name="line.31"></a>
+<span class="sourceLineNo">032</span> * public class DateTimeParser implements StringParser&amp;lt;DateTime&amp;gt;<a name="line.32"></a>
+<span class="sourceLineNo">033</span> * {<a name="line.33"></a>
+<span class="sourceLineNo">034</span> *      public static DefaultArgumentBuilder&amp;lt;DateTime&amp;gt; dateArgument(String ... names)<a name="line.34"></a>
+<span class="sourceLineNo">035</span> *      {<a name="line.35"></a>
+<span class="sourceLineNo">036</span> *              return Arguments.withParser(new DateTimeParser()).defaultValueDescription("Current time").names(names);<a name="line.36"></a>
+<span class="sourceLineNo">037</span> *      }<a name="line.37"></a>
+<span class="sourceLineNo">038</span> *<a name="line.38"></a>
+<span class="sourceLineNo">039</span> *      public String descriptionOfValidValues()<a name="line.39"></a>
+<span class="sourceLineNo">040</span> *      {<a name="line.40"></a>
+<span class="sourceLineNo">041</span> *              return "an ISO8601 date, such as 2011-02-28";<a name="line.41"></a>
+<span class="sourceLineNo">042</span> *      }<a name="line.42"></a>
+<span class="sourceLineNo">043</span> *<a name="line.43"></a>
+<span class="sourceLineNo">044</span> *      public DateTime parse(String value, Locale locale) throws ArgumentException<a name="line.44"></a>
+<span class="sourceLineNo">045</span> *      {<a name="line.45"></a>
+<span class="sourceLineNo">046</span> *              try<a name="line.46"></a>
+<span class="sourceLineNo">047</span> *              {<a name="line.47"></a>
+<span class="sourceLineNo">048</span> *                      return DateTime.parse(value);<a name="line.48"></a>
+<span class="sourceLineNo">049</span> *              }<a name="line.49"></a>
+<span class="sourceLineNo">050</span> *              catch(IllegalArgumentException wrongDateFormat)<a name="line.50"></a>
+<span class="sourceLineNo">051</span> *              {<a name="line.51"></a>
+<span class="sourceLineNo">052</span> *                      throw ArgumentExceptions.withMessage(wrongDateFormat.getLocalizedMessage());<a name="line.52"></a>
+<span class="sourceLineNo">053</span> *              }<a name="line.53"></a>
+<span class="sourceLineNo">054</span> *      }<a name="line.54"></a>
+<span class="sourceLineNo">055</span> *<a name="line.55"></a>
+<span class="sourceLineNo">056</span> *      public DateTime defaultValue()<a name="line.56"></a>
+<span class="sourceLineNo">057</span> *      {<a name="line.57"></a>
+<span class="sourceLineNo">058</span> *              return DateTime.now();<a name="line.58"></a>
+<span class="sourceLineNo">059</span> *      }<a name="line.59"></a>
+<span class="sourceLineNo">060</span> *<a name="line.60"></a>
+<span class="sourceLineNo">061</span> *      public String metaDescription()<a name="line.61"></a>
+<span class="sourceLineNo">062</span> *      {<a name="line.62"></a>
+<span class="sourceLineNo">063</span> *              return "&amp;lt;date&amp;gt;";<a name="line.63"></a>
+<span class="sourceLineNo">064</span> *      }<a name="line.64"></a>
+<span class="sourceLineNo">065</span> * }<a name="line.65"></a>
+<span class="sourceLineNo">066</span> * &lt;/code&gt;<a name="line.66"></a>
+<span class="sourceLineNo">067</span> * &lt;/pre&gt;<a name="line.67"></a>
+<span class="sourceLineNo">068</span> *<a name="line.68"></a>
+<span class="sourceLineNo">069</span> * &lt;pre&gt;<a name="line.69"></a>
+<span class="sourceLineNo">070</span> * When printed in usage, this would look like:<a name="line.70"></a>
+<span class="sourceLineNo">071</span> * &lt;code&gt;<a name="line.71"></a>
+<span class="sourceLineNo">072</span> * --start &amp;lt;date&amp;gt; &amp;lt;date&amp;gt;: an ISO8601 date, such as 2011-02-28<a name="line.72"></a>
+<span class="sourceLineNo">073</span> *                Default: Current time<a name="line.73"></a>
+<span class="sourceLineNo">074</span> * &lt;/code&gt;<a name="line.74"></a>
+<span class="sourceLineNo">075</span> * &lt;/pre&gt;<a name="line.75"></a>
+<span class="sourceLineNo">076</span> *<a name="line.76"></a>
+<span class="sourceLineNo">077</span> * Btw, this parser can be found in jargo-addons.<a name="line.77"></a>
+<span class="sourceLineNo">078</span> *<a name="line.78"></a>
+<span class="sourceLineNo">079</span> * @param &lt;T&gt; the type to parse {@link String}s into<a name="line.79"></a>
+<span class="sourceLineNo">080</span> * @see StringParsers<a name="line.80"></a>
+<span class="sourceLineNo">081</span> */<a name="line.81"></a>
+<span class="sourceLineNo">082</span>@Immutable<a name="line.82"></a>
+<span class="sourceLineNo">083</span>public interface StringParser&lt;T&gt; extends Function&lt;String, T&gt;<a name="line.83"></a>
+<span class="sourceLineNo">084</span>{<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        /**<a name="line.85"></a>
+<span class="sourceLineNo">086</span>         * Parses the given {@link String} into the type {@code T}<a name="line.86"></a>
+<span class="sourceLineNo">087</span>         *<a name="line.87"></a>
+<span class="sourceLineNo">088</span>         * @param argument the string as given from the command line<a name="line.88"></a>
+<span class="sourceLineNo">089</span>         * @param locale the locale to parse strings with, may matter when parsing numbers, dates etc<a name="line.89"></a>
+<span class="sourceLineNo">090</span>         * @return the parsed value<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * @throws ArgumentException if the string isn't valid according to<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         *             {@link #descriptionOfValidValues(Locale)}<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         */<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        @Nonnull<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        T parse(String argument, Locale locale) throws ArgumentException;<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        /**<a name="line.97"></a>
+<span class="sourceLineNo">098</span>         * &lt;pre&gt;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>         * Uses {@link StringParser#parse(String, Locale) parse} for input {@link String}s.<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         * &lt;/pre&gt;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>         *<a name="line.101"></a>
+<span class="sourceLineNo">102</span>         * For example:<a name="line.102"></a>
+<span class="sourceLineNo">103</span>         *<a name="line.103"></a>
+<span class="sourceLineNo">104</span>         * &lt;pre class="prettyprint"&gt;<a name="line.104"></a>
+<span class="sourceLineNo">105</span>         * &lt;code class="language-java"&gt;<a name="line.105"></a>
+<span class="sourceLineNo">106</span>         * List&amp;lt;Integer&amp;gt; result =  Arrays.asList("1", "3", "2").stream().map(StringParsers.integerParser()).collect(Collectors.toList());<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         * &lt;/code&gt;<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         * &lt;/pre&gt;<a name="line.108"></a>
+<span class="sourceLineNo">109</span>         *<a name="line.109"></a>
+<span class="sourceLineNo">110</span>         * &lt;b&gt;Note:&lt;/b&gt;The parser will pass the {@link Locale#getDefault()} to<a name="line.110"></a>
+<span class="sourceLineNo">111</span>         * {@link StringParser#parse(String, Locale) parse}.<a name="line.111"></a>
+<span class="sourceLineNo">112</span>         * <a name="line.112"></a>
+<span class="sourceLineNo">113</span>         * @param argument the string to convert<a name="line.113"></a>
+<span class="sourceLineNo">114</span>         * @return the parsed value<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         */<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        @Override<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        default T apply(String argument)<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                return parse(argument, Locale.getDefault());<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        }<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>        /**<a name="line.122"></a>
+<span class="sourceLineNo">123</span>         * Describes what values this {@link StringParser} accepts<a name="line.123"></a>
+<span class="sourceLineNo">124</span>         *<a name="line.124"></a>
+<span class="sourceLineNo">125</span>         * @param locale the locale to print the description with<a name="line.125"></a>
+<span class="sourceLineNo">126</span>         * @return a description string to show in usage texts<a name="line.126"></a>
+<span class="sourceLineNo">127</span>         */<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        @Nonnull<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        String descriptionOfValidValues(Locale locale);<a name="line.129"></a>
+<span class="sourceLineNo">130</span><a name="line.130"></a>
+<span class="sourceLineNo">131</span>        /**<a name="line.131"></a>
+<span class="sourceLineNo">132</span>         * Used when the {@link Argument} this parser is connected to wasn't given.<a name="line.132"></a>
+<span class="sourceLineNo">133</span>         * Used as a fall-back mechanism when {@link ArgumentBuilder#defaultValue(Object)} isn't used.<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         */<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        @Nullable<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        T defaultValue();<a name="line.136"></a>
+<span class="sourceLineNo">137</span><a name="line.137"></a>
+<span class="sourceLineNo">138</span>        /**<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * &lt;pre&gt;<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * The meta description is the text displayed after the argument names.<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * Typically surrounded by &amp;lt; and &amp;gt;<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         * Sort of like the default value of {@link ArgumentBuilder#metaDescription(String)}.<a name="line.142"></a>
+<span class="sourceLineNo">143</span>         *<a name="line.143"></a>
+<span class="sourceLineNo">144</span>         * For instance:<a name="line.144"></a>
+<span class="sourceLineNo">145</span>         * {@link StringParsers#integerParser()}s {@link #metaDescription()} is &amp;lt;integer&amp;gt;<a name="line.145"></a>
+<span class="sourceLineNo">146</span>         * &lt;/pre&gt;<a name="line.146"></a>
+<span class="sourceLineNo">147</span>         *<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         * @return a meta description that very briefly explains what value this parser expects<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         */<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        @Nonnull<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        String metaDescription();<a name="line.151"></a>
+<span class="sourceLineNo">152</span>}<a name="line.152"></a>
 
 
 

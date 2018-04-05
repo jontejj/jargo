@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -50,7 +50,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../se/softhouse/common/guavaextensions/Preconditions2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../se/softhouse/common/guavaextensions/Suppliers2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../se/softhouse/common/guavaextensions/Sets2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?se/softhouse/common/guavaextensions/Predicates2.html" target="_top">Frames</a></li>
@@ -97,7 +97,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
-<li><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
 <li>
 <ul class="inheritance">
 <li>se.softhouse.common.guavaextensions.Predicates2</li>
@@ -109,11 +109,10 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre><a href="http://download.oracle.com/javase/6/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.35">Predicates2</a>
-extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
-<div class="block">Additional implementations of the <code>Predicate</code> interface, as a complement to
- <code>Predicates</code></div>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
+public final class <a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.32">Predicates2</a>
+extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
+<div class="block">Additional implementations of the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a> interface</div>
 </li>
 </ul>
 </div>
@@ -133,17 +132,31 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;com.google.common.base.Predicate&lt;? super T&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#and-com.google.common.base.Predicate-com.google.common.base.Predicate-">and</a></span>(com.google.common.base.Predicate&lt;? super T&gt;&nbsp;first,
-   com.google.common.base.Predicate&lt;? super T&gt;&nbsp;second)</code>
-<div class="block">Works just like <code>Predicates.and(Predicate, Predicate)</code> except that if <code>first</code> is
- <code>Predicates.alwaysTrue()</code> <code>second</code> is returned directly (or vice versa).</div>
-</td>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#alwaysFalse--">alwaysFalse</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>static &lt;E&gt;&nbsp;com.google.common.base.Predicate&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends E&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#listPredicate-com.google.common.base.Predicate-">listPredicate</a></span>(com.google.common.base.Predicate&lt;E&gt;&nbsp;elementLimiter)</code>
-<div class="block">Returns a predicate that throws an <a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><code>IllegalArgumentException</code></a> if any element in a list
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#alwaysTrue--">alwaysTrue</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super T&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#and-java.util.function.Predicate-java.util.function.Predicate-">and</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super T&gt;&nbsp;first,
+   <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super T&gt;&nbsp;second)</code>
+<div class="block">Works just like <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true#and-java.util.function.Predicate-" title="class or interface in java.util.function"><code>Predicate.and(Predicate)</code></a> except that if <code>first</code> is
+ <a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#alwaysTrue--"><code>alwaysTrue()</code></a> <code>second</code> is returned directly (or vice versa).</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#in-java.util.Collection-">in</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;? extends T&gt;&nbsp;target)</code>
+<div class="block">Creates a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a> which mandates that <code>target</code> contains the tested object</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static &lt;E&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends E&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#listPredicate-java.util.function.Predicate-">listPredicate</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;E&gt;&nbsp;elementLimiter)</code>
+<div class="block">Returns a predicate that throws an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><code>IllegalArgumentException</code></a> if any element in a list
  doesn't return true for <code>elementLimiter.apply(Object)</code>.</div>
 </td>
 </tr>
@@ -152,8 +165,8 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;java.lang.<a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
-<code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -169,32 +182,68 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="and-com.google.common.base.Predicate-com.google.common.base.Predicate-">
+<a name="alwaysFalse--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>alwaysFalse</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.43">alwaysFalse</a>()</pre>
+</li>
+</ul>
+<a name="alwaysTrue--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>alwaysTrue</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.38">alwaysTrue</a>()</pre>
+</li>
+</ul>
+<a name="and-java.util.function.Predicate-java.util.function.Predicate-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>and</h4>
-<pre>public static&nbsp;&lt;T&gt;&nbsp;com.google.common.base.Predicate&lt;? super T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.110">and</a>(com.google.common.base.Predicate&lt;? super T&gt;&nbsp;first,
-                                                                  com.google.common.base.Predicate&lt;? super T&gt;&nbsp;second)</pre>
-<div class="block">Works just like <code>Predicates.and(Predicate, Predicate)</code> except that if <code>first</code> is
- <code>Predicates.alwaysTrue()</code> <code>second</code> is returned directly (or vice versa). This has
- the potential to make <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a> look a bit nicer for the resulting
- <code>Predicate</code>.</div>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.142">and</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super T&gt;&nbsp;first,
+                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super T&gt;&nbsp;second)</pre>
+<div class="block">Works just like <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true#and-java.util.function.Predicate-" title="class or interface in java.util.function"><code>Predicate.and(Predicate)</code></a> except that if <code>first</code> is
+ <a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#alwaysTrue--"><code>alwaysTrue()</code></a> <code>second</code> is returned directly (or vice versa). This has
+ the potential to make <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a> look a bit nicer for the resulting
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a>.</div>
 </li>
 </ul>
-<a name="listPredicate-com.google.common.base.Predicate-">
+<a name="in-java.util.Collection-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>in</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.173">in</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;? extends T&gt;&nbsp;target)</pre>
+<div class="block">Creates a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a> which mandates that <code>target</code> contains the tested object</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - type of objects in <code>target</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>target</code> - the collection that contains the "ok" objects</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the newly created <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="listPredicate-java.util.function.Predicate-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>listPredicate</h4>
-<pre>public static&nbsp;&lt;E&gt;&nbsp;com.google.common.base.Predicate&lt;<a href="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends E&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.69">listPredicate</a>(com.google.common.base.Predicate&lt;E&gt;&nbsp;elementLimiter)</pre>
-<div class="block">Returns a predicate that throws an <a href="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><code>IllegalArgumentException</code></a> if any element in a list
+<pre>public static&nbsp;&lt;E&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;? extends E&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Predicates2.html#line.101">listPredicate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;E&gt;&nbsp;elementLimiter)</pre>
+<div class="block">Returns a predicate that throws an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><code>IllegalArgumentException</code></a> if any element in a list
  doesn't return true for <code>elementLimiter.apply(Object)</code>. Useful for input validation
- where you already have a <code>Predicate</code> for the element type and want to check a list of
+ where you already have a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a> for the element type and want to check a list of
  such elements.
- Without <a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#listPredicate-com.google.common.base.Predicate-"><code>listPredicate(Predicate)</code></a> it would look something like:
+ Without <a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#listPredicate-java.util.function.Predicate-"><code>listPredicate(Predicate)</code></a> it would look something like:
 
  <pre class="prettyprint">
  <code class="language-java">
@@ -205,7 +254,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
  </code>
  </pre>
 
- With <a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#listPredicate-com.google.common.base.Predicate-"><code>listPredicate(Predicate)</code></a>:
+ With <a href="../../../../se/softhouse/common/guavaextensions/Predicates2.html#listPredicate-java.util.function.Predicate-"><code>listPredicate(Predicate)</code></a>:
 
  <pre class="prettyprint">
  <code class="language-java">
@@ -213,7 +262,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
  </code>
  </pre>
 
- As this breaks the general contract of <code>Predicate.apply(Object)</code> it should be
+ As this breaks the general contract of <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true#test-T-" title="class or interface in java.util.function"><code>Predicate.test(Object)</code></a> it should be
  considered useful for validating arguments only.
  The detail message only mentions the first element that didn't return true.</div>
 </li>
@@ -247,7 +296,7 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../se/softhouse/common/guavaextensions/Preconditions2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../se/softhouse/common/guavaextensions/Suppliers2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../se/softhouse/common/guavaextensions/Sets2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?se/softhouse/common/guavaextensions/Predicates2.html" target="_top">Frames</a></li>
@@ -287,6 +336,6 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2013-2017. All Rights Reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2013&#x2013;2018. All rights reserved.</small></p>
 </body>
 </html>

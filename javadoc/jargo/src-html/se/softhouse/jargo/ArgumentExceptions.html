@@ -22,7 +22,7 @@
 <span class="sourceLineNo">014</span> */<a name="line.14"></a>
 <span class="sourceLineNo">015</span>package se.softhouse.jargo;<a name="line.15"></a>
 <span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>import static com.google.common.base.Preconditions.checkNotNull;<a name="line.17"></a>
+<span class="sourceLineNo">017</span>import static java.util.Objects.requireNonNull;<a name="line.17"></a>
 <span class="sourceLineNo">018</span>import static se.softhouse.common.strings.StringsUtil.numberToPositionalString;<a name="line.18"></a>
 <span class="sourceLineNo">019</span><a name="line.19"></a>
 <span class="sourceLineNo">020</span>import java.io.Serializable;<a name="line.20"></a>
@@ -131,7 +131,7 @@
 <span class="sourceLineNo">123</span><a name="line.123"></a>
 <span class="sourceLineNo">124</span>                WrappedArgumentException(final Throwable wrappedException)<a name="line.124"></a>
 <span class="sourceLineNo">125</span>                {<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                        this.wrappedException = checkNotNull(wrappedException);<a name="line.126"></a>
+<span class="sourceLineNo">126</span>                        this.wrappedException = requireNonNull(wrappedException);<a name="line.126"></a>
 <span class="sourceLineNo">127</span>                        initCause(wrappedException);<a name="line.127"></a>
 <span class="sourceLineNo">128</span>                }<a name="line.128"></a>
 <span class="sourceLineNo">129</span><a name="line.129"></a>
@@ -199,7 +199,7 @@
 <span class="sourceLineNo">191</span>        @Nonnull<a name="line.191"></a>
 <span class="sourceLineNo">192</span>        static ArgumentException forUnallowedRepetitionArgument(final String unhandledArgument)<a name="line.192"></a>
 <span class="sourceLineNo">193</span>        {<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                checkNotNull(unhandledArgument);<a name="line.194"></a>
+<span class="sourceLineNo">194</span>                requireNonNull(unhandledArgument);<a name="line.194"></a>
 <span class="sourceLineNo">195</span>                return new SimpleArgumentException(Describables.format(UserErrors.DISALLOWED_REPETITION, unhandledArgument));<a name="line.195"></a>
 <span class="sourceLineNo">196</span>        }<a name="line.196"></a>
 <span class="sourceLineNo">197</span><a name="line.197"></a>
