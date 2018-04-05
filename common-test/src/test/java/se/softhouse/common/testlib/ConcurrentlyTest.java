@@ -14,13 +14,13 @@
  */
 package se.softhouse.common.testlib;
 
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.concurrent.Callable;
 
 import org.junit.Test;
 
-import com.google.common.base.Throwables;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 import com.google.common.util.concurrent.FutureCallback;
@@ -44,6 +44,7 @@ public class ConcurrentlyTest
 				return value;
 			}
 		});
+
 		Futures.addCallback(future, new FutureCallback<Object>(){
 			@Override
 			public void onSuccess(Object result)
@@ -54,9 +55,9 @@ public class ConcurrentlyTest
 			@Override
 			public void onFailure(Throwable t)
 			{
-				Throwables.propagate(t);
+				throw new RuntimeException(t);
 			}
-		});
+		}, directExecutor());
 		assertThat(future.get()).isSameAs(value);
 	}
 
@@ -82,7 +83,7 @@ public class ConcurrentlyTest
 			{
 				assertThat(t).isSameAs(simulatedException);
 			}
-		});
+		}, directExecutor());
 	}
 
 	@Test

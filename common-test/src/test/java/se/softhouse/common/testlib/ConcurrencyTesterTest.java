@@ -34,14 +34,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Test;
 
-import se.softhouse.common.testlib.ConcurrencyTester.RunnableFactory;
-
-import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 import com.google.common.util.concurrent.Atomics;
+
+import se.softhouse.common.testlib.ConcurrencyTester.RunnableFactory;
 
 /**
  * Tests for {@link ConcurrencyTester}
@@ -95,7 +94,7 @@ public class ConcurrencyTesterTest
 		// the first one after the startSignal have been sent to be executed.
 		assertThat(maxInARow) //
 				.as("At least two of " + NR_OF_CONCURRENT_RUNNERS + " threads should be interleaved "
-							+ "with each other, otherwise the concurrency test harness is not acceptable") //
+						+ "with each other, otherwise the concurrency test harness is not acceptable") //
 				.isLessThanOrEqualTo(2);
 	}
 
@@ -235,7 +234,7 @@ public class ConcurrencyTesterTest
 									}
 									catch(BrokenBarrierException e)
 									{
-										Throwables.propagate(e);
+										throw new RuntimeException(e);
 									}
 								}
 							};
@@ -340,8 +339,8 @@ public class ConcurrencyTesterTest
 		}
 		catch(AssertionError expected)
 		{
-			assertThat(expected.getMessage()).isEqualTo(NR_OF_CONCURRENT_RUNNERS + " of " + NR_OF_CONCURRENT_RUNNERS
-																+ " did not finish within 0 NANOSECONDS");
+			assertThat(expected.getMessage())
+					.isEqualTo(NR_OF_CONCURRENT_RUNNERS + " of " + NR_OF_CONCURRENT_RUNNERS + " did not finish within 0 NANOSECONDS");
 		}
 	}
 

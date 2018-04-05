@@ -14,17 +14,18 @@
  */
 package se.softhouse.common.strings;
 
+import java.util.Locale;
+import java.util.function.Function;
+
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.util.Locale;
-import java.util.function.Function;
 
 /**
  * Describes values of the type {@code T} (or subclasses of {@code T}). Useful
  * when {@link Object#toString()} doesn't give you what you want.
- * 
+ *
  * @param <T> the type to describe
  * @see Describers
  */
@@ -42,11 +43,16 @@ public interface Describer<T> extends Function<T, String>
 
 	/**
 	 * Uses {@link Locale#getDefault()} to describe values as a function
+	 * 
 	 * @param value the value to describe
 	 * @return the description of the value
 	 * @see Describers#asFunction(Describer, Locale) for specifying a specific {@link Locale}
 	 */
+	@Override
 	@CheckReturnValue
 	@Nonnull
-	default String apply(T value){ return describe(value, Locale.getDefault()); };
+	default String apply(T value)
+	{
+		return describe(value, Locale.getDefault());
+	}
 }

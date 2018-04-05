@@ -39,7 +39,6 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.common.guavaextensions.Lists2;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;
@@ -72,21 +71,22 @@ public final class Arguments
 	 * The resulting {@link Usage} is currently only accessible through the {@link ArgumentException#getMessageAndUsage()} method.
 	 * This suits most use-cases as there's usually a catch block for {@link ArgumentException} anyway where the {@link Usage} is printed
 	 * </pre>
+	 * 
 	 * Supported usages:
 	 * <ul>
 	 * <li>"program -h" - Gives {@link Usage} for the whole program</li>
 	 * <li>"program -h --number" Gives {@link Usage} for the "--number"{@link Argument}</li>
 	 * <li>"program commit -h" Gives {@link Usage} for the <code>commit</code> {@link Command}</li>
 	 * <li>"program -h commit" Also gives {@link Usage} for the <code>commit</code> {@link Command}</li>
-	 * <li>"program commit -h --amend" Gives {@link Usage} for the <code>--amend</code> {@link Argument} for the <code>commit</code> {@link Command}</li>
-	 *
+	 * <li>"program commit -h --amend" Gives {@link Usage} for the <code>--amend</code> {@link Argument}
+	 * for the <code>commit</code> {@link Command}</li>
 	 * </ul>
-	 *
 	 * If given an unknown argument name, an {@link ArgumentException} is thrown.
 	 *
 	 * @param mandatoryName "-h" in the above example
 	 * @param optionalNames for example "--help"
-	 * @return an {@link Argument} that can be passed to {@link CommandLineParser#withArguments(Argument...)}
+	 * @return an {@link Argument} that can be passed to
+	 *         {@link CommandLineParser#withArguments(Argument...)}
 	 */
 	public static Argument<?> helpArgument(final String mandatoryName, final String ... optionalNames)
 	{
@@ -224,10 +224,10 @@ public final class Arguments
 	 * The default value is printed with {@link Describers#booleanAsEnabledDisabled()}.
 	 * This can be changed with {@link ArgumentBuilder#defaultValueDescriber(Describer)}.
 	 *
-	 * @see Describers#booleanAsOnOff()
+	 * &#64;see Describers#booleanAsOnOff()
 	 *
-	 * @param mandatoryName the first name that enables this option
-	 * @param optionalNames aliases that also enables this option
+	 * &#64;param mandatoryName the first name that enables this option
+	 * &#64;param optionalNames aliases that also enables this option
 	 * </pre>
 	 */
 	@CheckReturnValue
@@ -244,7 +244,6 @@ public final class Arguments
 	 *
 	 * If you end up with a big switch statement for your enum consider using {@link Command}s
 	 * instead.
-	 *
 	 * </pre>
 	 *
 	 * @param enumToHandle the {@link Enum} to retrieve enum values from

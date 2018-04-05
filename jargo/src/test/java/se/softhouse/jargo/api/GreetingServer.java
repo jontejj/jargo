@@ -14,13 +14,10 @@
  */
 package se.softhouse.jargo.api;
 
-import com.google.common.base.Ascii;
-import com.google.common.base.Charsets;
-import se.softhouse.common.strings.Describers;
-import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.ArgumentException;
-import se.softhouse.jargo.CommandLineParser;
-import se.softhouse.jargo.ParsedArguments;
+import static se.softhouse.jargo.Arguments.integerArgument;
+import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.CommandLineParser.withArguments;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -29,10 +26,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
-import static se.softhouse.jargo.Arguments.integerArgument;
-import static se.softhouse.jargo.Arguments.optionArgument;
-import static se.softhouse.jargo.Arguments.stringArgument;
-import static se.softhouse.jargo.CommandLineParser.withArguments;
+import com.google.common.base.Ascii;
+import com.google.common.base.Charsets;
+
+import se.softhouse.common.strings.Describers;
+import se.softhouse.jargo.Argument;
+import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.CommandLineParser;
+import se.softhouse.jargo.ParsedArguments;
 
 public class GreetingServer
 {
@@ -92,6 +93,7 @@ public class GreetingServer
 					writer.append(greetingPhrase).append((char) Ascii.LF);
 				}
 				writer.close();
+				server.close();
 			}
 		}
 		catch(IOException e)

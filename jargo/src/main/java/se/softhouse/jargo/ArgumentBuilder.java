@@ -14,6 +14,38 @@
  */
 package se.softhouse.jargo;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
+import static se.softhouse.common.guavaextensions.Lists2.isEmpty;
+import static se.softhouse.common.guavaextensions.Lists2.newArrayList;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
+import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
+import static se.softhouse.common.strings.Describables.EMPTY_STRING;
+import static se.softhouse.common.strings.Describables.withString;
+import static se.softhouse.jargo.StringParsers.optionParser;
+import static se.softhouse.jargo.StringParsers.stringParser;
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+
 import se.softhouse.common.guavaextensions.Functions2;
 import se.softhouse.common.guavaextensions.Predicates2;
 import se.softhouse.common.guavaextensions.Suppliers2;
@@ -31,37 +63,6 @@ import se.softhouse.jargo.StringParsers.VariableArityParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Objects.requireNonNull;
-import static se.softhouse.common.guavaextensions.Functions2.listTransformer;
-import static se.softhouse.common.guavaextensions.Lists2.isEmpty;
-import static se.softhouse.common.guavaextensions.Lists2.newArrayList;
-import static se.softhouse.common.guavaextensions.Preconditions2.check;
-import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
-import static se.softhouse.common.strings.Describables.EMPTY_STRING;
-import static se.softhouse.common.strings.Describables.withString;
-import static se.softhouse.jargo.StringParsers.optionParser;
-import static se.softhouse.jargo.StringParsers.stringParser;
-
 /**
  * <pre>
  * Responsible for configuring and building {@link Argument} instances.
@@ -74,9 +75,11 @@ import static se.softhouse.jargo.StringParsers.stringParser;
  * caller, such invalid orders are documented with {@link Deprecated}. If those warnings
  * are ignored {@link IllegalStateException} will be thrown at the offending call.
  *
- * @param <SELF> the type of the subclass extending this class.
- * 		Concept borrowed from: <a href="http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
- * 		The pattern also resembles the <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
+ * &#64;param <SELF> the type of the subclass extending this class.
+ * 		Concept borrowed from: <a href=
+"http://passion.forco.de/content/emulating-self-types-using-java-generics-simplify-fluent-api-implementation">Ansgar.Konermann's blog</a>
+ * 		The pattern also resembles the <a href=
+"http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously recurring template pattern</a>
  * @param <T> the type of arguments the built {@link Argument} instance should handle,
  * 	such as {@link Integer} in the case of {@link Arguments#integerArgument(String...)}
  * </pre>
@@ -207,8 +210,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * {@link Arguments#withParser(StringParser)} directly instead of subclassing
 	 * {@link ArgumentBuilder}
 	 *
-	 * @return the {@link StringParser} that performs the actual parsing of an argument value
-	 * @throws IllegalStateException if the parser have been configured wrongly
+	 * &#64;return the {@link StringParser} that performs the actual parsing of an argument value
+	 * &#64;throws IllegalStateException if the parser have been configured wrongly
 	 * </pre>
 	 */
 	@Nonnull
@@ -228,7 +231,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * gets long and hard to understand it's recommended to also support long named arguments,
 	 * making the commands even longer but more readable instead <br>
 	 *
-	 * @param argumentNames <ul>
+	 * @param argumentNames
+	 *            <ul>
 	 *            <li>"-o" for a short named option/argument</li>
 	 *            <li>"--option-name" for a long named option/argument</li>
 	 *            <li>"-o", "--option-name" to give the user both choices</li>
@@ -279,7 +283,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * -l, --enable-logging      Output debug information to standard out
 	 *                           Default: disabled
 	 * "Output debug information to standard out" is {@code theDescription}
-	 * @return this builder
+	 * &#64;return this builder
 	 * </pre>
 	 */
 	public final SELF description(final String theDescription)
@@ -291,7 +295,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	/**
 	 * <pre>
 	 * {@link Describable} version of {@link #description(String)}.
-	 * @return this builder
+	 * &#64;return this builder
 	 * </pre>
 	 */
 	public final SELF description(final Describable theDescription)
@@ -312,7 +316,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * must have unique {@link #metaDescription(String)}s. This ensures that error messages
 	 * can point out erroneous arguments better
 	 *
-	 * @return this builder
+	 * &#64;return this builder
 	 * @throws IllegalStateException if {@link #defaultValue(Object)} (or
 	 *             {@link #defaultValueSupplier(Supplier)}) has been
 	 *             called, because these are mutually exclusive with {@link #required()}
@@ -331,13 +335,15 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Returned by {@link ParsedArguments#get(Argument)} when no argument {@link ParsedArguments#wasGiven(Argument) was given}.
 	 * To create default values lazily see {@link ArgumentBuilder#defaultValueSupplier(Supplier)}.
 	 * </pre>
+	 * 
 	 * <b>Mutability</b>:Remember that as {@link Argument} is {@link Immutable}
 	 * this value should be so too if multiple argument parsings is going to take place.
-	 * If mutability is wanted {@link ArgumentBuilder#defaultValueSupplier(Supplier)} should be used instead.
+	 * If mutability is wanted {@link ArgumentBuilder#defaultValueSupplier(Supplier)} should be used
+	 * instead.
 	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,
-	 * because these two methods are mutually exclusive
+	 *             because these two methods are mutually exclusive
 	 */
 	public SELF defaultValue(@Nullable final T value)
 	{
@@ -354,12 +360,11 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <b>Note:</b> Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
 	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
 	 * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.
-	 *
-	 * Wrap your supplier with {@link Suppliers#memoize(Supplier)} if you want to cache created values.
+	 * Wrap your supplier with {@link Suppliers2#memoize(Supplier)} if you want to cache created values.
 	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,
-	 * because these two methods are mutually exclusive
+	 *             because these two methods are mutually exclusive
 	 */
 	public SELF defaultValueSupplier(final Supplier<? extends T> aDefaultValueSupplier)
 	{
@@ -414,9 +419,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <b>Note:</b> the surrounding &lt; and &gt; aren't enforced or added automatically but it's preferred
 	 * to have them because it makes a clear distinction between {@link #names(String...) argument names} and their parameters.
 	 *
-	 * @param aMetaDescription "&lt;track nr&gt;" in the above example
-	 * @return this builder
-	 * @throws IllegalArgumentException if aMetaDescription is empty
+	 * &#64;param aMetaDescription "&lt;track nr&gt;" in the above example
+	 * &#64;return this builder
+	 * &#64;throws IllegalArgumentException if aMetaDescription is empty
 	 * </pre>
 	 */
 	public final SELF metaDescription(final String aMetaDescription)
@@ -498,7 +503,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * support (given that you've used {@link ArgumentBuilder#defaultValue(Object)}
 	 * to use sane defaults for your properties).
 	 *
-	 * @return a new (more specific) builder
+	 * &#64;return a new (more specific) builder
 	 *
 	 * @see #asKeyValuesWithKeyParser(StringParser) to use other types as keys than {@link String}
 	 * </pre>
@@ -666,10 +671,10 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@Override
 	public String toString()
 	{
-		return new StringJoiner(", ", ArgumentBuilder.class.getSimpleName() + "{", "}")
-				.add("names=" + names).add("description=" + description).add("metaDescription=" + metaDescription)
-				.add("hideFromUsage=" + hideFromUsage).add("ignoreCase=" + ignoreCase).add("limiter=" + limiter).add("required=" + required)
-				.add("separator=" + separator).add("defaultValueDescriber=" + defaultValueDescriber).add("defaultValueSupplier=" + defaultValueSupplier)
+		return new StringJoiner(", ", ArgumentBuilder.class.getSimpleName() + "{", "}").add("names=" + names).add("description=" + description)
+				.add("metaDescription=" + metaDescription).add("hideFromUsage=" + hideFromUsage).add("ignoreCase=" + ignoreCase)
+				.add("limiter=" + limiter).add("required=" + required).add("separator=" + separator)
+				.add("defaultValueDescriber=" + defaultValueDescriber).add("defaultValueSupplier=" + defaultValueSupplier)
 				.add("internalStringParser=" + internalStringParser).toString();
 	}
 
@@ -680,6 +685,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * as they may change between different builders
 	 * (e.g the default value for Argument&lt;Boolean&gt; and Argument&lt;List&lt;Boolean&gt; are not compatible)
 	 * </pre>
+	 * 
 	 * @param copy the ArgumentBuilder to copy from
 	 */
 	@OverridingMethodsMustInvokeSuper
@@ -709,7 +715,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 *
 	 * <b>Note:</b> If {@link #finalizeWith(Function)} have been called before,
 	 * the given {@code aFinalizer} will be run after that finalizer.
-	 *
 	 * </pre>
 	 *
 	 * @param aFinalizer a finalizer
@@ -987,11 +992,12 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		/**
 		 * @deprecated
+		 * 
 		 *             <pre>
 		 * This doesn't work with {@link ArgumentBuilder#arity(int)} or {@link ArgumentBuilder#variableArity()}
 		 * I.e --foo 1,2 3,4
 		 * is currently unsupported
-		 * </pre>
+		 *             </pre>
 		 */
 		@Deprecated
 		@Override
@@ -1182,7 +1188,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		@SuppressWarnings("unchecked")
 		@Override
 		Describer<? super Map<K, V>> defaultValueDescriber()
-				{
+		{
 			Describer<? super Map<K, V>> overriddenDescriber = super.defaultValueDescriber();
 			if(overriddenDescriber != null)
 				return overriddenDescriber;
@@ -1194,7 +1200,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 				return (Describer<? super Map<K, V>>) mapDescriber;
 			}
 			return Describers.mapDescriber(Describers.<V>toStringDescriber(), separator());
-				}
+		}
 
 		/**
 		 * @deprecated because {@link #repeated()} should be called before {@link #asPropertyMap()}

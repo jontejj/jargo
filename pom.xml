@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
 	<groupId>se.softhouse</groupId>
 	<artifactId>jargo-parent</artifactId>
@@ -13,8 +13,8 @@
 	<packaging>pom</packaging>
 	<url>https://github.com/Softhouse/jargo</url>
 	<properties>
-		<!-- Use version 20 to be java 6 compatible -->
-		<guava.version>20.0</guava.version>
+		<guava.version>24.1-jre</guava.version>
+		<maven.javadoc.plugin.version>3.0.0</maven.javadoc.plugin.version>
 	</properties>
 	<scm>
 		<url>https://github.com/jontejj/jargo</url>
@@ -89,13 +89,10 @@
 					<nodeprecated>true</nodeprecated>
 					<linksource>true</linksource>
 					<quiet>true</quiet>
-					<!--https://issues.apache.org/jira/browse/MJAVADOC-427 
-					<links> 
-					   <link>http://www.javadoc.io/doc/com.google.guava/guava/24.1-jre</link> 
+					<!--https://issues.apache.org/jira/browse/MJAVADOC-427 <links> <link>http://www.javadoc.io/doc/com.google.guava/guava/24.1-jre</link> 
 						<link>http://www.javadoc.io/doc/com.google.code.findbugs/jsr305/3.0.2</link> 
-						<link>http://www.javadoc.io/doc/org.easytesting/fest-assert/1.4</link> 
-				    </links> -->
-					<additionalparam>--allow-script-in-comments</additionalparam>
+						<link>http://www.javadoc.io/doc/org.easytesting/fest-assert/1.4</link> </links> -->
+					<additionalOptions>--allow-script-in-comments</additionalOptions>
 					<tags>
 						<!-- Exclude these tags as they are only used in editors not documentation -->
 						<tag>
@@ -329,4 +326,32 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>sonatype-oss-release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<!-- To make sure the configuration for the javadoc plugin above is 
+							used during releasing, this is copy-pasted to here from the oss-parent pom 
+							and the version of the javadoc plugin is specifially updated -->
+						<version>3.0.0</version>
+						<configuration>
+							<additionalOptions>--allow-script-in-comments</additionalOptions>
+						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

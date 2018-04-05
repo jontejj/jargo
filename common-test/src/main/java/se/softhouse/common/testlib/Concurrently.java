@@ -59,7 +59,7 @@ public final class Concurrently
 			{
 				executor.shutdownNow();
 			}
-		});
+		}, executor);
 		return futureForCallable;
 	}
 }

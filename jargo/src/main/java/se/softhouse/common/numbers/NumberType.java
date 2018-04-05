@@ -28,8 +28,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,7 +35,6 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import se.softhouse.common.guavaextensions.Lists2;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describables;
 

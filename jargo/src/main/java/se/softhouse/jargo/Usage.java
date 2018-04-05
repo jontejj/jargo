@@ -14,11 +14,16 @@
  */
 package se.softhouse.jargo;
 
-import se.softhouse.common.strings.Lines;
-import se.softhouse.common.strings.StringBuilders;
-import se.softhouse.jargo.internal.Texts.UsageTexts;
+import static java.lang.Math.max;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.repeat;
+import static se.softhouse.jargo.Argument.IS_INDEXED;
+import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
+import static se.softhouse.jargo.Argument.IS_VISIBLE;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -29,15 +34,11 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.lang.Math.max;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.repeat;
-import static se.softhouse.jargo.Argument.IS_INDEXED;
-import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
-import static se.softhouse.jargo.Argument.IS_VISIBLE;
+import javax.annotation.concurrent.NotThreadSafe;
+
+import se.softhouse.common.strings.Lines;
+import se.softhouse.common.strings.StringBuilders;
+import se.softhouse.jargo.internal.Texts.UsageTexts;
 
 /**
  * Responsible for formatting usage texts for {@link CommandLineParser#usage()} and
@@ -52,9 +53,11 @@ import static se.softhouse.jargo.Argument.IS_VISIBLE;
  *
  * Sorts {@link Argument}s in the following order:
  * <ol>
- *   <li>{@link ArgumentBuilder#names(String...) indexed arguments} without a {@link ArgumentBuilder#variableArity() variable arity}</li>
- * 	 <li>By their {@link ArgumentBuilder#names(String...) first name}  in an alphabetical order</li>
- * 	 <li>The remaining {@link ArgumentBuilder#names(String...) indexed arguments} that are of {@link ArgumentBuilder#variableArity() variable arity}</li>
+ * <li>{@link ArgumentBuilder#names(String...) indexed arguments} without a
+ * {@link ArgumentBuilder#variableArity() variable arity}</li>
+ * <li>By their {@link ArgumentBuilder#names(String...) first name} in an alphabetical order</li>
+ * <li>The remaining {@link ArgumentBuilder#names(String...) indexed arguments} that are of
+ * {@link ArgumentBuilder#variableArity() variable arity}</li>
  * </ol>
  */
 @NotThreadSafe
@@ -257,10 +260,12 @@ public final class Usage implements Serializable
 
 	private List<Argument<?>> sortedArguments()
 	{
-		Stream<Argument<?>> indexedWithoutVariableArity = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED).and(IS_OF_VARIABLE_ARITY.negate()));
+		Stream<Argument<?>> indexedWithoutVariableArity = unfilteredArguments.stream()
+				.filter(IS_VISIBLE.and(IS_INDEXED).and(IS_OF_VARIABLE_ARITY.negate()));
 		Stream<Argument<?>> indexedWithVariableArity = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED).and(IS_OF_VARIABLE_ARITY));
 
-		Stream<Argument<?>> sortedArgumentsByName = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED.negate())).sorted(Argument.NAME_COMPARATOR);
+		Stream<Argument<?>> sortedArgumentsByName = unfilteredArguments.stream().filter(IS_VISIBLE.and(IS_INDEXED.negate()))
+				.sorted(Argument.NAME_COMPARATOR);
 
 		Stream<Argument<?>> result = Stream.of(indexedWithoutVariableArity, sortedArgumentsByName, indexedWithVariableArity).flatMap(x -> x);
 		return unmodifiableList(result.collect(toList()));
@@ -328,7 +333,7 @@ public final class Usage implements Serializable
 	private Row usageForArgument(final Argument<?> arg)
 	{
 		Row row = new Row();
-;
+
 		row.nameColumn.append(String.join(UsageTexts.NAME_SEPARATOR, arg.names()));
 		row.nameColumn.append(arg.metaDescriptionInLeftColumn());
 

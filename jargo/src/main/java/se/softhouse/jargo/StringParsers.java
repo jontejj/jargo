@@ -14,18 +14,16 @@
  */
 package se.softhouse.jargo;
 
-import se.softhouse.common.guavaextensions.Predicates2;
-import se.softhouse.common.numbers.NumberType;
-import se.softhouse.common.strings.StringBuilders;
-import se.softhouse.jargo.Argument.ParameterArity;
-import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
-import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
-import se.softhouse.jargo.internal.Texts.UserErrors;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
+import static se.softhouse.common.strings.Describables.format;
+import static se.softhouse.common.strings.StringsUtil.repeat;
+import static se.softhouse.jargo.ArgumentExceptions.forMissingNthParameter;
+import static se.softhouse.jargo.ArgumentExceptions.forMissingParameter;
+import static se.softhouse.jargo.ArgumentExceptions.withMessage;
+import static se.softhouse.jargo.ArgumentExceptions.wrapException;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -43,15 +41,18 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
-import static se.softhouse.common.guavaextensions.Preconditions2.check;
-import static se.softhouse.common.strings.Describables.format;
-import static se.softhouse.common.strings.StringsUtil.repeat;
-import static se.softhouse.jargo.ArgumentExceptions.forMissingNthParameter;
-import static se.softhouse.jargo.ArgumentExceptions.forMissingParameter;
-import static se.softhouse.jargo.ArgumentExceptions.withMessage;
-import static se.softhouse.jargo.ArgumentExceptions.wrapException;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+
+import se.softhouse.common.guavaextensions.Predicates2;
+import se.softhouse.common.numbers.NumberType;
+import se.softhouse.common.strings.StringBuilders;
+import se.softhouse.jargo.Argument.ParameterArity;
+import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
+import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
+import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**
  * <pre>
@@ -205,7 +206,8 @@ public final class StringParsers
 	 * A parser that returns the first character in a {@link String} as a {@link Character} and that
 	 * throws {@link ArgumentException} for any given {@link String} with more than
 	 * one {@link Character}.
-	 * The {@link StringParser#defaultValue()} is the <a href="https://en.wikipedia.org/wiki/Null_character">NUL</a> character.
+	 * The {@link StringParser#defaultValue()} is the <a href=
+	"https://en.wikipedia.org/wiki/Null_character">NUL</a> character.
 	 * </pre>
 	 */
 	@CheckReturnValue
@@ -254,7 +256,8 @@ public final class StringParsers
 	 * made, if that fails a direct match without converting the case is made,
 	 * if that also fails an {@link ArgumentException} is thrown. This order of execution is
 	 * based on the fact that users typically don't upper case their input while
-	 * <a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a> recommends upper case for enum constants.
+	 * <a href=
+	"http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367">java naming conventions</a> recommends upper case for enum constants.
 	 * </pre>
 	 *
 	 * <b>Default value:</b> <code>null</code> is used as {@link StringParser#defaultValue()} and
@@ -317,8 +320,6 @@ public final class StringParsers
 			Arrays.stream(enumValues).forEach(e -> joiner.add(e.toString()));
 			return joiner.toString();
 		}
-
-		private static final int AVERAGE_ENUM_NAME_LENGTH = 10;
 
 		@Override
 		public E defaultValue()
@@ -450,7 +451,7 @@ public final class StringParsers
 	}
 
 	/**
-	 * {@link Locale} version of {@link StringParser#apply(T)}
+	 * {@link Locale} version of {@link StringParser#apply(String)}
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -470,7 +471,7 @@ public final class StringParsers
 	 * it can't be a member of this class because one parser can be referenced
 	 * from multiple different {@link Argument}s so this is extrinsic state.
 	 *
-	 * @param <T> the type this parser parses strings into
+	 * &#64;param <T> the type this parser parses strings into
 	 * </pre>
 	 */
 	abstract static class InternalStringParser<T>
@@ -744,7 +745,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, final List<T> list, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-				{
+		{
 			List<T> parsedArguments = new ArrayList<>(arity);
 			for(int i = 0; i < arity; i++)
 			{
@@ -760,7 +761,7 @@ public final class StringParsers
 				}
 			}
 			return parsedArguments;
-				}
+		}
 
 		@Override
 		public List<T> defaultValue()
@@ -795,7 +796,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, final List<T> list, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-				{
+		{
 			List<T> parsedArguments = new ArrayList<>(arguments.nrOfRemainingArguments());
 			while(arguments.hasNext())
 			{
@@ -803,7 +804,7 @@ public final class StringParsers
 				parsedArguments.add(parsedValue);
 			}
 			return parsedArguments;
-				}
+		}
 
 		@Override
 		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
@@ -840,7 +841,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, final List<T> oldValue, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-				{
+		{
 			if(!arguments.hasNext())
 				throw forMissingParameter(argumentSettings);
 
@@ -851,14 +852,16 @@ public final class StringParsers
 			{
 				value = value.trim();
 				if(value.isEmpty())
+				{
 					continue;
+				}
 
 				ArgumentIterator argument = ArgumentIterator.forArguments(Arrays.asList(value));
 				T parsedValue = elementParser().parse(argument, null, argumentSettings, locale);
 				result.add(parsedValue);
 			}
 			return result;
-				}
+		}
 
 		@Override
 		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
@@ -883,7 +886,7 @@ public final class StringParsers
 		@Override
 		List<T> parse(final ArgumentIterator arguments, List<T> previouslyCreatedList, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-				{
+		{
 			T parsedValue = elementParser().parse(arguments, null, argumentSettings, locale);
 
 			List<T> listToStoreRepeatedValuesIn = previouslyCreatedList;
@@ -894,7 +897,7 @@ public final class StringParsers
 
 			listToStoreRepeatedValuesIn.add(parsedValue);
 			return listToStoreRepeatedValuesIn;
-				}
+		}
 	}
 
 	/**
@@ -912,27 +915,25 @@ public final class StringParsers
 		@Nonnull private final Supplier<? extends Map<K, V>> defaultMap;
 
 		KeyValueParser(StringParser<K> keyParser, InternalStringParser<V> valueParser, Predicate<? super V> valueLimiter,
-		               @Nullable Supplier<? extends Map<K, V>> defaultMap, @Nullable final Supplier<? extends V> defaultValue)
+				@Nullable Supplier<? extends Map<K, V>> defaultMap, @Nullable final Supplier<? extends V> defaultValue)
 		{
 			this.valueParser = valueParser;
 			this.keyParser = keyParser;
 			this.valueLimiter = valueLimiter;
-			if (defaultMap == null)
+			if(defaultMap == null)
 			{
-				this.defaultMap = new Supplier<Map<K, V>>()
-				{
+				this.defaultMap = new Supplier<Map<K, V>>(){
 					@Override
 					public Map<K, V> get()
 					{
-						if (defaultValue != null)
-							return new LinkedHashMap<K, V>()
-							{
+						if(defaultValue != null)
+							return new LinkedHashMap<K, V>(){
 								private static final long serialVersionUID = 1L;
 
 								@Override
 								public V get(Object key)
 								{
-									if (super.containsKey(key))
+									if(super.containsKey(key))
 										return super.get(key);
 									return defaultValue.get();
 								}
@@ -940,7 +941,8 @@ public final class StringParsers
 						return new LinkedHashMap<>();
 					}
 				};
-			} else
+			}
+			else
 			{
 				this.defaultMap = defaultMap;
 			}
@@ -949,7 +951,7 @@ public final class StringParsers
 		@Override
 		Map<K, V> parse(final ArgumentIterator arguments, Map<K, V> previousMap, final Argument<?> argumentSettings, Locale locale)
 				throws ArgumentException
-				{
+		{
 			Map<K, V> map = previousMap;
 			if(map == null)
 			{
@@ -980,7 +982,7 @@ public final class StringParsers
 
 			map.put(parsedKey, parsedValue);
 			return map;
-				}
+		}
 
 		/**
 		 * Fetch "key" from "key=value"

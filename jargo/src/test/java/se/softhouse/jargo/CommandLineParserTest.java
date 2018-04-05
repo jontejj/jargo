@@ -18,7 +18,6 @@ import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.failure;
 import static org.junit.Assert.fail;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.optionArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
@@ -40,6 +39,12 @@ import javax.annotation.Nullable;
 
 import org.junit.Test;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.io.Files;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.commands.Build;
@@ -50,14 +55,6 @@ import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import se.softhouse.jargo.utils.ArgumentExpector;
 import se.softhouse.jargo.utils.Assertions2.UsageAssert;
-
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Tests for {@link CommandLineParser}
@@ -279,8 +276,7 @@ public class CommandLineParserTest
 	{
 		File tempFile = File.createTempFile("_testReadingArgumentsFromFile", ".arguments");
 		tempFile.deleteOnExit();
-
-		Files.write(Joiner.on(NEWLINE).join("lo", "wor"), tempFile, Charsets.UTF_8);
+		Files.asCharSink(tempFile, Charsets.UTF_8).writeLines(Arrays.asList("lo", "wor"));
 
 		List<String> parsed = stringArgument().variableArity().parse("hel", "@" + tempFile.getPath(), "ld");
 
@@ -302,14 +298,14 @@ public class CommandLineParserTest
 		File referenceFile = File.createTempFile("_testReadingFileReferencedFromFile", ".referencedFile");
 		referenceFile.deleteOnExit();
 
-		Files.write("world", referenceFile, Charsets.UTF_8);
+		Files.asCharSink(referenceFile, Charsets.UTF_8).write("world");
 
 		File referencingFile = File.createTempFile("_testReadingFileReferencedFromFile", ".referencingFile");
 		referencingFile.deleteOnExit();
 
 		String referencedFilename = "@" + referenceFile.getPath();
 
-		Files.write(Joiner.on(NEWLINE).join("hello", referencedFilename, "and"), referencingFile, Charsets.UTF_8);
+		Files.asCharSink(referencingFile, Charsets.UTF_8).writeLines(Arrays.asList("hello", referencedFilename, "and"));
 
 		List<String> parsed = stringArgument().variableArity().parse("@" + referencingFile.getPath(), "foo");
 

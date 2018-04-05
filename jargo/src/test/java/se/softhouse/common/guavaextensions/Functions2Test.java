@@ -14,12 +14,11 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
-import org.junit.Test;
+import static com.google.common.base.Charsets.UTF_8;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.guavaextensions.Functions2.unmodifiableList;
+import static se.softhouse.common.guavaextensions.Functions2.unmodifiableMap;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,11 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.google.common.base.Charsets.UTF_8;
-import static org.fest.assertions.Assertions.*;
-import static org.fest.assertions.Fail.fail;
-import static se.softhouse.common.guavaextensions.Functions2.unmodifiableList;
-import static se.softhouse.common.guavaextensions.Functions2.unmodifiableMap;
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.io.Files;
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 
 /**
  * Tests for {@link Functions2}
@@ -113,7 +114,7 @@ public class Functions2Test
 	{
 		String text = "\u1234\u5678";
 		File testFile = File.createTempFile("fileToStringTest", ".txt");
-		Files.write(text, testFile, UTF_8);
+		Files.asCharSink(testFile, UTF_8).write(text);
 
 		assertThat(Functions2.fileToString().apply(testFile)).isEqualTo(text);
 	}

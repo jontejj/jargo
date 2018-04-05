@@ -14,17 +14,17 @@
  */
 package se.softhouse.common.guavaextensions;
 
+import static java.util.Objects.requireNonNull;
+import static se.softhouse.common.guavaextensions.Preconditions2.check;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-import static se.softhouse.common.guavaextensions.Preconditions2.check;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Additional implementations of the {@link Supplier} interface
@@ -39,7 +39,7 @@ public final class Suppliers2
 	/**
 	 * Creates a {@link Supplier} that supplies {@code elementsToSupply} number of elements from
 	 * {@code elementSupplier}
-	 * 
+	 *
 	 * @throws IllegalArgumentException if {@code elementsToSupply} is less than zero
 	 */
 	@CheckReturnValue
@@ -75,6 +75,7 @@ public final class Suppliers2
 
 	/**
 	 * Creates a {@link Supplier} that always returns {@code instance}.
+	 * 
 	 * @param instance the instance to supply
 	 * @param <T> the type
 	 * @return the newly created supplier
@@ -93,6 +94,7 @@ public final class Suppliers2
 		{
 			this.instance = instance;
 		}
+
 		@Override
 		public T get()
 		{
@@ -121,10 +123,9 @@ public final class Suppliers2
 	 * and returns that value on subsequent calls to {@code get()}. See:
 	 * <a href="http://en.wikipedia.org/wiki/Memoization">memoization</a>
 	 */
-	public static <T> Supplier<T> memoize(Supplier<T> delegate) {
-		return (delegate instanceof MemoizingSupplier)
-				? delegate
-				: new MemoizingSupplier<T>(requireNonNull(delegate));
+	public static <T> Supplier<T> memoize(Supplier<T> delegate)
+	{
+		return (delegate instanceof MemoizingSupplier) ? delegate : new MemoizingSupplier<T>(requireNonNull(delegate));
 	}
 
 	private static class MemoizingSupplier<T> implements Supplier<T>, Serializable
@@ -135,16 +136,21 @@ public final class Suppliers2
 		// on volatile read of "initialized".
 		transient T value;
 
-		MemoizingSupplier(Supplier<T> delegate) {
+		MemoizingSupplier(Supplier<T> delegate)
+		{
 			this.delegate = delegate;
 		}
 
 		@Override
-		public T get() {
+		public T get()
+		{
 			// A 2-field variant of Double Checked Locking.
-			if (!initialized) {
-				synchronized (this) {
-					if (!initialized) {
+			if(!initialized)
+			{
+				synchronized(this)
+				{
+					if(!initialized)
+					{
 						T t = delegate.get();
 						value = t;
 						initialized = true;
@@ -154,5 +160,7 @@ public final class Suppliers2
 			}
 			return value;
 		}
+
+		private static final long serialVersionUID = 0;
 	}
 }

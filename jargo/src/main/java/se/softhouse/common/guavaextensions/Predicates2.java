@@ -14,15 +14,16 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import se.softhouse.common.strings.Describables;
+import static java.util.Objects.requireNonNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static java.util.Objects.requireNonNull;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+
+import se.softhouse.common.strings.Describables;
 
 /**
  * Additional implementations of the {@link Predicate} interface
@@ -34,15 +35,17 @@ public final class Predicates2
 	{
 	}
 
-	public static <T> Predicate<T> alwaysTrue(){
+	public static <T> Predicate<T> alwaysTrue()
+	{
 		return ObjectPredicates.ALWAYS_TRUE.withNarrowedType();
 	}
 
-	public static <T> Predicate<T> alwaysFalse(){
+	public static <T> Predicate<T> alwaysFalse()
+	{
 		return ObjectPredicates.ALWAYS_FALSE.withNarrowedType();
 	}
 
-	private enum ObjectPredicates implements Predicate
+	private enum ObjectPredicates implements Predicate<Object>
 	{
 		ALWAYS_TRUE((i) -> true),
 		ALWAYS_FALSE((i) -> false),
@@ -50,6 +53,7 @@ public final class Predicates2
 		NOT_NULL((i) -> i != null);
 
 		private Predicate<Object> predicate;
+
 		ObjectPredicates(Predicate<Object> predicate)
 		{
 			this.predicate = predicate;
@@ -62,10 +66,11 @@ public final class Predicates2
 		}
 
 		@SuppressWarnings("unchecked") // safe contravariant cast as all ObjectPredicates
-		<T> Predicate<T> withNarrowedType() {
+		<T> Predicate<T> withNarrowedType()
+		{
 			return (Predicate<T>) this;
 		}
-	};
+	}
 
 	/**
 	 * Returns a predicate that throws an {@link IllegalArgumentException} if any element in a list
@@ -132,7 +137,7 @@ public final class Predicates2
 
 	/**
 	 * Works just like {@link Predicate#and(Predicate)} except that if {@code first} is
-	 * {@link Predicate#} {@code second} is returned directly (or vice versa). This has
+	 * {@link Predicates2#alwaysTrue()} {@code second} is returned directly (or vice versa). This has
 	 * the potential to make {@link Object#toString()} look a bit nicer for the resulting
 	 * {@link Predicate}.
 	 */
@@ -145,8 +150,7 @@ public final class Predicates2
 		else if(second == alwaysTrue())
 			return first;
 
-		return new Predicate<T>()
-		{
+		return new Predicate<T>(){
 			@Override
 			public boolean test(T o)
 			{
@@ -158,11 +162,12 @@ public final class Predicates2
 			{
 				return "AND(" + first + ", " + second + ")";
 			}
-		} ;
+		};
 	}
 
 	/**
 	 * Creates a {@link Predicate} which mandates that {@code target} contains the tested object
+	 *
 	 * @param target the collection that contains the "ok" objects
 	 * @param <T> type of objects in {@code target}
 	 * @return the newly created {@link Predicate}
