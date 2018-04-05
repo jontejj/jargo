@@ -51,13 +51,15 @@ public class IgnoringCaseTest
 	@Test
 	public void testWithPropertyMapNotIgnoringCase() throws ArgumentException
 	{
+		Argument<String> indexed = Arguments.stringArgument().build();
 		Argument<Map<String, Integer>> small = integerArgument("-n").asPropertyMap().build();
-		Argument<Map<String, Integer>> big = integerArgument("-N").asPropertyMap().build();
-		ParsedArguments parsedArguments = withArguments(small, big).parse("-nsmall=1", "-Nbig=5");
+		Argument<Map<String, Integer>> big = integerArgument("-b").asPropertyMap().build();
+		ParsedArguments parsedArguments = withArguments(small, big, indexed).parse("-nsmall=1", "-Bbig=5");
 
 		assertThat(parsedArguments.get(small).get("small")).isEqualTo(1);
 		assertThat(parsedArguments.get(small).get("big")).isNull();
-		assertThat(parsedArguments.get(big).get("big")).isEqualTo(5);
+		assertThat(parsedArguments.get(big).get("big")).isNull();
+		assertThat(parsedArguments.get(indexed)).isEqualTo("-Bbig=5");
 	}
 
 	@Test(expected = ArgumentException.class)
