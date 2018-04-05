@@ -17,14 +17,11 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.optionArgument;
+import static se.softhouse.jargo.CommandLineParser.withArguments;
 
 import java.util.Map;
 
 import org.junit.Test;
-
-import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.ArgumentBuilder;
-import se.softhouse.jargo.ArgumentException;
 
 /**
  * Tests for {@link ArgumentBuilder#ignoreCase()}
@@ -48,6 +45,19 @@ public class IgnoringCaseTest
 
 		assertThat(numbers.get("small")).isEqualTo(1);
 		assertThat(numbers.get("big")).isEqualTo(5);
+		assertThat(numbers.get("foo")).isNull();
+	}
+
+	@Test
+	public void testWithPropertyMapNotIgnoringCase() throws ArgumentException
+	{
+		Argument<Map<String, Integer>> small = integerArgument("-n").asPropertyMap().build();
+		Argument<Map<String, Integer>> big = integerArgument("-N").asPropertyMap().build();
+		ParsedArguments parsedArguments = withArguments(small, big).parse("-nsmall=1", "-Nbig=5");
+
+		assertThat(parsedArguments.get(small).get("small")).isEqualTo(1);
+		assertThat(parsedArguments.get(small).get("big")).isNull();
+		assertThat(parsedArguments.get(big).get("big")).isEqualTo(5);
 	}
 
 	@Test(expected = ArgumentException.class)
