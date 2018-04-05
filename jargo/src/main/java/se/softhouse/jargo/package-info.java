@@ -38,13 +38,6 @@
  * {@link se.softhouse.common.strings.Describers#numberDescriber() formats} and
  * {@link se.softhouse.common.numbers.NumberType#parse(String, java.util.Locale) parses} numbers in
  * a {@link java.util.Locale} sensitive way.
- * <h2>API compatibility notes</h2>
- * Public methods that have Guava types in their method signature such as:
- * {@link se.softhouse.jargo.ArgumentBuilder#limitTo(java.util.function.Predicate)}
- * {@link se.softhouse.jargo.ArgumentBuilder#defaultValueSupplier(java.util.function.Supplier)}
- * {@link se.softhouse.jargo.StringParsers#asFunction(StringParser, java.util.Locale)}
- * May be changed when JDK 8 is here as it will contain those interfaces without the need of Guava.
- * For now they are marked with {@link com.google.common.annotations.Beta}
  * <h2>Inspiration (a.k.a Credits)</h2>
  * If you recognize any features in this API it may come from:
  * <ul>
