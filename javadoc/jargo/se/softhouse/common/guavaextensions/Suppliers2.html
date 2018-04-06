@@ -110,7 +110,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.33">Suppliers2</a>
+public final class <a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.31">Suppliers2</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Additional implementations of the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function"><code>Supplier</code></a> interface</div>
 </li>
@@ -186,7 +186,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>isSuppliedAlready</h4>
-<pre>public static&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.108">isSuppliedAlready</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;?&gt;&nbsp;supplier)</pre>
+<pre>public static&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.106">isSuppliedAlready</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;?&gt;&nbsp;supplier)</pre>
 <div class="block">Returns true if <code>Supplier</code> is likely to supply values very fast</div>
 </li>
 </ul>
@@ -196,7 +196,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>memoize</h4>
-<pre>public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.126">memoize</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;delegate)</pre>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.124">memoize</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;delegate)</pre>
 <div class="block">Returns a supplier which caches the instance retrieved during the first call to <code>get()</code>
  and returns that value on subsequent calls to <code>get()</code>. See:
  <a href="http://en.wikipedia.org/wiki/Memoization">memoization</a></div>
@@ -211,7 +211,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <li class="blockList">
 <h4>ofInstance</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.84">ofInstance</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.82">ofInstance</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
                                                            T&nbsp;instance)</pre>
 <div class="block">Creates a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function"><code>Supplier</code></a> that always returns <code>instance</code>.</div>
 <dl>
@@ -231,7 +231,7 @@ public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs
 <li class="blockList">
 <h4>ofRepeatedElements</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;T&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.46">ofRepeatedElements</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;? extends T&gt;&nbsp;elementSupplier,
+public static&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;T&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/guavaextensions/Suppliers2.html#line.44">ofRepeatedElements</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;? extends T&gt;&nbsp;elementSupplier,
                                                                          int&nbsp;elementsToSupply)</pre>
 <div class="block">Creates a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function"><code>Supplier</code></a> that supplies <code>elementsToSupply</code> number of elements from
  <code>elementSupplier</code></div>

@@ -110,7 +110,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.35">StringsUtil</a>
+public final class <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.33">StringsUtil</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Utilities for working with <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s</div>
 </li>
@@ -180,7 +180,8 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
               int&nbsp;maximumDistance)</code>
 <div class="block">
  Returns a sorted <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util"><code>List</code></a> where the first entry is the <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> in <code> validOptions</code> that's closest in terms of
- <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to <code> input</code>, or an empty list if no options within distance can be found.</div>
+ <a href=
+        "http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to <code> input</code>, or an empty list if no options within distance can be found.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -217,7 +218,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/strings/StringsUtil.html#pointingAtIndex-int-">pointingAtIndex</a></span>(int&nbsp;indexToPointAt)</code>
-<div class="block">Returns a "       ^" string pointing at the position indicated by <code>indexToPointAt</code></div>
+<div class="block">Returns a " ^" string pointing at the position indicated by <code>indexToPointAt</code></div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -261,7 +262,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>NEWLINE</h4>
-<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.44">NEWLINE</a></pre>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.42">NEWLINE</a></pre>
 <div class="block">A suitable string to represent newlines on this specific platform</div>
 </li>
 </ul>
@@ -271,7 +272,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>TAB</h4>
-<pre>public static final&nbsp;char <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.54">TAB</a></pre>
+<pre>public static final&nbsp;char <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.52">TAB</a></pre>
 <div class="block">The <a href="http://en.wikipedia.org/wiki/ASCII_tab">ASCII tab</a> (\t) character</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -285,7 +286,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>UTF8</h4>
-<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html?is-external=true" title="class or interface in java.nio.charset">Charset</a> <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.49">UTF8</a></pre>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html?is-external=true" title="class or interface in java.nio.charset">Charset</a> <a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.47">UTF8</a></pre>
 <div class="block">A <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html?is-external=true" title="class or interface in java.nio.charset"><code>Charset</code></a> for <a href="https://en.wikipedia.org/wiki/UTF-8">UTF8</a></div>
 </li>
 </ul>
@@ -305,7 +306,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <h4>closestMatch</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.110">closestMatch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input,
+public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.108">closestMatch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input,
                                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;validOptions)</pre>
 <div class="block"><pre>
  Returns the <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> in <code> validOptions</code> that <code> input</code> has the shortest
@@ -339,12 +340,13 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/
 <h4>closestMatches</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.145">closestMatches</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input,
+public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.143">closestMatches</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input,
                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;validOptions,
                                                                       int&nbsp;maximumDistance)</pre>
 <div class="block"><pre>
  Returns a sorted <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util"><code>List</code></a> where the first entry is the <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> in <code> validOptions</code> that's closest in terms of
- <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to <code> input</code>, or an empty list if no options within distance can be found.
+ <a href=
+        "http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to <code> input</code>, or an empty list if no options within distance can be found.
 
  For example when given "stats" as input and "status", "staging",
  "stage" as validOptions, and 4 as maximumDistance, "status", "stage", "staging" is returned.
@@ -352,7 +354,6 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
  Only values with a distance less than or equal to <code> maximumDistance</code> will be included in the result.
 
  The returned list is <i>modifiable</i>.
-
  </pre></div>
 </li>
 </ul>
@@ -362,7 +363,7 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
 <ul class="blockList">
 <li class="blockList">
 <h4>indexOfNth</h4>
-<pre>public static&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.295">indexOfNth</a>(int&nbsp;nth,
+<pre>public static&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.293">indexOfNth</a>(int&nbsp;nth,
                              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;needle,
                              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;haystack)</pre>
 <div class="block">Finds the <code>nth</code> occurrence of <code>needle</code> in <code>haystack</code></div>
@@ -383,7 +384,7 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
 <ul class="blockList">
 <li class="blockList">
 <h4>levenshteinDistance</h4>
-<pre>public static&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.184">levenshteinDistance</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;left,
+<pre>public static&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.181">levenshteinDistance</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;left,
                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;right)</pre>
 <div class="block">Returns the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein
  distance</a> between <code>left</code> and <code>right</code>.</div>
@@ -399,11 +400,12 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
 <ul class="blockList">
 <li class="blockList">
 <h4>levenshteinDistance</h4>
-<pre>public static&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.195">levenshteinDistance</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;left,
+<pre>public static&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.193">levenshteinDistance</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;left,
                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;right,
                                       int&nbsp;maxDistance)</pre>
 <div class="block">Returns the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein
- distance</a> between <code>left</code> and <code>right</code>. If it's greater than maxDistance, maxDistance will be returned.</div>
+ distance</a> between <code>left</code> and <code>right</code>. If it's greater than maxDistance,
+ maxDistance will be returned.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../se/softhouse/common/strings/StringsUtil.html#closestMatch-java.lang.String-java.lang.Iterable-"><code>closestMatch(String, Iterable)</code></a></dd>
@@ -418,7 +420,7 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/
 <h4>numberToPositionalString</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.264">numberToPositionalString</a>(int&nbsp;number)</pre>
+public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.262">numberToPositionalString</a>(int&nbsp;number)</pre>
 <div class="block">Returns <code>number</code> expressed as a position. For example 0 returns
  "zeroth", 1 returns "first" and so forth up to "fifth". Higher positions
  are described as "6th", "7th" and so on.</div>
@@ -434,8 +436,8 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/
 <ul class="blockList">
 <li class="blockList">
 <h4>pointingAtIndex</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.72">pointingAtIndex</a>(int&nbsp;indexToPointAt)</pre>
-<div class="block">Returns a "       ^" string pointing at the position indicated by <code>indexToPointAt</code></div>
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.70">pointingAtIndex</a>(int&nbsp;indexToPointAt)</pre>
+<div class="block">Returns a " ^" string pointing at the position indicated by <code>indexToPointAt</code></div>
 </li>
 </ul>
 <a name="repeat-java.lang.String-int-">
@@ -446,7 +448,7 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/
 <h4>repeat</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.321">repeat</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;part,
+public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.319">repeat</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;part,
                                                         int&nbsp;times)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -463,7 +465,7 @@ public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/
 <ul class="blockListLast">
 <li class="blockList">
 <h4>startsWithAndHasMore</h4>
-<pre>public static&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.81">startsWithAndHasMore</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input,
+<pre>public static&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/strings/StringsUtil.html#line.79">startsWithAndHasMore</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;input,
                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toStartWith)</pre>
 <div class="block">Returns <code>true</code> iff <code>input</code> <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true#startsWith-java.lang.String-" title="class or interface in java.lang"><code>starts with</code></a>
  <code>toStartWith</code> and has more characters after that match</div>

@@ -16,53 +16,55 @@
 <span class="sourceLineNo">008</span>import se.softhouse.jargo.ArgumentBuilder;<a name="line.8"></a>
 <span class="sourceLineNo">009</span>import se.softhouse.jargo.ArgumentBuilder.DefaultArgumentBuilder;<a name="line.9"></a>
 <span class="sourceLineNo">010</span><a name="line.10"></a>
-<span class="sourceLineNo">011</span>/* Copyright 2013 Jonatan Jönsson<a name="line.11"></a>
-<span class="sourceLineNo">012</span> *<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *    Licensed under the Apache License, Version 2.0 (the "License");<a name="line.13"></a>
-<span class="sourceLineNo">014</span> *    you may not use this file except in compliance with the License.<a name="line.14"></a>
-<span class="sourceLineNo">015</span> *    You may obtain a copy of the License at<a name="line.15"></a>
-<span class="sourceLineNo">016</span> *<a name="line.16"></a>
-<span class="sourceLineNo">017</span> *        http://www.apache.org/licenses/LICENSE-2.0<a name="line.17"></a>
-<span class="sourceLineNo">018</span> *<a name="line.18"></a>
-<span class="sourceLineNo">019</span> *    Unless required by applicable law or agreed to in writing, software<a name="line.19"></a>
-<span class="sourceLineNo">020</span> *    distributed under the License is distributed on an "AS IS" BASIS,<a name="line.20"></a>
-<span class="sourceLineNo">021</span> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.21"></a>
-<span class="sourceLineNo">022</span> *    See the License for the specific language governing permissions and<a name="line.22"></a>
-<span class="sourceLineNo">023</span> *    limitations under the License.<a name="line.23"></a>
-<span class="sourceLineNo">024</span> */<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>/**<a name="line.26"></a>
-<span class="sourceLineNo">027</span> * Additional {@link se.softhouse.jargo.Arguments}.&lt;br&gt;<a name="line.27"></a>
-<span class="sourceLineNo">028</span> * To avoid explicitly specifying &lt;code&gt;se.softhouse.jargo.addons.Arguments&lt;/code&gt; when using<a name="line.28"></a>
-<span class="sourceLineNo">029</span> * arguments from both {@link Argument jargo} and {@link se.softhouse.jargo.addons.Arguments<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * jargo-addons} you can use static imports for each method.<a name="line.30"></a>
-<span class="sourceLineNo">031</span> */<a name="line.31"></a>
-<span class="sourceLineNo">032</span>public final class Arguments<a name="line.32"></a>
-<span class="sourceLineNo">033</span>{<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        private Arguments()<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        {<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        }<a name="line.36"></a>
-<span class="sourceLineNo">037</span><a name="line.37"></a>
-<span class="sourceLineNo">038</span>        /**<a name="line.38"></a>
-<span class="sourceLineNo">039</span>         * Creates an {@link Argument} that parses {@link DateTime dates} with the {@link DateTimeZone#getDefault() default timezone} and the {@link ISODateTimeFormat#dateOptionalTimeParser()}.<a name="line.39"></a>
+<span class="sourceLineNo">011</span>/*<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * Copyright 2013 Jonatan Jönsson<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * you may not use this file except in compliance with the License.<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * You may obtain a copy of the License at<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * http://www.apache.org/licenses/LICENSE-2.0<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * Unless required by applicable law or agreed to in writing, software<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * See the License for the specific language governing permissions and<a name="line.20"></a>
+<span class="sourceLineNo">021</span> * limitations under the License.<a name="line.21"></a>
+<span class="sourceLineNo">022</span> */<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>/**<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * Additional {@link se.softhouse.jargo.Arguments}.&lt;br&gt;<a name="line.25"></a>
+<span class="sourceLineNo">026</span> * To avoid explicitly specifying &lt;code&gt;se.softhouse.jargo.addons.Arguments&lt;/code&gt; when using<a name="line.26"></a>
+<span class="sourceLineNo">027</span> * arguments from both {@link Argument jargo} and {@link se.softhouse.jargo.addons.Arguments<a name="line.27"></a>
+<span class="sourceLineNo">028</span> * jargo-addons} you can use static imports for each method.<a name="line.28"></a>
+<span class="sourceLineNo">029</span> */<a name="line.29"></a>
+<span class="sourceLineNo">030</span>public final class Arguments<a name="line.30"></a>
+<span class="sourceLineNo">031</span>{<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        private Arguments()<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        {<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        }<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>        /**<a name="line.36"></a>
+<span class="sourceLineNo">037</span>         * Creates an {@link Argument} that parses {@link DateTime dates} with the<a name="line.37"></a>
+<span class="sourceLineNo">038</span>         * {@link DateTimeZone#getDefault() default timezone} and the<a name="line.38"></a>
+<span class="sourceLineNo">039</span>         * {@link ISODateTimeFormat#dateOptionalTimeParser()}.<a name="line.39"></a>
 <span class="sourceLineNo">040</span>         *<a name="line.40"></a>
 <span class="sourceLineNo">041</span>         * @param names the {@link ArgumentBuilder#names(String...) names} to use<a name="line.41"></a>
 <span class="sourceLineNo">042</span>         */<a name="line.42"></a>
 <span class="sourceLineNo">043</span>        public static DefaultArgumentBuilder&lt;DateTime&gt; dateArgument(String ... names)<a name="line.43"></a>
 <span class="sourceLineNo">044</span>        {<a name="line.44"></a>
-<span class="sourceLineNo">045</span>                return se.softhouse.jargo.Arguments.withParser(new DateTimeParser(DateTimeZone.getDefault())).defaultValueDescription("Current time").names(names);<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        }<a name="line.46"></a>
-<span class="sourceLineNo">047</span><a name="line.47"></a>
-<span class="sourceLineNo">048</span>        /**<a name="line.48"></a>
-<span class="sourceLineNo">049</span>         * Creates an {@link Argument} that parses {@link DateTime dates} with the provided {@link DateTimeZone#getDefault() timezone}.<a name="line.49"></a>
-<span class="sourceLineNo">050</span>         *<a name="line.50"></a>
-<span class="sourceLineNo">051</span>         * @param names the {@link ArgumentBuilder#names(String...) names} to use<a name="line.51"></a>
-<span class="sourceLineNo">052</span>         */<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        public static DefaultArgumentBuilder&lt;DateTime&gt; dateArgument(DateTimeZone timeZone, String ... names)<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                return se.softhouse.jargo.Arguments.withParser(new DateTimeParser(timeZone)).defaultValueDescription("Current time").names(names);<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        }<a name="line.56"></a>
-<span class="sourceLineNo">057</span>}<a name="line.57"></a>
+<span class="sourceLineNo">045</span>                return se.softhouse.jargo.Arguments.withParser(new DateTimeParser(DateTimeZone.getDefault())).defaultValueDescription("Current time")<a name="line.45"></a>
+<span class="sourceLineNo">046</span>                                .names(names);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>        /**<a name="line.49"></a>
+<span class="sourceLineNo">050</span>         * Creates an {@link Argument} that parses {@link DateTime dates} with the provided<a name="line.50"></a>
+<span class="sourceLineNo">051</span>         * {@link DateTimeZone#getDefault() timezone}.<a name="line.51"></a>
+<span class="sourceLineNo">052</span>         *<a name="line.52"></a>
+<span class="sourceLineNo">053</span>         * @param names the {@link ArgumentBuilder#names(String...) names} to use<a name="line.53"></a>
+<span class="sourceLineNo">054</span>         */<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        public static DefaultArgumentBuilder&lt;DateTime&gt; dateArgument(DateTimeZone timeZone, String ... names)<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                return se.softhouse.jargo.Arguments.withParser(new DateTimeParser(timeZone)).defaultValueDescription("Current time").names(names);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        }<a name="line.58"></a>
+<span class="sourceLineNo">059</span>}<a name="line.59"></a>
 
 
 

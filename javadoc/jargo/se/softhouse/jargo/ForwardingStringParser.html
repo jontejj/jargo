@@ -122,13 +122,12 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public abstract class <a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.59">ForwardingStringParser</a>&lt;T&gt;
+public abstract class <a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.56">ForwardingStringParser</a>&lt;T&gt;
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;T&gt;</pre>
 <div class="block">A <a href="http://en.wikipedia.org/wiki/Decorator_pattern">Decorator</a> class.
  It allows you to subclass it and override individual methods
  that you want to customize for an existing <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a>.
-
  For instance, a parser that's useful in a garden application could look like this:
 
  <pre class="prettyprint">
@@ -293,7 +292,7 @@ implements <a href="../../../se/softhouse/jargo/StringParser.html" title="interf
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ForwardingStringParser</h4>
-<pre>public&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.59">ForwardingStringParser</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.56">ForwardingStringParser</a>()</pre>
 </li>
 </ul>
 </li>
@@ -310,7 +309,7 @@ implements <a href="../../../se/softhouse/jargo/StringParser.html" title="interf
 <ul class="blockList">
 <li class="blockList">
 <h4>defaultValue</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="type parameter in ForwardingStringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.85">defaultValue</a>()</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="type parameter in ForwardingStringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.82">defaultValue</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../se/softhouse/jargo/StringParser.html#defaultValue--">StringParser</a></code></span></div>
 <div class="block">Used when the <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> this parser is connected to wasn't given.
  Used as a fall-back mechanism when <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue-T-"><code>ArgumentBuilder.defaultValue(Object)</code></a> isn't used.</div>
@@ -327,7 +326,7 @@ implements <a href="../../../se/softhouse/jargo/StringParser.html" title="interf
 <li class="blockList">
 <h4>delegate</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="type parameter in ForwardingStringParser">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.70">delegate</a>()</pre>
+protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="type parameter in ForwardingStringParser">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.67">delegate</a>()</pre>
 <div class="block">A factory method that allow subclasses to switch delegate under their own terms,
  like the <a href="http://en.wikipedia.org/wiki/Proxy_pattern">Proxy</a> pattern explains.
  Just remember that a <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> should be treated like it's <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation"><code>Immutable</code></a> so
@@ -344,7 +343,7 @@ protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" 
 <ul class="blockList">
 <li class="blockList">
 <h4>descriptionOfValidValues</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.73">descriptionOfValidValues</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.70">descriptionOfValidValues</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../se/softhouse/jargo/StringParser.html#descriptionOfValidValues-java.util.Locale-">StringParser</a></code></span></div>
 <div class="block">Describes what values this <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a> accepts</div>
 <dl>
@@ -363,7 +362,7 @@ protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" 
 <ul class="blockList">
 <li class="blockList">
 <h4>metaDescription</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.91">metaDescription</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.88">metaDescription</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../se/softhouse/jargo/StringParser.html#metaDescription--">StringParser</a></code></span></div>
 <div class="block"><pre>
  The meta description is the text displayed after the argument names.
@@ -387,7 +386,7 @@ protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" 
 <ul class="blockList">
 <li class="blockList">
 <h4>parse</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="type parameter in ForwardingStringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.79">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value,
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ForwardingStringParser.html" title="type parameter in ForwardingStringParser">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.76">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;locale)
         throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a></pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-">StringParser</a></code></span></div>
@@ -412,7 +411,7 @@ protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" 
 <ul class="blockListLast">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.97">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ForwardingStringParser.html#line.94">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>

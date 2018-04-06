@@ -129,7 +129,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.NotThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@NotThreadSafe</a>
-public abstract class <a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.45">ArgumentException</a>
+public abstract class <a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.44">ArgumentException</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeException.html?is-external=true" title="class or interface in java.lang">RuntimeException</a></pre>
 <div class="block">Indicates that something went wrong in a <a href="../../../se/softhouse/jargo/CommandLineParser.html#parse-java.lang.String...-"><code>parsing</code></a>.
  Typical causes include:
@@ -252,7 +252,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ArgumentException</h4>
-<pre>protected&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.64">ArgumentException</a>()</pre>
+<pre>protected&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.63">ArgumentException</a>()</pre>
 </li>
 </ul>
 </li>
@@ -269,7 +269,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <ul class="blockList">
 <li class="blockList">
 <h4>andCause</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.72">andCause</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.71">andCause</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
 <div class="block">Alias for <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true#initCause-java.lang.Throwable-" title="class or interface in java.lang"><code>Throwable.initCause(Throwable)</code></a>.<br>
  Added simply because <code>withMessage("Message").andCause(exception)</code> flows better.</div>
 </li>
@@ -280,7 +280,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <ul class="blockList">
 <li class="blockList">
 <h4>getMessage</h4>
-<pre>public final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.112">getMessage</a>()</pre>
+<pre>public final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.111">getMessage</a>()</pre>
 <div class="block"><pre>
  
  
@@ -300,7 +300,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <ul class="blockList">
 <li class="blockList">
 <h4>getMessage</h4>
-<pre>protected abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.100">getMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;referenceName)</pre>
+<pre>protected abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.99">getMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;referenceName)</pre>
 <div class="block">Returns why this exception occurred.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -317,7 +317,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getMessageAndUsage</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.84">getMessageAndUsage</a>()</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentException.html#line.83">getMessageAndUsage</a>()</pre>
 <div class="block">Returns usage detailing how to use the <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a> that caused this
  <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>exception</code></a>, prepended with an error message detailing the erroneous
  argument and, if applicable, a reference to the usage where the user can read about

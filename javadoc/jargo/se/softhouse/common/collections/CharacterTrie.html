@@ -114,8 +114,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>V</code> - the type of values stored in the trie
- </pre></dd>
+<dd><code>V</code> - the type of values stored in the trie</dd>
 </dl>
 <dl>
 <dt>All Implemented Interfaces:</dt>
@@ -124,20 +123,21 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.NotThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@NotThreadSafe</a>
-public final class <a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.51">CharacterTrie</a>&lt;V&gt;
+public final class <a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.49">CharacterTrie</a>&lt;V&gt;
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap.html?is-external=true" title="class or interface in java.util">AbstractMap</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,V&gt;</pre>
 <div class="block"><pre>
  Stores <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s in a <a href="http://en.wikipedia.org/wiki/Trie">trie</a>.
  The main purpose when using a structure like this is the methods
  <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#findLongestPrefix-java.lang.CharSequence-"><code>findLongestPrefix(CharSequence)</code></a> and <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.CharSequence-"><code>getEntriesWithPrefix(CharSequence)</code></a>.
- 
+
  Neither <code>null</code> keys or <code>null</code> values are allowed because just like the
  devil, they are evil.
- 
+
  If you're iterating over the whole trie more often than you do <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.CharSequence-"><code>simple lookups</code></a>
  you're probably better off using a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html?is-external=true" title="class or interface in java.util"><code>TreeMap</code></a>.
- 
- TODO(jontejj): Implement SortedMap instead of Map</div>
+
+ TODO(jontejj): Implement SortedMap instead of Map
+ </pre></div>
 </li>
 </ul>
 </div>
@@ -267,7 +267,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap
 <ul class="blockList">
 <li class="blockList">
 <h4>clear</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.519">clear</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.517">clear</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#clear--" title="class or interface in java.util">clear</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>
@@ -283,7 +283,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap
 <li class="blockList">
 <h4>containsKey</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.470">containsKey</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.468">containsKey</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
                                              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -299,7 +299,7 @@ public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/colle
 <ul class="blockList">
 <li class="blockList">
 <h4>entrySet</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.527">entrySet</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.525">entrySet</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#entrySet--" title="class or interface in java.util">entrySet</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>
@@ -315,7 +315,7 @@ public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/colle
 <li class="blockList">
 <h4>findLongestPrefix</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.493">findLongestPrefix</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html?is-external=true" title="class or interface in java.lang">CharSequence</a>&nbsp;prefix)</pre>
+public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.491">findLongestPrefix</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html?is-external=true" title="class or interface in java.lang">CharSequence</a>&nbsp;prefix)</pre>
 <div class="block">Returns the entry that shares the longest prefix with <code>key</code>, or null
  if no such entry exists</div>
 <dl>
@@ -331,7 +331,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Ent
 <li class="blockList">
 <h4>get</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.480">get</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key)</pre>
+public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.478">get</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#get-java.lang.Object-" title="class or interface in java.util">get</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>
@@ -346,7 +346,7 @@ public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.h
 <ul class="blockList">
 <li class="blockList">
 <h4>getEntriesWithPrefix</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.502">getEntriesWithPrefix</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html?is-external=true" title="class or interface in java.lang">CharSequence</a>&nbsp;prefix)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.500">getEntriesWithPrefix</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html?is-external=true" title="class or interface in java.lang">CharSequence</a>&nbsp;prefix)</pre>
 <div class="block">Returns all entries whose key starts with <code>prefix</code>. The returned <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util"><code>Set</code></a> is a view
  so removed elements from it are also removed in this structure.</div>
 </li>
@@ -358,7 +358,7 @@ public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.h
 <li class="blockList">
 <h4>newTrie</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a>&lt;V&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.361">newTrie</a>()</pre>
+public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a>&lt;V&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.359">newTrie</a>()</pre>
 <div class="block">Creates a new, empty, <a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections"><code>CharacterTrie</code></a></div>
 </li>
 </ul>
@@ -369,7 +369,7 @@ public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/colle
 <li class="blockList">
 <h4>newTrie</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a>&lt;V&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.370">newTrie</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,V&gt;&nbsp;map)</pre>
+public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a>&lt;V&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.368">newTrie</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,V&gt;&nbsp;map)</pre>
 <div class="block">Creates a new <a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections"><code>CharacterTrie</code></a> with the entries from <code>map</code></div>
 </li>
 </ul>
@@ -381,7 +381,7 @@ public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/colle
 <ul class="blockList">
 <li class="blockList">
 <h4>put</h4>
-<pre>public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.386">put</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
+<pre>public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.384">put</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
              <a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;value)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -399,7 +399,7 @@ public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/colle
 <ul class="blockList">
 <li class="blockList">
 <h4>remove</h4>
-<pre>public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.418">remove</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;keyToRemove)</pre>
+<pre>public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.416">remove</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;keyToRemove)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#remove-java.lang.Object-" title="class or interface in java.util">remove</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>
@@ -415,7 +415,7 @@ public static&nbsp;&lt;V&gt;&nbsp;<a href="../../../../se/softhouse/common/colle
 <li class="blockList">
 <h4>size</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.412">size</a>()</pre>
+public&nbsp;int&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.410">size</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#size--" title="class or interface in java.util">size</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>

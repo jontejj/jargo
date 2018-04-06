@@ -110,7 +110,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.ThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@ThreadSafe</a>
-public final class <a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.107">CommandLineParser</a>
+public final class <a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.105">CommandLineParser</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Manages multiple <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a>s and/or <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s. The brain of this API.
  Its primary goal is to decide which <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> each input string belongs to.
@@ -307,7 +307,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <h4>andArguments</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.274">andArguments</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;...&nbsp;argumentsToAlsoSupport)</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.272">andArguments</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;...&nbsp;argumentsToAlsoSupport)</pre>
 <div class="block"><pre>
  Adds support for <code> argumentsToAlsoSupport</code> in this <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a>.
  Typically used in a chained fashion when faced with many supported arguments.
@@ -329,7 +329,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="
 <h4>andCommands</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.256">andCommands</a>(<a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo">Command</a>...&nbsp;commandsToAlsoSupport)</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.254">andCommands</a>(<a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo">Command</a>...&nbsp;commandsToAlsoSupport)</pre>
 <div class="block">Adds support for <code>commandsToAlsoSupport</code> in this <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a>. Typically
  used in a chained fashion when faced with many supported <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s.</div>
 <dl>
@@ -346,7 +346,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="
 <ul class="blockList">
 <li class="blockList">
 <h4>locale</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.351">locale</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;localeToUse)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.349">locale</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true" title="class or interface in java.util">Locale</a>&nbsp;localeToUse)</pre>
 <div class="block"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true#getDefault--" title="class or interface in java.util"><code>Locale.getDefault()</code></a> is dangerous to use. It's a global and mutable variable
  which makes it hard to give any guarantees on what it will be at a certain time. This is why
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true#US" title="class or interface in java.util"><code>Locale.US</code></a> is used by default instead.
@@ -368,7 +368,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="
 <li class="blockList">
 <h4>parse</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.231">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;actualArguments)
+public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.229">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;actualArguments)
                                throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a></pre>
 <div class="block"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><code>Iterable</code></a> version of <a href="../../../se/softhouse/jargo/CommandLineParser.html#parse-java.lang.String...-"><code>parse(String...)</code></a></div>
 <dl>
@@ -384,7 +384,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="cl
 <li class="blockList">
 <h4>parse</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.222">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)
+public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo">ParsedArguments</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.220">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)
                                throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a></pre>
 <div class="block">Parses <code>actualArguments</code> (typically from the command line, i.e argv) and returns the
  parsed values in a <a href="../../../se/softhouse/jargo/ParsedArguments.html" title="class in se.softhouse.jargo"><code>ParsedArguments</code></a> container. <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html?is-external=true#US" title="class or interface in java.util"><code>Locale.US</code></a> is used to parse
@@ -401,7 +401,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="cl
 <ul class="blockList">
 <li class="blockList">
 <h4>programDescription</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.324">programDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;programDescription)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.322">programDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;programDescription)</pre>
 <div class="block">Sets the <code>programDescription</code> to print with <a href="../../../se/softhouse/jargo/CommandLineParser.html#usage--"><code>usage()</code></a></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -415,7 +415,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="cl
 <ul class="blockList">
 <li class="blockList">
 <h4>programName</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.304">programName</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;programName)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.302">programName</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;programName)</pre>
 <div class="block">Sets the <code>programName</code> to print with <a href="../../../se/softhouse/jargo/CommandLineParser.html#usage--"><code>usage()</code></a></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -429,7 +429,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="cl
 <ul class="blockList">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.369">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.367">toString</a>()</pre>
 <div class="block">Returns the <a href="../../../se/softhouse/jargo/CommandLineParser.html#usage--"><code>usage()</code></a> for this <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
@@ -445,7 +445,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ParsedArguments.html" title="cl
 <h4>usage</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.242">usage</a>()</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.240">usage</a>()</pre>
 <div class="block">Returns a usage text describing all arguments this <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a> handles.
  Suitable to print on <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html?is-external=true#out" title="class or interface in java.lang"><code>System.out</code></a>.</div>
 </li>
@@ -458,7 +458,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.
 <h4>withArguments</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.146">withArguments</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;...&nbsp;argumentDefinitions)</pre>
+public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.144">withArguments</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;...&nbsp;argumentDefinitions)</pre>
 <div class="block">Creates a <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a> with support for the given <code>argumentDefinitions</code>.
  <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s can be added later with <a href="../../../se/softhouse/jargo/CommandLineParser.html#andCommands-se.softhouse.jargo.Command...-"><code>andCommands(Command...)</code></a>.</div>
 <dl>
@@ -484,7 +484,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" 
 <h4>withArguments</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.156">withArguments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;&gt;&nbsp;argumentDefinitions)</pre>
+public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.154">withArguments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;&gt;&nbsp;argumentDefinitions)</pre>
 <div class="block"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><code>Iterable</code></a> version of <a href="../../../se/softhouse/jargo/CommandLineParser.html#withArguments-se.softhouse.jargo.Argument...-"><code>withArguments(Argument...)</code></a></div>
 </li>
 </ul>
@@ -494,7 +494,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" 
 <ul class="blockList">
 <li class="blockList">
 <h4>withCommands</h4>
-<pre>public static&nbsp;&lt;E extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;E&gt; &amp; <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang">Runnable</a> &amp; <a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&gt;&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.209">withCommands</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;E&gt;&nbsp;commandEnum)</pre>
+<pre>public static&nbsp;&lt;E extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&lt;E&gt; &amp; <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang">Runnable</a> &amp; <a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&gt;&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.207">withCommands</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;E&gt;&nbsp;commandEnum)</pre>
 <div class="block">An alternative to <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a> that accepts an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang"><code>Enum</code></a> following the <a
  href="http://en.wikipedia.org/wiki/Command_pattern">Command
  Pattern</a>. This alternative is viable if the commands don't accept any parameters.
@@ -537,7 +537,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" 
 <h4>withCommands</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.173">withCommands</a>(<a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo">Command</a>...&nbsp;commands)</pre>
+public static&nbsp;<a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/CommandLineParser.html#line.171">withCommands</a>(<a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo">Command</a>...&nbsp;commands)</pre>
 <div class="block">Creates a <a href="../../../se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo"><code>CommandLineParser</code></a> with support for <code>commands</code>. To add additional
  <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a>s or <a href="../../../se/softhouse/jargo/Command.html" title="class in se.softhouse.jargo"><code>Command</code></a>s there is <a href="../../../se/softhouse/jargo/CommandLineParser.html#andArguments-se.softhouse.jargo.Argument...-"><code>andArguments(Argument...)</code></a> and
  <a href="../../../se/softhouse/jargo/CommandLineParser.html#andCommands-se.softhouse.jargo.Command...-"><code>andCommands(Command...)</code></a>.</div>

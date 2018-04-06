@@ -109,7 +109,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.46">UtilityClassTester</a>
+public final class <a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.44">UtilityClassTester</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">The reasoning behind testing code that doesn't do anything is to achieve 100%
  code coverage and to notice when the code
@@ -187,7 +187,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>testUtilityClassDesign</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.57">testUtilityClassDesign</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;...&nbsp;utilityClasses)</pre>
+<pre>public static&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.55">testUtilityClassDesign</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;...&nbsp;utilityClasses)</pre>
 <div class="block">Detects if a utility class isn't final or if its no-args constructor
  isn't private. Also calls the constructor to get code coverage for it.
  The constructor is allowed to throw exceptions.</div>
@@ -199,7 +199,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>testUtilityClassDesign</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.65">testUtilityClassDesign</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&gt;&nbsp;utilityClasses)</pre>
+<pre>public static&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.63">testUtilityClassDesign</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&gt;&nbsp;utilityClasses)</pre>
 <div class="block"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><code>Iterable</code></a> version of <a href="../../../../se/softhouse/common/testlib/UtilityClassTester.html#testUtilityClassDesign-java.lang.Class...-"><code>testUtilityClassDesign(Class...)</code></a>.</div>
 </li>
 </ul>
@@ -209,7 +209,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testUtilityClassDesignForAllClassesAround</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.110">testUtilityClassDesignForAllClassesAround</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;klazz)
+<pre>public static&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/UtilityClassTester.html#line.108">testUtilityClassDesignForAllClassesAround</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;klazz)
                                                       throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block">Goes through all <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html?is-external=true#loadClass-java.lang.String-" title="class or interface in java.lang"><code>loadable</code></a> classes around <code>klazz</code>
  (and sub packages) and makes sure that the class is marked as final and that its constructor

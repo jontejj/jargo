@@ -6,172 +6,170 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>/* Copyright 2013 Jonatan Jönsson<a name="line.1"></a>
-<span class="sourceLineNo">002</span> *<a name="line.2"></a>
-<span class="sourceLineNo">003</span> *    Licensed under the Apache License, Version 2.0 (the "License");<a name="line.3"></a>
-<span class="sourceLineNo">004</span> *    you may not use this file except in compliance with the License.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> *    You may obtain a copy of the License at<a name="line.5"></a>
-<span class="sourceLineNo">006</span> *<a name="line.6"></a>
-<span class="sourceLineNo">007</span> *        http://www.apache.org/licenses/LICENSE-2.0<a name="line.7"></a>
-<span class="sourceLineNo">008</span> *<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *    Unless required by applicable law or agreed to in writing, software<a name="line.9"></a>
-<span class="sourceLineNo">010</span> *    distributed under the License is distributed on an "AS IS" BASIS,<a name="line.10"></a>
-<span class="sourceLineNo">011</span> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.11"></a>
-<span class="sourceLineNo">012</span> *    See the License for the specific language governing permissions and<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *    limitations under the License.<a name="line.13"></a>
-<span class="sourceLineNo">014</span> */<a name="line.14"></a>
-<span class="sourceLineNo">015</span>package se.softhouse.common.guavaextensions;<a name="line.15"></a>
-<span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>import static java.util.Objects.requireNonNull;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>import static se.softhouse.common.guavaextensions.Preconditions2.check;<a name="line.18"></a>
-<span class="sourceLineNo">019</span><a name="line.19"></a>
-<span class="sourceLineNo">020</span>import java.io.Serializable;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>import java.util.ArrayList;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.util.List;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.util.function.Supplier;<a name="line.23"></a>
-<span class="sourceLineNo">024</span><a name="line.24"></a>
-<span class="sourceLineNo">025</span>import javax.annotation.CheckReturnValue;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import javax.annotation.Nullable;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import javax.annotation.concurrent.Immutable;<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>/**<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * Additional implementations of the {@link Supplier} interface<a name="line.30"></a>
-<span class="sourceLineNo">031</span> */<a name="line.31"></a>
-<span class="sourceLineNo">032</span>@Immutable<a name="line.32"></a>
-<span class="sourceLineNo">033</span>public final class Suppliers2<a name="line.33"></a>
-<span class="sourceLineNo">034</span>{<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        private Suppliers2()<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        {<a name="line.36"></a>
-<span class="sourceLineNo">037</span>        }<a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span>        /**<a name="line.39"></a>
-<span class="sourceLineNo">040</span>         * Creates a {@link Supplier} that supplies {@code elementsToSupply} number of elements from<a name="line.40"></a>
-<span class="sourceLineNo">041</span>         * {@code elementSupplier}<a name="line.41"></a>
-<span class="sourceLineNo">042</span>         *<a name="line.42"></a>
-<span class="sourceLineNo">043</span>         * @throws IllegalArgumentException if {@code elementsToSupply} is less than zero<a name="line.43"></a>
-<span class="sourceLineNo">044</span>         */<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        @CheckReturnValue<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        public static &lt;T&gt; Supplier&lt;List&lt;T&gt;&gt; ofRepeatedElements(Supplier&lt;? extends T&gt; elementSupplier, int elementsToSupply)<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        {<a name="line.47"></a>
-<span class="sourceLineNo">048</span>                requireNonNull(elementSupplier);<a name="line.48"></a>
-<span class="sourceLineNo">049</span>                check(elementsToSupply &gt;= 0, "elementsToSupply may not be negative");<a name="line.49"></a>
-<span class="sourceLineNo">050</span>                return new ListSupplier&lt;T&gt;(elementSupplier, elementsToSupply);<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        }<a name="line.51"></a>
-<span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>        private static final class ListSupplier&lt;T&gt; implements Supplier&lt;List&lt;T&gt;&gt;<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                private final Supplier&lt;? extends T&gt; elementSupplier;<a name="line.55"></a>
-<span class="sourceLineNo">056</span>                private final int elementsToSupply;<a name="line.56"></a>
-<span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span>                private ListSupplier(Supplier&lt;? extends T&gt; elementSupplier, final int elementsToSupply)<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                        this.elementSupplier = elementSupplier;<a name="line.60"></a>
-<span class="sourceLineNo">061</span>                        this.elementsToSupply = elementsToSupply;<a name="line.61"></a>
-<span class="sourceLineNo">062</span>                }<a name="line.62"></a>
-<span class="sourceLineNo">063</span><a name="line.63"></a>
-<span class="sourceLineNo">064</span>                @Override<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                public List&lt;T&gt; get()<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                        List&lt;T&gt; result = new ArrayList&lt;T&gt;(elementsToSupply);<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                        for(int i = 0; i &lt; elementsToSupply; i++)<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                        {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                                result.add(elementSupplier.get());<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                        }<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                        return result;<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                }<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        }<a name="line.74"></a>
-<span class="sourceLineNo">075</span><a name="line.75"></a>
-<span class="sourceLineNo">076</span>        /**<a name="line.76"></a>
-<span class="sourceLineNo">077</span>         * Creates a {@link Supplier} that always returns {@code instance}.<a name="line.77"></a>
-<span class="sourceLineNo">078</span>         * <a name="line.78"></a>
-<span class="sourceLineNo">079</span>         * @param instance the instance to supply<a name="line.79"></a>
-<span class="sourceLineNo">080</span>         * @param &lt;T&gt; the type<a name="line.80"></a>
-<span class="sourceLineNo">081</span>         * @return the newly created supplier<a name="line.81"></a>
-<span class="sourceLineNo">082</span>         */<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        @CheckReturnValue<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        public static &lt;T&gt; Supplier&lt;T&gt; ofInstance(@Nullable T instance)<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        {<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                return new InstanceSupplier&lt;T&gt;(instance);<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
-<span class="sourceLineNo">088</span><a name="line.88"></a>
-<span class="sourceLineNo">089</span>        private static final class InstanceSupplier&lt;T&gt; implements Supplier&lt;T&gt;<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        {<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                private final T instance;<a name="line.91"></a>
-<span class="sourceLineNo">092</span><a name="line.92"></a>
-<span class="sourceLineNo">093</span>                private InstanceSupplier(T instance)<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                        this.instance = instance;<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                }<a name="line.96"></a>
-<span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>                @Override<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                public T get()<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                {<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                        return instance;<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                }<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        }<a name="line.103"></a>
-<span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
-<span class="sourceLineNo">106</span>         * Returns true if {@code Supplier} is likely to supply values very fast<a name="line.106"></a>
-<span class="sourceLineNo">107</span>         */<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        public static boolean isSuppliedAlready(Supplier&lt;?&gt; supplier)<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        {<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                if(supplier.getClass().equals(InstanceSupplier.class))<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                        return true;<a name="line.111"></a>
-<span class="sourceLineNo">112</span>                else if(supplier instanceof ListSupplier&lt;?&gt;)<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                {<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                        ListSupplier&lt;?&gt; listSupplier = (ListSupplier&lt;?&gt;) supplier;<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                        if(listSupplier.elementSupplier.getClass().equals(InstanceSupplier.class))<a name="line.115"></a>
-<span class="sourceLineNo">116</span>                                return true;<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                }<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                return false;<a name="line.118"></a>
-<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>        /**<a name="line.121"></a>
-<span class="sourceLineNo">122</span>         * Returns a supplier which caches the instance retrieved during the first call to {@code get()}<a name="line.122"></a>
-<span class="sourceLineNo">123</span>         * and returns that value on subsequent calls to {@code get()}. See:<a name="line.123"></a>
-<span class="sourceLineNo">124</span>         * &lt;a href="http://en.wikipedia.org/wiki/Memoization"&gt;memoization&lt;/a&gt;<a name="line.124"></a>
-<span class="sourceLineNo">125</span>         */<a name="line.125"></a>
-<span class="sourceLineNo">126</span>        public static &lt;T&gt; Supplier&lt;T&gt; memoize(Supplier&lt;T&gt; delegate)<a name="line.126"></a>
-<span class="sourceLineNo">127</span>        {<a name="line.127"></a>
-<span class="sourceLineNo">128</span>                return (delegate instanceof MemoizingSupplier) ? delegate : new MemoizingSupplier&lt;T&gt;(requireNonNull(delegate));<a name="line.128"></a>
-<span class="sourceLineNo">129</span>        }<a name="line.129"></a>
-<span class="sourceLineNo">130</span><a name="line.130"></a>
-<span class="sourceLineNo">131</span>        private static class MemoizingSupplier&lt;T&gt; implements Supplier&lt;T&gt;, Serializable<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        {<a name="line.132"></a>
-<span class="sourceLineNo">133</span>                final Supplier&lt;T&gt; delegate;<a name="line.133"></a>
-<span class="sourceLineNo">134</span>                transient volatile boolean initialized;<a name="line.134"></a>
-<span class="sourceLineNo">135</span>                // "value" does not need to be volatile; visibility piggy-backs<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                // on volatile read of "initialized".<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                transient T value;<a name="line.137"></a>
-<span class="sourceLineNo">138</span><a name="line.138"></a>
-<span class="sourceLineNo">139</span>                MemoizingSupplier(Supplier&lt;T&gt; delegate)<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                {<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                        this.delegate = delegate;<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                }<a name="line.142"></a>
-<span class="sourceLineNo">143</span><a name="line.143"></a>
-<span class="sourceLineNo">144</span>                @Override<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                public T get()<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                {<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                        // A 2-field variant of Double Checked Locking.<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                        if(!initialized)<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                        {<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                                synchronized(this)<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                                {<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                                        if(!initialized)<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                                        {<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                                                T t = delegate.get();<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                                                value = t;<a name="line.155"></a>
-<span class="sourceLineNo">156</span>                                                initialized = true;<a name="line.156"></a>
-<span class="sourceLineNo">157</span>                                                return t;<a name="line.157"></a>
-<span class="sourceLineNo">158</span>                                        }<a name="line.158"></a>
-<span class="sourceLineNo">159</span>                                }<a name="line.159"></a>
-<span class="sourceLineNo">160</span>                        }<a name="line.160"></a>
-<span class="sourceLineNo">161</span>                        return value;<a name="line.161"></a>
-<span class="sourceLineNo">162</span>                }<a name="line.162"></a>
-<span class="sourceLineNo">163</span><a name="line.163"></a>
-<span class="sourceLineNo">164</span>                private static final long serialVersionUID = 0;<a name="line.164"></a>
-<span class="sourceLineNo">165</span>        }<a name="line.165"></a>
-<span class="sourceLineNo">166</span>}<a name="line.166"></a>
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Copyright 2013 Jonatan Jönsson<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * you may not use this file except in compliance with the License.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * You may obtain a copy of the License at<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * http://www.apache.org/licenses/LICENSE-2.0<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * Unless required by applicable law or agreed to in writing, software<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.8"></a>
+<span class="sourceLineNo">009</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.9"></a>
+<span class="sourceLineNo">010</span> * See the License for the specific language governing permissions and<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * limitations under the License.<a name="line.11"></a>
+<span class="sourceLineNo">012</span> */<a name="line.12"></a>
+<span class="sourceLineNo">013</span>package se.softhouse.common.guavaextensions;<a name="line.13"></a>
+<span class="sourceLineNo">014</span><a name="line.14"></a>
+<span class="sourceLineNo">015</span>import static java.util.Objects.requireNonNull;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import static se.softhouse.common.guavaextensions.Preconditions2.check;<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span>import java.io.Serializable;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import java.util.ArrayList;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import java.util.List;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import java.util.function.Supplier;<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>import javax.annotation.CheckReturnValue;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import javax.annotation.Nullable;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import javax.annotation.concurrent.Immutable;<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>/**<a name="line.27"></a>
+<span class="sourceLineNo">028</span> * Additional implementations of the {@link Supplier} interface<a name="line.28"></a>
+<span class="sourceLineNo">029</span> */<a name="line.29"></a>
+<span class="sourceLineNo">030</span>@Immutable<a name="line.30"></a>
+<span class="sourceLineNo">031</span>public final class Suppliers2<a name="line.31"></a>
+<span class="sourceLineNo">032</span>{<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        private Suppliers2()<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>        }<a name="line.35"></a>
+<span class="sourceLineNo">036</span><a name="line.36"></a>
+<span class="sourceLineNo">037</span>        /**<a name="line.37"></a>
+<span class="sourceLineNo">038</span>         * Creates a {@link Supplier} that supplies {@code elementsToSupply} number of elements from<a name="line.38"></a>
+<span class="sourceLineNo">039</span>         * {@code elementSupplier}<a name="line.39"></a>
+<span class="sourceLineNo">040</span>         *<a name="line.40"></a>
+<span class="sourceLineNo">041</span>         * @throws IllegalArgumentException if {@code elementsToSupply} is less than zero<a name="line.41"></a>
+<span class="sourceLineNo">042</span>         */<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        @CheckReturnValue<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        public static &lt;T&gt; Supplier&lt;List&lt;T&gt;&gt; ofRepeatedElements(Supplier&lt;? extends T&gt; elementSupplier, int elementsToSupply)<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>                requireNonNull(elementSupplier);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>                check(elementsToSupply &gt;= 0, "elementsToSupply may not be negative");<a name="line.47"></a>
+<span class="sourceLineNo">048</span>                return new ListSupplier&lt;T&gt;(elementSupplier, elementsToSupply);<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        }<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>        private static final class ListSupplier&lt;T&gt; implements Supplier&lt;List&lt;T&gt;&gt;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                private final Supplier&lt;? extends T&gt; elementSupplier;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                private final int elementsToSupply;<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>                private ListSupplier(Supplier&lt;? extends T&gt; elementSupplier, final int elementsToSupply)<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                        this.elementSupplier = elementSupplier;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                        this.elementsToSupply = elementsToSupply;<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                }<a name="line.60"></a>
+<span class="sourceLineNo">061</span><a name="line.61"></a>
+<span class="sourceLineNo">062</span>                @Override<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                public List&lt;T&gt; get()<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                        List&lt;T&gt; result = new ArrayList&lt;T&gt;(elementsToSupply);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                        for(int i = 0; i &lt; elementsToSupply; i++)<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                        {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                                result.add(elementSupplier.get());<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                        }<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                        return result;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                }<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        }<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>        /**<a name="line.74"></a>
+<span class="sourceLineNo">075</span>         * Creates a {@link Supplier} that always returns {@code instance}.<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         * <a name="line.76"></a>
+<span class="sourceLineNo">077</span>         * @param instance the instance to supply<a name="line.77"></a>
+<span class="sourceLineNo">078</span>         * @param &lt;T&gt; the type<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * @return the newly created supplier<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        @CheckReturnValue<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        public static &lt;T&gt; Supplier&lt;T&gt; ofInstance(@Nullable T instance)<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                return new InstanceSupplier&lt;T&gt;(instance);<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>        private static final class InstanceSupplier&lt;T&gt; implements Supplier&lt;T&gt;<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        {<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                private final T instance;<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>                private InstanceSupplier(T instance)<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                        this.instance = instance;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                }<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>                @Override<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                public T get()<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                        return instance;<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                }<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        }<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>        /**<a name="line.103"></a>
+<span class="sourceLineNo">104</span>         * Returns true if {@code Supplier} is likely to supply values very fast<a name="line.104"></a>
+<span class="sourceLineNo">105</span>         */<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        public static boolean isSuppliedAlready(Supplier&lt;?&gt; supplier)<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        {<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                if(supplier.getClass().equals(InstanceSupplier.class))<a name="line.108"></a>
+<span class="sourceLineNo">109</span>                        return true;<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                else if(supplier instanceof ListSupplier&lt;?&gt;)<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                        ListSupplier&lt;?&gt; listSupplier = (ListSupplier&lt;?&gt;) supplier;<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                        if(listSupplier.elementSupplier.getClass().equals(InstanceSupplier.class))<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                                return true;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                }<a name="line.115"></a>
+<span class="sourceLineNo">116</span>                return false;<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        }<a name="line.117"></a>
+<span class="sourceLineNo">118</span><a name="line.118"></a>
+<span class="sourceLineNo">119</span>        /**<a name="line.119"></a>
+<span class="sourceLineNo">120</span>         * Returns a supplier which caches the instance retrieved during the first call to {@code get()}<a name="line.120"></a>
+<span class="sourceLineNo">121</span>         * and returns that value on subsequent calls to {@code get()}. See:<a name="line.121"></a>
+<span class="sourceLineNo">122</span>         * &lt;a href="http://en.wikipedia.org/wiki/Memoization"&gt;memoization&lt;/a&gt;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>         */<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        public static &lt;T&gt; Supplier&lt;T&gt; memoize(Supplier&lt;T&gt; delegate)<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                return (delegate instanceof MemoizingSupplier) ? delegate : new MemoizingSupplier&lt;T&gt;(requireNonNull(delegate));<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>        private static class MemoizingSupplier&lt;T&gt; implements Supplier&lt;T&gt;, Serializable<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                final Supplier&lt;T&gt; delegate;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                transient volatile boolean initialized;<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                // "value" does not need to be volatile; visibility piggy-backs<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                // on volatile read of "initialized".<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                transient T value;<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>                MemoizingSupplier(Supplier&lt;T&gt; delegate)<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                {<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                        this.delegate = delegate;<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                }<a name="line.140"></a>
+<span class="sourceLineNo">141</span><a name="line.141"></a>
+<span class="sourceLineNo">142</span>                @Override<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                public T get()<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                        // A 2-field variant of Double Checked Locking.<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                        if(!initialized)<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                        {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                                synchronized(this)<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                                {<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                                        if(!initialized)<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                                        {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                                                T t = delegate.get();<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                                                value = t;<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                                                initialized = true;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                                                return t;<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                                        }<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                                }<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                        }<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                        return value;<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                }<a name="line.160"></a>
+<span class="sourceLineNo">161</span><a name="line.161"></a>
+<span class="sourceLineNo">162</span>                private static final long serialVersionUID = 0;<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        }<a name="line.163"></a>
+<span class="sourceLineNo">164</span>}<a name="line.164"></a>
 
 
 

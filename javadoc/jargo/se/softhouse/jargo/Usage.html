@@ -114,7 +114,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.NotThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@NotThreadSafe</a>
-public final class <a href="../../../src-html/se/softhouse/jargo/Usage.html#line.64">Usage</a>
+public final class <a href="../../../src-html/se/softhouse/jargo/Usage.html#line.62">Usage</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a></pre>
 <div class="block">Responsible for formatting usage texts for <a href="../../../se/softhouse/jargo/CommandLineParser.html#usage--"><code>CommandLineParser.usage()</code></a> and
@@ -211,7 +211,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <ul class="blockList">
 <li class="blockList">
 <h4>printOn</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.165">printOn</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html?is-external=true" title="class or interface in java.lang">Appendable</a>&nbsp;target)
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.163">printOn</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html?is-external=true" title="class or interface in java.lang">Appendable</a>&nbsp;target)
              throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block">Appends usage to <code>target</code>. An alternative to <a href="../../../se/softhouse/jargo/Usage.html#toString--"><code>toString()</code></a> when the usage is very
  large and needs to be flushed from time to time.</div>
@@ -227,7 +227,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <ul class="blockList">
 <li class="blockList">
 <h4>printOn</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.186">printOn</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html?is-external=true" title="class or interface in java.io">PrintStream</a>&nbsp;target)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.184">printOn</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html?is-external=true" title="class or interface in java.io">PrintStream</a>&nbsp;target)</pre>
 <div class="block">Appends usage to <code>target</code>, just like <a href="../../../se/softhouse/jargo/Usage.html#printOn-java.lang.Appendable-"><code>printOn(Appendable)</code></a> but for a
  <a href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html?is-external=true" title="class or interface in java.io"><code>PrintStream</code></a> instead. The reason for this overload is that <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html?is-external=true" title="class or interface in java.lang"><code>Appendable</code></a> declares
  <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io"><code>IOException</code></a> to be thrown while <a href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html?is-external=true" title="class or interface in java.io"><code>PrintStream</code></a> handles it internally through the
@@ -244,7 +244,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <ul class="blockList">
 <li class="blockList">
 <h4>printOn</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.202">printOn</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html?is-external=true" title="class or interface in java.lang">StringBuilder</a>&nbsp;target)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.200">printOn</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html?is-external=true" title="class or interface in java.lang">StringBuilder</a>&nbsp;target)</pre>
 <div class="block">Appends usage to <code>target</code>, just like <a href="../../../se/softhouse/jargo/Usage.html#printOn-java.lang.Appendable-"><code>printOn(Appendable)</code></a> but for a
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html?is-external=true" title="class or interface in java.lang"><code>StringBuilder</code></a> instead</div>
 </li>
@@ -255,7 +255,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <ul class="blockListLast">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.141">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/Usage.html#line.139">toString</a>()</pre>
 <div class="block">Returns the usage text that's suitable to print on <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html?is-external=true#out" title="class or interface in java.lang"><code>System.out</code></a>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
