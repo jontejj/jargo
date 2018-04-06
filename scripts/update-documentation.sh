@@ -20,6 +20,7 @@ if [ "$TRAVIS_REPO_SLUG" == "jontejj/jargo" ] && [ "$TRAVIS_JDK_VERSION" == "ora
     rm -rf $TARGET_BRANCH || exit 0
 
     echo "Setting up automatic ssh key"
+    openssl aes-256-cbc -K $encrypted_5dfb394b8446_key -iv $encrypted_5dfb394b8446_iv -in id_rsa_travis.enc -out id_rsa_travis -d
     chmod 600 id_rsa_travis
     eval "$(ssh-agent -s)"
     ssh-add id_rsa_travis
