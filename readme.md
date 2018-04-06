@@ -54,6 +54,13 @@ For more examples see the [Javadoc](http://jontejj.github.io/jargo/javadoc/jargo
       <artifactId>common-test</artifactId>
       <version>0.4.2</version>
   </dependency>
+  
+# JDK compatiblity
+## JDK 6
+Version <= 0.4.1 (used Guava)
+## JDK 8
+From version 0.4.2 and onwards this library requires jdk 8 and Guava was removed as a dependency. This made this library even more lightweight (179K, no external dependencies). Especially useful as command line tools are often distributed, so the small file-size can be useful. If you want to go even further in reducing the filesize of your program, you can try out [Proguard](https://www.guardsquare.com/en/proguard)
+
 
 # Bugs/Questions
 [Stack Overflow](https://stackoverflow.com/tags/jargo)
