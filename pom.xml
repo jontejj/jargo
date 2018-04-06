@@ -128,7 +128,13 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>format</goal>
+							<goal>validate</goal>
+							<!-- Enable this if you want to format at compile time (don't commit 
+								with this goal enabled though). It's better to configure your code editor 
+								to be compliant with code-formatter.xml instead. If that's annoying, 
+								set up a maven profile to enable "format" and make sure to run mvn compile before 
+								commiting. -->
+							<!-- <goal>format</goal> -->
 						</goals>
 					</execution>
 				</executions>
