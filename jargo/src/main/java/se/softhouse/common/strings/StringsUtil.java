@@ -1,16 +1,14 @@
-/* Copyright 2013 Jonatan Jönsson
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Copyright 2013 Jonatan Jönsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package se.softhouse.common.strings;
 
@@ -67,7 +65,7 @@ public final class StringsUtil
 	}
 
 	/**
-	 * Returns a "       ^" string pointing at the position indicated by {@code indexToPointAt}
+	 * Returns a " ^" string pointing at the position indicated by {@code indexToPointAt}
 	 */
 	public static String pointingAtIndex(int indexToPointAt)
 	{
@@ -129,7 +127,8 @@ public final class StringsUtil
 	/**
 	 * <pre>
 	 * Returns a sorted {@link List} where the first entry is the {@link String} in {@code validOptions} that's closest in terms of
-	 * <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to {@code input}, or an empty list if no options within distance can be found.
+	 * <a href=
+	"http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a> to {@code input}, or an empty list if no options within distance can be found.
 	 *
 	 * For example when given "stats" as input and "status", "staging",
 	 * "stage" as validOptions, and 4 as maximumDistance, "status", "stage", "staging" is returned.
@@ -137,7 +136,6 @@ public final class StringsUtil
 	 * Only values with a distance less than or equal to {@code maximumDistance} will be included in the result.
 	 *
 	 * The returned list is <i>modifiable</i>.
-	 *
 	 * </pre>
 	 */
 	@Nonnull
@@ -157,8 +155,7 @@ public final class StringsUtil
 				closeMatches.add(new CloseMatch(validOption, distance));
 			}
 		}
-		return closeMatches.stream()
-				.sorted((l, r) -> l.measuredDistance - r.measuredDistance) //
+		return closeMatches.stream().sorted((l, r) -> l.measuredDistance - r.measuredDistance) //
 				.map((i) -> i.value) //
 				.collect(Collectors.toList());
 	}
@@ -188,7 +185,8 @@ public final class StringsUtil
 
 	/**
 	 * Returns the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein
-	 * distance</a> between {@code left} and {@code right}. If it's greater than maxDistance, maxDistance will be returned.
+	 * distance</a> between {@code left} and {@code right}. If it's greater than maxDistance,
+	 * maxDistance will be returned.
 	 *
 	 * @see #closestMatch(String, Iterable)
 	 */
@@ -207,7 +205,7 @@ public final class StringsUtil
 			return rightLength;
 		else if(rightLength == 0)
 			return leftLength;
-		else if(Math.abs(leftLength- rightLength) > maxDistance)
+		else if(Math.abs(leftLength - rightLength) > maxDistance)
 			return maxDistance;
 
 		int previousDistances[] = new int[leftLength + 1]; // 'previous' cost array, horizontally

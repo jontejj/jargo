@@ -1,16 +1,14 @@
-/* Copyright 2013 Jonatan Jönsson
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Copyright 2013 Jonatan Jönsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package se.softhouse.jargo;
 
@@ -118,7 +116,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <li>doesn't have any {@link #names(String...)}</li>
 	 * <li>has an empty {@link #description(String)}</li>
 	 * <li>isn't {@link #required()}</li>
-	 * <li>uses {@link StringParser#defaultValue()} on {@link #parser()} to produce default values</li>
+	 * <li>uses {@link StringParser#defaultValue()} on {@link #parser()} to produce default
+	 * values</li>
 	 * <li>uses {@link Object#toString()} to describe the default value</li>
 	 * <li>uses {@link StringParser#metaDescription()} on {@link #parser()} to produce meta
 	 * descriptions</li>
@@ -358,10 +357,12 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Sets a {@link Supplier} that can supply default values in the absence of this argument
 	 * </pre>
 	 *
-	 * <b>Note:</b> Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't called
+	 * <b>Note:</b> Even if {@link #limitTo(Predicate)} is used, the {@link Supplier#get()} isn't
+	 * called
 	 * until the default value is actually needed ({@link ParsedArguments#get(Argument)}. If the
 	 * default value is deemed non-allowed at that point an {@link IllegalStateException} is thrown.
-	 * Wrap your supplier with {@link Suppliers2#memoize(Supplier)} if you want to cache created values.
+	 * Wrap your supplier with {@link Suppliers2#memoize(Supplier)} if you want to cache created
+	 * values.
 	 *
 	 * @return this builder
 	 * @throws IllegalStateException if {@link #required()} has been called,

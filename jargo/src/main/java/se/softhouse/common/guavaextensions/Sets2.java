@@ -1,16 +1,14 @@
-/* Copyright 2017 Jonatan Jönsson
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Copyright 2017 Jonatan Jönsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package se.softhouse.common.guavaextensions;
 
@@ -25,7 +23,9 @@ import static se.softhouse.common.guavaextensions.Lists2.unmodifiableIterator;
 
 public final class Sets2
 {
-	private Sets2(){}
+	private Sets2()
+	{
+	}
 
 	/**
 	 * Returns an unmodifiable <b>view</b> of the difference of two sets. The
@@ -40,8 +40,7 @@ public final class Sets2
 		requireNonNull(set2, "set2");
 
 		final Predicate<Object> notInSet2 = Predicates2.<Object>in(set2).negate();
-		return new AbstractSet<E>()
-		{
+		return new AbstractSet<E>(){
 			@Override
 			public Iterator<E> iterator()
 			{
@@ -74,14 +73,14 @@ public final class Sets2
 	 * Iterating over the returned set iterates first over all the elements of
 	 * {@code set1}, then over each element of {@code set2}, in order, that is not
 	 * contained in {@code set1}.
-	 *
-	 * <b>Note:</b> for stable results, this method requires that both sets are based on the same equivalences
+	 * <b>Note:</b> for stable results, this method requires that both sets are based on the same
+	 * equivalences
 	 */
 	public static <E> Set<E> union(Set<? extends E> one, Set<? extends E> two)
 	{
-		return new AbstractSet<E>()
-		{
+		return new AbstractSet<E>(){
 			private final Set<? extends E> set2minus1 = difference(two, one);
+
 			@Override
 			public Iterator<E> iterator()
 			{

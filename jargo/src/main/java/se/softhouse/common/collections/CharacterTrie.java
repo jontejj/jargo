@@ -1,18 +1,18 @@
-/* Copyright 2013 Jonatan Jönsson
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Copyright 2013 Jonatan Jönsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package se.softhouse.common.collections;
+
+import static java.util.Objects.requireNonNull;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -28,24 +28,22 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * <pre>
  * Stores {@link String}s in a <a href="http://en.wikipedia.org/wiki/Trie">trie</a>.
  * The main purpose when using a structure like this is the methods
  * {@link #findLongestPrefix(CharSequence)} and {@link #getEntriesWithPrefix(CharSequence)}.
- * 
+ *
  * Neither <code>null</code> keys or <code>null</code> values are allowed because just like the
  * devil, they are evil.
- * 
+ *
  * If you're iterating over the whole trie more often than you do {@link #getEntriesWithPrefix(CharSequence) simple lookups}
  * you're probably better off using a {@link TreeMap}.
- * 
+ *
  * TODO(jontejj): Implement SortedMap instead of Map
+ * </pre>
  * 
  * @param <V> the type of values stored in the trie
- * </pre>
  */
 @NotThreadSafe
 public final class CharacterTrie<V> extends AbstractMap<String, V>
@@ -152,7 +150,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 
 		/**
 		 * Clear this entry from being a value
-		 * 
+		 *
 		 * @return true if this call had any effect
 		 */
 		private boolean unset()
@@ -247,7 +245,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		/**
 		 * Makes sure that a child that represents the given {@code childChar} is found in this
 		 * entry.
-		 * 
+		 *
 		 * @param childChar the character to create/get a child for
 		 * @return either the already existing child or a newly created one
 		 */
@@ -282,7 +280,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 		 * It starts by looking if it's a value itself, then it checks
 		 * the children and if nothing there then it walks back up and checks siblings.
 		 * (essentially a pre-order tree traversal)
-		 * 
+		 *
 		 * @param level the current level we're in (in the current stack)
 		 */
 		private Entry<V> successor(Entry<V> predecessor, CharSequence predecessorKey, int level, boolean isGoingDown)
@@ -486,7 +484,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 	/**
 	 * Returns the entry that shares the longest prefix with {@code key}, or null
 	 * if no such entry exists
-	 * 
+	 *
 	 * @see <a href="http://en.wikipedia.org/wiki/Longest_prefix_match">Longest_prefix_match</a>
 	 */
 	@CheckReturnValue
@@ -608,9 +606,7 @@ public final class CharacterTrie<V> extends AbstractMap<String, V>
 			if(lastReturned == null)
 				throw new IllegalStateException("You probably forgot to call next before calling remove");
 			if(removeEntry(lastReturned) == null)
-			{
 				throw new IllegalStateException("You probably forgot to call next before calling remove");
-			}
 			expectedModCount++;
 		}
 

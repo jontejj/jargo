@@ -1,16 +1,14 @@
-/* Copyright 2013 Jonatan Jönsson
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Copyright 2013 Jonatan Jönsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package se.softhouse.jargo;
 
@@ -50,7 +48,6 @@ import static se.softhouse.jargo.ArgumentExceptions.withMessage;
  * used by the {@link CommandLineParser} to parse strings (typically from the command line).
  * 
  * @param <T> the type of values this {@link Argument} is configured to parse
- * 
  * </pre>
  */
 @Immutable
@@ -337,6 +334,7 @@ public final class Argument<T>
 
 	static final Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = input -> input.parser().parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 
-	// TODO(jontejj): replace this with a comparator that uses the Usage.locale instead of Locale.ROOT?
+	// TODO(jontejj): replace this with a comparator that uses the Usage.locale instead of
+	// Locale.ROOT?
 	static final Comparator<Argument<?>> NAME_COMPARATOR = (lhs, rhs) -> lhs.sortingKey.compareTo(rhs.sortingKey);
 }
