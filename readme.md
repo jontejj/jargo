@@ -1,6 +1,6 @@
 # Jargo
 A tool to ease the handling of program arguments/options  
-[![Build Status](https://travis-ci.org/jontejj/jargo.png)](https://travis-ci.org/jontejj/jargo)  [Jenkins](https://jontejj.ci.cloudbees.com/job/jargo/)
+[![Build Status](https://travis-ci.org/jontejj/jargo.png)](https://travis-ci.org/jontejj/jargo)
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/se.softhouse/jargo/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/se.softhouse/jargo)
 
@@ -57,7 +57,9 @@ For more examples see the [Javadoc](http://jontejj.github.io/jargo/javadoc/jargo
 
 # Bugs/Questions
 [Stack Overflow](https://stackoverflow.com/tags/jargo)
+
 [Issues](https://github.com/jontejj/jargo/issues)  
+
 [QA forum](https://groups.google.com/forum/?fromgroups=&hl=en#!forum/jargo)
 
 # Rationale
