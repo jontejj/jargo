@@ -14,20 +14,24 @@
  */
 package se.softhouse.common.guavaextensions;
 
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.NullPointerTester.Visibility;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+import static se.softhouse.common.guavaextensions.Predicates2.alwaysFalse;
+import static se.softhouse.common.guavaextensions.Predicates2.alwaysTrue;
+import static se.softhouse.common.guavaextensions.Predicates2.and;
+import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-import static java.util.Arrays.asList;
-import static org.fest.assertions.Assertions.*;
-import static org.fest.assertions.Fail.fail;
-import static se.softhouse.common.guavaextensions.Predicates2.alwaysTrue;
-import static se.softhouse.common.guavaextensions.Predicates2.alwaysFalse;
-import static se.softhouse.common.guavaextensions.Predicates2.and;
-import static se.softhouse.common.guavaextensions.Predicates2.listPredicate;
+import org.junit.Test;
+
+import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
+
+import se.softhouse.common.guavaextensions.Predicates2.ObjectPredicates;
+import se.softhouse.common.testlib.EnumTester;
 
 /**
  * Tests for {@link Predicates2}
@@ -52,6 +56,15 @@ public class Predicates2Test
 	public void testListPredicate()
 	{
 		assertThat(listPredicate(ABOVE_ZERO).test(asList(1, 2, 3))).isTrue();
+	}
+
+	@Test
+	public void testThatAndPredicateIsUsingAnd()
+	{
+		assertThat(Predicates2.and(ABOVE_ZERO, ABOVE_ZERO).test(1)).isTrue();
+		assertThat(Predicates2.and(ABOVE_ZERO, ABOVE_ZERO.negate()).test(1)).isFalse();
+		assertThat(Predicates2.and(ABOVE_ZERO.negate(), ABOVE_ZERO.negate()).test(1)).isFalse();
+		assertThat(Predicates2.and(ABOVE_ZERO.negate(), ABOVE_ZERO).test(1)).isFalse();
 	}
 
 	@Test
@@ -105,5 +118,11 @@ public class Predicates2Test
 	public void testThatNullContractsAreFollowed() throws Exception
 	{
 		new NullPointerTester().testStaticMethods(Predicates2.class, Visibility.PACKAGE);
+	}
+
+	@Test
+	public void testThatAutomaticallyGeneratedMethodsBehave() throws Exception
+	{
+		EnumTester.testThatToStringIsCompatibleWithValueOfRegardlessOfVisibility(ObjectPredicates.class);
 	}
 }

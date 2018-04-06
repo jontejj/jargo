@@ -45,7 +45,8 @@ public final class Predicates2
 		return ObjectPredicates.ALWAYS_FALSE.withNarrowedType();
 	}
 
-	private enum ObjectPredicates implements Predicate<Object>
+	// Visible for testing
+	enum ObjectPredicates implements Predicate<Object>
 	{
 		ALWAYS_TRUE((i) -> true),
 		ALWAYS_FALSE((i) -> false);

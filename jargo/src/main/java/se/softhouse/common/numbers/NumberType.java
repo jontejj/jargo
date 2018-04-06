@@ -452,14 +452,11 @@ public abstract class NumberType<T extends Number>
 		@Override
 		void throwForOutOfRange(String input, Number result, Locale inLocale) throws IllegalArgumentException
 		{
-			if(result instanceof BigDecimal)
+			boolean hasDecimals = ((BigDecimal) result).scale() > 0;
+			if(hasDecimals)
 			{
-				boolean hasDecimals = ((BigDecimal) result).scale() > 0;
-				if(hasDecimals)
-				{
-					int decimalPosition = input.indexOf('.');
-					throw illegalArgument(formatError(input, inLocale, new ParsePosition(decimalPosition)));
-				}
+				int decimalPosition = input.indexOf('.');
+				throw illegalArgument(formatError(input, inLocale, new ParsePosition(decimalPosition)));
 			}
 		}
 
