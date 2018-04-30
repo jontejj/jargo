@@ -12,8 +12,24 @@
  */
 package se.softhouse.jargo.commands;
 
-import com.google.common.collect.Lists;
+import static java.util.Collections.emptyList;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
+import static se.softhouse.jargo.Arguments.command;
+import static se.softhouse.jargo.Arguments.stringArgument;
+import static se.softhouse.jargo.utils.Assertions2.assertThat;
+import static se.softhouse.jargo.utils.ExpectedTexts.expected;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
+
 import se.softhouse.common.guavaextensions.Predicates2;
 import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
@@ -29,20 +45,6 @@ import se.softhouse.jargo.commands.Build.BuildTarget;
 import se.softhouse.jargo.commands.Commit.Repository;
 import se.softhouse.jargo.commands.Commit.Revision;
 import se.softhouse.jargo.internal.Texts.UserErrors;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.fail;
-import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
-import static se.softhouse.jargo.Arguments.command;
-import static se.softhouse.jargo.Arguments.stringArgument;
-import static se.softhouse.jargo.utils.Assertions2.assertThat;
-import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 /**
  * Tests for subclassing {@link Command}
@@ -183,6 +185,14 @@ public class CommandTest
 		{
 			assertThat(expected).hasMessage("Unexpected argument: -verbose, previous argument: log");
 		}
+	}
+
+	@Test
+	public void testThatArgListWorksForCommand() throws Exception
+	{
+		CommandWithArguments command = new CommandWithArguments();
+		CommandLineParser.withCommands(command).parse("main", "c");
+		assertThat(CommandWithArguments.wasExecuted).isTrue();
 	}
 
 	@Test

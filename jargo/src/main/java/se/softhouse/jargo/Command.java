@@ -16,6 +16,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
@@ -115,6 +116,14 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	protected Command(Argument<?> ... commandArguments)
 	{
 		this.commandArguments = unmodifiableList(asList(commandArguments));
+	}
+
+	/**
+	 * @param commandArguments the arguments that this command supports.
+	 */
+	protected Command(List<Argument<?>> commandArguments)
+	{
+		this.commandArguments = Collections.unmodifiableList(commandArguments);
 	}
 
 	/**
