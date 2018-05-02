@@ -12,18 +12,11 @@
  */
 package se.softhouse.jargo;
 
-import se.softhouse.common.guavaextensions.Suppliers2;
-import se.softhouse.common.strings.Describable;
-import se.softhouse.common.strings.Describer;
-import se.softhouse.jargo.StringParsers.HelpParser;
-import se.softhouse.jargo.StringParsers.InternalStringParser;
-import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
-import se.softhouse.jargo.internal.Texts.UserErrors;
+import static java.util.Arrays.asList;
+import static se.softhouse.common.guavaextensions.Predicates2.alwaysTrue;
+import static se.softhouse.common.strings.Describables.format;
+import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import java.text.CollationKey;
 import java.text.Collator;
 import java.util.Arrays;
@@ -35,10 +28,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Arrays.asList;
-import static se.softhouse.common.guavaextensions.Predicates2.alwaysTrue;
-import static se.softhouse.common.strings.Describables.format;
-import static se.softhouse.jargo.ArgumentExceptions.withMessage;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+
+import se.softhouse.common.guavaextensions.Suppliers2;
+import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describer;
+import se.softhouse.jargo.StringParsers.HelpParser;
+import se.softhouse.jargo.StringParsers.InternalStringParser;
+import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
+import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**
  * <pre>

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -444,6 +445,54 @@ public final class StringParsers
 		public String toString()
 		{
 			return descriptionOfValidValues(Locale.US);
+		}
+	}
+
+	static final class TransformingParser<T, F> extends InternalStringParser<F>
+	{
+		private final Function<T, F> transformer;
+		private final InternalStringParser<T> firstParser;
+		private final Predicate<? super T> limiter;
+
+		TransformingParser(InternalStringParser<T> firstParser, Function<T, F> transformer, Predicate<? super T> limiter)
+		{
+			this.firstParser = firstParser;
+			this.transformer = transformer;
+			this.limiter = limiter;
+		}
+
+		@Override
+		F parse(ArgumentIterator arguments, F previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
+		{
+			T first = firstParser.parse(arguments, null, argumentSettings, locale);
+			if(!limiter.test(first))
+				throw withMessage(format(UserErrors.DISALLOWED_VALUE, first, argumentSettings.descriptionOfValidValues(locale)));
+			// transformer.apply(previousOccurance); Hmm...
+			return transformer.apply(first);
+		}
+
+		@Override
+		String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
+		{
+			if(limiter != Predicates2.alwaysTrue())
+			{
+				String attemptAtGoodDescription = limiter.toString();
+				if(!attemptAtGoodDescription.contains("$$Lambda$"))
+					return attemptAtGoodDescription;
+			}
+			return firstParser.descriptionOfValidValues(argumentSettings, locale);
+		}
+
+		@Override
+		String metaDescription(Argument<?> argumentSettings)
+		{
+			return firstParser.metaDescription(argumentSettings);
+		}
+
+		@Override
+		F defaultValue()
+		{
+			return transformer.apply(firstParser.defaultValue());
 		}
 	}
 

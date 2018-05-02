@@ -57,6 +57,7 @@ import se.softhouse.jargo.StringParsers.KeyValueParser;
 import se.softhouse.jargo.StringParsers.RepeatedArgumentParser;
 import se.softhouse.jargo.StringParsers.StringParserBridge;
 import se.softhouse.jargo.StringParsers.StringSplitterParser;
+import se.softhouse.jargo.StringParsers.TransformingParser;
 import se.softhouse.jargo.StringParsers.VariableArityParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -668,6 +669,26 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	public RepeatedArgumentBuilder<T> repeated()
 	{
 		return new RepeatedArgumentBuilder<T>(this);
+	}
+
+	/**
+	 * Makes it possible to chain together different transformation / map / conversion operations
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 * int size = Arguments.stringArgument("--foo").transform(String::length).parse("--foo", "abcd");
+	 * assertThat(size).isEqualTo(4);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param transformer the function that takes a value of the previous type (like String in the
+	 *            example), and converts it into another type of value
+	 * @return a new (more specific) builder
+	 */
+	@CheckReturnValue
+	public <F> TransformingArgumentBuilder<F> transform(Function<T, F> transformer)
+	{
+		return new TransformingArgumentBuilder<F>(this, transformer);
 	}
 
 	@Override
@@ -1288,5 +1309,70 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		{
 			throw new IllegalStateException("You can't use both splitWith and variableArity");
 		}
+	}
+
+	/**
+	 * An intermediate builder used by {@link #transform(Function)}. It's used to switch the {@code <T>}
+	 * argument of the previous builder to {@code <F>} and to indicate invalid call orders.
+	 * 
+	 * @param <F> The new type
+	 */
+	@NotThreadSafe
+	public static final class TransformingArgumentBuilder<F> extends InternalArgumentBuilder<TransformingArgumentBuilder<F>, F>
+	{
+		private <T> TransformingArgumentBuilder(final ArgumentBuilder<?, T> builder, final Function<T, F> transformer)
+		{
+			super(new TransformingParser<T, F>(builder.internalParser(), transformer, builder.limiter()));
+			copy(builder);
+			if(builder.defaultValueSupplier() != null)
+			{
+				defaultValueSupplier(Suppliers2.wrapWithPredicateAndTransform(builder.defaultValueSupplier(), transformer, builder.limiter()));
+			}
+			if(builder.defaultValueDescriber() != null)
+			{
+				defaultValueDescriber(new BeforeTransformationDescriber<>(builder.defaultValueSupplier(), builder.defaultValueDescriber()));
+			}
+		}
+
+		/**
+		 * @deprecated you can't use both {@link #transform(Function)} and {@link #arity(int)}
+		 */
+		@Deprecated
+		@Override
+		public ArityArgumentBuilder<F> arity(final int numberOfParameters)
+		{
+			throw new IllegalStateException("You can't use both transform and arity");
+		}
+
+		/**
+		 * @deprecated you can't use both {@link #transform(Function)} and {@link #variableArity()}
+		 */
+		@Deprecated
+		@Override
+		public ArityArgumentBuilder<F> variableArity()
+		{
+			throw new IllegalStateException("You can't use both transform and variableArity");
+		}
+	}
+
+	private static final class BeforeTransformationDescriber<F> implements Describer<Object>
+	{
+		private final Supplier<? extends F> valueProvider;
+		private final Describer<F> beforeDescriber;
+
+		BeforeTransformationDescriber(Supplier<? extends F> valueProvider, Describer<F> beforeDescriber)
+		{
+			this.valueProvider = valueProvider;
+			this.beforeDescriber = beforeDescriber;
+
+		}
+
+		@Override
+		public String describe(Object value, Locale inLocale)
+		{
+			F beforeValue = valueProvider.get();
+			return beforeDescriber.apply(beforeValue);
+		}
+
 	}
 }
