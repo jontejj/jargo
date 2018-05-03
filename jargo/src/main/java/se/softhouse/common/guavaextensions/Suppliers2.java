@@ -107,7 +107,8 @@ public final class Suppliers2
 
 	/**
 	 * @param origin the supplier that provides the original value to check and transform
-	 * @param transformer a function that will be used to transform the origin value to something else
+	 * @param transformer a function that will be used to transform the origin value to something
+	 *            else
 	 * @param predicate function that will be used to check for correctness
 	 * @return a wrapping {@link Supplier}
 	 */
@@ -126,9 +127,9 @@ public final class Suppliers2
 
 		private PredicatedAndTransformedSupplier(Supplier<? extends T> origin, Function<T, F> transformer, Predicate<? super T> predicate)
 		{
-			this.origin = origin;
-			this.transformer = transformer;
-			this.predicate = predicate;
+			this.origin = requireNonNull(origin);
+			this.transformer = requireNonNull(transformer);
+			this.predicate = requireNonNull(predicate);
 		}
 
 		@Override

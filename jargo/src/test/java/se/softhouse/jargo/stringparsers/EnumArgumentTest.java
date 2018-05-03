@@ -145,10 +145,9 @@ public class EnumArgumentTest
 	{
 		ONE;
 
-		@Override
-		public String toString()
-		{
-			throw new IllegalStateException("Nefarious behavior not avoided");
-		}
+	@Override
+	public String toString()
+	{
+		throw new IllegalStateException("Nefarious behavior not avoided");
 	}
-}
+}}

@@ -1312,7 +1312,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	}
 
 	/**
-	 * An intermediate builder used by {@link #transform(Function)}. It's used to switch the {@code <T>}
+	 * An intermediate builder used by {@link #transform(Function)}. It's used to switch the
+	 * {@code <T>}
 	 * argument of the previous builder to {@code <F>} and to indicate invalid call orders.
 	 * 
 	 * @param <F> The new type

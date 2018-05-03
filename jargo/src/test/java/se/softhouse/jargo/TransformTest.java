@@ -1,16 +1,14 @@
-/* Copyright 2018 jonatanjonsson
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+/*
+ * Copyright 2018 jonatanjonsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package se.softhouse.jargo;
 
@@ -20,6 +18,7 @@ import static org.fest.assertions.Fail.fail;
 import org.junit.Test;
 
 import se.softhouse.jargo.internal.Texts.UserErrors;
+import se.softhouse.jargo.limiters.ShortString;
 
 /**
  * Tests for {@link ArgumentBuilder#transform(java.util.function.Function)}
@@ -36,17 +35,18 @@ public class TransformTest
 	@Test
 	public void testThatStringCanBeLimitedAndThenTransformed() throws Exception
 	{
+		ShortString shortStrings = new ShortString();
 		try
 		{
-			Arguments.stringArgument("--foo").limitTo(str -> str.length() < 10).transform(String::length).parse("--foo", "abcdsdasdasdas");
+			Arguments.stringArgument("--foo").limitTo(shortStrings).transform(String::length).parse("--foo", "abcdsdasdasdas");
 			fail("abcdsdasdasdas should be rejected as it is longer than 10 chars");
 		}
 		catch(ArgumentException expected)
 		{
-			// TODO(joj): "any string", it could be described with a ArgumentBuilder#describeValidValues(...)
-			// method
+			// TODO(joj): "any string", it could be described with a
+			// ArgumentBuilder#describeValidValues(...) method
 			// as it's now the Predicate's toString needs to be overwritten
-			assertThat(expected).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, "abcdsdasdasdas", "any string"));
+			assertThat(expected).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, "abcdsdasdasdas", shortStrings));
 		}
 	}
 
@@ -55,7 +55,7 @@ public class TransformTest
 	{
 		Argument<Integer> tightInteger = Arguments.stringArgument("--foo").limitTo(str -> str.length() < 10) //
 				.transform(String::length) //
-				.limitTo((i) -> i >= 5).build();
+				.limitTo((i) -> i >= 5).defaultValue(6).build();
 		try
 		{
 			tightInteger.parse("--foo", "abcdsdasasdad");
@@ -63,6 +63,7 @@ public class TransformTest
 		}
 		catch(ArgumentException expected)
 		{
+			assertThat(expected.getMessage()).contains("'abcdsdasasdad' is not se.softhouse.jargo.TransformTest$$Lambda$");
 		}
 		try
 		{
@@ -96,12 +97,12 @@ public class TransformTest
 	{
 		try
 		{
-			Arguments.stringArgument("--foo").defaultValue("hej").limitTo(s -> s.length() < 3).transform(String::length).parse();
+			Arguments.stringArgument("--foo").defaultValue("hej-foo-bar-zoo").limitTo(new ShortString()).transform(String::length).parse();
 			fail("hej is not less than 3 chars");
 		}
 		catch(IllegalArgumentException expected)
 		{
-			assertThat(expected.getMessage()).startsWith("'hej' is not ");
+			assertThat(expected).hasMessage("'hej-foo-bar-zoo' is not a string of max 10 characters");
 		}
 	}
 

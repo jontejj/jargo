@@ -88,32 +88,35 @@ public final class StringParsers
 		 */
 		STRING
 		{
-			@Override
-			public String parse(String value, Locale locale) throws ArgumentException
-			{
-				return value;
-			}
-		};
 
-		// Put other StringParser<String> parsers here
+	@Override
+	public String parse(String value, Locale locale) throws ArgumentException
+	{
+		return value;
+	}
 
-		@Override
-		public String descriptionOfValidValues(Locale locale)
-		{
-			return "any string";
-		}
+	};
 
-		@Override
-		public String defaultValue()
-		{
-			return "";
-		}
+	// Put other StringParser<String> parsers here
 
-		@Override
-		public String metaDescription()
-		{
-			return "<string>";
-		}
+	@Override
+	public String descriptionOfValidValues(Locale locale)
+	{
+		return "any string";
+	}
+
+	@Override
+	public String defaultValue()
+	{
+		return "";
+	}
+
+	@Override
+	public String metaDescription()
+	{
+		return "<string>";
+	}
+
 	}
 
 	/**
@@ -456,9 +459,9 @@ public final class StringParsers
 
 		TransformingParser(InternalStringParser<T> firstParser, Function<T, F> transformer, Predicate<? super T> limiter)
 		{
-			this.firstParser = firstParser;
-			this.transformer = transformer;
-			this.limiter = limiter;
+			this.firstParser = requireNonNull(firstParser);
+			this.transformer = requireNonNull(transformer);
+			this.limiter = requireNonNull(limiter);
 		}
 
 		@Override
