@@ -15,6 +15,8 @@ package se.softhouse.jargo;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -119,5 +121,27 @@ public class TransformTest
 		int size = Arguments.stringArgument("--foo").arity(2).transform(list -> list.stream().map(String::length).reduce(0, Integer::sum))
 				.parse("--foo", "bar", "zooo");
 		assertThat(size).isEqualTo(7);
+	}
+
+	@Test
+	public void testThatVariableArityCanBeTransformed() throws Exception
+	{
+		int size = Arguments.stringArgument("--foo").variableArity().transform(list -> list.stream().map(String::length).reduce(0, Integer::sum))
+				.parse("--foo", "bar", "zooo", "punk");
+		assertThat(size).isEqualTo(11);
+	}
+
+	@Test
+	public void testThatArityCanBeUsedAfterTransform() throws Exception
+	{
+		List<Integer> sizes = Arguments.stringArgument("--foo").transform(String::length).arity(3).parse("--foo", "bar", "zooo", "punk");
+		assertThat(sizes).containsExactly(3, 4, 4);
+	}
+
+	@Test
+	public void testThatVariableArityCanBeUsedAfterTransform() throws Exception
+	{
+		List<Integer> sizes = Arguments.stringArgument("--foo").transform(String::length).variableArity().parse("--foo", "bar", "zooo", "punk");
+		assertThat(sizes).containsExactly(3, 4, 4);
 	}
 }

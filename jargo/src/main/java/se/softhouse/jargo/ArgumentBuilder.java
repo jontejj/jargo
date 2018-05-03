@@ -1334,26 +1334,6 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 				defaultValueDescriber(new BeforeTransformationDescriber<>(builder.defaultValueSupplier(), builder.defaultValueDescriber()));
 			}
 		}
-
-		/**
-		 * @deprecated you can't use both {@link #transform(Function)} and {@link #arity(int)}
-		 */
-		@Deprecated
-		@Override
-		public ArityArgumentBuilder<F> arity(final int numberOfParameters)
-		{
-			throw new IllegalStateException("You can't use both transform and arity");
-		}
-
-		/**
-		 * @deprecated you can't use both {@link #transform(Function)} and {@link #variableArity()}
-		 */
-		@Deprecated
-		@Override
-		public ArityArgumentBuilder<F> variableArity()
-		{
-			throw new IllegalStateException("You can't use both transform and variableArity");
-		}
 	}
 
 	private static final class BeforeTransformationDescriber<F> implements Describer<Object>
