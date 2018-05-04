@@ -110,7 +110,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.39">ParsedArguments</a>
+public final class <a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.41">ParsedArguments</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Holds parsed arguments for a <a href="../../../se/softhouse/jargo/CommandLineParser.html#parse-java.lang.String...-"><code>CommandLineParser.parse(String...)</code></a> invocation.
  Use <a href="../../../se/softhouse/jargo/ParsedArguments.html#get-se.softhouse.jargo.Argument-"><code>get(Argument)</code></a> to fetch a parsed command line value.</div>
@@ -186,7 +186,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>equals</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.93">equals</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.101">equals</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;other)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
@@ -202,7 +202,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <h4>get</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;&lt;T&gt;&nbsp;T&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.65">get</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;T&gt;&nbsp;argumentToFetch)</pre>
+public&nbsp;&lt;T&gt;&nbsp;T&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.73">get</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;T&gt;&nbsp;argumentToFetch)</pre>
 <div class="block">Returns the parsed value for the given <code>argumentToFetch</code>,
  if no value was given on the command line the default value is
  returned.</div>
@@ -218,7 +218,7 @@ public&nbsp;&lt;T&gt;&nbsp;T&nbsp;<a href="../../../src-html/se/softhouse/jargo/
 <ul class="blockList">
 <li class="blockList">
 <h4>hashCode</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.104">hashCode</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.112">hashCode</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -231,7 +231,7 @@ public&nbsp;&lt;T&gt;&nbsp;T&nbsp;<a href="../../../src-html/se/softhouse/jargo/
 <ul class="blockList">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.87">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.95">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -244,7 +244,7 @@ public&nbsp;&lt;T&gt;&nbsp;T&nbsp;<a href="../../../src-html/se/softhouse/jargo/
 <ul class="blockListLast">
 <li class="blockList">
 <h4>wasGiven</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.81">wasGiven</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;&nbsp;argument)</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/se/softhouse/jargo/ParsedArguments.html#line.89">wasGiven</a>(<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;?&gt;&nbsp;argument)</pre>
 <div class="block">Checks if an <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> was given in the command line arguments</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
