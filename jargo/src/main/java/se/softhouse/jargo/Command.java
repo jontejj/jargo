@@ -14,8 +14,10 @@ package se.softhouse.jargo;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -46,11 +48,8 @@ import se.softhouse.jargo.internal.Texts.UsageTexts;
  *
  * If you support several commands and a user enters several of them at the same
  * time they will be executed in the order given to {@link CommandLineParser#parse(String...)}.
- * If any {@link StringParser#parse(String, Locale) parse} errors occurs (for {@link Command#Command(Argument...) command arguments}) the {@link Command}
- * will not be executed. However, if given multiple commands and {@link StringParser#parse(String, Locale) parse errors} occurs,
- * all {@link Command}s given before the {@link Command} with {@link StringParser#parse(String, Locale) parse errors} will have been executed.
- * This is so because {@link Command#Command(Argument...) command arguments} are allowed to be dependent on earlier {@link Command}s being executed.
- * So it's recommended to let the user know when you've executed a {@link Command}.
+ * If any {@link StringParser#parse(String, Locale) parse} errors occurs (for {@link Command#Command(Argument...) command arguments}) no {@link Command}
+ * will be executed. So all arguments, for all commands given, are parsed before any execution occurs.
  *
  * <b>Mutability note:</b> although a {@link Command} should be {@link Immutable}
  * the objects it handles doesn't have to be. So repeated invocations of execute
@@ -127,6 +126,23 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	}
 
 	/**
+	 * Useful if your {@link Command} has subcommands that you'll want to pass into the
+	 * {@link Command#Command(List)} constructor
+	 * 
+	 * @param commands the subcommands
+	 * @return the subcommands as an argument list
+	 */
+	public static List<Argument<?>> subCommands(final Command ... commands)
+	{
+		List<Argument<?>> commandsAsArguments = new ArrayList<>(commands.length);
+		for(Command c : commands)
+		{
+			commandsAsArguments.add(command(c).build());
+		}
+		return commandsAsArguments;
+	}
+
+	/**
 	 * The name that triggers this command. Defaults to {@link Class#getSimpleName()} in lower
 	 * case. For several names override this with {@link ArgumentBuilder#names(String...)}
 	 */
@@ -172,7 +188,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 
 		ParsedArguments parsedArguments = parser().parse(arguments, locale);
 
-		arguments.rememberInvocationOfCommand(this, parsedArguments);
+		arguments.rememberInvocationOfCommand(this, parsedArguments, argumentSettings, commandArguments);
 
 		return parsedArguments;
 	}

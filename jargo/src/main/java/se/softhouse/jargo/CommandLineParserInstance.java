@@ -12,43 +12,10 @@
  */
 package se.softhouse.jargo;
 
-import se.softhouse.common.collections.CharacterTrie;
-import se.softhouse.common.guavaextensions.Lists2;
-import se.softhouse.common.strings.StringsUtil;
-import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
-import se.softhouse.jargo.StringParsers.InternalStringParser;
-import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
-import se.softhouse.jargo.internal.Texts.UsageTexts;
-import se.softhouse.jargo.internal.Texts.UserErrors;
-
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.annotation.concurrent.ThreadSafe;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import static java.util.Collections.emptySet;
 import static se.softhouse.common.guavaextensions.Lists2.size;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
 import static se.softhouse.common.guavaextensions.Preconditions2.check;
+import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
 import static se.softhouse.common.guavaextensions.Sets2.union;
 import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
@@ -63,6 +30,42 @@ import static se.softhouse.jargo.ArgumentExceptions.forUnallowedRepetitionArgume
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.ArgumentExceptions.wrapException;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
+
+import se.softhouse.common.collections.CharacterTrie;
+import se.softhouse.common.guavaextensions.Lists2;
+import se.softhouse.common.strings.StringsUtil;
+import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
+import se.softhouse.jargo.StringParsers.InternalStringParser;
+import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
+import se.softhouse.jargo.internal.Texts.UsageTexts;
+import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**
  * A snapshot view of a {@link CommandLineParser} configuration.
@@ -241,7 +244,7 @@ final class CommandLineParserInstance
 		}
 		if(!isCommandParser())
 		{
-			arguments.executeLastCommand();
+			arguments.executeAnyCommandsInTheOrderTheyWereReceived(holder);
 		}
 		return holder;
 	}
@@ -522,6 +525,26 @@ final class CommandLineParserInstance
 		return usage(locale()).toString();
 	}
 
+	private static final class CommandInvocation
+	{
+		private final Command command;
+		private final ParsedArguments args;
+		private final Argument<?> argumentSettingsForInvokedCommand;
+
+		CommandInvocation(Command command, ParsedArguments args, Argument<?> argumentSettingsForInvokedCommand)
+		{
+			this.command = command;
+			this.args = args;
+			this.argumentSettingsForInvokedCommand = argumentSettingsForInvokedCommand;
+		}
+
+		void execute(ParsedArguments rootArgs)
+		{
+			args.setRootArgs(rootArgs);
+			command.execute(args);
+		}
+	}
+
 	/**
 	 * Wraps a list of given arguments and remembers
 	 * which argument that is currently being parsed. Plays a key role in making
@@ -542,9 +565,8 @@ final class CommandLineParserInstance
 		private int currentArgumentIndex;
 		private boolean endOfOptionsReceived;
 
-		private int indexOfLastCommand = -1;
-		private Command lastCommandParsed;
-		private ParsedArguments argumentsToLastCommand;
+		private LinkedList<CommandInvocation> commandInvocations = new LinkedList<>();
+		private Optional<String> unfinishedCommand = Optional.empty();
 
 		/**
 		 * In case of {@link Command}s this may be the parser for a specific {@link Command} or just
@@ -582,35 +604,46 @@ final class CommandLineParserInstance
 
 		void rememberAsCommand()
 		{
-			executeLastCommand();
 			// The command has moved the index by 1 therefore the -1 to get the index of the
 			// commandName
-			indexOfLastCommand = currentArgumentIndex - 1;
+			unfinishedCommand = Optional.of(arguments.get(currentArgumentIndex - 1));
 		}
 
-		void rememberInvocationOfCommand(Command command, ParsedArguments argumentsToCommand)
+		void rememberInvocationOfCommand(Command command, ParsedArguments argumentsToCommand, Argument<?> argumentSettingsForInvokedCommand,
+				List<Argument<?>> commandArguments)
 		{
-			executeLastCommand();
-			lastCommandParsed = command;
-			this.argumentsToLastCommand = argumentsToCommand;
-		}
+			commandInvocations.add(new CommandInvocation(command, argumentsToCommand, argumentSettingsForInvokedCommand));
+			unfinishedCommand = Optional.empty();
 
-		void executeLastCommand()
-		{
-			if(lastCommandParsed != null)
+			for(Argument<?> possibleSubcommand : commandArguments)
 			{
-				lastCommandParsed.execute(argumentsToLastCommand);
-				lastCommandParsed = null;
+				for(CommandInvocation invocation : commandInvocations)
+				{
+
+					if(possibleSubcommand == invocation.argumentSettingsForInvokedCommand)
+					{
+						invocation.args.setRootArgs(argumentsToCommand);
+					}
+				}
+			}
+		}
+
+		void executeAnyCommandsInTheOrderTheyWereReceived(ParsedArguments rootArgs)
+		{
+			for(CommandInvocation invocation : commandInvocations)
+			{
+				invocation.execute(rootArgs);
 			}
 		}
 
 		/**
-		 * Returns any non-parsed arguments to the last command that was executed
+		 * Returns any non-parsed arguments to the last command that was to be executed
 		 */
 		Set<String> nonParsedArguments()
 		{
-			if(lastCommandParsed != null)
-				return argumentsToLastCommand.nonParsedArguments();
+			Iterator<CommandInvocation> commands = commandInvocations.descendingIterator();
+			if(commands.hasNext())
+				return commands.next().args.nonParsedArguments();
 			return emptySet();
 		}
 
@@ -621,7 +654,7 @@ final class CommandLineParserInstance
 		 */
 		String usedCommandName()
 		{
-			return arguments.get(indexOfLastCommand);
+			return unfinishedCommand.get();
 		}
 
 		static ArgumentIterator forArguments(Iterable<String> arguments, Map<String, Argument<?>> helpArguments)
