@@ -12,6 +12,9 @@
  */
 package se.softhouse.jargo.internal;
 
+import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static se.softhouse.common.strings.StringsUtil.TAB;
+
 import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
@@ -20,9 +23,6 @@ import se.softhouse.jargo.Command;
 import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.StringParser;
 import se.softhouse.jargo.StringParsers;
-
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
 
 /**
  * Contains {@link String#format(String, Object...)} ready strings.
@@ -280,6 +280,6 @@ public final class Texts
 		 * Parameter %s = the illegal argument that the {@link CommandLineParser} wasn't
 		 * configured to handle
 		 */
-		public static final String ILLEGAL_ARGUMENT = "%s was not found in this result at all. Did you perhaps forget to add it to withArguments(...)?";
+		public static final String ILLEGAL_ARGUMENT = "%s was not found in this result at all. Did you perhaps forget to add it to withArguments(...)? Another failure cause could be that you are expecting to access arguments to subcommands from a parent command, that is not enabled by default.";
 	}
 }
