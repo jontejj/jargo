@@ -243,6 +243,13 @@ public final class Texts
 		 * {@link ArgumentBuilder#variableArity()}
 		 */
 		public static final String SEVERAL_VARIABLE_ARITY_PARSERS = "Several unnamed arguments are configured to receive a variable arity of parameters: %s";
+
+		/**
+		 * Parameter %s = a list with all parameters that is configured with
+		 * {@link ArgumentBuilder#repeated()} and are {@link ArgumentBuilder#names(String...) indexed}
+		 */
+		public static final String INDEXED_AND_REPEATED_ARGUMENT = "Argument: %s is both indexed and repeated. If you expect more than one parameter, use arity(...) / variableArity() instead.";
+
 		/**
 		 * Parameter %s = a name that would cause ambiguous parsing
 		 */

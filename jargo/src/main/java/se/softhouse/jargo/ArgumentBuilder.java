@@ -27,11 +27,13 @@ import static se.softhouse.jargo.StringParsers.optionParser;
 import static se.softhouse.jargo.StringParsers.stringParser;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -793,6 +795,13 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			check(!name.contains(" "), "Detected a space in %s, argument names must not have spaces in them", name);
 		}
 	}
+	
+	@Nonnull Supplier<? extends T> defaultValueSupplierOrFromParser()
+	{
+		if(defaultValueSupplier != null)
+			return defaultValueSupplier;
+		return (Supplier<T>) internalParser()::defaultValue;
+	}
 
 	/**
 	 * @formatter.on
@@ -963,9 +972,9 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		}
 	}
 
-	private static class ListArgumentBuilder<BUILDER extends ListArgumentBuilder<BUILDER, T>, T> extends InternalArgumentBuilder<BUILDER, List<T>>
+	public static class ListArgumentBuilder<BUILDER extends ListArgumentBuilder<BUILDER, T>, T> extends InternalArgumentBuilder<BUILDER, List<T>>
 	{
-		ListArgumentBuilder(InternalStringParser<List<T>> parser)
+		private ListArgumentBuilder(InternalStringParser<List<T>> parser)
 		{
 			super(parser);
 		}
@@ -983,6 +992,17 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			{
 				defaultValueDescriber(Describers.listDescriber(builder.defaultValueDescriber));
 			}
+		}
+
+		/**
+		 * Transforms this argument from a {@link List} to a {@link Set}. Thereby removing any duplicate values, given that
+		 * {@link Object#equals(Object)} and {@link Object#hashCode()} has been implemented correctly by the element type.
+		 * 
+		 * @return a {@link se.softhouse.jargo.ArgumentBuilder.TransformingArgumentBuilder} that you can continue to configure
+		 */
+		public TransformingArgumentBuilder<Set<T>> unique()
+		{
+			return transform(list -> (Set<T>) new HashSet<>(list)).finalizeWith(Functions2.<T>unmodifiableSet());
 		}
 	}
 
@@ -1325,13 +1345,13 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		{
 			super(new TransformingParser<T, F>(builder.internalParser(), transformer, builder.limiter()));
 			copy(builder);
-			if(builder.defaultValueSupplier() != null)
-			{
-				defaultValueSupplier(Suppliers2.wrapWithPredicateAndTransform(builder.defaultValueSupplier(), transformer, builder.limiter()));
-			}
+
+			Supplier<? extends T> defaultValueSupplier = builder.defaultValueSupplierOrFromParser();
+			defaultValueSupplier(Suppliers2.wrapWithPredicateAndTransform(defaultValueSupplier, transformer, builder.limiter()));
+
 			if(builder.defaultValueDescriber() != null)
 			{
-				defaultValueDescriber(new BeforeTransformationDescriber<>(builder.defaultValueSupplier(), builder.defaultValueDescriber()));
+				defaultValueDescriber(new BeforeTransformationDescriber<>(defaultValueSupplier, builder.defaultValueDescriber()));
 			}
 		}
 	}
@@ -1343,9 +1363,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 
 		BeforeTransformationDescriber(Supplier<? extends F> valueProvider, Describer<F> beforeDescriber)
 		{
-			this.valueProvider = valueProvider;
-			this.beforeDescriber = beforeDescriber;
-
+			this.valueProvider = requireNonNull(valueProvider);
+			this.beforeDescriber = requireNonNull(beforeDescriber);
 		}
 
 		@Override
@@ -1354,6 +1373,5 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			F beforeValue = valueProvider.get();
 			return beforeDescriber.apply(beforeValue);
 		}
-
 	}
 }

@@ -99,14 +99,7 @@ public final class Argument<T>
 
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
-		if(builder.defaultValueSupplier() != null)
-		{
-			this.defaultValue = builder.defaultValueSupplier();
-		}
-		else
-		{
-			this.defaultValue = (Supplier<T>) parser::defaultValue;
-		}
+		this.defaultValue = builder.defaultValueSupplierOrFromParser();
 
 		// Fail-fast for invalid default values that are created already
 		if(Suppliers2.isSuppliedAlready(defaultValue))
@@ -332,6 +325,8 @@ public final class Argument<T>
 	static final Predicate<Argument<?>> IS_REQUIRED = Argument::isRequired;
 
 	static final Predicate<Argument<?>> IS_VISIBLE = input -> !input.hideFromUsage;
+
+	static final Predicate<Argument<?>> IS_REPEATED = input -> input.isAllowedToRepeat;
 
 	static final Predicate<Argument<?>> IS_OF_VARIABLE_ARITY = input -> input.parser().parameterArity() == ParameterArity.VARIABLE_AMOUNT;
 

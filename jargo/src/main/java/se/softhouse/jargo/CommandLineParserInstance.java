@@ -20,6 +20,7 @@ import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.common.strings.StringsUtil.startsWithAndHasMore;
 import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
+import static se.softhouse.jargo.Argument.IS_REPEATED;
 import static se.softhouse.jargo.Argument.IS_REQUIRED;
 import static se.softhouse.jargo.Argument.ParameterArity.NO_ARGUMENTS;
 import static se.softhouse.jargo.ArgumentBuilder.DEFAULT_SEPARATOR;
@@ -118,6 +119,7 @@ final class CommandLineParserInstance
 		verifyThatIndexedAndRequiredArgumentsWasGivenBeforeAnyOptionalArguments();
 		verifyUniqueMetasForRequiredAndIndexedArguments();
 		verifyThatOnlyOneArgumentIsOfVariableArity();
+		verifyThatNoIndexedArgumentIsRepeated();
 	}
 
 	CommandLineParserInstance(Iterable<Argument<?>> argumentDefinitions)
@@ -209,6 +211,12 @@ final class CommandLineParserInstance
 	{
 		Collection<Argument<?>> indexedVariableArityArguments = indexedArguments.stream().filter(IS_OF_VARIABLE_ARITY).collect(Collectors.toList());
 		check(indexedVariableArityArguments.size() <= 1, ProgrammaticErrors.SEVERAL_VARIABLE_ARITY_PARSERS, indexedVariableArityArguments);
+	}
+
+	private void verifyThatNoIndexedArgumentIsRepeated()
+	{
+		Collection<Argument<?>> indexedRepeatedArguments = indexedArguments.stream().filter(IS_REPEATED).collect(Collectors.toList());
+		check(indexedRepeatedArguments.isEmpty(), ProgrammaticErrors.INDEXED_AND_REPEATED_ARGUMENT, indexedRepeatedArguments);
 	}
 
 	@Nonnull
