@@ -128,25 +128,24 @@ public class CommandTest
 	/**
 	 * An alternative to {@link Command} that is based on interfaces instead
 	 */
-	public enum Service implements Runnable, Describable
+	public enum Service implements Runnable,Describable
 	{
 		START
 		{
 
-			@Override
+	@Override
 			public void run()
 			{
 				didStart = true;
 			}
 
-			@Override
-			public String description()
-			{
-				return "Starts the service";
-			}
-
-		};
+	@Override
+	public String description()
+	{
+		return "Starts the service";
 	}
+
+	};}
 
 	@Test
 	public void testMapOfCommands() throws Exception

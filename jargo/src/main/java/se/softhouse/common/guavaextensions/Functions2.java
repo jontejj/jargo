@@ -157,18 +157,7 @@ public final class Functions2
 	@Nonnull
 	public static <E> Function<Set<E>, Set<E>> unmodifiableSet()
 	{
-		return new UnmodifiableSetMaker<E>();
-	}
-
-	private static final class UnmodifiableSetMaker<E> implements Function<Set<E>, Set<E>>
-	{
-		@Override
-		public Set<E> apply(Set<E> value)
-		{
-			if(value == null)
-				return null;
-			return Collections.unmodifiableSet(value);
-		}
+		return s -> Collections.unmodifiableSet(s);
 	}
 
 	/**

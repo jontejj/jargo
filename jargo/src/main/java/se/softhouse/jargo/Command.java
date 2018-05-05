@@ -229,7 +229,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 	}
 
 	@Override
-	final String metaDescription(Argument<?> argumentSettings)
+	String metaDescription(Argument<?> argumentSettings)
 	{
 		return "";
 	}
