@@ -16,7 +16,6 @@ import org.junit.Test;
 import se.softhouse.common.numbers.NumberType;
 import se.softhouse.common.testlib.EnumTester;
 import se.softhouse.jargo.Argument.ParameterArity;
-import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.StringStringParser;
 import se.softhouse.jargo.Usage.Row;
 import se.softhouse.jargo.commands.Build;

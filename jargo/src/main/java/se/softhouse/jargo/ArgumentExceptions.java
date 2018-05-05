@@ -26,7 +26,6 @@ import javax.annotation.concurrent.Immutable;
 import se.softhouse.common.strings.Describable;
 import se.softhouse.common.strings.Describables;
 import se.softhouse.common.strings.Describables.SerializableDescription;
-import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**

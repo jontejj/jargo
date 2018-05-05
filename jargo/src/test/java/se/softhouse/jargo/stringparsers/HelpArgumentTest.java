@@ -199,4 +199,6 @@ public class HelpArgumentTest
 			assertThat(expected.getMessage()).isEqualTo("-h is handled by several arguments");
 		}
 	}
+
+	// TODO(jontejj): test that end of options overrides help
 }

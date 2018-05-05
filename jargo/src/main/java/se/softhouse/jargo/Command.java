@@ -29,7 +29,6 @@ import javax.annotation.concurrent.Immutable;
 
 import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
-import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
@@ -185,7 +184,8 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 			Locale locale) throws ArgumentException
 	{
 		arguments.rememberAsCommand();
-
+		if(previousOccurance != null)
+			return resumeParsing(arguments, previousOccurance, locale);
 		ParsedArguments parsedArguments = parser().parse(arguments, locale);
 
 		arguments.rememberInvocationOfCommand(this, parsedArguments, argumentSettings, commandArguments);
@@ -193,10 +193,18 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 		return parsedArguments;
 	}
 
+	final ParsedArguments resumeParsing(final ArgumentIterator arguments, final ParsedArguments previousOccurance, Locale locale)
+			throws ArgumentException
+	{
+		ParsedArguments result = parser().parseArguments(previousOccurance, arguments, locale);
+		arguments.temporaryRepitionAllowedForCommand = false;
+		return result;
+	}
+
 	/**
 	 * The parser for parsing the {@link Argument}s passed to {@link Command#Command(Argument...)}
 	 */
-	private CommandLineParserInstance parser()
+	CommandLineParserInstance parser()
 	{
 		return commandArgumentParser.get();
 	}
