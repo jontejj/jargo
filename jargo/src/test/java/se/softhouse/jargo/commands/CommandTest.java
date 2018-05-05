@@ -821,6 +821,4 @@ public class CommandTest
 
 		}
 	}
-
-	// TODO(jontejj): test option flags with subcommands
 }
