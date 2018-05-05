@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -88,33 +89,33 @@ public final class StringParsers
 		STRING
 		{
 
-	@Override
-	public String parse(String value, Locale locale) throws ArgumentException
-	{
-		return value;
-	}
+			@Override
+			public String parse(String value, Locale locale) throws ArgumentException
+			{
+				return value;
+			}
 
-	};
+		};
 
-	// Put other StringParser<String> parsers here
+		// Put other StringParser<String> parsers here
 
-	@Override
-	public String descriptionOfValidValues(Locale locale)
-	{
-		return "any string";
-	}
+		@Override
+		public String descriptionOfValidValues(Locale locale)
+		{
+			return "any string";
+		}
 
-	@Override
-	public String defaultValue()
-	{
-		return "";
-	}
+		@Override
+		public String defaultValue()
+		{
+			return "";
+		}
 
-	@Override
-	public String metaDescription()
-	{
-		return "<string>";
-	}
+		@Override
+		public String metaDescription()
+		{
+			return "<string>";
+		}
 
 	}
 
@@ -463,14 +464,21 @@ public final class StringParsers
 			this.limiter = requireNonNull(limiter);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		F parse(ArgumentIterator arguments, F previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
 		{
 			T first = firstParser.parse(arguments, null, argumentSettings, locale);
 			if(!limiter.test(first))
 				throw withMessage(format(UserErrors.DISALLOWED_VALUE, first, argumentSettings.descriptionOfValidValues(locale)));
-			// transformer.apply(previousOccurance); Hmm...
-			return transformer.apply(first);
+
+			F result = transformer.apply(first);
+			if(previousOccurance instanceof Collection && result instanceof Collection && argumentSettings.isAllowedToRepeat())
+			{
+				((Collection<Object>) previousOccurance).addAll((Collection<Object>) result);
+				return previousOccurance;
+			}
+			return result;
 		}
 
 		@Override
@@ -486,6 +494,18 @@ public final class StringParsers
 		}
 
 		@Override
+		String metaDescriptionInLeftColumn(Argument<?> argumentSettings)
+		{
+			return firstParser.metaDescriptionInLeftColumn(argumentSettings);
+		}
+
+		@Override
+		String metaDescriptionInRightColumn(Argument<?> argumentSettings)
+		{
+			return firstParser.metaDescriptionInRightColumn(argumentSettings);
+		}
+
+		@Override
 		String metaDescription(Argument<?> argumentSettings)
 		{
 			return firstParser.metaDescription(argumentSettings);
@@ -495,6 +515,12 @@ public final class StringParsers
 		F defaultValue()
 		{
 			return transformer.apply(firstParser.defaultValue());
+		}
+
+		@Override
+		ParameterArity parameterArity()
+		{
+			return firstParser.parameterArity();
 		}
 	}
 

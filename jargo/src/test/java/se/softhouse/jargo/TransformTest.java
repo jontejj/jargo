@@ -14,10 +14,13 @@ package se.softhouse.jargo;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.softhouse.jargo.Arguments.integerArgument;
 
 import java.util.List;
 
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import se.softhouse.jargo.limiters.ShortString;
@@ -144,4 +147,15 @@ public class TransformTest
 		List<Integer> sizes = Arguments.stringArgument("--foo").transform(String::length).variableArity().parse("--foo", "bar", "zooo", "punk");
 		assertThat(sizes).containsExactly(3, 4, 4);
 	}
+
+	@Test
+	public void testThatDefaultValueIsCopiedWhenTransformIsRequested() throws Exception
+	{
+		Integer size = integerArgument("--trans").variableArity().transform(l -> l.size()).parse();
+		assertThat(size).isEqualTo(0);
+		size = integerArgument("--trans").variableArity().defaultValue(ImmutableList.of(3)).transform(l -> l.size()).parse();
+		assertThat(size).isEqualTo(1);
+	}
+
+	// TODO(jontejj): test to transform with co-covariant types
 }
