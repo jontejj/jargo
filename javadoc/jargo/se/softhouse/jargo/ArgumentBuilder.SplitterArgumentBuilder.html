@@ -71,7 +71,7 @@
 <li><a href="#nested.classes.inherited.from.class.se.softhouse.jargo.ArgumentBuilder">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.se.softhouse.jargo.ArgumentBuilder.InternalArgumentBuilder">Method</a></li>
+<li><a href="#methods.inherited.from.class.se.softhouse.jargo.ArgumentBuilder.ListArgumentBuilder">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
@@ -97,7 +97,12 @@
 <li><a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">se.softhouse.jargo.ArgumentBuilder</a>&lt;BUILDER,T&gt;</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">se.softhouse.jargo.ArgumentBuilder.ListArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;T&gt;,T&gt;</li>
+<li>
+<ul class="inheritance">
 <li>se.softhouse.jargo.ArgumentBuilder.SplitterArgumentBuilder&lt;T&gt;</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -113,8 +118,8 @@
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.NotThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@NotThreadSafe</a>
-public static final class <a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.1284">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;T&gt;
-extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a>&lt;BUILDER,T&gt;</pre>
+public static final class <a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.1304">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;T&gt;
+extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;T&gt;,T&gt;</pre>
 <div class="block">An intermediate builder used by <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#splitWith-java.lang.String-"><code>ArgumentBuilder.splitWith(String)</code></a>. It's mainly used to switch the T
  argument of the previous builder to List&lt;T&gt; and to indicate invalid call orders.</div>
 </li>
@@ -134,7 +139,7 @@ extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class 
 <!--   -->
 </a>
 <h3>Nested classes/interfaces inherited from class&nbsp;se.softhouse.jargo.<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a></h3>
-<code><a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="type parameter in ArgumentBuilder.ArityArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.CommandBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="type parameter in ArgumentBuilder.DefaultArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="type parameter in ArgumentBuilder.MapArgumentBuilder">K</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="type parameter in ArgumentBuilder.MapArgumentBuilder">V</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.OptionArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.OptionArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="type parameter in ArgumentBuilder.RepeatedArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="type parameter in ArgumentBuilder.SplitterArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="type parameter in ArgumentBuilder.TransformingArgumentBuilder">F</a>&gt;</code></li>
+<code><a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="type parameter in ArgumentBuilder.ArityArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.CommandBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="type parameter in ArgumentBuilder.DefaultArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">BUILDER</a> extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">BUILDER</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">T</a>&gt;,<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="type parameter in ArgumentBuilder.MapArgumentBuilder">K</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="type parameter in ArgumentBuilder.MapArgumentBuilder">V</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.OptionArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.OptionArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="type parameter in ArgumentBuilder.RepeatedArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="type parameter in ArgumentBuilder.SplitterArgumentBuilder">T</a>&gt;, <a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="type parameter in ArgumentBuilder.TransformingArgumentBuilder">F</a>&gt;</code></li>
 </ul>
 </li>
 </ul>
@@ -144,6 +149,13 @@ extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class 
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.se.softhouse.jargo.ArgumentBuilder.ListArgumentBuilder">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;se.softhouse.jargo.<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a></h3>
+<code><a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html#unique--">unique</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.se.softhouse.jargo.ArgumentBuilder">
 <!--   -->
@@ -214,7 +226,7 @@ extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class 
 <li><a href="#nested.classes.inherited.from.class.se.softhouse.jargo.ArgumentBuilder">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.se.softhouse.jargo.ArgumentBuilder.InternalArgumentBuilder">Method</a></li>
+<li><a href="#methods.inherited.from.class.se.softhouse.jargo.ArgumentBuilder.ListArgumentBuilder">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>

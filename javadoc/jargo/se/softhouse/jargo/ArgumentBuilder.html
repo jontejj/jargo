@@ -120,12 +120,12 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.CommandBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.OptionArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.OptionArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a></dd>
+<dd><a href="../../../se/softhouse/jargo/ArgumentBuilder.CommandBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.CommandBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.DefaultArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.DefaultArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.OptionArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.OptionArgumentBuilder</a>, <a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a></dd>
 </dl>
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.NotThreadSafe.html?is-external=true" title="class or interface in javax.annotation">@NotThreadSafe</a>
-public abstract class <a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.88">ArgumentBuilder</a>&lt;SELF extends ArgumentBuilder&lt;SELF,T&gt;,T&gt;
+public abstract class <a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.90">ArgumentBuilder</a>&lt;SELF extends ArgumentBuilder&lt;SELF,T&gt;,T&gt;
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block"><pre>
  Responsible for configuring and building <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> instances.
@@ -177,29 +177,33 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">BUILDER</a> extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ListArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">BUILDER</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">T</a>&gt;,<a href="../../../se/softhouse/jargo/ArgumentBuilder.ListArgumentBuilder.html" title="type parameter in ArgumentBuilder.ListArgumentBuilder">T</a>&gt;</span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="type parameter in ArgumentBuilder.MapArgumentBuilder">K</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="type parameter in ArgumentBuilder.MapArgumentBuilder">V</a>&gt;</span></code>
 <div class="block">An intermediate builder used by <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#asPropertyMap--"><code>asPropertyMap()</code></a>.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/ArgumentBuilder.OptionArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.OptionArgumentBuilder</a></span></code>
 <div class="block">An intermediate builder used by <a href="../../../se/softhouse/jargo/Arguments.html#optionArgument-java.lang.String-java.lang.String...-"><code>Arguments.optionArgument(String, String...)</code></a></div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="type parameter in ArgumentBuilder.RepeatedArgumentBuilder">T</a>&gt;</span></code>
 <div class="block">An intermediate builder used by <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#repeated--"><code>repeated()</code></a>.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="type parameter in ArgumentBuilder.SplitterArgumentBuilder">T</a>&gt;</span></code>
 <div class="block">An intermediate builder used by <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#splitWith-java.lang.String-"><code>splitWith(String)</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="type parameter in ArgumentBuilder.TransformingArgumentBuilder">F</a>&gt;</span></code>
 <div class="block">An intermediate builder used by <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#transform-java.util.function.Function-"><code>transform(Function)</code></a>.</div>
@@ -478,7 +482,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ArgumentBuilder</h4>
-<pre>protected&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.129">ArgumentBuilder</a>()</pre>
+<pre>protected&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.131">ArgumentBuilder</a>()</pre>
 <div class="block">Creates a default <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo"><code>ArgumentBuilder</code></a> that produces arguments that:
  <ul>
  <li>doesn't have any <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#names-java.lang.String...-"><code>names(String...)</code></a></li>
@@ -509,7 +513,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <li class="blockList">
 <h4>arity</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.623">arity</a>(int&nbsp;numberOfParameters)</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.625">arity</a>(int&nbsp;numberOfParameters)</pre>
 <div class="block"><pre>
  Uses this argument to parse values but assumes that <code> numberOfParameters</code> of the
  following parameters are of the same type.
@@ -543,7 +547,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBu
 <li class="blockList">
 <h4>asKeyValuesWithKeyParser</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public final&nbsp;&lt;K&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;K,<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.546">asKeyValuesWithKeyParser</a>(<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;K&gt;&nbsp;keyParser)</pre>
+public final&nbsp;&lt;K&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;K,<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.548">asKeyValuesWithKeyParser</a>(<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;K&gt;&nbsp;keyParser)</pre>
 <div class="block"><pre>
  Makes this argument handle properties like arguments:
  -Dproperty_name=value
@@ -578,7 +582,7 @@ public final&nbsp;&lt;K&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBu
 <li class="blockList">
 <h4>asPropertyMap</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.515">asPropertyMap</a>()</pre>
+public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.MapArgumentBuilder</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.517">asPropertyMap</a>()</pre>
 <div class="block"><pre>
  Makes this argument handle "property like" arguments:
  -Dproperty_name=value
@@ -610,7 +614,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.MapArgume
 <h4>build</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.159">build</a>()</pre>
+public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo">Argument</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.161">build</a>()</pre>
 <div class="block">Returns an <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation"><code>Immutable</code></a> <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> which can be passed to
  <a href="../../../se/softhouse/jargo/CommandLineParser.html#withArguments-se.softhouse.jargo.Argument...-"><code>CommandLineParser.withArguments(Argument...)</code></a> <br>
  When the parsing is done the parsed value for this
@@ -630,7 +634,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>defaultValue</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.349">defaultValue</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.351">defaultValue</a>(<a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
                          <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&nbsp;value)</pre>
 <div class="block"><pre>
  Sets a default value to use for this argument. Overrides <a href="../../../se/softhouse/jargo/StringParser.html#defaultValue--"><code>StringParser.defaultValue()</code></a> which is used by default.
@@ -657,7 +661,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>defaultValueDescriber</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.400">defaultValueDescriber</a>(<a href="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;? super <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;describer)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.402">defaultValueDescriber</a>(<a href="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings">Describer</a>&lt;? super <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;describer)</pre>
 <div class="block"><a href="../../../se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a> version of <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValueDescription-java.lang.String-"><code>defaultValueDescription(String)</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -673,7 +677,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>defaultValueDescription</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.388">defaultValueDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aDescription)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.390">defaultValueDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aDescription)</pre>
 <div class="block">Provides a way to give the usage texts a better explanation of a default
  value than <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a> provides. Always prints <code>aDescription</code> regardless
  of what the default value is.</div>
@@ -693,7 +697,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>defaultValueSupplier</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.372">defaultValueSupplier</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;? extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;aDefaultValueSupplier)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.374">defaultValueSupplier</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;? extends <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;aDefaultValueSupplier)</pre>
 <div class="block"><pre>
  Sets a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function"><code>Supplier</code></a> that can supply default values in the absence of this argument
  </pre>
@@ -719,7 +723,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>description</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.302">description</a>(<a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;theDescription)</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.304">description</a>(<a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;theDescription)</pre>
 <div class="block"><pre>
  <a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a> version of <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#description-java.lang.String-"><code>description(String)</code></a>.
  &#64;return this builder
@@ -732,7 +736,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>description</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.290">description</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;theDescription)</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.292">description</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;theDescription)</pre>
 <div class="block"><pre>
  Sets <code> theDescription</code> of what this argument does/means. Printed with
  <a href="../../../se/softhouse/jargo/CommandLineParser.html#usage--"><code>CommandLineParser.usage()</code></a>.
@@ -751,7 +755,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>hideFromUsage</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.444">hideFromUsage</a>()</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.446">hideFromUsage</a>()</pre>
 <div class="block">Hides this argument so that it's not displayed in the usage texts.<br>
  It's recommended that hidden arguments have a reasonable <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#defaultValue-T-"><code>defaultValue(Object)</code></a> and
  aren't <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#required--"><code>required()</code></a>, in fact this is recommended for all arguments.</div>
@@ -767,7 +771,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>ignoreCase</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.272">ignoreCase</a>()</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.274">ignoreCase</a>()</pre>
 <div class="block">Ignores the case of the argument names set by <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#names-java.lang.String...-"><code>names(String...)</code></a></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -781,7 +785,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>limitTo</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.487">limitTo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;aLimiter)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.489">limitTo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function">Predicate</a>&lt;? super <a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;aLimiter)</pre>
 <div class="block"><pre>
  Limits values parsed so that they conform to some specific rule.
  Only values for which <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true#test-T-" title="class or interface in java.util.function"><code>Predicate.test(Object)</code></a> returns true, will be accepted.
@@ -814,7 +818,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>metaDescription</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.430">metaDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aMetaDescription)</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.432">metaDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aMetaDescription)</pre>
 <div class="block"><pre>
  By default <a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo"><code>StringParser</code></a>s provides a meta description (by implementing <a href="../../../se/softhouse/jargo/StringParser.html#metaDescription--"><code>StringParser.metaDescription()</code></a>
  that describes the type of data they expect. For instance, if you're writing a music player,
@@ -845,7 +849,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>names</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.260">names</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;argumentNames)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.262">names</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;argumentNames)</pre>
 <div class="block">Works just like <a href="../../../se/softhouse/jargo/ArgumentBuilder.html#names-java.lang.String...-"><code>names(String...)</code></a> but it takes an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang"><code>Iterable</code></a> instead.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -861,7 +865,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <ul class="blockList">
 <li class="blockList">
 <h4>names</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.247">names</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;argumentNames)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.249">names</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;argumentNames)</pre>
 <div class="block">Specifies the argument names that triggers the argument being built. As commands sometimes
  gets long and hard to understand it's recommended to also support long named arguments,
  making the commands even longer but more readable instead <br></div>
@@ -888,7 +892,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/Argument.html" title="cla
 <li class="blockList">
 <h4>parse</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nullable.html?is-external=true" title="class or interface in javax.annotation">@Nullable</a>
-public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.189">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)
+public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.191">parse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;actualArguments)
                         throws <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a></pre>
 <div class="block"><pre>
  Parses command line arguments and returns the value of the argument built
@@ -925,7 +929,7 @@ public final&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" tit
 <li class="blockList">
 <h4>parser</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.219">parser</a>()</pre>
+protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.221">parser</a>()</pre>
 <div class="block"><pre>
  Returns a customized parser that the <a href="../../../se/softhouse/jargo/Argument.html" title="class in se.softhouse.jargo"><code>Argument</code></a> will use to parse values.
 
@@ -947,7 +951,7 @@ protected abstract&nbsp;<a href="../../../se/softhouse/jargo/StringParser.html" 
 <li class="blockList">
 <h4>repeated</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.669">repeated</a>()</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.RepeatedArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.671">repeated</a>()</pre>
 <div class="block">Makes it possible to enter several values for the same argument. Such as this:
 
  <pre class="prettyprint">
@@ -993,7 +997,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumen
 <ul class="blockList">
 <li class="blockList">
 <h4>required</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.326">required</a>()</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.328">required</a>()</pre>
 <div class="block"><pre>
  Makes <a href="../../../se/softhouse/jargo/CommandLineParser.html#parse-java.lang.String...-"><code>CommandLineParser.parse(String...)</code></a> throw
  <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a> if this argument isn't given.
@@ -1021,7 +1025,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumen
 <ul class="blockList">
 <li class="blockList">
 <h4>separator</h4>
-<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.457">separator</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aSeparator)</pre>
+<pre>public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">SELF</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.459">separator</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;aSeparator)</pre>
 <div class="block">For instance, "=" in --author=jjonsson</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1039,7 +1043,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.RepeatedArgumen
 <li class="blockList">
 <h4>splitWith</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.565">splitWith</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.SplitterArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.567">splitWith</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;valueSeparator)</pre>
 <div class="block"><pre>
  When given a "," this allows for
  arguments such as:
@@ -1062,7 +1066,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumen
 <ul class="blockList">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.695">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.697">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -1076,7 +1080,7 @@ public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.SplitterArgumen
 <li class="blockList">
 <h4>transform</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;&lt;F&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a>&lt;F&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.689">transform</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>,F&gt;&nbsp;transformer)</pre>
+public&nbsp;&lt;F&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.TransformingArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.TransformingArgumentBuilder</a>&lt;F&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.691">transform</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>,F&gt;&nbsp;transformer)</pre>
 <div class="block">Makes it possible to chain together different transformation / map / conversion operations
  
  <pre class="prettyprint">
@@ -1100,7 +1104,7 @@ public&nbsp;&lt;F&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.
 <ul class="blockList">
 <li class="blockList">
 <h4>usage</h4>
-<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.199">usage</a>()</pre>
+<pre>public final&nbsp;<a href="../../../se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.201">usage</a>()</pre>
 <div class="block">Returns a usage string for the argument that this builder builds.
  Should only be used if one argument is supported,
  otherwise the <a href="../../../se/softhouse/jargo/CommandLineParser.html#usage--"><code>CommandLineParser.usage()</code></a> method should be used instead.</div>
@@ -1113,7 +1117,7 @@ public&nbsp;&lt;F&gt;&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.
 <li class="blockList">
 <h4>variableArity</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
-public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.594">variableArity</a>()</pre>
+public&nbsp;<a href="../../../se/softhouse/jargo/ArgumentBuilder.ArityArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder.ArityArgumentBuilder</a>&lt;<a href="../../../se/softhouse/jargo/ArgumentBuilder.html" title="type parameter in ArgumentBuilder">T</a>&gt;&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentBuilder.html#line.596">variableArity</a>()</pre>
 <div class="block">Useful for handling a variable amount of parameters in the end of a
  command. Uses this argument to parse values but assumes that all the following
  parameters are of the same type, integer in the following example:
