@@ -61,6 +61,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import se.softhouse.common.collections.CharacterTrie;
 import se.softhouse.common.guavaextensions.Lists2;
 import se.softhouse.common.strings.StringsUtil;
+import se.softhouse.jargo.ArgumentExceptions.MissingRequiredArgumentException;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
@@ -268,7 +269,12 @@ final class CommandLineParserInstance
 			}
 			catch(ArgumentException e)
 			{
-				e.withUsedArgumentName(iterator.getCurrentArgumentName());
+				String descriptiveName = iterator.getCurrentArgumentName();
+				if(e instanceof MissingRequiredArgumentException)
+				{
+					descriptiveName = iterator.unfinishedCommand.orElse(descriptiveName);
+				}
+				e.withUsedArgumentName(descriptiveName);
 				if(definition != null)
 				{
 					e.withUsageReference(definition);

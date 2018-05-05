@@ -724,4 +724,40 @@ public class CommandTest
 		assertThat(commandTwo.parsedObject).isEqualTo("2");
 
 	}
+
+	@Test
+	public void testThatCorrectNameAppearsForMissingArgToCommand() throws Exception
+	{
+		Argument<String> firstArg = Arguments.stringArgument("-s").build();
+		Argument<String> secondArg = Arguments.stringArgument("-t").required().build();
+		CommandWithTwoArguments<String, String> command = new CommandWithTwoArguments<>("command", firstArg, secondArg);
+		CommandLineParser parser = CommandLineParser.withCommands(command);
+		try
+		{
+			parser.parse("command", "-s", "hello");
+			fail("-t should be reported as missing");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, "command", "[-t]"));
+		}
+	}
+
+	@Test
+	public void testThatCorrectNameAppearsForMissingIndexedArgToCommand() throws Exception
+	{
+		Argument<String> firstArg = Arguments.stringArgument("-s").build();
+		Argument<String> secondArg = Arguments.stringArgument().required().build();
+		CommandWithTwoArguments<String, String> command = new CommandWithTwoArguments<>("command", firstArg, secondArg);
+		CommandLineParser parser = CommandLineParser.withCommands(command);
+		try
+		{
+			parser.parse("command", "-s", "hello");
+			fail("secondArg should be reported as missing");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, "command", "[<string>]"));
+		}
+	}
 }

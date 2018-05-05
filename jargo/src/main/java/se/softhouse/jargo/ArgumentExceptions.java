@@ -150,7 +150,7 @@ public final class ArgumentExceptions
 		return new MissingRequiredArgumentException(missingArguments);
 	}
 
-	private static final class MissingRequiredArgumentException extends ArgumentException
+	static final class MissingRequiredArgumentException extends ArgumentException
 	{
 		private final String missingArguments;
 
