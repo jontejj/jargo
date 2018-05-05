@@ -12,10 +12,8 @@
  */
 package se.softhouse.jargo;
 
-import static java.util.Collections.emptySet;
 import static se.softhouse.common.guavaextensions.Lists2.size;
 import static se.softhouse.common.guavaextensions.Preconditions2.check;
-import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
 import static se.softhouse.common.guavaextensions.Sets2.union;
 import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.common.strings.StringsUtil.NEWLINE;
@@ -31,23 +29,17 @@ import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import static se.softhouse.jargo.ArgumentExceptions.wrapException;
 import static se.softhouse.jargo.CommandLineParser.US_BY_DEFAULT;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,8 +47,6 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.annotation.concurrent.ThreadSafe;
 
 import se.softhouse.common.collections.CharacterTrie;
 import se.softhouse.common.guavaextensions.Lists2;
@@ -65,7 +55,6 @@ import se.softhouse.jargo.ArgumentExceptions.MissingRequiredArgumentException;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
-import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**
@@ -253,6 +242,11 @@ final class CommandLineParserInstance
 	private ParsedArguments parseArguments(final ArgumentIterator iterator, Locale inLocale) throws ArgumentException
 	{
 		ParsedArguments holder = new ParsedArguments(allArguments());
+		return parseArguments(holder, iterator, inLocale);
+	}
+
+	ParsedArguments parseArguments(ParsedArguments holder, final ArgumentIterator iterator, Locale inLocale) throws ArgumentException
+	{
 		iterator.setCurrentParser(this);
 		while(iterator.hasNext())
 		{
@@ -260,7 +254,7 @@ final class CommandLineParserInstance
 			try
 			{
 				iterator.setCurrentArgumentName(iterator.next());
-				definition = getDefinitionForCurrentArgument(iterator, holder);
+				definition = getDefinitionForCurrentArgument(iterator, holder, true);
 				if(definition == null)
 				{
 					break;
@@ -288,13 +282,16 @@ final class CommandLineParserInstance
 	private <T> void parseArgument(final ArgumentIterator arguments, final ParsedArguments parsedArguments, final Argument<T> definition,
 			Locale inLocale) throws ArgumentException
 	{
-		if(parsedArguments.wasGiven(definition) && !definition.isAllowedToRepeat() && !definition.isPropertyMap())
+		InternalStringParser<T> parser = definition.parser();
+
+		boolean commandOverride = (parser instanceof Command) && arguments.temporaryRepitionAllowedForCommand;
+		if(parsedArguments.wasGiven(definition) && !definition.isAllowedToRepeat() && !definition.isPropertyMap() && !commandOverride)
 			throw forUnallowedRepetitionArgument(arguments.current());
 
-		InternalStringParser<T> parser = definition.parser();
 		T oldValue = parsedArguments.getValue(definition);
 
 		T parsedValue = parser.parse(arguments, oldValue, definition, inLocale);
+
 		parsedArguments.put(definition, parsedValue);
 	}
 
@@ -304,7 +301,8 @@ final class CommandLineParserInstance
 	 *             for the current argument
 	 */
 	@Nullable
-	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator iterator, final ParsedArguments holder) throws ArgumentException
+	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator iterator, final ParsedArguments holder, boolean fallbackToParent)
+			throws ArgumentException
 	{
 		if(iterator.allowsOptions())
 		{
@@ -321,12 +319,31 @@ final class CommandLineParserInstance
 		if(indexedArgument != null)
 			return indexedArgument;
 
+		// Rolling back here means that the parent parser/command will receive the argument
+		// instead, maybe it can handle it
 		if(isCommandParser())
 		{
-			// Rolling back here means that the parent parser/command will receive the argument
-			// instead, maybe it can handle it
-			iterator.previous();
+			if(fallbackToParent)
+			{
+				iterator.previous();
+			}
 			return null;
+		}
+
+		// If we have previously rollbacked(to parse main args in the middle of a command's arguments),
+		// then let's also try to rejoin parsing of that command's arguments again
+		Iterator<CommandInvocation> lastCommandInvocation = iterator.commandInvocations.descendingIterator();
+		if(lastCommandInvocation.hasNext())
+		{
+			CommandInvocation invocation = lastCommandInvocation.next();
+			Argument<?> subCommandHasSupport = invocation.command.parser().getDefinitionForCurrentArgument(iterator, invocation.args, false);
+			if(subCommandHasSupport != null)
+			{
+				// Let the subcommand see the argument again
+				iterator.previous();
+				iterator.temporaryRepitionAllowedForCommand = true;
+				return invocation.argumentSettingsForInvokedCommand;
+			}
 		}
 
 		guessAndSuggestIfCloseMatch(iterator, holder);
@@ -435,9 +452,9 @@ final class CommandLineParserInstance
 
 		if(!availableArguments.isEmpty())
 		{
-			List<String> suggestions = StringsUtil.closestMatches(arguments.current(), availableArguments, ONLY_REALLY_CLOSE_MATCHES);
+			List<String> suggestions = StringsUtil.closestMatches(arguments.getCurrentArgumentName(), availableArguments, ONLY_REALLY_CLOSE_MATCHES);
 			if(!suggestions.isEmpty())
-				throw withMessage(format(UserErrors.SUGGESTION, arguments.current(), String.join(NEWLINE + TAB, suggestions)));
+				throw withMessage(format(UserErrors.SUGGESTION, arguments.getCurrentArgumentName(), String.join(NEWLINE + TAB, suggestions)));
 		}
 	}
 
@@ -531,11 +548,11 @@ final class CommandLineParserInstance
 		return usage(locale()).toString();
 	}
 
-	private static final class CommandInvocation
+	static final class CommandInvocation
 	{
 		private final Command command;
-		private final ParsedArguments args;
-		private final Argument<?> argumentSettingsForInvokedCommand;
+		final ParsedArguments args;
+		final Argument<?> argumentSettingsForInvokedCommand;
 
 		CommandInvocation(Command command, ParsedArguments args, Argument<?> argumentSettingsForInvokedCommand)
 		{
@@ -548,251 +565,6 @@ final class CommandLineParserInstance
 		{
 			args.setRootArgs(rootArgs);
 			command.execute(args);
-		}
-	}
-
-	/**
-	 * Wraps a list of given arguments and remembers
-	 * which argument that is currently being parsed. Plays a key role in making
-	 * {@link CommandLineParserInstance} {@link ThreadSafe} as it holds the current state of a parse
-	 * invocation.
-	 */
-	@NotThreadSafe
-	static final class ArgumentIterator implements Iterator<String>
-	{
-		private final List<String> arguments;
-
-		/**
-		 * Corresponds to one of the {@link Argument#names()} that has been given from the command
-		 * line. This is updated as soon as the parsing of a new argument begins.
-		 * For indexed arguments this will be the meta description instead.
-		 */
-		private String currentArgumentName;
-		private int currentArgumentIndex;
-		private boolean endOfOptionsReceived;
-
-		private LinkedList<CommandInvocation> commandInvocations = new LinkedList<>();
-		private Optional<String> unfinishedCommand = Optional.empty();
-
-		/**
-		 * In case of {@link Command}s this may be the parser for a specific {@link Command} or just
-		 * simply the main parser
-		 */
-		private CommandLineParserInstance currentParser;
-		private final Map<String, Argument<?>> helpArguments;
-
-		/**
-		 * @param actualArguments a list of arguments, will be modified
-		 */
-		private ArgumentIterator(Iterable<String> actualArguments, Map<String, Argument<?>> helpArguments)
-		{
-			this.arguments = checkNulls(actualArguments, "Argument strings may not be null");
-			this.helpArguments = helpArguments;
-		}
-
-		Argument<?> helpArgument(String currentArgument)
-		{
-			return helpArguments.get(currentArgument);
-		}
-
-		/**
-		 * Returns <code>true</code> if {@link UsageTexts#END_OF_OPTIONS} hasn't been received yet.
-		 */
-		boolean allowsOptions()
-		{
-			return !endOfOptionsReceived;
-		}
-
-		void setCurrentParser(CommandLineParserInstance instance)
-		{
-			currentParser = instance;
-		}
-
-		void rememberAsCommand()
-		{
-			// The command has moved the index by 1 therefore the -1 to get the index of the
-			// commandName
-			unfinishedCommand = Optional.of(arguments.get(currentArgumentIndex - 1));
-		}
-
-		void rememberInvocationOfCommand(Command command, ParsedArguments argumentsToCommand, Argument<?> argumentSettingsForInvokedCommand,
-				List<Argument<?>> commandArguments)
-		{
-			commandInvocations.add(new CommandInvocation(command, argumentsToCommand, argumentSettingsForInvokedCommand));
-			unfinishedCommand = Optional.empty();
-
-			for(Argument<?> possibleSubcommand : commandArguments)
-			{
-				for(CommandInvocation invocation : commandInvocations)
-				{
-
-					if(possibleSubcommand == invocation.argumentSettingsForInvokedCommand)
-					{
-						invocation.args.setRootArgs(argumentsToCommand);
-					}
-				}
-			}
-		}
-
-		void executeAnyCommandsInTheOrderTheyWereReceived(ParsedArguments rootArgs)
-		{
-			for(CommandInvocation invocation : commandInvocations)
-			{
-				invocation.execute(rootArgs);
-			}
-		}
-
-		/**
-		 * Returns any non-parsed arguments to the last command that was to be executed
-		 */
-		Set<String> nonParsedArguments()
-		{
-			Iterator<CommandInvocation> commands = commandInvocations.descendingIterator();
-			if(commands.hasNext())
-				return commands.next().args.nonParsedArguments();
-			return emptySet();
-		}
-
-		/**
-		 * For indexed arguments in commands the used command name is returned so that when
-		 * multiple commands (or multiple command names) are used it's clear which command the
-		 * offending argument is part of
-		 */
-		String usedCommandName()
-		{
-			return unfinishedCommand.get();
-		}
-
-		static ArgumentIterator forArguments(Iterable<String> arguments, Map<String, Argument<?>> helpArguments)
-		{
-			return new ArgumentIterator(arguments, helpArguments);
-		}
-
-		static ArgumentIterator forArguments(Iterable<String> arguments)
-		{
-			return new ArgumentIterator(arguments, Collections.<String, Argument<?>>emptyMap());
-		}
-
-		/**
-		 * Returns the string that was given by the previous {@link #next()} invocation.
-		 */
-		String current()
-		{
-			return arguments.get(currentArgumentIndex - 1);
-		}
-
-		@Override
-		public boolean hasNext()
-		{
-			return currentArgumentIndex < arguments.size();
-		}
-
-		@Override
-		public String next()
-		{
-			String nextArgument = arguments.get(currentArgumentIndex++);
-			nextArgument = skipAheadIfEndOfOptions(nextArgument);
-			nextArgument = readArgumentsFromFile(nextArgument);
-
-			return nextArgument;
-		}
-
-		/**
-		 * Skips {@link UsageTexts#END_OF_OPTIONS} if the parser hasn't received it yet.
-		 * This is to allow the string {@link UsageTexts#END_OF_OPTIONS} as an indexed argument
-		 * itself.
-		 */
-		private String skipAheadIfEndOfOptions(String nextArgument)
-		{
-			if(!endOfOptionsReceived && nextArgument.equals(UsageTexts.END_OF_OPTIONS))
-			{
-				endOfOptionsReceived = true;
-				return next();
-			}
-			return nextArgument;
-		}
-
-		/**
-		 * Reads arguments from files if the argument starts with a
-		 * {@link UsageTexts#FILE_REFERENCE_PREFIX}.
-		 */
-		private String readArgumentsFromFile(String nextArgument)
-		{
-			// TODO(jontejj): add possibility to disable this feature? It has some security
-			// implications as the caller can input any files and if this parser was exposed from a
-			// server...
-			if(nextArgument.startsWith(UsageTexts.FILE_REFERENCE_PREFIX))
-			{
-				String filename = nextArgument.substring(1);
-				File fileWithArguments = new File(filename);
-				if(fileWithArguments.exists())
-				{
-					try
-					{
-						List<String> lines = Files.readAllLines(fileWithArguments.toPath(), StringsUtil.UTF8);
-						appendArgumentsAtCurrentPosition(lines);
-					}
-					catch(IOException errorWhileReadingFile)
-					{
-						throw withMessage("Failed while reading arguments from: " + filename, errorWhileReadingFile);
-					}
-					// Recursive call adds support for file references from within the file itself
-					return next();
-				}
-			}
-			return nextArgument;
-		}
-
-		private void appendArgumentsAtCurrentPosition(List<String> argumentsToAppend)
-		{
-			arguments.addAll(currentArgumentIndex, argumentsToAppend);
-		}
-
-		@Override
-		public String toString()
-		{
-			return arguments.subList(currentArgumentIndex, arguments.size()).toString();
-		}
-
-		/**
-		 * The opposite of {@link #next()}. In short it makes this iterator return what
-		 * {@link #next()} returned last time once again.
-		 * 
-		 * @return the {@link #current()} argument
-		 */
-		String previous()
-		{
-			return arguments.get(--currentArgumentIndex);
-		}
-
-		int nrOfRemainingArguments()
-		{
-			return arguments.size() - currentArgumentIndex;
-		}
-
-		void setNextArgumentTo(String newNextArgumentString)
-		{
-			arguments.set(--currentArgumentIndex, newNextArgumentString);
-		}
-
-		boolean hasPrevious()
-		{
-			return currentArgumentIndex > 0;
-		}
-
-		void setCurrentArgumentName(String argumentName)
-		{
-			currentArgumentName = argumentName;
-		}
-
-		String getCurrentArgumentName()
-		{
-			return currentArgumentName;
-		}
-
-		CommandLineParserInstance currentParser()
-		{
-			return currentParser;
 		}
 	}
 

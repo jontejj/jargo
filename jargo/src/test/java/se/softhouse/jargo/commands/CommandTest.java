@@ -760,4 +760,67 @@ public class CommandTest
 			assertThat(expected).hasMessage(String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, "command", "[<string>]"));
 		}
 	}
+
+	@Test
+	public void testThatMainArgsCanBeSpecifiedInTheMiddleOfCommandArguments() throws Exception
+	{
+		Argument<String> mainFirstArg = Arguments.stringArgument("--main").build();
+		Argument<String> mainSecondArg = Arguments.stringArgument("-m").build();
+
+		Argument<String> firstCommandArg = Arguments.stringArgument("--sub").build();
+		Argument<String> secondCommandArg = Arguments.stringArgument("-s").build();
+		CommandWithTwoArguments<String, String> command = new CommandWithTwoArguments<>("command", firstCommandArg, secondCommandArg);
+		CommandLineParser parser = CommandLineParser.withArguments(mainFirstArg, mainSecondArg).andCommands(command);
+		ParsedArguments parsedArguments = parser.parse("command", "--main", "1", "--sub", "2", "-m", "3", "-s", "4");
+		assertThat(command.parsedObject).isEqualTo("2");
+		assertThat(command.parsedObjectTwo).isEqualTo("4");
+		assertThat(parsedArguments.get(mainFirstArg)).isEqualTo("1");
+		assertThat(parsedArguments.get(mainSecondArg)).isEqualTo("3");
+	}
+
+	@Test
+	public void testThatSubcommandsAreSuggested() throws Exception
+	{
+		Repository repo = new Repository();
+		CommandLineParser git = CommandLineParser.withCommands(new Git(repo));
+		try
+		{
+			git.parse("git", "lo");
+			fail("log should be suggested");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "lo", "log"));
+
+		}
+	}
+
+	@Test
+	public void testThatRepeatableWorksWithCommands() throws Exception
+	{
+		ProfilingExecuteCommand repeatable = new ProfilingExecuteCommand();
+		ProfilingExecuteCommand notRepeatable = new ProfilingExecuteCommand();
+		CommandLineParser repeater = CommandLineParser.withArguments(	Arguments.command(repeatable).repeated().build(),
+																		Arguments.command(notRepeatable).names("-p").build());
+		repeater.parse("profile", "profile", "-p");
+		assertThat(repeatable.numberOfCallsToExecute).isEqualTo(2);
+		assertThat(notRepeatable.numberOfCallsToExecute).isEqualTo(1);
+
+		repeatable.numberOfCallsToExecute = 0;
+		notRepeatable.numberOfCallsToExecute = 0;
+		try
+		{
+			repeater.parse("profile", "profile", "-p", "-p");
+			fail("-p should not be allowed to be repeated");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.DISALLOWED_REPETITION, "-p"));
+			assertThat(repeatable.numberOfCallsToExecute).isEqualTo(0);
+			assertThat(notRepeatable.numberOfCallsToExecute).isEqualTo(0);
+
+		}
+	}
+
+	// TODO(jontejj): test option flags with subcommands
 }

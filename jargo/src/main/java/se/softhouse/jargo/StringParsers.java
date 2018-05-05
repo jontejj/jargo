@@ -49,7 +49,6 @@ import se.softhouse.common.numbers.NumberType;
 import se.softhouse.common.strings.StringBuilders;
 import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.ArgumentExceptions.MissingParameterException;
-import se.softhouse.jargo.CommandLineParserInstance.ArgumentIterator;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 
 /**
