@@ -154,17 +154,14 @@
 						several child-processes -->
 					<forkCount>1</forkCount>
 					<reuseForks>true</reuseForks>
-					<!-- Workaround for bug https://github.com/jacoco/jacoco/pull/40 -->
-					<argLine>${coverageAgent}</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.4.201502262128</version>
+				<version>0.8.1</version>
 				<configuration>
-					<!-- Workaround for bug https://github.com/jacoco/jacoco/pull/40 -->
-					<propertyName>coverageAgent</propertyName>
+				    <destFile>${user.home}/jargo/jacoco.exec</destFile>
 				</configuration>
 				<executions>
 					<execution>
