@@ -89,33 +89,33 @@ public final class StringParsers
 		STRING
 		{
 
-	@Override
-	public String parse(String value, Locale locale) throws ArgumentException
-	{
-		return value;
-	}
+			@Override
+			public String parse(String value, Locale locale) throws ArgumentException
+			{
+				return value;
+			}
 
-	};
+		};
 
-	// Put other StringParser<String> parsers here
+		// Put other StringParser<String> parsers here
 
-	@Override
-	public String descriptionOfValidValues(Locale locale)
-	{
-		return "any string";
-	}
+		@Override
+		public String descriptionOfValidValues(Locale locale)
+		{
+			return "any string";
+		}
 
-	@Override
-	public String defaultValue()
-	{
-		return "";
-	}
+		@Override
+		public String defaultValue()
+		{
+			return "";
+		}
 
-	@Override
-	public String metaDescription()
-	{
-		return "<string>";
-	}
+		@Override
+		public String metaDescription()
+		{
+			return "<string>";
+		}
 
 	}
 
@@ -692,44 +692,6 @@ public final class StringParsers
 		String metaDescription(Argument<?> argumentSettings)
 		{
 			return "<argument-to-print-help-for>";
-		}
-	}
-
-	/**
-	 * Runs a {@link Runnable} when {@link StringParser#parse(String, Locale) parse} is invoked.
-	 */
-	static final class RunnableParser extends InternalStringParser<Object>
-	{
-		final Runnable target;
-
-		RunnableParser(Runnable target)
-		{
-			this.target = target;
-		}
-
-		@Override
-		Object parse(ArgumentIterator arguments, Object previousOccurance, Argument<?> argumentSettings, Locale locale) throws ArgumentException
-		{
-			target.run();
-			return null;
-		}
-
-		@Override
-		String descriptionOfValidValues(Argument<?> argumentSettings, Locale locale)
-		{
-			return "";
-		}
-
-		@Override
-		Object defaultValue()
-		{
-			return null;
-		}
-
-		@Override
-		String metaDescription(Argument<?> argumentSettings)
-		{
-			return "";
 		}
 	}
 

@@ -29,8 +29,6 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import se.softhouse.common.strings.Describable;
-import se.softhouse.jargo.ArgumentBuilder.SimpleArgumentBuilder;
-import se.softhouse.jargo.StringParsers.RunnableParser;
 
 /**
  * Manages multiple {@link Argument}s and/or {@link Command}s. The brain of this API.
@@ -373,11 +371,11 @@ public final class CommandLineParser
 		List<Argument<?>> commandsAsArguments = new ArrayList<>();
 		for(E command : commandEnum.getEnumConstants())
 		{
-			Argument<Object> commandAsArgument = new SimpleArgumentBuilder<Object>(new RunnableParser(command)) //
-					.names(command.name().toLowerCase(Locale.US)) //
-					.description(command) //
-					.build();
-			commandsAsArguments.add(commandAsArgument);
+			Argument<Object> commandArgument = Arguments.optionArgument(command.name().toLowerCase(Locale.US)).ignoreCase().transform((a) -> {
+				command.run();
+				return null;
+			}).description(command).defaultValueDescription("N/A").build();
+			commandsAsArguments.add(commandArgument);
 		}
 		return commandsAsArguments;
 	}
