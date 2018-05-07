@@ -12,35 +12,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.jargo.commands;
+package se.softhouse.jargo.completions;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static se.softhouse.jargo.Arguments.stringArgument;
+
+import org.junit.Test;
 
 import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.Arguments;
-import se.softhouse.jargo.Command;
+import se.softhouse.jargo.CommandLineParser;
 import se.softhouse.jargo.ParsedArguments;
-import se.softhouse.jargo.commands.Commit.Repository;
 
-public class Git extends Command
+/**
+ * Tests for {@link Completers}
+ */
+public class NoCompleterTest
 {
-	/**
-	 * An example of a globally defined argument that can be available in the sub commands that wants it
-	 */
-	public static final Argument<String> MESSAGE = Arguments.stringArgument("--message", "-m").build();
-
-	public Git(Repository repo)
+	@Test
+	public void testThatNoCompletionsDoesNothing() throws Exception
 	{
-		super(subCommands(new Commit(repo), new Log(repo), new Merge(repo)));
-	}
-
-	@Override
-	protected void execute(ParsedArguments parsedArguments)
-	{
-
-	}
-
-	@Override
-	protected String commandName()
-	{
-		return "git";
+		Argument<String> arg = stringArgument("-j").build();
+		ParsedArguments parsedArguments = CommandLineParser.withArguments(arg).noCompleter().parse("-j", "hello");
+		assertThat(parsedArguments.get(arg)).isEqualTo("hello");
 	}
 }

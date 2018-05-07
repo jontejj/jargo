@@ -12,13 +12,14 @@
  */
 package se.softhouse.common.guavaextensions;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static se.softhouse.common.guavaextensions.Preconditions2.check;
-import static se.softhouse.common.strings.StringsUtil.UTF8;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -29,8 +30,6 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-
-import se.softhouse.common.strings.StringsUtil;
 
 /**
  * Gives you static access to additional implementations of the {@link Function} interface, as a
@@ -225,7 +224,7 @@ public final class Functions2
 
 	/**
 	 * Returns a {@link Function} that reads whole {@link File}s into {@link String}s using the
-	 * {@link StringsUtil#UTF8 UTF-8} charset.
+	 * {@link StandardCharsets#UTF_8 UTF-8} charset.
 	 */
 	public static Function<File, String> fileToString()
 	{
@@ -243,7 +242,7 @@ public final class Functions2
 				throw new IllegalArgumentException(input.getAbsolutePath() + " is a directory, not a file");
 			try
 			{
-				return new String(Files.readAllBytes(input.toPath()), UTF8);
+				return new String(Files.readAllBytes(input.toPath()), UTF_8);
 			}
 			catch(IOException e)
 			{

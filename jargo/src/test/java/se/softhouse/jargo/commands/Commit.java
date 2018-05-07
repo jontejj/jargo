@@ -56,6 +56,12 @@ public class Commit extends Command
 		List<Revision> commits = Lists.newArrayList();
 
 		int logLimit = 10;
+
+		@Override
+		public String toString()
+		{
+			return "Limit: " + logLimit + "\n" + commits;
+		}
 	}
 
 	public static class Revision
@@ -71,6 +77,12 @@ public class Commit extends Command
 			files = arguments.get(FILES);
 			author = arguments.get(AUTHOR);
 			this.message = message;
+		}
+
+		@Override
+		public String toString()
+		{
+			return author + ":" + message + ":amend:" + amend + ":files:" + files;
 		}
 	}
 }

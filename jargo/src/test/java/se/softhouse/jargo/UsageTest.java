@@ -12,11 +12,10 @@
  */
 package se.softhouse.jargo;
 
+import static java.lang.System.lineSeparator;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static org.fest.assertions.Fail.failure;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.common.testlib.Thrower.asUnchecked;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
@@ -109,14 +108,14 @@ public class UsageTest
 	public void testUsageForNoArguments()
 	{
 		Usage usage = CommandLineParser.withArguments().programName("NoArguments").usage();
-		assertThat(usage).isEqualTo("Usage: NoArguments" + NEWLINE);
+		assertThat(usage).isEqualTo("Usage: NoArguments" + lineSeparator());
 	}
 
 	@Test
 	public void testUsageForNoVisibleArguments()
 	{
 		Usage usage = CommandLineParser.withArguments(integerArgument().hideFromUsage().build()).programName("NoVisibleArguments").usage();
-		assertThat(usage).isEqualTo("Usage: NoVisibleArguments" + NEWLINE);
+		assertThat(usage).isEqualTo("Usage: NoVisibleArguments" + lineSeparator());
 	}
 
 	@Test
@@ -163,7 +162,7 @@ public class UsageTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "--namr", "--name" + NEWLINE + TAB + "--number"));
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "--namr", "--name "));
 		}
 	}
 
@@ -240,7 +239,8 @@ public class UsageTest
 	{
 		Usage usage = CommandLineParser.withArguments().programName("ProgramName").programDescription("Program description of ProgramName").usage();
 
-		assertThat(usage).isEqualTo("Usage: ProgramName" + NEWLINE + NEWLINE + "Program description of ProgramName" + NEWLINE);
+		assertThat(usage)
+				.isEqualTo("Usage: ProgramName" + lineSeparator() + lineSeparator() + "Program description of ProgramName" + lineSeparator());
 	}
 
 	@Test
@@ -334,7 +334,7 @@ public class UsageTest
 	{
 		String extremelyLongArgumentName = longTextWithoutNewlines.replace(" ", "-");
 		Usage usage = integerArgument(extremelyLongArgumentName).usage();
-		assertThat(usage).endsWith("-est-laborum. <integer>" + NEWLINE);
+		assertThat(usage).endsWith("-est-laborum. <integer>" + lineSeparator());
 	}
 
 	private static final String longTextWithoutNewlines = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, "

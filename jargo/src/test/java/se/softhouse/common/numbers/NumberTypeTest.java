@@ -13,6 +13,7 @@
 package se.softhouse.common.numbers;
 
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static se.softhouse.common.numbers.NumberType.BIG_DECIMAL;
@@ -22,7 +23,6 @@ import static se.softhouse.common.numbers.NumberType.INTEGER;
 import static se.softhouse.common.numbers.NumberType.LONG;
 import static se.softhouse.common.numbers.NumberType.OUT_OF_RANGE;
 import static se.softhouse.common.numbers.NumberType.SHORT;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.testlib.Locales.SWEDISH;
 
 import java.math.BigDecimal;
@@ -269,7 +269,7 @@ public class NumberTypeTest
 			/**
 			 * @formatter.off
 			 */
-			assertThat(e).hasMessage("'123a' is not a valid integer (Localization: English)" + NEWLINE +
+			assertThat(e).hasMessage("'123a' is not a valid integer (Localization: English)" + lineSeparator() +
 			                         "    ^");
 			/**
 			 * @formatter.on
@@ -290,7 +290,7 @@ public class NumberTypeTest
 			/**
 			 * @formatter.off
 			 */
-			assertThat(e).hasMessage("'12.3' is not a valid big-integer (Localization: English)" + NEWLINE +
+			assertThat(e).hasMessage("'12.3' is not a valid big-integer (Localization: English)" + lineSeparator() +
 			                         "   ^");
 			/**
 			 * @formatter.on

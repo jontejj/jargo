@@ -15,8 +15,6 @@ package se.softhouse.jargo.commands;
 import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.jargo.Arguments.command;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.utils.Assertions2.assertThat;
@@ -25,6 +23,7 @@ import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
@@ -42,6 +41,7 @@ import se.softhouse.jargo.ArgumentExceptions;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.CommandLineParser;
+import se.softhouse.jargo.FakeCompleter;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.Usage;
 import se.softhouse.jargo.commands.Build.BuildTarget;
@@ -146,7 +146,7 @@ public class CommandTest
 				return "Starts the service";
 			}
 
-		};
+		}
 	}
 
 	@Test
@@ -176,6 +176,20 @@ public class CommandTest
 		{
 			assertThat(expected).hasMessage(String.format(UserErrors.MISSING_COMMAND_ARGUMENTS, "commit", "[--author]"));
 		}
+	}
+
+	@Test
+	public void testCommandWithRequiredArgumentAfterOtherArgs()
+	{
+		Repository repo = new Repository();
+		CommandLineParser parser = CommandLineParser.withCommands(new Git(repo)).andArguments(Git.MESSAGE);
+		ParsedArguments parsedArguments = parser.parse("git", "commit", "--amend", "--message", "b", "--author=a");
+
+		assertThat(parsedArguments.get(Git.MESSAGE)).isEqualTo("b");
+		Revision commit = repo.commits.get(0);
+		assertThat(commit.amend).isTrue();
+		assertThat(commit.author).isEqualTo("a");
+		assertThat(commit.files).isEqualTo(emptyList());
 	}
 
 	@Test
@@ -364,7 +378,9 @@ public class CommandTest
 	@Test
 	public void testRepeatedCommands() throws ArgumentException
 	{
-		assertThat(command(new Clean()).repeated().parse("clean", "clean", "clean")).hasSize(3);
+		Argument<List<ParsedArguments>> repeatedCommand = command(new Clean()).repeated().build();
+		ParsedArguments parsedArguments = CommandLineParser.withArguments(repeatedCommand).parse("clean", "clean", "clean");
+		assertThat(parsedArguments.get(repeatedCommand)).hasSize(3);
 	}
 
 	@Test
@@ -386,7 +402,7 @@ public class CommandTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-limit", "--limit" + NEWLINE + TAB + "-l"));
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-limit", "--limit "));
 		}
 	}
 
@@ -400,24 +416,24 @@ public class CommandTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "cm", "cmd"));
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "cm", "cmd "));
 		}
 	}
 
 	@Test
-	public void testThatMissspelledArgumentIsNotSuggestedForAlreadyExecutedCommand() throws Exception
+	public void testThatMissspelledArgumentIsSuggestedForAlreadyParsedCommand() throws Exception
 	{
 		CommandLineParser parser = CommandLineParser.withCommands(new CommandWithOneIndexedArgument(), new CommandWithTwoIndexedArguments());
 		try
 		{
-			// As one_arg already has been executed, by the time two_args is seen,
-			// suggesting --bool (optional argument to one_arg) would be an error
+			// As one_arg already has been parsed, by the time two_args is seen,
+			// suggesting --bool should be okay
 			parser.parse("one_arg", "1", "two_args", "1", "2", "-boo");
 			fail("-boo not detected as unhandled argument");
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage("Unexpected argument: -boo, previous argument: 2");
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-boo", "--bool "));
 		}
 
 	}
@@ -441,13 +457,13 @@ public class CommandTest
 	}
 
 	@Test
-	public void testThatSubcommandsAreExecutedBeforeMainCommands() throws Exception
+	public void testThatMainCommandsAreExecutedBeforeSubcommands() throws Exception
 	{
 		List<Command> executedCommands = Lists.newLinkedList();
 		ProfilingSubcommand profilingSubcommand = new ProfilingSubcommand(executedCommands);
 		CommandLineParser parser = CommandLineParser.withCommands(profilingSubcommand);
 		parser.parse("main", "c", "one_arg", "1");
-		assertThat(executedCommands).containsExactly(ProfilingSubcommand.subCommand, profilingSubcommand);
+		assertThat(executedCommands).containsExactly(profilingSubcommand, ProfilingSubcommand.subCommand);
 
 		assertThat(parser.usage()).isEqualTo(expected("commandWithSubCommand"));
 	}
@@ -455,8 +471,9 @@ public class CommandTest
 	@Test
 	public void testThatCommandArgumentsCanBeFetchedAfterExecution() throws Exception
 	{
-		ParsedArguments commitArguments = COMMIT.parse("commit", "--author=joj");
-		assertThat(commitArguments.get(Commit.AUTHOR)).isEqualTo("joj");
+		ParsedArguments rootArgs = COMMIT.parse("commit", "--author=joj");
+
+		assertThat(rootArgs.get(COMMIT).get(Commit.AUTHOR)).isEqualTo("joj");
 	}
 
 	@Test
@@ -718,7 +735,7 @@ public class CommandTest
 	}
 
 	@Test
-	public void testThatTwoSubcommandsCanGetDifferentValuesForTheSameArgumentName() throws Exception
+	public void testThatTwoSubcommandsCanUseTheSameArgumentNameAndGetDifferentValues() throws Exception
 	{
 		Argument<String> commonArg = Arguments.stringArgument("-t").build();
 		CommandWithArgument<String> commandOne = new CommandWithArgument<>("command-one", commonArg);
@@ -727,7 +744,6 @@ public class CommandTest
 		parser.parse("command-one", "-t", "1", "command-two", "-t", "2");
 		assertThat(commandOne.parsedObject).isEqualTo("1");
 		assertThat(commandTwo.parsedObject).isEqualTo("2");
-
 	}
 
 	@Test
@@ -795,9 +811,19 @@ public class CommandTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "lo", "log"));
-
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "lo", "log "));
 		}
+	}
+
+	@Test
+	public void testThatCompletingWorksForIgnoreCaseArgumentsForCommands() throws Exception
+	{
+		Argument<String> name = stringArgument("--name").ignoreCase().build();
+		CommandWithArgument<String> command = new CommandWithArgument<>("cmd", name);
+		CommandLineParser parser = CommandLineParser.withCommands(command);
+
+		SortedSet<String> suggestions = FakeCompleter.complete(parser, "cmd", "--Na");
+		assertThat(suggestions).containsOnly("--Name ");
 	}
 
 	@Test
@@ -808,6 +834,23 @@ public class CommandTest
 		git.parse("git", "merge", "--author=merge-person@company.org");
 		assertThat(repo.commits).hasSize(1);
 		assertThat(repo.commits.get(0).message).isEqualTo("");
+	}
+
+	@Test
+	public void testThatLimiterErrorMessageLooksGoodForCommandArguments() throws Exception
+	{
+		Argument<String> likesP = stringArgument("-p").limitTo(s -> s.contains("p"), "something with p").defaultValue("pppp").build();
+		CommandWithArgument<String> command = new CommandWithArgument<>("limit", likesP);
+		CommandLineParser parser = CommandLineParser.withCommands(command);
+		try
+		{
+			parser.parse("limit", "-p", "no");
+			fail("no does not contain p, limiter did not detect it");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, "no", "something with p"));
+		}
 	}
 
 	@Test

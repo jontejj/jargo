@@ -12,10 +12,11 @@
  */
 package se.softhouse.jargo.internal;
 
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
+import static java.lang.System.lineSeparator;
 import static se.softhouse.common.strings.StringsUtil.TAB;
 
-import se.softhouse.common.strings.StringsUtil;
+import java.nio.charset.StandardCharsets;
+
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder;
 import se.softhouse.jargo.ArgumentException;
@@ -74,7 +75,7 @@ public final class Texts
 
 		/**
 		 * Indicates that if a file called with what comes after the @ sign exists, arguments should
-		 * be read from it (in {@link StringsUtil#UTF8}) before continuing on with the parsing.
+		 * be read from it (in {@link StandardCharsets#UTF_8}) before continuing on with the parsing.
 		 */
 		public static final String FILE_REFERENCE_PREFIX = "@";
 	}
@@ -100,7 +101,7 @@ public final class Texts
 		 * Used by {@link CommandLineParser#parse(String...)}.
 		 * </pre>
 		 */
-		public static final String SUGGESTION = "Didn't expect %s, did you mean one of these?" + NEWLINE + TAB + "%s";
+		public static final String SUGGESTION = "Didn't expect %s, did you mean one of these?" + lineSeparator() + TAB + "%s";
 
 		/**
 		 * <pre>

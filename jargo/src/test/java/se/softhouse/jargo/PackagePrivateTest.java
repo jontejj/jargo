@@ -12,8 +12,8 @@
  */
 package se.softhouse.jargo;
 
+import static java.lang.System.lineSeparator;
 import static org.fest.assertions.Assertions.assertThat;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
 import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesign;
 import static se.softhouse.common.testlib.UtilityClassTester.testUtilityClassDesignForAllClassesAround;
 import static se.softhouse.jargo.Arguments.integerArgument;
@@ -74,7 +74,8 @@ public class PackagePrivateTest
 	@Test
 	public void testProgramInformationToString()
 	{
-		assertThat(withProgramName("name").programDescription("description").toString()).isEqualTo("name:" + NEWLINE + "description" + NEWLINE);
+		assertThat(withProgramName("name").programDescription("description").toString())
+				.isEqualTo("name:" + lineSeparator() + "description" + lineSeparator());
 	}
 
 	@Test
@@ -95,8 +96,7 @@ public class PackagePrivateTest
 	@Test
 	public void testArgumentIteratorToString()
 	{
-		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar"), Collections.<String, Argument<?>>emptyMap()).toString())
-				.isEqualTo("[foobar]");
+		assertThat(ArgumentIterator.forArguments(Arrays.asList("foobar")).toString()).isEqualTo("Parsed: [], Current: null, Remaining: [foobar]");
 	}
 
 	@Test
@@ -116,7 +116,7 @@ public class PackagePrivateTest
 	public void testUsageToString()
 	{
 		assertThat(new Usage(Collections.<Argument<?>>emptySet(), Locale.getDefault(), withProgramName("Program"), false).toString())
-				.isEqualTo("Usage: Program" + NEWLINE);
+				.isEqualTo("Usage: Program" + lineSeparator());
 	}
 
 	@Test

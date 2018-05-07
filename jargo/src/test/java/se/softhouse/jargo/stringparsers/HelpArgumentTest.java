@@ -15,6 +15,7 @@ package se.softhouse.jargo.stringparsers;
 import static java.lang.String.format;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static se.softhouse.jargo.Arguments.enumArgument;
 import static se.softhouse.jargo.Arguments.helpArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
@@ -22,6 +23,7 @@ import static se.softhouse.jargo.utils.Assertions2.assertThat;
 import static se.softhouse.jargo.utils.ExpectedTexts.expected;
 
 import java.util.Arrays;
+import java.util.SortedSet;
 
 import org.junit.Test;
 
@@ -29,11 +31,14 @@ import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.CommandLineParser;
+import se.softhouse.jargo.FakeCompleter;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.commands.Build;
+import se.softhouse.jargo.commands.CommandWithArgument;
 import se.softhouse.jargo.commands.CommandWithOneIndexedArgument;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
+import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 
 /**
  * Tests for {@link Arguments#helpArgument(String, String...)}
@@ -199,6 +204,25 @@ public class HelpArgumentTest
 		{
 			assertThat(expected.getMessage()).isEqualTo("-h is handled by several arguments");
 		}
+	}
+
+	@Test
+	public void testThatHelpArgumentsCanBeCompleted() throws Exception
+	{
+		CommandLineParser parser = CommandLineParser.withArguments(HELP, enumArgument(Action.class, "-a").variableArity().build());
+		SortedSet<String> suggestions = FakeCompleter.complete(parser, "-h", "-");
+
+		assertThat(suggestions).containsOnly("-a ");
+	}
+
+	@Test
+	public void testThatHelpForCommandsCanBeCompleted() throws Exception
+	{
+		CommandWithArgument<String> command = new CommandWithArgument<>("cmd", stringArgument("--google").build());
+		CommandLineParser parser = CommandLineParser.withArguments(HELP).andCommands(command);
+		SortedSet<String> suggestions = FakeCompleter.complete(parser, "cmd", "-h", "--g");
+
+		assertThat(suggestions).containsOnly("--google ");
 	}
 
 	@Test

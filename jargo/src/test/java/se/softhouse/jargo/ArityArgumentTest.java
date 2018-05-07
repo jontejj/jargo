@@ -72,6 +72,7 @@ public class ArityArgumentTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatArityOfOneIsForbidden()
 	{
 		try
@@ -124,7 +125,7 @@ public class ArityArgumentTest
 	@Test
 	public void testThatNrOfRemainingArgumentsGivesTheCorrectCapacity()
 	{
-		ArgumentIterator args = ArgumentIterator.forArguments(Arrays.asList("foo"), Collections.<String, Argument<?>>emptyMap());
+		ArgumentIterator args = ArgumentIterator.forArguments(Arrays.asList("foo"));
 		assertThat(args.nrOfRemainingArguments()).isEqualTo(1);
 		args.next(); // Consume one argument
 		assertThat(args.nrOfRemainingArguments()).isEqualTo(0);
