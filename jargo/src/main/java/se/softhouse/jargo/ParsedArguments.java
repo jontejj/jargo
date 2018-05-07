@@ -74,7 +74,7 @@ public final class ParsedArguments
 	{
 		if(!wasGiven(argumentToFetch))
 		{
-			check(allArguments.contains(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
+			check(handlesArgument(argumentToFetch), ProgrammaticErrors.ILLEGAL_ARGUMENT, argumentToFetch);
 			return argumentToFetch.defaultValue();
 		}
 		return getValue(argumentToFetch);
@@ -89,6 +89,11 @@ public final class ParsedArguments
 	public boolean wasGiven(Argument<?> argument)
 	{
 		return parsedArguments.containsKey(requireNonNull(argument)) || rootArgs.map(args -> args.wasGiven(argument)).orElse(false);
+	}
+
+	private boolean handlesArgument(Argument<?> arg)
+	{
+		return allArguments.contains(arg) || rootArgs.map(args -> args.handlesArgument(arg)).orElse(false);
 	}
 
 	@Override

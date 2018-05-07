@@ -684,6 +684,10 @@ public class CommandTest
 		// The root command does not intersect with multiple levels of commands
 		assertThat(parsedArguments.get(MAIN_ARG)).isEqualTo("");
 
+		// Test that default values for main arguments work
+		parsedArguments = parser.parse("main", "sub");
+		assertThat(subCommand.mainArg).isEqualTo("");
+
 		parsedArguments = parser.parse("main", "sub", "-t", "2");
 		assertThat(subCommand.mainArg).isEqualTo("2");
 		// argument needs to be repeated for each subcommand on the same level
