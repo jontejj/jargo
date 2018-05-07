@@ -14,15 +14,22 @@
  */
 package se.softhouse.jargo.commands;
 
+import se.softhouse.jargo.Argument;
+import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.commands.Commit.Repository;
 
 public class Git extends Command
 {
+	/**
+	 * An example of a globally defined argument that can be available in the sub commands that wants it
+	 */
+	static final Argument<String> MESSAGE = Arguments.stringArgument("--message", "-m").build();
+
 	public Git(Repository repo)
 	{
-		super(subCommands(new Commit(repo), new Log(repo)));
+		super(subCommands(new Commit(repo), new Log(repo), new Merge(repo)));
 	}
 
 	@Override
