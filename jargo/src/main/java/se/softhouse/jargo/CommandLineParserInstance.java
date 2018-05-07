@@ -571,7 +571,15 @@ final class CommandLineParserInstance
 
 		void execute()
 		{
-			command.execute(args);
+			try
+			{
+				command.execute(args);
+			}
+			catch(ArgumentException exception)
+			{
+				exception.withUsage(argumentSettingsForInvokedCommand.usage());
+				throw exception;
+			}
 		}
 
 		@Override

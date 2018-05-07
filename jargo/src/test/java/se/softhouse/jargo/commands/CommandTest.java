@@ -38,6 +38,7 @@ import se.softhouse.common.strings.Describers;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentBuilder.CommandBuilder;
 import se.softhouse.jargo.ArgumentException;
+import se.softhouse.jargo.ArgumentExceptions;
 import se.softhouse.jargo.Arguments;
 import se.softhouse.jargo.Command;
 import se.softhouse.jargo.CommandLineParser;
@@ -833,6 +834,33 @@ public class CommandTest
 			assertThat(repeatable.numberOfCallsToExecute).isEqualTo(0);
 			assertThat(notRepeatable.numberOfCallsToExecute).isEqualTo(0);
 
+		}
+	}
+
+	@Test
+	public void testThatThrownArgumentExceptionsFromExecuteHasUsageAttachedToThem() throws Exception
+	{
+		try
+		{
+			CommandLineParser.withCommands(new Command(){
+
+				@Override
+				protected void execute(ParsedArguments parsedArguments)
+				{
+					throw ArgumentExceptions.withMessage("Catch me");
+				}
+
+				@Override
+				protected String commandName()
+				{
+					return "catcher";
+				}
+			}).parse("catcher");
+			fail("Thrown exception was suppressed");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected.getMessageAndUsage()).isEqualTo(expected("exceptionFromCommand"));
 		}
 	}
 }
