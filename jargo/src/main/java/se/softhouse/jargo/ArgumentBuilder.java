@@ -50,8 +50,10 @@ import se.softhouse.common.guavaextensions.Functions2;
 import se.softhouse.common.guavaextensions.Predicates2;
 import se.softhouse.common.guavaextensions.Suppliers2;
 import se.softhouse.common.strings.Describable;
+import se.softhouse.common.strings.Describables;
 import se.softhouse.common.strings.Describer;
 import se.softhouse.common.strings.Describers;
+import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.jargo.ForwardingStringParser.SimpleForwardingStringParser;
 import se.softhouse.jargo.StringParsers.FixedArityParser;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
@@ -99,6 +101,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	private boolean isAllowedToRepeat = false;
 	@Nonnull private Optional<String> metaDescription = Optional.empty();
 	private boolean hideFromUsage = false;
+	@Nullable private Function<String, Set<String>> completer;
 
 	private boolean isPropertyMap = false;
 
@@ -133,7 +136,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		this(null);
 	}
 
-	ArgumentBuilder(final InternalStringParser<T> stringParser)
+	ArgumentBuilder(@Nullable final InternalStringParser<T> stringParser)
 	{
 		this.internalStringParser = stringParser;
 		myself = self();
@@ -440,6 +443,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * Hides this argument so that it's not displayed in the usage texts.<br>
 	 * It's recommended that hidden arguments have a reasonable {@link #defaultValue(Object)} and
 	 * aren't {@link #required()}, in fact this is recommended for all arguments.
+	 * TODO(jontejj): hidden args should not be completable with {@link CommandLineParser#completer(Completer)}?
 	 *
 	 * @return this builder
 	 */
@@ -473,14 +477,18 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * message of that exception will be used by {@link ArgumentException#getMessageAndUsage()}.
 	 * When this is needed it's generally recommended to write a parser of its own instead.
 	 *
-	 * <b>Note:</b>{@link Object#toString() toString()} on {@code aLimiter} will replace {@link StringParser#descriptionOfValidValues(Locale)} in the usage
+	 * <b>Descriptions:</b>{@link Object#toString() toString()} on {@code aLimiter} will replace {@link StringParser#descriptionOfValidValues(Locale)} in the usage. 
+	 * A simpler alternative to provide a description is to use {@link #limitTo(Predicate, String)}.
 	 *
-	 * <b>Note:</b>The validity of any {@link #defaultValueSupplier(Supplier) default value} isn't checked until
+	 * <b>Supplied default values:</b>The validity of any {@link #defaultValueSupplier(Supplier) default value} isn't checked until
 	 * it's actually needed when {@link ParsedArguments#get(Argument)} is called. This is so
 	 * because {@link Supplier#get()} (or {@link StringParser#defaultValue()}) could take an arbitrary long time.
 	 *
-	 * <b>Note:</b>Any previously set limiter will be {@link Predicates2#and(Predicate, Predicate)
+	 * <b>Many limiters:</b>Any previously set limiter will be {@link Predicates2#and(Predicate, Predicate)
 	 * and'ed} together with {@code aLimiter}.
+	 * 
+	 * <b>Interopability with completers</b> Values suggested with any {@link #completer(Function)} will not be limited automatically. 
+	 * So before generating the suggestions, you should make sure that they are confirming to your limiter.
 	 * </pre>
 	 *
 	 * @param aLimiter a limiter
@@ -488,7 +496,66 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 */
 	public SELF limitTo(Predicate<? super T> aLimiter)
 	{
-		limiter = Predicates2.<T>and(limiter, aLimiter);
+		limiter = Predicates2.and(limiter, aLimiter);
+		return myself;
+	}
+
+	/**
+	 * Like {@link #limitTo(Predicate)} but with {@code aDescription} to describe the valid values this limiter accepts
+	 * 
+	 * @return this builder
+	 */
+	public SELF limitTo(Predicate<? super T> aLimiter, String aDescription)
+	{
+		return limitTo(aLimiter, Describables.withString(aDescription));
+	}
+
+	/**
+	 * Like {@link #limitTo(Predicate, String)} but allows for lazy construction of the description
+	 */
+	public SELF limitTo(Predicate<? super T> aLimiter, Describable aDescription)
+	{
+		requireNonNull(aLimiter);
+		requireNonNull(aDescription);
+		Predicate<? super T> withDescription = new Predicate<T>(){
+
+			@Override
+			public boolean test(T t)
+			{
+				return aLimiter.test(t);
+			}
+
+			@Override
+			public String toString()
+			{
+				return aDescription.description();
+			}
+		};
+		limitTo(withDescription);
+		return myself;
+	}
+
+	/**
+	 * Can be used to complete input values from a dynamic (or static) source. For example
+	 * 
+	 * <pre class="prettyprint">
+	 * <code class="language-java">
+	 *
+	 * stringArgument("-u", "--username").completer((str) -> StringsUtil.prefixes(str, service.users()));
+	 * </code>
+	 * </pre>
+	 * 
+	 * Where {@code service.users()} would return the name of all your users.
+	 * {@link StringsUtil#prefixes(String, java.util.Collection)} is a convenient friend method to easily filter
+	 * out usernames that does not match {@code str} (in this case).
+	 * 
+	 * @param aCompleter function that takes in a part of a parameter and returns
+	 *            a set of strings that would make this parameter a valid one
+	 */
+	public SELF completer(Function<String, Set<String>> aCompleter)
+	{
+		requireNonNull(aCompleter);
+		this.completer = aCompleter;
 		return myself;
 	}
 
@@ -724,6 +791,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		this.isAllowedToRepeat = copy.isAllowedToRepeat;
 		this.metaDescription = copy.metaDescription;
 		this.hideFromUsage = copy.hideFromUsage;
+		this.completer = copy.completer;
 	}
 
 	/**
@@ -802,7 +870,12 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			return defaultValueSupplier;
 		return (Supplier<T>) internalParser()::defaultValue;
 	}
-
+	
+	@Nullable Function<String, Set<String>> completer()
+	{
+		return completer;
+	}
+	
 	/**
 	 * @formatter.on
 	 */
@@ -1193,6 +1266,8 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	@NotThreadSafe
 	public static final class MapArgumentBuilder<K, V> extends InternalArgumentBuilder<MapArgumentBuilder<K, V>, Map<K, V>>
 	{
+		static final String DEFAULT_KV_SEPARATOR = "=";
+
 		private final ArgumentBuilder<?, V> valueBuilder;
 		private final StringParser<K> keyParser;
 
@@ -1214,7 +1289,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 			check(names().size() > 0, ProgrammaticErrors.NO_NAME_FOR_PROPERTY_MAP);
 			if(separator().equals(DEFAULT_SEPARATOR))
 			{
-				separator("=");
+				separator(DEFAULT_KV_SEPARATOR);
 			}
 			else
 			{

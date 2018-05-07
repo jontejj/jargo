@@ -12,6 +12,7 @@
  */
 package se.softhouse.jargo.nonfunctional;
 
+import static java.util.Collections.emptyMap;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
@@ -33,6 +34,7 @@ public final class SecurityTest extends ExhaustiveProgram
 
 	private void run()
 	{
+		parser.noCompleter(); // Otherwise environment variables will be read
 		ArgumentParseRunner runner = new ArgumentParseRunner(1);
 		runner.run();
 	}
@@ -42,7 +44,7 @@ public final class SecurityTest extends ExhaustiveProgram
 	{
 		ImmutableList<String> secureVmArgs = ImmutableList.of(	"-Djava.security.manager",
 																"-Djava.security.policy=src/test/resources/jargo/security.policy");
-		LaunchedProgram launchedProgram = Launcher.launch(secureVmArgs, SecurityTest.class, "");
+		LaunchedProgram launchedProgram = Launcher.launch(secureVmArgs, emptyMap(), SecurityTest.class, "");
 		assertThat(launchedProgram.errors()).isEmpty();
 		assertThat(launchedProgram.output()).isEmpty();
 	}

@@ -14,10 +14,7 @@ package se.softhouse.jargo;
 
 import static se.softhouse.common.guavaextensions.Lists2.size;
 import static se.softhouse.common.guavaextensions.Preconditions2.check;
-import static se.softhouse.common.guavaextensions.Sets2.union;
 import static se.softhouse.common.strings.Describables.format;
-import static se.softhouse.common.strings.StringsUtil.NEWLINE;
-import static se.softhouse.common.strings.StringsUtil.TAB;
 import static se.softhouse.common.strings.StringsUtil.startsWithAndHasMore;
 import static se.softhouse.jargo.Argument.IS_OF_VARIABLE_ARITY;
 import static se.softhouse.jargo.Argument.IS_REPEATED;
@@ -35,12 +32,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,8 +49,9 @@ import javax.annotation.concurrent.Immutable;
 import se.softhouse.common.collections.CharacterTrie;
 import se.softhouse.common.guavaextensions.Lists2;
 import se.softhouse.common.strings.StringsUtil;
-import se.softhouse.jargo.ArgumentExceptions.MissingRequiredArgumentException;
+import se.softhouse.jargo.Argument.ParameterArity;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
+import se.softhouse.jargo.ArgumentIterator.CommandInvocation;
 import se.softhouse.jargo.StringParsers.InternalStringParser;
 import se.softhouse.jargo.internal.Texts.ProgrammaticErrors;
 import se.softhouse.jargo.internal.Texts.UserErrors;
@@ -100,7 +98,10 @@ final class CommandLineParserInstance
 
 	private final Locale locale;
 
-	CommandLineParserInstance(Iterable<Argument<?>> argumentDefinitions, ProgramInformation information, Locale locale, boolean isCommandParser)
+	private final Completer completer;
+
+	CommandLineParserInstance(Iterable<Argument<?>> argumentDefinitions, ProgramInformation information, Locale locale, boolean isCommandParser,
+			Completer completer)
 	{
 		int nrOfArgumentsToHandle = size(argumentDefinitions);
 		this.indexedArguments = new ArrayList<>(nrOfArgumentsToHandle);
@@ -112,6 +113,7 @@ final class CommandLineParserInstance
 		this.programInformation = information;
 		this.locale = locale;
 		this.isCommandParser = isCommandParser;
+		this.completer = completer;
 		for(Argument<?> definition : argumentDefinitions)
 		{
 			addArgumentDefinition(definition);
@@ -122,9 +124,9 @@ final class CommandLineParserInstance
 		verifyThatNoIndexedArgumentIsRepeated();
 	}
 
-	CommandLineParserInstance(Iterable<Argument<?>> argumentDefinitions)
+	CommandLineParserInstance(Iterable<Argument<?>> argumentDefinitions, Completer completer)
 	{
-		this(argumentDefinitions, ProgramInformation.AUTO, US_BY_DEFAULT, false);
+		this(argumentDefinitions, ProgramInformation.AUTO, US_BY_DEFAULT, false, completer);
 	}
 
 	private void addArgumentDefinition(final Argument<?> definition)
@@ -222,95 +224,137 @@ final class CommandLineParserInstance
 	@Nonnull
 	ParsedArguments parse(final Iterable<String> actualArguments) throws ArgumentException
 	{
-		ArgumentIterator arguments = ArgumentIterator.forArguments(actualArguments, helpArguments);
-		return parse(arguments, locale());
+		completer.completeIfApplicable(this);
+
+		ParsedArguments holder = new ParsedArguments(this);
+		ArgumentIterator arguments = ArgumentIterator.forArguments(actualArguments, helpArguments, this::handleArgument);
+		parseArguments(holder, arguments, locale());
+
+		return holder;
 	}
 
 	@Nonnull
-	ParsedArguments parse(ArgumentIterator arguments, Locale inLocale) throws ArgumentException
+	void parseArguments(ParsedArguments holder, final ArgumentIterator iterator, Locale inLocale) throws ArgumentException
 	{
-		ParsedArguments holder = parseArguments(arguments, inLocale);
+		iterator.setCurrentHolder(holder);
 
-		Collection<Argument<?>> missingArguments = holder.requiredArgumentsLeft();
-		if(missingArguments.size() > 0)
-			throw forMissingArguments(missingArguments).withUsage(usage(inLocale));
-
-		for(Argument<?> arg : holder.parsedArguments())
+		while(iterator.hasNext())
 		{
-			holder.finalize(arg);
-			limitArgument(arg, holder, inLocale);
+			iterator.setCurrentArgumentName(iterator.next());
+			parseArgument(iterator, holder);
 		}
 		if(!isCommandParser())
 		{
-			arguments.executeAnyCommandsInTheOrderTheyWereReceived(holder);
+			validateAndFinalize(iterator, null, holder, inLocale);
+			iterator.validateAndFinalize(inLocale);
+			iterator.executeAnyCommandsInTheOrderTheyWereReceived();
 		}
-		return holder;
 	}
 
-	private ParsedArguments parseArguments(final ArgumentIterator iterator, Locale inLocale) throws ArgumentException
+	void validateAndFinalize(ArgumentIterator iterator, @Nullable Argument<?> command, ParsedArguments holder, Locale inLocale)
 	{
-		ParsedArguments holder = new ParsedArguments(allArguments());
-		return parseArguments(holder, iterator, inLocale);
-	}
-
-	ParsedArguments parseArguments(ParsedArguments holder, final ArgumentIterator iterator, Locale inLocale) throws ArgumentException
-	{
-		iterator.setCurrentParser(this);
-		while(iterator.hasNext())
+		try
 		{
-			Argument<?> definition = null;
-			try
+			Collection<Argument<?>> missingArguments = holder.requiredArgumentsLeft();
+			if(!missingArguments.isEmpty())
+				throw forMissingArguments(missingArguments).withUsage(usage(inLocale));
+
+			for(Argument<?> arg : holder.parsedArguments())
 			{
-				iterator.setCurrentArgumentName(iterator.next());
-				definition = getDefinitionForCurrentArgument(iterator, holder, true);
-				if(definition == null)
-				{
-					break;
-				}
-				parseArgument(iterator, holder, definition, inLocale);
-			}
-			catch(ArgumentException e)
-			{
-				String descriptiveName = iterator.getCurrentArgumentName();
-				if(e instanceof MissingRequiredArgumentException)
-				{
-					descriptiveName = iterator.unfinishedCommand.orElse(descriptiveName);
-				}
-				e.withUsedArgumentName(descriptiveName);
-				if(definition != null)
-				{
-					e.withUsageReference(definition);
-				}
-				throw e.withUsage(usage(inLocale));
+				holder.finalize(arg);
+				limitArgument(arg, holder, inLocale);
 			}
 		}
-		return holder;
+		catch(ArgumentException exception)
+		{
+			if(command != null)
+			{
+				exception.withUsedArgumentName(command.names().get(0));
+				exception.withUsageReference(command);
+			}
+			else
+			{
+				exception.withUsedArgumentName(iterator.getCurrentArgumentName());
+			}
+			throw exception;
+		}
 	}
 
-	private <T> void parseArgument(final ArgumentIterator arguments, final ParsedArguments parsedArguments, final Argument<T> definition,
-			Locale inLocale) throws ArgumentException
+	@FunctionalInterface
+	interface FoundArgumentHandler
 	{
-		InternalStringParser<T> parser = definition.parser();
-
-		boolean commandOverride = (parser instanceof Command) && arguments.temporaryRepitionAllowedForCommand;
-		if(parsedArguments.wasGiven(definition) && !definition.isAllowedToRepeat() && !definition.isPropertyMap() && !commandOverride)
-			throw forUnallowedRepetitionArgument(arguments.current());
-
-		T oldValue = parsedArguments.getValue(definition);
-
-		T parsedValue = parser.parse(arguments, oldValue, definition, inLocale);
-
-		parsedArguments.put(definition, parsedValue);
+		void handle(final Argument<?> definition, ParsedArguments parsedArguments, final ArgumentIterator arguments, Locale inLocale);
 	}
 
 	/**
-	 * @return a definition that defines how to handle the current argument
 	 * @throws UnexpectedArgumentException if no definition could be found
 	 *             for the current argument
 	 */
-	@Nullable
-	private Argument<?> getDefinitionForCurrentArgument(final ArgumentIterator iterator, final ParsedArguments holder, boolean fallbackToParent)
-			throws ArgumentException
+	void parseArgument(final ArgumentIterator iterator, final ParsedArguments holder) throws ArgumentException
+	{
+		Argument<?> definition = null;
+		try
+		{
+			definition = getDefinition(iterator, holder);
+			if(definition != null)
+			{
+				iterator.handler().handle(definition, holder, iterator, locale());
+				return;
+			}
+
+			if(!isCommandParser())
+			{
+				// If we have previously rollbacked(to parse main args in the middle of a command's arguments),
+				// then let's also try to rejoin parsing of that command's arguments again
+				Optional<CommandInvocation> lastCommandInvocation = iterator.lastCommand();
+				if(lastCommandInvocation.isPresent())
+				{
+					CommandInvocation invocation = lastCommandInvocation.get();
+					definition = invocation.command.parser().getDefinition(iterator, invocation.args);
+					if(definition == null)
+					{
+						definition = invocation.command.parser().indexed(iterator, invocation.args);
+					}
+					if(definition != null)
+					{
+						iterator.temporaryRepitionAllowedForCommand = true;
+						iterator.handler().handle(definition, invocation.args, iterator, locale());
+						return;
+					}
+				}
+			}
+
+			Optional<ParsedArguments> parentHolder = holder.parentHolder();
+			if(parentHolder.isPresent())
+			{
+				parentHolder.get().parser().parseArgument(iterator, parentHolder.get());
+				return;
+			}
+
+			definition = indexed(iterator, holder);
+			if(definition != null)
+			{
+				iterator.handler().handle(definition, holder, iterator, locale());
+				return;
+			}
+
+			guessAndSuggestIfCloseMatch(iterator);
+
+			// We're out of order, tell the user what we didn't like
+			throw ArgumentExceptions.forUnexpectedArgument(iterator);
+		}
+		catch(ArgumentException e)
+		{
+			e.withUsedArgumentName(iterator.getCurrentArgumentName());
+			if(definition != null)
+			{
+				e.withUsageReference(definition);
+			}
+			throw e.withUsage(usage(locale()));
+		}
+	}
+
+	Argument<?> getDefinition(ArgumentIterator iterator, ParsedArguments holder)
 	{
 		if(iterator.allowsOptions())
 		{
@@ -322,42 +366,21 @@ final class CommandLineParserInstance
 			if(option != null)
 				return option;
 		}
+		return null;
+	}
 
-		Argument<?> indexedArgument = indexedArgument(iterator, holder);
-		if(indexedArgument != null)
-			return indexedArgument;
-
-		// Rolling back here means that the parent parser/command will receive the argument
-		// instead, maybe it can handle it
-		if(isCommandParser())
+	Argument<?> indexed(ArgumentIterator iterator, ParsedArguments holder)
+	{
+		Optional<Argument<?>> indexedArgument = indexedArgument(holder);
+		if(indexedArgument.isPresent())
 		{
-			if(fallbackToParent)
-			{
-				iterator.previous();
-			}
-			return null;
+			Argument<?> arg = indexedArgument.get();
+			iterator.previous();
+			// This helps the error messages explain which of the indexed arguments that failed
+			iterator.setCurrentArgumentName(iterator.usedCommandName().orElseGet(() -> arg.metaDescriptionInRightColumn()));
+			return arg;
 		}
-
-		// If we have previously rollbacked(to parse main args in the middle of a command's arguments),
-		// then let's also try to rejoin parsing of that command's arguments again
-		Iterator<CommandInvocation> lastCommandInvocation = iterator.commandInvocations.descendingIterator();
-		if(lastCommandInvocation.hasNext())
-		{
-			CommandInvocation invocation = lastCommandInvocation.next();
-			Argument<?> subCommandHasSupport = invocation.command.parser().getDefinitionForCurrentArgument(iterator, invocation.args, false);
-			if(subCommandHasSupport != null)
-			{
-				// Let the subcommand see the argument again
-				iterator.previous();
-				iterator.temporaryRepitionAllowedForCommand = true;
-				return invocation.argumentSettingsForInvokedCommand;
-			}
-		}
-
-		guessAndSuggestIfCloseMatch(iterator, holder);
-
-		// We're out of order, tell the user what we didn't like
-		throw ArgumentExceptions.forUnexpectedArgument(iterator);
+		return null;
 	}
 
 	/**
@@ -375,9 +398,10 @@ final class CommandLineParserInstance
 		Entry<String, Argument<?>> entry = specialArguments.get(currentArgument);
 		if(entry != null)
 		{
+			arguments.setCurrentArgumentName(entry.getKey());
 			// Remove "-D" from "-Dkey=value"
-			String valueAfterSeparator = currentArgument.substring(entry.getKey().length());
-			arguments.setNextArgumentTo(valueAfterSeparator);
+			String keyValue = currentArgument.substring(entry.getKey().length());
+			arguments.setNextArgumentTo(keyValue);
 			return entry.getValue();
 		}
 		definition = arguments.helpArgument(currentArgument);
@@ -417,7 +441,7 @@ final class CommandLineParserInstance
 				// worth it, the result is the same at least
 				for(Argument<?> option : foundOptions)
 				{
-					parseArgument(arguments, holder, option, null);
+					handleArgument(option, holder, arguments, null);
 				}
 				return lastOption;
 			}
@@ -428,41 +452,56 @@ final class CommandLineParserInstance
 	/**
 	 * Looks for {@link ArgumentBuilder#names(String...) indexed arguments}
 	 */
-	private Argument<?> indexedArgument(ArgumentIterator arguments, ParsedArguments holder)
+	Optional<Argument<?>> indexedArgument(ParsedArguments holder)
 	{
-		if(holder.indexedArgumentsParsed() < indexedArguments.size())
+		if(holder.indexedArgumentsParsed() < indexedArguments.size() && !holder.hasNonIndexedRequiredArgumentsLeft())
 		{
 			Argument<?> definition = indexedArguments.get(holder.indexedArgumentsParsed());
-			arguments.previous();
-			// This helps the error messages explain which of the indexed arguments that failed
-			if(isCommandParser())
-			{
-				arguments.setCurrentArgumentName(arguments.usedCommandName());
-			}
-			else
-			{
-				arguments.setCurrentArgumentName(definition.metaDescriptionInRightColumn());
-			}
-			return definition;
+			return Optional.of(definition);
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	private static final int ONLY_REALLY_CLOSE_MATCHES = 4;
+	private static final int ONLY_REALLY_CLOSE_MATCHES = 3;
+
+	<T> void handleArgument(final Argument<T> definition, ParsedArguments parsedArguments, final ArgumentIterator arguments, Locale inLocale)
+			throws ArgumentException
+	{
+		arguments.setCurrentHolder(parsedArguments);
+		InternalStringParser<T> parser = definition.parser();
+
+		boolean commandOverride = (parser instanceof Command) && arguments.temporaryRepitionAllowedForCommand;
+		if(parsedArguments.wasGiven(definition) && !definition.isAllowedToRepeat() && !definition.isPropertyMap() && !commandOverride)
+			throw forUnallowedRepetitionArgument(arguments.current());
+
+		T oldValue = parsedArguments.getValue(definition);
+
+		T parsedValue = parser.parse(arguments, oldValue, definition, inLocale);
+
+		oldValue = parsedArguments.put(definition, parsedValue);
+		// Re-check as parse is recursive
+		if(oldValue != null && !definition.isAllowedToRepeat() && !definition.isPropertyMap() && !commandOverride)
+			throw forUnallowedRepetitionArgument(arguments.current());
+
+		if(definition.isIndexed() && definition.parser().parameterArity() != ParameterArity.VARIABLE_AMOUNT)
+		{
+			parsedArguments.incrementIndexedArgumentsParsed();
+		}
+	}
 
 	/**
 	 * Suggests probable, valid, alternatives for a faulty argument, based on the
 	 * {@link StringsUtil#levenshteinDistance(String, String)}
 	 */
-	private void guessAndSuggestIfCloseMatch(ArgumentIterator arguments, ParsedArguments holder) throws ArgumentException
+	private void guessAndSuggestIfCloseMatch(ArgumentIterator arguments) throws ArgumentException
 	{
-		Set<String> availableArguments = union(holder.nonParsedArguments(), arguments.nonParsedArguments());
+		Set<String> availableArguments = arguments.nonParsedArguments();
 
 		if(!availableArguments.isEmpty())
 		{
 			List<String> suggestions = StringsUtil.closestMatches(arguments.getCurrentArgumentName(), availableArguments, ONLY_REALLY_CLOSE_MATCHES);
 			if(!suggestions.isEmpty())
-				throw withMessage(format(UserErrors.SUGGESTION, arguments.getCurrentArgumentName(), String.join(NEWLINE + TAB, suggestions)));
+				throw ArgumentExceptions.withSuggestions(arguments.getCurrentArgumentName(), suggestions);
 		}
 	}
 
@@ -505,6 +544,11 @@ final class CommandLineParserInstance
 		return locale;
 	}
 
+	Completer completer()
+	{
+		return completer;
+	}
+
 	@CheckReturnValue
 	@Nonnull
 	Usage usage(Locale inLocale)
@@ -527,7 +571,7 @@ final class CommandLineParserInstance
 			usage = new Usage(Arrays.<Argument<?>>asList(argument), inLocale, programInformation(), isCommandParser());
 			if(isCommandParser())
 			{
-				String withCommandReference = ". Usage for " + argument + " (argument to " + arguments.usedCommandName() + "):";
+				String withCommandReference = ". Usage for " + argument + " (argument to " + arguments.usedCommandName().get() + "):";
 				e.withUsageReference(withCommandReference);
 			}
 			else
@@ -540,7 +584,7 @@ final class CommandLineParserInstance
 			usage = usage(inLocale);
 			if(isCommandParser())
 			{
-				e.withUsageReference(". See usage for " + arguments.usedCommandName() + " below:");
+				e.withUsageReference(". See usage for " + arguments.usedCommandName().get() + " below:");
 			}
 			else
 			{
@@ -556,37 +600,9 @@ final class CommandLineParserInstance
 		return usage(locale()).toString();
 	}
 
-	static final class CommandInvocation
+	Map<String, Argument<?>> helpArguments()
 	{
-		private final Command command;
-		final ParsedArguments args;
-		final Argument<?> argumentSettingsForInvokedCommand;
-
-		CommandInvocation(Command command, ParsedArguments args, Argument<?> argumentSettingsForInvokedCommand)
-		{
-			this.command = command;
-			this.args = args;
-			this.argumentSettingsForInvokedCommand = argumentSettingsForInvokedCommand;
-		}
-
-		void execute()
-		{
-			try
-			{
-				command.execute(args);
-			}
-			catch(ArgumentException exception)
-			{
-				exception.withUsage(argumentSettingsForInvokedCommand.usage());
-				throw exception;
-			}
-		}
-
-		@Override
-		public String toString()
-		{
-			return command.commandName() + "" + args;
-		}
+		return helpArguments;
 	}
 
 	private static final class NamedArguments

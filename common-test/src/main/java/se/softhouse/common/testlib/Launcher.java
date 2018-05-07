@@ -17,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
@@ -50,12 +52,14 @@ public final class Launcher
 		private final String errors;
 		private final String output;
 		private final String debugInformation;
+		private final int exitCode;
 
-		private LaunchedProgram(String errors, String output, String debugInformation)
+		private LaunchedProgram(String errors, String output, String debugInformation, int exitCode)
 		{
 			this.errors = errors;
 			this.output = output;
 			this.debugInformation = debugInformation;
+			this.exitCode = exitCode;
 		}
 
 		/**
@@ -72,6 +76,14 @@ public final class Launcher
 		public String errors()
 		{
 			return errors;
+		}
+
+		/**
+		 * @return the <a href="https://en.wikipedia.org/wiki/Exit_status">exit code/status</a> of the finished program
+		 */
+		public int exitCode()
+		{
+			return exitCode;
 		}
 
 		/**
@@ -94,14 +106,16 @@ public final class Launcher
 	}
 
 	/**
-	 * Like {@link #launch(Class, String...)} but with a possiblity to specify any additional vm args to pass to the jvm
+	 * Like {@link #launch(Class, String...)} but with more configurable options
 	 * 
+	 * @param envVariables variables to add to {@link ProcessBuilder#environment()}.
 	 * @param additionalVmArgs the vm args to pass in
 	 */
-	public static LaunchedProgram launch(List<String> additionalVmArgs, Class<?> classWithMainMethod, String ... programArguments)
-			throws IOException, InterruptedException
+	public static LaunchedProgram launch(List<String> additionalVmArgs, Map<String, String> envVariables, Class<?> classWithMainMethod,
+			String ... programArguments) throws IOException, InterruptedException
 	{
 		checkNotNull(additionalVmArgs);
+		checkNotNull(envVariables);
 		checkNotNull(programArguments);
 		try
 		{
@@ -127,7 +141,7 @@ public final class Launcher
 		args.addAll(Arrays.asList(programArguments));
 
 		String debugInformation = "\njvm: " + jvm + "\nvm args: " + vmArgs + "\nclasspath: " + classPath;
-		return execute(args, debugInformation);
+		return execute(args, envVariables, debugInformation);
 	}
 
 	/**
@@ -150,7 +164,7 @@ public final class Launcher
 	 */
 	public static LaunchedProgram launch(Class<?> classWithMainMethod, String ... programArguments) throws IOException, InterruptedException
 	{
-		return launch(emptyList(), classWithMainMethod, programArguments);
+		return launch(emptyList(), emptyMap(), classWithMainMethod, programArguments);
 	}
 
 	/**
@@ -167,7 +181,7 @@ public final class Launcher
 	 */
 	public static LaunchedProgram launch(String program, String ... programArguments) throws IOException, InterruptedException
 	{
-		return execute(Lists.asList(program, programArguments), "Failed to launch " + program);
+		return execute(Lists.asList(program, programArguments), emptyMap(), "Failed to launch " + program);
 	}
 
 	/**
@@ -176,12 +190,15 @@ public final class Launcher
 	 */
 	private static final Pattern JVM_OUTPUT_CLEANER = Pattern.compile("Picked up _JAVA_OPTIONS.*\n");
 
-	private static LaunchedProgram execute(List<String> args, String debugInformation) throws IOException, InterruptedException
+	private static LaunchedProgram execute(List<String> args, Map<String, String> envVariables, String debugInformation)
+			throws IOException, InterruptedException
 	{
-		Process program = new ProcessBuilder().command(args).start();
+		ProcessBuilder processBuilder = new ProcessBuilder().command(args);
+		processBuilder.environment().putAll(envVariables);
+		Process program = processBuilder.start();
 		Future<String> stdout = Streams.readAsynchronously(program.getInputStream());
 		Future<String> stderr = Streams.readAsynchronously(program.getErrorStream());
-		program.waitFor();
+		int exitCode = program.waitFor();
 		try
 		{
 			String output = stdout.get();
@@ -191,7 +208,7 @@ public final class Launcher
 			{
 				errors = matcher.replaceFirst("");
 			}
-			return new LaunchedProgram(errors, output, debugInformation);
+			return new LaunchedProgram(errors, output, debugInformation, exitCode);
 		}
 		catch(ExecutionException e)
 		{

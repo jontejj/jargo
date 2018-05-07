@@ -3,3 +3,4 @@ grant {
     permission java.io.FilePermission "${user.home}${/}jargo${/}jacoco.exec", "write";
     permission java.lang.RuntimePermission "shutdownHooks";
 };
+

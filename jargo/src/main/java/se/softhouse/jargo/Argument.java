@@ -16,6 +16,7 @@ import static java.util.Arrays.asList;
 import static se.softhouse.common.guavaextensions.Predicates2.alwaysTrue;
 import static se.softhouse.common.strings.Describables.format;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
+import static se.softhouse.jargo.CommandLineParser.STANDARD_COMPLETER;
 
 import java.text.CollationKey;
 import java.text.Collator;
@@ -24,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -68,6 +70,7 @@ public final class Argument<T>
 	@Nonnull private final Supplier<? extends T> defaultValue;
 	@Nullable private final Describer<? super T> defaultValueDescriber;
 	@Nonnull private final Predicate<? super T> limiter;
+	@Nullable private final Function<String, Set<String>> completer;
 
 	// Internal bookkeeping
 	@Nonnull private final Function<T, T> finalizer;
@@ -100,6 +103,7 @@ public final class Argument<T>
 		this.finalizer = builder.finalizer();
 		this.limiter = builder.limiter();
 		this.defaultValue = builder.defaultValueSupplierOrFromParser();
+		this.completer = builder.completer();
 
 		// Fail-fast for invalid default values that are created already
 		if(Suppliers2.isSuppliedAlready(defaultValue))
@@ -298,7 +302,7 @@ public final class Argument<T>
 	{
 		// Not cached to save memory, users should use CommandLineParser.withArguments if they are
 		// concerned about reuse
-		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this));
+		return new CommandLineParserInstance(Arrays.<Argument<?>>asList(Argument.this), STANDARD_COMPLETER);
 	}
 
 	/**
@@ -333,4 +337,18 @@ public final class Argument<T>
 	// TODO(jontejj): replace this with a comparator that uses the Usage.locale instead of
 	// Locale.ROOT?
 	static final Comparator<Argument<?>> NAME_COMPARATOR = (lhs, rhs) -> lhs.sortingKey.compareTo(rhs.sortingKey);
+
+	@CheckReturnValue
+	Iterable<String> complete(String partOfWord, ArgumentIterator iterator)
+	{
+		if(!separator.equals(ArgumentBuilder.DEFAULT_SEPARATOR))
+		{
+			// Remove "-D" from "-Dkey=value"
+			partOfWord = partOfWord.substring(iterator.getCurrentArgumentName().length());
+		}
+
+		if(completer != null)
+			return completer.apply(partOfWord);
+		return parser().complete(this, partOfWord, iterator);
+	}
 }

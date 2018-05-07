@@ -14,8 +14,8 @@
  */
 package se.softhouse.jargo;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 import static se.softhouse.common.guavaextensions.Preconditions2.checkNulls;
 import static se.softhouse.jargo.ArgumentExceptions.withMessage;
@@ -23,9 +23,11 @@ import static se.softhouse.jargo.ArgumentExceptions.withMessage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -33,8 +35,7 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.annotation.concurrent.ThreadSafe;
 
-import se.softhouse.common.strings.StringsUtil;
-import se.softhouse.jargo.CommandLineParserInstance.CommandInvocation;
+import se.softhouse.jargo.CommandLineParserInstance.FoundArgumentHandler;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 
 /**
@@ -49,6 +50,11 @@ final class ArgumentIterator implements Iterator<String>
 	private final List<String> arguments;
 
 	/**
+	 * Stored here to allow help arguments to be preferred over indexed arguments
+	 */
+	private final Map<String, Argument<?>> helpArguments;
+
+	/**
 	 * Corresponds to one of the {@link Argument#names()} that has been given from the command
 	 * line. This is updated as soon as the parsing of a new argument begins.
 	 * For indexed arguments this will be the meta description instead.
@@ -57,36 +63,45 @@ final class ArgumentIterator implements Iterator<String>
 	private int currentArgumentIndex;
 	private boolean endOfOptionsReceived;
 
-	LinkedList<CommandInvocation> commandInvocations = new LinkedList<>();
-	Optional<String> unfinishedCommand = Optional.empty();
+	private final LinkedList<CommandInvocation> commandInvocations = new LinkedList<>();
+
 	/**
 	 * Allows commands to rejoin parsing of arguments if main arguments are specified in-between
 	 */
 	boolean temporaryRepitionAllowedForCommand;
 
 	/**
-	 * In case of {@link Command}s this may be the parser for a specific {@link Command} or just
-	 * simply the main parser
+	 * Hints that the word to complete was not actually given yet
 	 */
-	private CommandLineParserInstance currentParser;
+	boolean isCompletingGeneratedSuggestion;
+
+	private ParsedArguments currentHolder;
+
+	private FoundArgumentHandler handler;
 
 	/**
-	 * Stored here to allow help arguments to be preferred over indexed arguments
+	 * Arguments have been manipulated and not yet consumed
 	 */
-	private final Map<String, Argument<?>> helpArguments;
+	private boolean dirty;
 
 	/**
 	 * @param actualArguments a list of arguments, will be modified
 	 */
-	private ArgumentIterator(Iterable<String> actualArguments, Map<String, Argument<?>> helpArguments)
+	private ArgumentIterator(Iterable<String> actualArguments, Map<String, Argument<?>> helpArguments, FoundArgumentHandler handler)
 	{
 		this.arguments = checkNulls(actualArguments, "Argument strings may not be null");
 		this.helpArguments = requireNonNull(helpArguments);
+		this.handler = requireNonNull(handler);
 	}
 
 	Argument<?> helpArgument(String currentArgument)
 	{
 		return helpArguments.get(currentArgument);
+	}
+
+	ParsedArguments currentHolder()
+	{
+		return currentHolder;
 	}
 
 	/**
@@ -97,42 +112,67 @@ final class ArgumentIterator implements Iterator<String>
 		return !endOfOptionsReceived;
 	}
 
-	void setCurrentParser(CommandLineParserInstance instance)
+	void setCurrentHolder(ParsedArguments currentHolder)
 	{
-		currentParser = instance;
+		this.currentHolder = currentHolder;
 	}
 
-	void rememberAsCommand()
+	static final class CommandInvocation
 	{
-		// The command has moved the index by 1 therefore the -1 to get the index of the
-		// commandName
-		unfinishedCommand = Optional.of(arguments.get(currentArgumentIndex - 1));
-	}
+		final Command command;
+		final ParsedArguments args;
+		final Argument<?> argumentSettingsForInvokedCommand;
 
-	void rememberInvocationOfCommand(Command command, ParsedArguments argumentsToCommand, Argument<?> argumentSettingsForInvokedCommand,
-			List<Argument<?>> commandArguments)
-	{
-		commandInvocations.add(new CommandInvocation(command, argumentsToCommand, argumentSettingsForInvokedCommand));
-		unfinishedCommand = Optional.empty();
-
-		for(Argument<?> possibleSubcommand : commandArguments)
+		CommandInvocation(Command command, ParsedArguments args, Argument<?> argumentSettingsForInvokedCommand)
 		{
-			for(CommandInvocation invocation : commandInvocations)
+			this.command = command;
+			this.args = args;
+			this.argumentSettingsForInvokedCommand = argumentSettingsForInvokedCommand;
+		}
+
+		void execute()
+		{
+			try
 			{
-				if(possibleSubcommand == invocation.argumentSettingsForInvokedCommand)
-				{
-					invocation.args.setRootArgs(argumentsToCommand);
-				}
+				command.execute(args);
 			}
+			catch(ArgumentException exception)
+			{
+				exception.withUsage(argumentSettingsForInvokedCommand.usage());
+				throw exception;
+			}
+		}
+
+		@Override
+		public String toString()
+		{
+			return command.commandName() + "" + args;
 		}
 	}
 
-	void executeAnyCommandsInTheOrderTheyWereReceived(ParsedArguments rootArgs)
+	void rememberInvocationOfCommand(Command command, ParsedArguments argumentsToCommand, Argument<?> argumentSettingsForInvokedCommand)
+	{
+		commandInvocations.add(new CommandInvocation(command, argumentsToCommand, argumentSettingsForInvokedCommand));
+	}
+
+	Optional<CommandInvocation> lastCommand()
+	{
+		Iterator<CommandInvocation> lastCommandInvocation = commandInvocations.descendingIterator();
+		if(lastCommandInvocation.hasNext())
+			return Optional.of(lastCommandInvocation.next());
+		return Optional.empty();
+	}
+
+	void validateAndFinalize(Locale locale)
 	{
 		for(CommandInvocation invocation : commandInvocations)
 		{
-			invocation.args.setRootArgs(rootArgs);
+			invocation.command.parser().validateAndFinalize(this, invocation.argumentSettingsForInvokedCommand, invocation.args, locale);
 		}
+	}
+
+	void executeAnyCommandsInTheOrderTheyWereReceived()
+	{
 		for(CommandInvocation invocation : commandInvocations)
 		{
 			invocation.execute();
@@ -144,10 +184,10 @@ final class ArgumentIterator implements Iterator<String>
 	 */
 	Set<String> nonParsedArguments()
 	{
-		Iterator<CommandInvocation> commands = commandInvocations.descendingIterator();
-		if(commands.hasNext())
-			return commands.next().args.nonParsedArguments();
-		return emptySet();
+		HashSet<String> result = commandInvocations.stream().map(ci -> ci.args.nonParsedArguments()).collect(	HashSet::new, (l, r) -> l.addAll(r),
+																												(l, r) -> l.addAll(r));
+		result.addAll(currentHolder.nonParsedArguments());
+		return result;
 	}
 
 	/**
@@ -155,19 +195,21 @@ final class ArgumentIterator implements Iterator<String>
 	 * multiple commands (or multiple command names) are used it's clear which command the
 	 * offending argument is part of
 	 */
-	String usedCommandName()
+	Optional<String> usedCommandName()
 	{
-		return unfinishedCommand.get();
+		return lastCommand().map(invocation -> invocation.argumentSettingsForInvokedCommand.toString());
 	}
 
-	static ArgumentIterator forArguments(Iterable<String> arguments, Map<String, Argument<?>> helpArguments)
+	static ArgumentIterator forArguments(Iterable<String> arguments, Map<String, Argument<?>> helpArguments, FoundArgumentHandler handler)
 	{
-		return new ArgumentIterator(arguments, helpArguments);
+		return new ArgumentIterator(arguments, helpArguments, handler);
 	}
 
 	static ArgumentIterator forArguments(Iterable<String> arguments)
 	{
-		return new ArgumentIterator(arguments, emptyMap());
+		FoundArgumentHandler noOpHandler = (d, p, a, l) -> {
+		};
+		return new ArgumentIterator(arguments, emptyMap(), noOpHandler);
 	}
 
 	/**
@@ -190,6 +232,7 @@ final class ArgumentIterator implements Iterator<String>
 		String nextArgument = arguments.get(currentArgumentIndex++);
 		nextArgument = skipAheadIfEndOfOptions(nextArgument);
 		nextArgument = readArgumentsFromFile(nextArgument);
+		dirty = false;
 
 		return nextArgument;
 	}
@@ -201,7 +244,7 @@ final class ArgumentIterator implements Iterator<String>
 	 */
 	private String skipAheadIfEndOfOptions(String nextArgument)
 	{
-		if(!endOfOptionsReceived && nextArgument.equals(UsageTexts.END_OF_OPTIONS))
+		if(!endOfOptionsReceived && nextArgument.equals(UsageTexts.END_OF_OPTIONS) && hasNext())
 		{
 			endOfOptionsReceived = true;
 			return next();
@@ -226,7 +269,7 @@ final class ArgumentIterator implements Iterator<String>
 			{
 				try
 				{
-					List<String> lines = Files.readAllLines(fileWithArguments.toPath(), StringsUtil.UTF8);
+					List<String> lines = Files.readAllLines(fileWithArguments.toPath(), UTF_8);
 					appendArgumentsAtCurrentPosition(lines);
 				}
 				catch(IOException errorWhileReadingFile)
@@ -240,7 +283,7 @@ final class ArgumentIterator implements Iterator<String>
 		return nextArgument;
 	}
 
-	private void appendArgumentsAtCurrentPosition(List<String> argumentsToAppend)
+	void appendArgumentsAtCurrentPosition(List<String> argumentsToAppend)
 	{
 		arguments.addAll(currentArgumentIndex, argumentsToAppend);
 	}
@@ -248,7 +291,9 @@ final class ArgumentIterator implements Iterator<String>
 	@Override
 	public String toString()
 	{
-		return arguments.subList(currentArgumentIndex, arguments.size()).toString();
+		List<String> parsed = arguments.subList(0, currentArgumentIndex);
+		List<String> remaining = arguments.subList(currentArgumentIndex, arguments.size());
+		return "Parsed: " + parsed + ", Current: " + currentArgumentName + ", Remaining: " + remaining;
 	}
 
 	/**
@@ -270,6 +315,7 @@ final class ArgumentIterator implements Iterator<String>
 	void setNextArgumentTo(String newNextArgumentString)
 	{
 		arguments.set(--currentArgumentIndex, newNextArgumentString);
+		dirty = true;
 	}
 
 	boolean hasPrevious()
@@ -287,8 +333,26 @@ final class ArgumentIterator implements Iterator<String>
 		return currentArgumentName;
 	}
 
-	CommandLineParserInstance currentParser()
+	FoundArgumentHandler handler()
 	{
-		return currentParser;
+		return handler;
+	}
+
+	void setHandler(FoundArgumentHandler handler)
+	{
+		this.handler = handler;
+	}
+
+	/**
+	 * Because {@link CommandLineParserInstance#lookupByName} might use
+	 * {@link #setNextArgumentTo(String)} and leave the iterator behind in a bad state
+	 */
+	void removeCurrentIfDirty()
+	{
+		if(dirty)
+		{
+			arguments.remove(currentArgumentIndex);
+			dirty = false;
+		}
 	}
 }

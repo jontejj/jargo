@@ -15,6 +15,7 @@ package se.softhouse.jargo;
 import static com.google.common.collect.ImmutableList.of;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
+import static se.softhouse.jargo.Arguments.enumArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.limiters.FooLimiter.foos;
@@ -23,12 +24,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
 import se.softhouse.jargo.internal.Texts.UserErrors;
+import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 
 /**
  * Tests for {@link ArgumentBuilder#repeated()}
@@ -142,6 +145,24 @@ public class RepeatedArgumentTest
 		catch(UnsupportedOperationException expected)
 		{
 		}
+	}
+
+	@Test
+	public void testThatRepeatedValuesAreSuggestedEvenIfAlreadyGiven()
+	{
+		Argument<List<Action>> action = enumArgument(Action.class, "-a").repeated().build();
+		CommandLineParser parser = CommandLineParser.withArguments(action);
+		SortedSet<String> suggestions = FakeCompleter.complete(parser, "-a", "start", "");
+		assertThat(suggestions).containsOnly("-a ");
+	}
+
+	@Test
+	public void testThatNonRepeatedValuesAreNotSuggestedIfAlreadyGiven()
+	{
+		Argument<Action> action = enumArgument(Action.class, "-a").build();
+		CommandLineParser parser = CommandLineParser.withArguments(action);
+		SortedSet<String> suggestions = FakeCompleter.complete(parser, "-a", "start", "");
+		assertThat(suggestions).isEmpty();
 	}
 
 	@SuppressWarnings("deprecation")

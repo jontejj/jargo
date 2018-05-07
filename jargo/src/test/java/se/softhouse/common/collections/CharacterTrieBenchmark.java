@@ -15,7 +15,6 @@ package se.softhouse.common.collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.SortedMap;
 
 import com.google.caliper.Param;
@@ -88,7 +87,7 @@ public class CharacterTrieBenchmark extends SimpleBenchmark
 		int dummy = 0;
 		for(int i = 0; i < reps; i++)
 		{
-			for(Entry<String, String> entry : type.entriesWithPrefix(elements, "100"))
+			for(Entry<String, String> entry : type.entriesWithPrefix(elements, "100").entrySet())
 			{
 				if(entry != null)
 				{
@@ -111,9 +110,9 @@ public class CharacterTrieBenchmark extends SimpleBenchmark
 			}
 
 	@Override
-			<T> Set<Entry<String, T>> entriesWithPrefix(Map<String, T> elements, String prefix)
+			<T> Map<String, T> entriesWithPrefix(Map<String, T> elements, String prefix)
 			{
-				return ((SortedMap<String, T>) elements).tailMap(prefix).entrySet();
+				return ((SortedMap<String, T>) elements).tailMap(prefix);
 			}
 
 	},
@@ -127,7 +126,7 @@ public class CharacterTrieBenchmark extends SimpleBenchmark
 			}
 
 	@Override
-			<T> Set<Entry<String, T>> entriesWithPrefix(Map<String, T> elements, String prefix)
+			<T> Map<String, T> entriesWithPrefix(Map<String, T> elements, String prefix)
 			{
 				return ((CharacterTrie<T>) elements).getEntriesWithPrefix(prefix);
 			}
@@ -136,7 +135,7 @@ public class CharacterTrieBenchmark extends SimpleBenchmark
 
 	abstract <T> Map<String, T> createMap(Map<String, T> elements);
 
-	abstract <T> Set<Entry<String, T>> entriesWithPrefix(Map<String, T> elements, String prefix);
+	abstract <T> Map<String, T> entriesWithPrefix(Map<String, T> elements, String prefix);
 
 	}
 

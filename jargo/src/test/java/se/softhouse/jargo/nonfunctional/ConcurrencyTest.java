@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import net.jcip.annotations.NotThreadSafe;
 import se.softhouse.common.testlib.ConcurrencyTester;
 import se.softhouse.common.testlib.ConcurrencyTester.RunnableFactory;
 import se.softhouse.jargo.Argument;
@@ -31,6 +32,7 @@ import se.softhouse.jargo.utils.ExpectedTexts;
  * Stress tests that verifies that a {@link CommandLineParser} can be used from several
  * {@link Thread}s concurrently
  */
+@NotThreadSafe // Each test is parallel enough (signal to surefire to not run each test in parallel)
 public class ConcurrencyTest extends ExhaustiveProgram
 {
 	final String expectedUsageText = ExpectedTexts.expected("allFeaturesInUsage");

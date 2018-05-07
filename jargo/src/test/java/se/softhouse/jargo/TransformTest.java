@@ -40,18 +40,15 @@ public class TransformTest
 	@Test
 	public void testThatStringCanBeLimitedAndThenTransformed() throws Exception
 	{
-		ShortString shortStrings = new ShortString();
 		try
 		{
-			Arguments.stringArgument("--foo").limitTo(shortStrings).transform(String::length).parse("--foo", "abcdsdasdasdas");
+			Arguments.stringArgument("--foo").limitTo(str -> str.length() < 10, "a string of max 10 characters").transform(String::length)
+					.parse("--foo", "abcdsdasdasdas");
 			fail("abcdsdasdasdas should be rejected as it is longer than 10 chars");
 		}
 		catch(ArgumentException expected)
 		{
-			// TODO(joj): "any string", it could be described with a
-			// ArgumentBuilder#describeValidValues(...) method
-			// as it's now the Predicate's toString needs to be overwritten
-			assertThat(expected).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, "abcdsdasdasdas", shortStrings));
+			assertThat(expected).hasMessage(String.format(UserErrors.DISALLOWED_VALUE, "abcdsdasdasdas", "a string of max 10 characters"));
 		}
 	}
 

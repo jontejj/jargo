@@ -16,6 +16,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static se.softhouse.common.guavaextensions.Preconditions2.check;
 import static se.softhouse.common.guavaextensions.Predicates2.in;
+import static se.softhouse.jargo.Argument.IS_INDEXED;
 import static se.softhouse.jargo.Argument.IS_REQUIRED;
 
 import java.util.Collection;
@@ -25,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
@@ -43,22 +45,36 @@ public final class ParsedArguments
 	/**
 	 * Stores results from {@link StringParser#parse(String, Locale)}
 	 */
-	@Nonnull private final Map<Argument<?>, Object> parsedArguments = new LinkedHashMap<>();
+	@Nonnull private final Map<Argument<?>, Object> parsedArguments = new LinkedHashMap<>(4);
 	@Nonnull private final Set<Argument<?>> allArguments;
 
 	/**
 	 * This gives commands access to any args to the root/parent command arguments
 	 */
-	private Optional<ParsedArguments> rootArgs = Optional.empty();
+	@Nonnull private final Optional<ParsedArguments> parent;
+
+	/**
+	 * The parser that created this instance
+	 */
+	@Nonnull private final CommandLineParserInstance source;
 
 	/**
 	 * Keeps a running total of how many indexed arguments that have been parsed
 	 */
 	private int indexedArgumentsParsed = 0;
 
-	ParsedArguments(Set<Argument<?>> arguments)
+	ParsedArguments(CommandLineParserInstance source, ParsedArguments parent)
 	{
-		allArguments = arguments;
+		this.allArguments = source.allArguments();
+		this.source = source;
+		this.parent = Optional.of(parent);
+	}
+
+	ParsedArguments(CommandLineParserInstance source)
+	{
+		this.allArguments = source.allArguments();
+		this.source = source;
+		this.parent = Optional.empty();
 	}
 
 	/**
@@ -88,12 +104,12 @@ public final class ParsedArguments
 	 */
 	public boolean wasGiven(Argument<?> argument)
 	{
-		return parsedArguments.containsKey(requireNonNull(argument)) || rootArgs.map(args -> args.wasGiven(argument)).orElse(false);
+		return parsedArguments.containsKey(requireNonNull(argument)) || parent.map(args -> args.wasGiven(argument)).orElse(false);
 	}
 
 	private boolean handlesArgument(Argument<?> arg)
 	{
-		return allArguments.contains(arg) || rootArgs.map(args -> args.handlesArgument(arg)).orElse(false);
+		return allArguments.contains(arg) || parent.map(args -> args.handlesArgument(arg)).orElse(false);
 	}
 
 	@Override
@@ -121,14 +137,10 @@ public final class ParsedArguments
 
 	// Publicly this class is Immutable, CommandLineParserInstance is only allowed to modify it
 	// during parsing
-
-	<T> void put(final Argument<T> definition, @Nullable final T value)
+	@SuppressWarnings("unchecked")
+	<T> T put(final Argument<T> definition, @Nullable final T value)
 	{
-		if(definition.isIndexed())
-		{
-			indexedArgumentsParsed++;
-		}
-		parsedArguments.put(definition, value);
+		return (T) parsedArguments.put(definition, value);
 	}
 
 	/**
@@ -150,7 +162,7 @@ public final class ParsedArguments
 			T value = (T) parsedArguments.get(definition);
 			return value;
 		}
-		return rootArgs.map(args -> args.getValue(definition)).orElse(null);
+		return parent.map(args -> args.getValue(definition)).orElse(null);
 	}
 
 	Collection<Argument<?>> requiredArgumentsLeft()
@@ -158,9 +170,19 @@ public final class ParsedArguments
 		return allArguments.stream().filter(IS_REQUIRED.and(in(parsedArguments.keySet()).negate())).collect(toList());
 	}
 
+	boolean hasNonIndexedRequiredArgumentsLeft()
+	{
+		return allArguments.stream().filter(IS_REQUIRED.and(IS_INDEXED.negate()).and(in(parsedArguments.keySet()).negate())).findFirst().isPresent();
+	}
+
 	int indexedArgumentsParsed()
 	{
 		return indexedArgumentsParsed;
+	}
+
+	void incrementIndexedArgumentsParsed()
+	{
+		indexedArgumentsParsed++;
 	}
 
 	Set<Argument<?>> parsedArguments()
@@ -168,17 +190,21 @@ public final class ParsedArguments
 		return parsedArguments.keySet();
 	}
 
+	Stream<Argument<?>> allArgumentsRecursively()
+	{
+		return Stream.concat(allArguments.stream(), parent.map(r -> r.allArgumentsRecursively()).orElse(Stream.empty()));
+	}
+
 	Set<String> nonParsedArguments()
 	{
 		Set<String> validArguments = new HashSet<>(allArguments.size());
-		for(Argument<?> argument : allArguments)
-		{
+		allArgumentsRecursively().forEach(argument -> {
 			boolean wasGiven = wasGiven(argument);
 			if(!wasGiven || argument.isAllowedToRepeat())
 			{
 				for(String name : argument.names())
 				{
-					if(argument.separator().equals(ArgumentBuilder.DEFAULT_SEPARATOR) || argument.isPropertyMap())
+					if(argument.isPropertyMap())
 					{
 						validArguments.add(name);
 					}
@@ -189,17 +215,24 @@ public final class ParsedArguments
 
 				}
 			}
-		}
+		});
 		return validArguments;
 	}
 
-	void setRootArgs(ParsedArguments rootArgs)
+	CommandLineParserInstance parser()
 	{
-		// If this has been set by a parent command it should not be cleared, this makes it possible to have
-		// access to arguments to a chain of parent commands
-		if(!this.rootArgs.isPresent())
-		{
-			this.rootArgs = Optional.of(rootArgs);
-		}
+		return source;
+	}
+
+	Optional<ParsedArguments> parentHolder()
+	{
+		return parent;
+	}
+
+	CommandLineParserInstance rootParser()
+	{
+		if(parent.isPresent())
+			return parent.get().rootParser();
+		return parser();
 	}
 }

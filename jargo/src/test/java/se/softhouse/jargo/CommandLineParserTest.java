@@ -141,7 +141,7 @@ public class CommandLineParserTest
 		}
 		catch(ArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-number", "--number"));
+			assertThat(expected).hasMessage(String.format(UserErrors.SUGGESTION, "-number", "--number "));
 		}
 	}
 
@@ -522,6 +522,7 @@ public class CommandLineParserTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatNamesAreNotAllowedToHaveSpacesInThem() throws Exception
 	{
 		try

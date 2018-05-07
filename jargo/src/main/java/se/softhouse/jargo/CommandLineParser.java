@@ -15,6 +15,7 @@ package se.softhouse.jargo;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,7 +89,25 @@ import se.softhouse.common.strings.Describable;
  * it will be described by the ArgumentException. Use {@link ArgumentException#getMessageAndUsage()} if you
  * want to explain what went wrong to the user.
  * </pre>
- *
+ * 
+ * <b>Tab-completion</b> (for <a href="https://en.wikipedia.org/wiki/Bash_(Unix_shell)">Bash</a>)
+ * Your users need to put this in their ~/.bash_profile file:
+ * 
+ * <pre>
+ * {@code 
+ * alias my-app="java -jar <path-to-app>.jar"
+ * complete -o default -o bashdefault -o nospace -C my-app "my-app"
+ * }
+ * </pre>
+ * 
+ * Where <code>my-app</code> is the name of your app. It's highly recommended to teach your users how to configure bash-completion
+ * as jargo comes with a pretty feature-rich completion function. To customize completions for an {@link Argument},
+ * use {@link ArgumentBuilder#completer(java.util.function.Function)}. By default, the {@link StringParser#complete(String)} is used.
+ * That means that {@link Enum}, {@link File}, {@link Arguments#booleanArgument(String...)} all works out of the box.
+ * {@link Command}s and sub-commands also get their arguments completed which automatically generates
+ * git-like bash-completion for your program.
+ * If you for some reason don't like this, you can disable this functionality with {@link CommandLineParser#noCompleter()}.
+ * <br>
  * <b>Internationalization</b> By default {@link Locale#US} is used for parsing strings and printing
  * usages. To change this use {@link #locale(Locale)}.<br>
  * <b>Thread safety concerns:</b> If there is a parsing occurring while any modifying method is
@@ -98,14 +117,16 @@ import se.softhouse.common.strings.Describable;
  * externally.
  */
 @ThreadSafe
-// TODO(jontejj): make this Immutable
 public final class CommandLineParser
 {
-	// Internally CommandLineParser is a builder for CommandLineParserInstance but the idea is to
-	// keep this idea hidden in the API to lessen the API complexity
-
 	static final Locale US_BY_DEFAULT = Locale.US;
 
+	static final Completer STANDARD_COMPLETER = Completers.bashCompleter(	() -> System.getenv(), //
+																			(suggestions) -> suggestions.forEach(System.out::println), //
+																			() -> System.exit(0));
+
+	// Internally CommandLineParser is a builder for CommandLineParserInstance but the idea is to
+	// keep this idea hidden in the API to lessen the API complexity
 	@GuardedBy("modifyGuard") private volatile CommandLineParserInstance cachedParser;
 	/**
 	 * Use of this lock makes sure that there's no race condition if several concurrent calls
@@ -116,7 +137,7 @@ public final class CommandLineParser
 
 	private CommandLineParser(Iterable<Argument<?>> argumentDefinitions)
 	{
-		this.cachedParser = new CommandLineParserInstance(argumentDefinitions);
+		this.cachedParser = new CommandLineParserInstance(argumentDefinitions, STANDARD_COMPLETER);
 	}
 
 	CommandLineParserInstance parser()
@@ -181,12 +202,10 @@ public final class CommandLineParser
 	 * public enum Service implements Runnable, Describable
 	 * {
 	 *   START{
-	 * 	   &#64;Override
 	 * 	   public void run(){
 	 * 	     //Start service here
 	 * 	   }
 	 *
-	 * 	   &#64;Override
 	 * 	   public String description(){
 	 * 	     return "Starts the service";
 	 * 	   }
@@ -274,7 +293,7 @@ public final class CommandLineParser
 
 	/**
 	 * Verify that the parser would be usable after adding {@code argumentsToAdd} to it.
-	 * This allows future parse operations to still use the unaffected old parser.
+	 * This allows future parse operations to still use the unaffected old parser in case of errors with the new argument.
 	 */
 	private void verifiedAdd(Collection<Argument<?>> argumentsToAdd)
 	{
@@ -283,7 +302,11 @@ public final class CommandLineParser
 			modifyGuard.lock();
 			List<Argument<?>> newDefinitions = new ArrayList<>(parser().allArguments());
 			newDefinitions.addAll(argumentsToAdd);
-			cachedParser = new CommandLineParserInstance(newDefinitions, parser().programInformation(), parser().locale(), false);
+			cachedParser = new CommandLineParserInstance(newDefinitions,
+					parser().programInformation(),
+					parser().locale(),
+					false,
+					parser().completer());
 		}
 		finally
 		{
@@ -302,7 +325,7 @@ public final class CommandLineParser
 		{
 			modifyGuard.lock();
 			ProgramInformation programInformation = parser().programInformation().programName(programName);
-			cachedParser = new CommandLineParserInstance(parser().allArguments(), programInformation, parser().locale(), false);
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), programInformation, parser().locale(), false, parser().completer());
 		}
 		finally
 		{
@@ -322,7 +345,7 @@ public final class CommandLineParser
 		{
 			modifyGuard.lock();
 			ProgramInformation programInformation = parser().programInformation().programDescription(programDescription);
-			cachedParser = new CommandLineParserInstance(parser().allArguments(), programInformation, parser().locale(), false);
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), programInformation, parser().locale(), false, parser().completer());
 		}
 		finally
 		{
@@ -348,7 +371,8 @@ public final class CommandLineParser
 		try
 		{
 			modifyGuard.lock();
-			cachedParser = new CommandLineParserInstance(parser().allArguments(), parser().programInformation(), requireNonNull(localeToUse), false);
+			cachedParser = new CommandLineParserInstance(parser()
+					.allArguments(), parser().programInformation(), requireNonNull(localeToUse), false, parser().completer());
 		}
 		finally
 		{
@@ -358,12 +382,34 @@ public final class CommandLineParser
 	}
 
 	/**
+	 * Disables the completion functionality.
+	 */
+	public CommandLineParser noCompleter()
+	{
+		return completer(Completers.noCompleter());
+	}
+
+	/**
 	 * Returns the {@link #usage()} for this {@link CommandLineParser}
 	 */
 	@Override
 	public String toString()
 	{
 		return usage().toString();
+	}
+
+	CommandLineParser completer(Completer completer)
+	{
+		try
+		{
+			modifyGuard.lock();
+			cachedParser = new CommandLineParserInstance(parser().allArguments(), parser().programInformation(), parser().locale(), false, completer);
+		}
+		finally
+		{
+			modifyGuard.unlock();
+		}
+		return this;
 	}
 
 	private static <E extends Enum<E> & Runnable & Describable> List<Argument<?>> commandsToArguments(Class<E> commandEnum)
