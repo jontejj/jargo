@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>se.softhouse</groupId>
 		<artifactId>jargo-parent</artifactId>
-		<version>0.4.13-SNAPSHOT</version>
+		<version>0.4.14-SNAPSHOT</version>
 	</parent>
 	<artifactId>jargo</artifactId>
 	<description>An argument and options parser for java</description>
