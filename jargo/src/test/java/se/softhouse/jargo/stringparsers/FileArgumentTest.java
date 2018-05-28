@@ -58,8 +58,8 @@ public class FileArgumentTest
 	public void testThatFilesAreCompletedCorrectly() throws Exception
 	{
 		CommandLineParser parser = CommandLineParser.withArguments(fileArgument("-f").build());
-		SortedSet<String> suggestions = FakeCompleter.complete(parser, "-f", "pom");
-		assertThat(suggestions).containsOnly("pom.xml");
+		SortedSet<String> suggestions = FakeCompleter.complete(parser, "-f", "sr");
+		assertThat(suggestions).containsOnly("src");
 
 		suggestions = FakeCompleter.complete(parser, "-f", "non-existing");
 		assertThat(suggestions).isEmpty();
