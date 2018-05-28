@@ -32,12 +32,12 @@ import javax.annotation.concurrent.NotThreadSafe;
  * <pre>
  * Stores {@link String}s in a <a href="http://en.wikipedia.org/wiki/Trie">trie</a>.
  * The main purpose when using a structure like this is the methods
- * {@link #findLongestPrefix(CharSequence)} and {@link #getEntriesWithPrefix(CharSequence)}.
+ * {@link #findLongestPrefix(CharSequence)} and {@link #getEntriesWithPrefix(String)}.
  *
  * Neither <code>null</code> keys or <code>null</code> values are allowed because just like the
  * devil, they are evil.
  *
- * If you're iterating over the whole trie more often than you do {@link #getEntriesWithPrefix(CharSequence) simple lookups}
+ * If you're iterating over the whole trie more often than you do {@link #getEntriesWithPrefix(String) simple lookups}
  * you're probably better off using a {@link TreeMap}.
  *
  * TODO(jontejj): Implement SortedMap instead of Map

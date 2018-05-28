@@ -33,8 +33,10 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import se.softhouse.common.classes.Classes;
 import se.softhouse.common.strings.Describable;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.common.testlib.Serializer;
 import se.softhouse.common.testlib.SimulatedException;
 import se.softhouse.jargo.ArgumentExceptions.UnexpectedArgumentException;
@@ -257,6 +259,7 @@ public class UsageTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatUsageInformationIsLazilyInitialized() throws ArgumentException
 	{
 		Argument<String> argument = withParser(new FailingMetaDescription()).names("-n").build();

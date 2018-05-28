@@ -120,7 +120,10 @@ public final class Usage implements Serializable
 	private Usage(String fromSerializedUsage)
 	{
 		// All these are unused as the usage is already constructed
-		this(null, null, null, false);
+		this.unfilteredArguments = null;
+		this.locale = null;
+		this.program = null;
+		this.forCommand = false;
 		this.fromSerializedUsage = fromSerializedUsage;
 	}
 

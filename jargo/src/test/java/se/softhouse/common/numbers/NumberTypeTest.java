@@ -36,6 +36,9 @@ import org.junit.Test;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import se.softhouse.common.testlib.Explanation;
+
 /**
  * Tests for {@link NumberType}
  */
@@ -96,6 +99,7 @@ public class NumberTypeTest
 		}
 	}
 
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	private void testUnlimitedType(NumberType<?> type)
 	{
 		try
@@ -142,6 +146,7 @@ public class NumberTypeTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatEmptyInputThrows() throws Exception
 	{
 		BYTE.parse("");
@@ -192,6 +197,7 @@ public class NumberTypeTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testInvalidShortNumbers()
 	{
 		List<Integer> invalidInput = Arrays.asList(Short.MIN_VALUE - 1, Short.MAX_VALUE + 1);
@@ -210,6 +216,7 @@ public class NumberTypeTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testInvalidIntegerNumbers()
 	{
 		List<Long> invalidInput = Arrays.asList((long) Integer.MIN_VALUE - 1, (long) Integer.MAX_VALUE + 1);
@@ -228,6 +235,7 @@ public class NumberTypeTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testInvalidLongNumbers()
 	{
 		List<BigInteger> invalidInput = Arrays.asList(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), biggerThanLong);
@@ -257,6 +265,7 @@ public class NumberTypeTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatUnparsableIntegerGeneratesProperErrorMessage() throws Exception
 	{
 		try
@@ -278,6 +287,7 @@ public class NumberTypeTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatUnparsableBigIntegerGeneratesProperErrorMessage() throws Exception
 	{
 		try
@@ -299,6 +309,7 @@ public class NumberTypeTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatDecimalSeparatorCausesParseErrorForDiscreetTypes() throws Exception
 	{
 		List<NumberType<?>> discreetTypes = Arrays.<NumberType<?>>asList(BYTE, SHORT, INTEGER, LONG, BIG_INTEGER);

@@ -12,43 +12,58 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package se.softhouse.jargo.completions;
+package se.softhouse.jargo;
 
 import static java.util.Collections.emptyList;
 import static org.fest.assertions.Assertions.assertThat;
 import static se.softhouse.jargo.Arguments.enumArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
+
+import com.google.common.io.MoreFiles;
 
 import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.common.testlib.Launcher;
 import se.softhouse.common.testlib.Launcher.LaunchedProgram;
-import se.softhouse.jargo.Argument;
-import se.softhouse.jargo.CommandLineParser;
-import se.softhouse.jargo.FakeCompleter;
 import se.softhouse.jargo.commands.CommandWithArgument;
 import se.softhouse.jargo.commands.Commit.Repository;
 import se.softhouse.jargo.commands.Git;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 
 /**
- * Tests that the correct words are suggested for {@link Completers#bashCompleter(Map, java.util.function.Consumer, Runnable)
+ * Tests that the correct words are suggested for
+ * {@link Completers#bashCompleter(java.util.function.Supplier, java.util.function.Consumer, Runnable)
  * bash-completion} support
  */
 public class BashCompletionTest
 {
 	final CommandLineParser parser = CommandLineParser.withCommands(new Git(new Repository())).andArguments(Git.MESSAGE);
 
-	List<String> currentDirFiles = Arrays.asList(new File(".").list());
+	final List<String> currentDirFiles;
+
+	public BashCompletionTest() throws IOException
+	{
+		currentDirFiles = MoreFiles.listFiles(Paths.get(".")).stream().map(p -> p.getFileName().toString()).collect(Collectors.toList());
+	}
+
+	@Test
+	public void testThatNoCompletionsDoesNothing() throws Exception
+	{
+		Argument<String> arg = stringArgument("-j").build();
+		ParsedArguments parsedArguments = CommandLineParser.withArguments(arg).noCompleter().parse("-j", "hello");
+		assertThat(parsedArguments.get(arg)).isEqualTo("hello");
+	}
 
 	@Test
 	public void testThatCommandNameIsCompletedCorrectly() throws Exception

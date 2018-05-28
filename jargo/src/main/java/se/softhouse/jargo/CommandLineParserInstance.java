@@ -441,7 +441,7 @@ final class CommandLineParserInstance
 				// worth it, the result is the same at least
 				for(Argument<?> option : foundOptions)
 				{
-					handleArgument(option, holder, arguments, null);
+					handleArgument(option, holder, arguments, holder.parser().locale());
 				}
 				return lastOption;
 			}

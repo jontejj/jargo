@@ -43,7 +43,9 @@ import org.junit.Test;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import se.softhouse.common.strings.Describers.BooleanDescribers;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.common.testlib.Locales;
 import se.softhouse.common.testlib.ResourceLoader;
 
@@ -211,6 +213,7 @@ public class DescribersTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatMissingKeyThrows()
 	{
 		Map<String, Integer> map = newLinkedHashMap();

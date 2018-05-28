@@ -348,6 +348,7 @@ public class CommandLineParserTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatInvalidArgumentsAddedLaterOnDoesNotWreckTheExistingParser() throws Exception
 	{
 		Argument<Integer> number = integerArgument("-n").build();
@@ -370,6 +371,7 @@ public class CommandLineParserTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatInvalidCommandsAddedLaterOnDoesNotWreckTheExistingParser() throws Exception
 	{
 		BuildTarget target = new BuildTarget();
@@ -419,6 +421,7 @@ public class CommandLineParserTest
 	{
 		testThatNullDoesNotCauseOtherConcurrentUpdatesToFail(new ParserInvocation<Argument<Integer>>(){
 			@Override
+			@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 			public void invoke(CommandLineParser parser, Argument<Integer> value)
 			{
 				parser.andArguments(value);

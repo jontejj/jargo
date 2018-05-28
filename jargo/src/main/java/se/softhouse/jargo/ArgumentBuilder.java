@@ -541,7 +541,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 	 * <pre class="prettyprint">
 	 * <code class="language-java">
 	 *
-	 * stringArgument("-u", "--username").completer((str) -> StringsUtil.prefixes(str, service.users()));
+	 * stringArgument("-u", "--username").completer((str) {@literal ->} StringsUtil.prefixes(str, service.users()));
 	 * </code>
 	 * </pre>
 	 * 

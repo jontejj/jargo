@@ -679,7 +679,7 @@ public final class StringParsers
 		 * @param partOfWord a part of a parameter
 		 * @param iterator current iterator
 		 */
-		Iterable<String> complete(Argument<T> argument, String partOfWord, ArgumentIterator iterator)
+		Iterable<String> complete(@Nullable Argument<T> argument, String partOfWord, ArgumentIterator iterator)
 		{
 			return Collections.emptyList();
 		}

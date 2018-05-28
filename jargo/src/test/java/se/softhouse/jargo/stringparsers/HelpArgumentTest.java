@@ -27,6 +27,8 @@ import java.util.SortedSet;
 
 import org.junit.Test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import se.softhouse.common.testlib.Explanation;
 import se.softhouse.jargo.Argument;
 import se.softhouse.jargo.ArgumentException;
 import se.softhouse.jargo.Arguments;
@@ -193,6 +195,7 @@ public class HelpArgumentTest
 	}
 
 	@Test
+	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatNameCollisionsForHelpArgumentAndOtherArgumentsAreDetected()
 	{
 		try
