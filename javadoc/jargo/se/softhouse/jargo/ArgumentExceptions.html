@@ -110,7 +110,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.36">ArgumentExceptions</a>
+public final class <a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.41">ArgumentExceptions</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Gives you static access for creating <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a>s.<br>
  Remember that created exceptions are simply returned <b>not thrown</b>.</div>
@@ -195,7 +195,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <h4>withMessage</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.69">withMessage</a>(<a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message)</pre>
+public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.74">withMessage</a>(<a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message)</pre>
 <div class="block"><a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings"><code>Describable</code></a> based version of <a href="../../../se/softhouse/jargo/ArgumentExceptions.html#withMessage-java.lang.Object-"><code>withMessage(Object)</code></a></div>
 </li>
 </ul>
@@ -207,7 +207,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" 
 <h4>withMessage</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.79">withMessage</a>(<a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message,
+public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.84">withMessage</a>(<a href="../../../se/softhouse/common/strings/Describable.html" title="interface in se.softhouse.common.strings">Describable</a>&nbsp;message,
                                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
 <div class="block">Like <a href="../../../se/softhouse/jargo/ArgumentExceptions.html#withMessage-se.softhouse.common.strings.Describable-"><code>withMessage(Describable)</code></a> but with a <code>cause</code></div>
 </li>
@@ -220,7 +220,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" 
 <h4>withMessage</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.49">withMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;message)</pre>
+public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.54">withMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;message)</pre>
 <div class="block">The most simple version of <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a>s, it simply prints the result of
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang"><code>Object.toString()</code></a> for <code>message</code> as the message. Use
  <a href="../../../se/softhouse/jargo/ArgumentExceptions.html#withMessage-java.lang.Object-java.lang.Throwable-"><code>withMessage(Object, Throwable)</code></a> if you have a cause.</div>
@@ -234,7 +234,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" 
 <h4>withMessage</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.59">withMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;message,
+public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.64">withMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;message,
                                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
 <div class="block">Like <a href="../../../se/softhouse/jargo/ArgumentExceptions.html#withMessage-java.lang.Object-"><code>withMessage(Object)</code></a> but with a <code>cause</code></div>
 </li>
@@ -247,7 +247,7 @@ public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" 
 <h4>wrapException</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/CheckReturnValue.html?is-external=true" title="class or interface in javax.annotation">@CheckReturnValue</a>
  <a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/Nonnull.html?is-external=true" title="class or interface in javax.annotation">@Nonnull</a>
-public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.112">wrapException</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;exceptionToWrap)</pre>
+public static&nbsp;<a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo">ArgumentException</a>&nbsp;<a href="../../../src-html/se/softhouse/jargo/ArgumentExceptions.html#line.117">wrapException</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;exceptionToWrap)</pre>
 <div class="block">Converts any <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang"><code>Throwable</code></a> into an <a href="../../../se/softhouse/jargo/ArgumentException.html" title="class in se.softhouse.jargo"><code>ArgumentException</code></a>.
  Uses the detail message of <code>exceptionToWrap</code> as it's own detail message.
  <code>exceptionToWrap</code> is also set as the cause of the created exception.</div>

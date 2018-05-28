@@ -25,190 +25,207 @@
 <span class="sourceLineNo">017</span>import static java.lang.reflect.Modifier.isPublic;<a name="line.17"></a>
 <span class="sourceLineNo">018</span>import static java.lang.reflect.Modifier.isStatic;<a name="line.18"></a>
 <span class="sourceLineNo">019</span>import static java.util.Collections.emptyList;<a name="line.19"></a>
-<span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>import java.io.File;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import java.io.IOException;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.lang.management.ManagementFactory;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.lang.management.RuntimeMXBean;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import java.util.Arrays;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import java.util.List;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import java.util.concurrent.ExecutionException;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import java.util.concurrent.Future;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>import java.util.regex.Matcher;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>import java.util.regex.Pattern;<a name="line.30"></a>
-<span class="sourceLineNo">031</span><a name="line.31"></a>
-<span class="sourceLineNo">032</span>import javax.annotation.concurrent.Immutable;<a name="line.32"></a>
+<span class="sourceLineNo">020</span>import static java.util.Collections.emptyMap;<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>import java.io.File;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.io.IOException;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.lang.management.ManagementFactory;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.lang.management.RuntimeMXBean;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.util.Arrays;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.util.List;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import java.util.Map;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import java.util.concurrent.ExecutionException;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import java.util.concurrent.Future;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import java.util.regex.Matcher;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import java.util.regex.Pattern;<a name="line.32"></a>
 <span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>import com.google.common.base.Charsets;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>import com.google.common.collect.Lists;<a name="line.35"></a>
-<span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>/**<a name="line.37"></a>
-<span class="sourceLineNo">038</span> * Can launch java programs for a {@link Class} with a main method. Output is captured in the<a name="line.38"></a>
-<span class="sourceLineNo">039</span> * returned {@link LaunchedProgram}.<a name="line.39"></a>
-<span class="sourceLineNo">040</span> */<a name="line.40"></a>
-<span class="sourceLineNo">041</span>@Immutable<a name="line.41"></a>
-<span class="sourceLineNo">042</span>public final class Launcher<a name="line.42"></a>
-<span class="sourceLineNo">043</span>{<a name="line.43"></a>
-<span class="sourceLineNo">044</span>        /**<a name="line.44"></a>
-<span class="sourceLineNo">045</span>         * Result from a {@link Launcher#launch(Class, String...) launched program}<a name="line.45"></a>
-<span class="sourceLineNo">046</span>         */<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        @Immutable<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        public static final class LaunchedProgram<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        {<a name="line.49"></a>
-<span class="sourceLineNo">050</span>                private final String errors;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>                private final String output;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>                private final String debugInformation;<a name="line.52"></a>
-<span class="sourceLineNo">053</span><a name="line.53"></a>
-<span class="sourceLineNo">054</span>                private LaunchedProgram(String errors, String output, String debugInformation)<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                {<a name="line.55"></a>
-<span class="sourceLineNo">056</span>                        this.errors = errors;<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                        this.output = output;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>                        this.debugInformation = debugInformation;<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                }<a name="line.59"></a>
-<span class="sourceLineNo">060</span><a name="line.60"></a>
-<span class="sourceLineNo">061</span>                /**<a name="line.61"></a>
-<span class="sourceLineNo">062</span>                 * The {@link System#out} in {@link Charsets#UTF_8 UTF-8} from the launched program<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                 */<a name="line.63"></a>
-<span class="sourceLineNo">064</span>                public String output()<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                {<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                        return output;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                }<a name="line.67"></a>
-<span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span>                /**<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                 * The {@link System#err} in {@link Charsets#UTF_8 UTF-8} from the launched program<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                 */<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                public String errors()<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                        return errors;<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                }<a name="line.75"></a>
-<span class="sourceLineNo">076</span><a name="line.76"></a>
-<span class="sourceLineNo">077</span>                /**<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                 * Returns information suitable to print in case of errors on a debug level<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                 */<a name="line.79"></a>
-<span class="sourceLineNo">080</span>                public String debugInformation()<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                {<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                        return debugInformation;<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                }<a name="line.83"></a>
-<span class="sourceLineNo">084</span><a name="line.84"></a>
-<span class="sourceLineNo">085</span>                @Override<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                public String toString()<a name="line.86"></a>
-<span class="sourceLineNo">087</span>                {<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                        return "Output: " + output() + "\nErrors: " + errors();<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                }<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        }<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>        private Launcher()<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        }<a name="line.94"></a>
-<span class="sourceLineNo">095</span><a name="line.95"></a>
-<span class="sourceLineNo">096</span>        /**<a name="line.96"></a>
-<span class="sourceLineNo">097</span>         * Like {@link #launch(Class, String...)} but with a possiblity to specify any additional vm args to pass to the jvm<a name="line.97"></a>
-<span class="sourceLineNo">098</span>         * <a name="line.98"></a>
-<span class="sourceLineNo">099</span>         * @param additionalVmArgs the vm args to pass in<a name="line.99"></a>
-<span class="sourceLineNo">100</span>         */<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        public static LaunchedProgram launch(List&lt;String&gt; additionalVmArgs, Class&lt;?&gt; classWithMainMethod, String ... programArguments)<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                        throws IOException, InterruptedException<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        {<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                checkNotNull(additionalVmArgs);<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                checkNotNull(programArguments);<a name="line.105"></a>
-<span class="sourceLineNo">106</span>                try<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                {<a name="line.107"></a>
-<span class="sourceLineNo">108</span><a name="line.108"></a>
-<span class="sourceLineNo">109</span>                        int modifiers = classWithMainMethod.getDeclaredMethod("main", String[].class).getModifiers();<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                        boolean validModifiers = isStatic(modifiers) &amp;&amp; isPublic(modifiers);<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                        checkArgument(validModifiers, "%s's main method needs to be static and public for it to be launchable", classWithMainMethod.getName());<a name="line.111"></a>
-<span class="sourceLineNo">112</span>                }<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                catch(NoSuchMethodException e)<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                {<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                        throw new IllegalArgumentException("No main method found on: " + classWithMainMethod.getName(), e);<a name="line.115"></a>
-<span class="sourceLineNo">116</span>                }<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                RuntimeMXBean runtimeInformation = ManagementFactory.getRuntimeMXBean();<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                String jvm = new File(new File(System.getProperty("java.home"), "bin"), "java").getAbsolutePath();<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                String classPath = runtimeInformation.getClassPath();<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>                List&lt;String&gt; vmArgs = runtimeInformation.getInputArguments();<a name="line.121"></a>
+<span class="sourceLineNo">034</span>import javax.annotation.concurrent.Immutable;<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>import com.google.common.base.Charsets;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import com.google.common.collect.Lists;<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>/**<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * Can launch java programs for a {@link Class} with a main method. Output is captured in the<a name="line.40"></a>
+<span class="sourceLineNo">041</span> * returned {@link LaunchedProgram}.<a name="line.41"></a>
+<span class="sourceLineNo">042</span> */<a name="line.42"></a>
+<span class="sourceLineNo">043</span>@Immutable<a name="line.43"></a>
+<span class="sourceLineNo">044</span>public final class Launcher<a name="line.44"></a>
+<span class="sourceLineNo">045</span>{<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        /**<a name="line.46"></a>
+<span class="sourceLineNo">047</span>         * Result from a {@link Launcher#launch(Class, String...) launched program}<a name="line.47"></a>
+<span class="sourceLineNo">048</span>         */<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        @Immutable<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        public static final class LaunchedProgram<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                private final String errors;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                private final String output;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                private final String debugInformation;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>                private final int exitCode;<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>                private LaunchedProgram(String errors, String output, String debugInformation, int exitCode)<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                {<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                        this.errors = errors;<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                        this.output = output;<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                        this.debugInformation = debugInformation;<a name="line.61"></a>
+<span class="sourceLineNo">062</span>                        this.exitCode = exitCode;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                }<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>                /**<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                 * The {@link System#out} in {@link Charsets#UTF_8 UTF-8} from the launched program<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                 */<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                public String output()<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                        return output;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                }<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>                /**<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                 * The {@link System#err} in {@link Charsets#UTF_8 UTF-8} from the launched program<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                 */<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                public String errors()<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                        return errors;<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                }<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>                /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                 * @return the &lt;a href="https://en.wikipedia.org/wiki/Exit_status"&gt;exit code/status&lt;/a&gt; of the finished program<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                 */<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                public int exitCode()<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                        return exitCode;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>                /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                 * Returns information suitable to print in case of errors on a debug level<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                 */<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                public String debugInformation()<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                        return debugInformation;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>                @Override<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                public String toString()<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                        return "Output: " + output() + "\nErrors: " + errors();<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                }<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        }<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>        private Launcher()<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        {<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
+<span class="sourceLineNo">108</span>        /**<a name="line.108"></a>
+<span class="sourceLineNo">109</span>         * Like {@link #launch(Class, String...)} but with more configurable options<a name="line.109"></a>
+<span class="sourceLineNo">110</span>         * <a name="line.110"></a>
+<span class="sourceLineNo">111</span>         * @param envVariables variables to add to {@link ProcessBuilder#environment()}.<a name="line.111"></a>
+<span class="sourceLineNo">112</span>         * @param additionalVmArgs the vm args to pass in<a name="line.112"></a>
+<span class="sourceLineNo">113</span>         */<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        public static LaunchedProgram launch(List&lt;String&gt; additionalVmArgs, Map&lt;String, String&gt; envVariables, Class&lt;?&gt; classWithMainMethod,<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                        String ... programArguments) throws IOException, InterruptedException<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                checkNotNull(additionalVmArgs);<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                checkNotNull(envVariables);<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                checkNotNull(programArguments);<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                try<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                {<a name="line.121"></a>
 <span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>                List&lt;String&gt; args = Lists.newArrayList(jvm, "-cp", classPath);<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                args.addAll(vmArgs);<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                args.addAll(additionalVmArgs);<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                args.add(classWithMainMethod.getName());<a name="line.126"></a>
-<span class="sourceLineNo">127</span>                args.addAll(Arrays.asList(programArguments));<a name="line.127"></a>
-<span class="sourceLineNo">128</span><a name="line.128"></a>
-<span class="sourceLineNo">129</span>                String debugInformation = "\njvm: " + jvm + "\nvm args: " + vmArgs + "\nclasspath: " + classPath;<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                return execute(args, debugInformation);<a name="line.130"></a>
-<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
-<span class="sourceLineNo">132</span><a name="line.132"></a>
-<span class="sourceLineNo">133</span>        /**<a name="line.133"></a>
-<span class="sourceLineNo">134</span>         * Runs {@code classWithMainMethod} in a separate process using the system property<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         * {@code java.home} to find java and {@code java.class.path} for the class path. This method<a name="line.135"></a>
-<span class="sourceLineNo">136</span>         * will wait until program execution has finished.<a name="line.136"></a>
-<span class="sourceLineNo">137</span>         * <a name="line.137"></a>
-<span class="sourceLineNo">138</span>         * @param classWithMainMethod a class with a static "main" method<a name="line.138"></a>
-<span class="sourceLineNo">139</span>         * @param programArguments optional arguments to pass to the program<a name="line.139"></a>
-<span class="sourceLineNo">140</span>         * @return output/errors from the executed program<a name="line.140"></a>
-<span class="sourceLineNo">141</span>         * @throws IOException if an I/O error occurs while starting {@code classWithMainMethod} as a<a name="line.141"></a>
-<span class="sourceLineNo">142</span>         *             process<a name="line.142"></a>
-<span class="sourceLineNo">143</span>         * @throws InterruptedException if the thread starting the program is<a name="line.143"></a>
-<span class="sourceLineNo">144</span>         *             {@link Thread#interrupted()} while waiting for the program to finish<a name="line.144"></a>
-<span class="sourceLineNo">145</span>         * @throws IllegalArgumentException if {@code classWithMainMethod} doesn't have a public static<a name="line.145"></a>
-<span class="sourceLineNo">146</span>         *             main method<a name="line.146"></a>
-<span class="sourceLineNo">147</span>         * @throws SecurityException if it's not possible to validate the existence of a main method in<a name="line.147"></a>
-<span class="sourceLineNo">148</span>         *             {@code classWithMainMethod} (or if {@link SecurityManager#checkExec checkExec}<a name="line.148"></a>
-<span class="sourceLineNo">149</span>         *             fails)<a name="line.149"></a>
-<span class="sourceLineNo">150</span>         */<a name="line.150"></a>
-<span class="sourceLineNo">151</span>        public static LaunchedProgram launch(Class&lt;?&gt; classWithMainMethod, String ... programArguments) throws IOException, InterruptedException<a name="line.151"></a>
-<span class="sourceLineNo">152</span>        {<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                return launch(emptyList(), classWithMainMethod, programArguments);<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
-<span class="sourceLineNo">155</span><a name="line.155"></a>
-<span class="sourceLineNo">156</span>        /**<a name="line.156"></a>
-<span class="sourceLineNo">157</span>         * Runs {@code program} with {@code programArguments} as arguments. This method<a name="line.157"></a>
-<span class="sourceLineNo">158</span>         * will wait until program execution has finished.<a name="line.158"></a>
-<span class="sourceLineNo">159</span>         * <a name="line.159"></a>
-<span class="sourceLineNo">160</span>         * @param program the executable to run<a name="line.160"></a>
-<span class="sourceLineNo">161</span>         * @param programArguments optional arguments to pass to the program<a name="line.161"></a>
-<span class="sourceLineNo">162</span>         * @return output/errors from the executed program<a name="line.162"></a>
-<span class="sourceLineNo">163</span>         * @throws IOException if an I/O error occurs while starting {@code program}<a name="line.163"></a>
-<span class="sourceLineNo">164</span>         * @throws InterruptedException if the thread starting the program is<a name="line.164"></a>
-<span class="sourceLineNo">165</span>         *             {@link Thread#interrupted()} while waiting for the program to finish<a name="line.165"></a>
-<span class="sourceLineNo">166</span>         * @throws SecurityException if {@link SecurityManager#checkExec checkExec} fails<a name="line.166"></a>
-<span class="sourceLineNo">167</span>         */<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        public static LaunchedProgram launch(String program, String ... programArguments) throws IOException, InterruptedException<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        {<a name="line.169"></a>
-<span class="sourceLineNo">170</span>                return execute(Lists.asList(program, programArguments), "Failed to launch " + program);<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
-<span class="sourceLineNo">172</span><a name="line.172"></a>
-<span class="sourceLineNo">173</span>        /**<a name="line.173"></a>
-<span class="sourceLineNo">174</span>         * Different JDKs behave differently, to have consistent results, let's clean it away<a name="line.174"></a>
-<span class="sourceLineNo">175</span>         * No way to turn it off either: https://bugs.openjdk.java.net/browse/JDK-8039152<a name="line.175"></a>
-<span class="sourceLineNo">176</span>         */<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        private static final Pattern JVM_OUTPUT_CLEANER = Pattern.compile("Picked up _JAVA_OPTIONS.*\n");<a name="line.177"></a>
-<span class="sourceLineNo">178</span><a name="line.178"></a>
-<span class="sourceLineNo">179</span>        private static LaunchedProgram execute(List&lt;String&gt; args, String debugInformation) throws IOException, InterruptedException<a name="line.179"></a>
-<span class="sourceLineNo">180</span>        {<a name="line.180"></a>
-<span class="sourceLineNo">181</span>                Process program = new ProcessBuilder().command(args).start();<a name="line.181"></a>
-<span class="sourceLineNo">182</span>                Future&lt;String&gt; stdout = Streams.readAsynchronously(program.getInputStream());<a name="line.182"></a>
-<span class="sourceLineNo">183</span>                Future&lt;String&gt; stderr = Streams.readAsynchronously(program.getErrorStream());<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                program.waitFor();<a name="line.184"></a>
-<span class="sourceLineNo">185</span>                try<a name="line.185"></a>
-<span class="sourceLineNo">186</span>                {<a name="line.186"></a>
-<span class="sourceLineNo">187</span>                        String output = stdout.get();<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                        String errors = stderr.get();<a name="line.188"></a>
-<span class="sourceLineNo">189</span>                        Matcher matcher = JVM_OUTPUT_CLEANER.matcher(errors);<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                        if(matcher.find())<a name="line.190"></a>
-<span class="sourceLineNo">191</span>                        {<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                                errors = matcher.replaceFirst("");<a name="line.192"></a>
-<span class="sourceLineNo">193</span>                        }<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                        return new LaunchedProgram(errors, output, debugInformation);<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                }<a name="line.195"></a>
-<span class="sourceLineNo">196</span>                catch(ExecutionException e)<a name="line.196"></a>
-<span class="sourceLineNo">197</span>                {<a name="line.197"></a>
-<span class="sourceLineNo">198</span>                        if(e.getCause() instanceof IOException)<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                                throw (IOException) e.getCause();<a name="line.199"></a>
-<span class="sourceLineNo">200</span>                        throw new RuntimeException("Failed to read stdout/stderr", e);<a name="line.200"></a>
-<span class="sourceLineNo">201</span>                }<a name="line.201"></a>
-<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
-<span class="sourceLineNo">203</span>}<a name="line.203"></a>
+<span class="sourceLineNo">123</span>                        int modifiers = classWithMainMethod.getDeclaredMethod("main", String[].class).getModifiers();<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                        boolean validModifiers = isStatic(modifiers) &amp;&amp; isPublic(modifiers);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                        checkArgument(validModifiers, "%s's main method needs to be static and public for it to be launchable", classWithMainMethod.getName());<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                }<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                catch(NoSuchMethodException e)<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                        throw new IllegalArgumentException("No main method found on: " + classWithMainMethod.getName(), e);<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                }<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                RuntimeMXBean runtimeInformation = ManagementFactory.getRuntimeMXBean();<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                String jvm = new File(new File(System.getProperty("java.home"), "bin"), "java").getAbsolutePath();<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                String classPath = runtimeInformation.getClassPath();<a name="line.133"></a>
+<span class="sourceLineNo">134</span><a name="line.134"></a>
+<span class="sourceLineNo">135</span>                List&lt;String&gt; vmArgs = runtimeInformation.getInputArguments();<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>                List&lt;String&gt; args = Lists.newArrayList(jvm, "-cp", classPath);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                args.addAll(vmArgs);<a name="line.138"></a>
+<span class="sourceLineNo">139</span>                args.addAll(additionalVmArgs);<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                args.add(classWithMainMethod.getName());<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                args.addAll(Arrays.asList(programArguments));<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span>                String debugInformation = "\njvm: " + jvm + "\nvm args: " + vmArgs + "\nclasspath: " + classPath;<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                return execute(args, envVariables, debugInformation);<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        }<a name="line.145"></a>
+<span class="sourceLineNo">146</span><a name="line.146"></a>
+<span class="sourceLineNo">147</span>        /**<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         * Runs {@code classWithMainMethod} in a separate process using the system property<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         * {@code java.home} to find java and {@code java.class.path} for the class path. This method<a name="line.149"></a>
+<span class="sourceLineNo">150</span>         * will wait until program execution has finished.<a name="line.150"></a>
+<span class="sourceLineNo">151</span>         * <a name="line.151"></a>
+<span class="sourceLineNo">152</span>         * @param classWithMainMethod a class with a static "main" method<a name="line.152"></a>
+<span class="sourceLineNo">153</span>         * @param programArguments optional arguments to pass to the program<a name="line.153"></a>
+<span class="sourceLineNo">154</span>         * @return output/errors from the executed program<a name="line.154"></a>
+<span class="sourceLineNo">155</span>         * @throws IOException if an I/O error occurs while starting {@code classWithMainMethod} as a<a name="line.155"></a>
+<span class="sourceLineNo">156</span>         *             process<a name="line.156"></a>
+<span class="sourceLineNo">157</span>         * @throws InterruptedException if the thread starting the program is<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         *             {@link Thread#interrupted()} while waiting for the program to finish<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         * @throws IllegalArgumentException if {@code classWithMainMethod} doesn't have a public static<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         *             main method<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * @throws SecurityException if it's not possible to validate the existence of a main method in<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         *             {@code classWithMainMethod} (or if {@link SecurityManager#checkExec checkExec}<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         *             fails)<a name="line.163"></a>
+<span class="sourceLineNo">164</span>         */<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        public static LaunchedProgram launch(Class&lt;?&gt; classWithMainMethod, String ... programArguments) throws IOException, InterruptedException<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        {<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                return launch(emptyList(), emptyMap(), classWithMainMethod, programArguments);<a name="line.167"></a>
+<span class="sourceLineNo">168</span>        }<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
+<span class="sourceLineNo">170</span>        /**<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * Runs {@code program} with {@code programArguments} as arguments. This method<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         * will wait until program execution has finished.<a name="line.172"></a>
+<span class="sourceLineNo">173</span>         * <a name="line.173"></a>
+<span class="sourceLineNo">174</span>         * @param program the executable to run<a name="line.174"></a>
+<span class="sourceLineNo">175</span>         * @param programArguments optional arguments to pass to the program<a name="line.175"></a>
+<span class="sourceLineNo">176</span>         * @return output/errors from the executed program<a name="line.176"></a>
+<span class="sourceLineNo">177</span>         * @throws IOException if an I/O error occurs while starting {@code program}<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * @throws InterruptedException if the thread starting the program is<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         *             {@link Thread#interrupted()} while waiting for the program to finish<a name="line.179"></a>
+<span class="sourceLineNo">180</span>         * @throws SecurityException if {@link SecurityManager#checkExec checkExec} fails<a name="line.180"></a>
+<span class="sourceLineNo">181</span>         */<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        public static LaunchedProgram launch(String program, String ... programArguments) throws IOException, InterruptedException<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        {<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                return execute(Lists.asList(program, programArguments), emptyMap(), "Failed to launch " + program);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
+<span class="sourceLineNo">186</span><a name="line.186"></a>
+<span class="sourceLineNo">187</span>        /**<a name="line.187"></a>
+<span class="sourceLineNo">188</span>         * Different JDKs behave differently, to have consistent results, let's clean it away<a name="line.188"></a>
+<span class="sourceLineNo">189</span>         * No way to turn it off either: https://bugs.openjdk.java.net/browse/JDK-8039152<a name="line.189"></a>
+<span class="sourceLineNo">190</span>         */<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        private static final Pattern JVM_OUTPUT_CLEANER = Pattern.compile("Picked up _JAVA_OPTIONS.*\n");<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>        private static LaunchedProgram execute(List&lt;String&gt; args, Map&lt;String, String&gt; envVariables, String debugInformation)<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                        throws IOException, InterruptedException<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        {<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                ProcessBuilder processBuilder = new ProcessBuilder().command(args);<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                processBuilder.environment().putAll(envVariables);<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                Process program = processBuilder.start();<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                Future&lt;String&gt; stdout = Streams.readAsynchronously(program.getInputStream());<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                Future&lt;String&gt; stderr = Streams.readAsynchronously(program.getErrorStream());<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                int exitCode = program.waitFor();<a name="line.201"></a>
+<span class="sourceLineNo">202</span>                try<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                {<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                        String output = stdout.get();<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                        String errors = stderr.get();<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                        Matcher matcher = JVM_OUTPUT_CLEANER.matcher(errors);<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                        if(matcher.find())<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                        {<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                                errors = matcher.replaceFirst("");<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                        }<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                        return new LaunchedProgram(errors, output, debugInformation, exitCode);<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                }<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                catch(ExecutionException e)<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                        if(e.getCause() instanceof IOException)<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                                throw (IOException) e.getCause();<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                        throw new RuntimeException("Failed to read stdout/stderr", e);<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                }<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        }<a name="line.219"></a>
+<span class="sourceLineNo">220</span>}<a name="line.220"></a>
 
 
 

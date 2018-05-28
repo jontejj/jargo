@@ -128,12 +128,12 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap
 <div class="block"><pre>
  Stores <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s in a <a href="http://en.wikipedia.org/wiki/Trie">trie</a>.
  The main purpose when using a structure like this is the methods
- <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#findLongestPrefix-java.lang.CharSequence-"><code>findLongestPrefix(CharSequence)</code></a> and <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.CharSequence-"><code>getEntriesWithPrefix(CharSequence)</code></a>.
+ <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#findLongestPrefix-java.lang.CharSequence-"><code>findLongestPrefix(CharSequence)</code></a> and <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.String-"><code>getEntriesWithPrefix(String)</code></a>.
 
  Neither <code>null</code> keys or <code>null</code> values are allowed because just like the
  devil, they are evil.
 
- If you're iterating over the whole trie more often than you do <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.CharSequence-"><code>simple lookups</code></a>
+ If you're iterating over the whole trie more often than you do <a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.String-"><code>simple lookups</code></a>
  you're probably better off using a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html?is-external=true" title="class or interface in java.util"><code>TreeMap</code></a>.
 
  TODO(jontejj): Implement SortedMap instead of Map
@@ -195,8 +195,8 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/collections/CharacterTrie.html#get-java.lang.Object-">get</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;key)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.CharSequence-">getEntriesWithPrefix</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html?is-external=true" title="class or interface in java.lang">CharSequence</a>&nbsp;prefix)</code>
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.String-">getEntriesWithPrefix</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prefix)</code>
 <div class="block">Returns all entries whose key starts with <code>prefix</code>.</div>
 </td>
 </tr>
@@ -267,7 +267,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap
 <ul class="blockList">
 <li class="blockList">
 <h4>clear</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.517">clear</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.516">clear</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#clear--" title="class or interface in java.util">clear</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>
@@ -299,7 +299,7 @@ public&nbsp;boolean&nbsp;<a href="../../../../src-html/se/softhouse/common/colle
 <ul class="blockList">
 <li class="blockList">
 <h4>entrySet</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.525">entrySet</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.524">entrySet</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true#entrySet--" title="class or interface in java.util">entrySet</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;</code></dd>
@@ -340,15 +340,14 @@ public&nbsp;<a href="../../../../se/softhouse/common/collections/CharacterTrie.h
 </dl>
 </li>
 </ul>
-<a name="getEntriesWithPrefix-java.lang.CharSequence-">
+<a name="getEntriesWithPrefix-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getEntriesWithPrefix</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html?is-external=true" title="class or interface in java.util">Map.Entry</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.500">getEntriesWithPrefix</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html?is-external=true" title="class or interface in java.lang">CharSequence</a>&nbsp;prefix)</pre>
-<div class="block">Returns all entries whose key starts with <code>prefix</code>. The returned <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util"><code>Set</code></a> is a view
- so removed elements from it are also removed in this structure.</div>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="../../../../se/softhouse/common/collections/CharacterTrie.html" title="type parameter in CharacterTrie">V</a>&gt;&nbsp;<a href="../../../../src-html/se/softhouse/common/collections/CharacterTrie.html#line.499">getEntriesWithPrefix</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prefix)</pre>
+<div class="block">Returns all entries whose key starts with <code>prefix</code>. The returned <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><code>Map</code></a> is an unmodifiable view.</div>
 </li>
 </ul>
 <a name="newTrie--">

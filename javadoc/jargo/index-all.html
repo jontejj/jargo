@@ -377,6 +377,15 @@
 <dd>
 <div class="block">The name that triggers this command.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/jargo/StringParser.html#complete-java.lang.String-">complete(String)</a></span> - Method in interface se.softhouse.jargo.<a href="se/softhouse/jargo/StringParser.html" title="interface in se.softhouse.jargo">StringParser</a></dt>
+<dd>
+<div class="block">Generates a list of suggestions to make <code>partOfWord</code> a valid argument that could be passed to <a href="se/softhouse/jargo/StringParser.html#parse-java.lang.String-java.util.Locale-"><code>StringParser.parse(String, Locale)</code></a>
+ when the program is actually executed later on.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/jargo/ArgumentBuilder.html#completer-java.util.function.Function-">completer(Function&lt;String, Set&lt;String&gt;&gt;)</a></span> - Method in class se.softhouse.jargo.<a href="se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a></dt>
+<dd>
+<div class="block">Can be used to complete input values from a dynamic (or static) source.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/common/guavaextensions/Functions2.html#compound-java.util.function.Function-java.util.function.Function-">compound(Function&lt;T, T&gt;, Function&lt;T, T&gt;)</a></span> - Static method in class se.softhouse.common.guavaextensions.<a href="se/softhouse/common/guavaextensions/Functions2.html" title="class in se.softhouse.common.guavaextensions">Functions2</a></dt>
 <dd>
 <div class="block">Runs several <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function"><code>Function</code></a>s in the same order as they are
@@ -542,7 +551,7 @@
 <dt><span class="memberNameLink"><a href="se/softhouse/common/guavaextensions/Functions2.html#fileToString--">fileToString()</a></span> - Static method in class se.softhouse.common.guavaextensions.<a href="se/softhouse/common/guavaextensions/Functions2.html" title="class in se.softhouse.common.guavaextensions">Functions2</a></dt>
 <dd>
 <div class="block">Returns a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function"><code>Function</code></a> that reads whole <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a>s into <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>s using the
- <a href="se/softhouse/common/strings/StringsUtil.html#UTF8"><code>UTF-8</code></a> charset.</div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/StandardCharsets.html?is-external=true#UTF_8" title="class or interface in java.nio.charset"><code>UTF-8</code></a> charset.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/common/collections/CharacterTrie.html#findLongestPrefix-java.lang.CharSequence-">findLongestPrefix(CharSequence)</a></span> - Method in class se.softhouse.common.collections.<a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a></dt>
 <dd>
@@ -587,7 +596,7 @@
  if no value was given on the command line the default value is
  returned.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.CharSequence-">getEntriesWithPrefix(CharSequence)</a></span> - Method in class se.softhouse.common.collections.<a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a></dt>
+<dt><span class="memberNameLink"><a href="se/softhouse/common/collections/CharacterTrie.html#getEntriesWithPrefix-java.lang.String-">getEntriesWithPrefix(String)</a></span> - Method in class se.softhouse.common.collections.<a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a></dt>
 <dd>
 <div class="block">Returns all entries whose key starts with <code>prefix</code>.</div>
 </dd>
@@ -701,9 +710,17 @@
 <div class="block">
  Limits values parsed so that they conform to some specific rule.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/jargo/ArgumentBuilder.html#limitTo-java.util.function.Predicate-java.lang.String-">limitTo(Predicate&lt;? super T&gt;, String)</a></span> - Method in class se.softhouse.jargo.<a href="se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a></dt>
+<dd>
+<div class="block">Like <a href="se/softhouse/jargo/ArgumentBuilder.html#limitTo-java.util.function.Predicate-"><code>ArgumentBuilder.limitTo(Predicate)</code></a> but with <code>aDescription</code> to describe the valid values this limiter accepts</div>
+</dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/jargo/ArgumentBuilder.html#limitTo-java.util.function.Predicate-se.softhouse.common.strings.Describable-">limitTo(Predicate&lt;? super T&gt;, Describable)</a></span> - Method in class se.softhouse.jargo.<a href="se/softhouse/jargo/ArgumentBuilder.html" title="class in se.softhouse.jargo">ArgumentBuilder</a></dt>
+<dd>
+<div class="block">Like <a href="se/softhouse/jargo/ArgumentBuilder.html#limitTo-java.util.function.Predicate-java.lang.String-"><code>ArgumentBuilder.limitTo(Predicate, String)</code></a> but allows for lazy construction of the description</div>
+</dd>
 <dt><a href="se/softhouse/common/strings/Lines.html" title="class in se.softhouse.common.strings"><span class="typeNameLink">Lines</span></a> - Class in <a href="se/softhouse/common/strings/package-summary.html">se.softhouse.common.strings</a></dt>
 <dd>
-<div class="block">Utilities for working with <a href="se/softhouse/common/strings/StringsUtil.html#NEWLINE"><code>new line</code></a> in texts.</div>
+<div class="block">Utilities for working with <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html?is-external=true#lineSeparator--" title="class or interface in java.lang"><code>new line</code></a> in texts.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/common/strings/Describers.html#listDescriber-se.softhouse.common.strings.Describer-">listDescriber(Describer&lt;T&gt;)</a></span> - Static method in class se.softhouse.common.strings.<a href="se/softhouse/common/strings/Describers.html" title="class in se.softhouse.common.strings">Describers</a></dt>
 <dd>
@@ -830,10 +847,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/common/guavaextensions/Lists2.html#newArrayList-java.util.Iterator-">newArrayList(Iterator&lt;? extends E&gt;)</a></span> - Static method in class se.softhouse.common.guavaextensions.<a href="se/softhouse/common/guavaextensions/Lists2.html" title="class in se.softhouse.common.guavaextensions">Lists2</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="se/softhouse/common/strings/StringsUtil.html#NEWLINE">NEWLINE</a></span> - Static variable in class se.softhouse.common.strings.<a href="se/softhouse/common/strings/StringsUtil.html" title="class in se.softhouse.common.strings">StringsUtil</a></dt>
-<dd>
-<div class="block">A suitable string to represent newlines on this specific platform</div>
-</dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/common/collections/CharacterTrie.html#newTrie--">newTrie()</a></span> - Static method in class se.softhouse.common.collections.<a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a></dt>
 <dd>
 <div class="block">Creates a new, empty, <a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections"><code>CharacterTrie</code></a></div>
@@ -841,6 +854,10 @@
 <dt><span class="memberNameLink"><a href="se/softhouse/common/collections/CharacterTrie.html#newTrie-java.util.Map-">newTrie(Map&lt;String, V&gt;)</a></span> - Static method in class se.softhouse.common.collections.<a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections">CharacterTrie</a></dt>
 <dd>
 <div class="block">Creates a new <a href="se/softhouse/common/collections/CharacterTrie.html" title="class in se.softhouse.common.collections"><code>CharacterTrie</code></a> with the entries from <code>map</code></div>
+</dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/jargo/CommandLineParser.html#noCompleter--">noCompleter()</a></span> - Method in class se.softhouse.jargo.<a href="se/softhouse/jargo/CommandLineParser.html" title="class in se.softhouse.jargo">CommandLineParser</a></dt>
+<dd>
+<div class="block">Disables the completion functionality.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/common/strings/Describers.html#numberDescriber--">numberDescriber()</a></span> - Static method in class se.softhouse.common.strings.<a href="se/softhouse/common/strings/Describers.html" title="class in se.softhouse.common.strings">Describers</a></dt>
 <dd>
@@ -949,6 +966,14 @@
 <dt><a href="se/softhouse/common/guavaextensions/Predicates2.html" title="class in se.softhouse.common.guavaextensions"><span class="typeNameLink">Predicates2</span></a> - Class in <a href="se/softhouse/common/guavaextensions/package-summary.html">se.softhouse.common.guavaextensions</a></dt>
 <dd>
 <div class="block">Additional implementations of the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html?is-external=true" title="class or interface in java.util.function"><code>Predicate</code></a> interface</div>
+</dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/common/strings/StringsUtil.html#prefixes-java.lang.String-java.util.Collection-">prefixes(String, Collection&lt;String&gt;)</a></span> - Static method in class se.softhouse.common.strings.<a href="se/softhouse/common/strings/StringsUtil.html" title="class in se.softhouse.common.strings">StringsUtil</a></dt>
+<dd>
+<div class="block">Matches strings from <code>validOptions</code> that starts with <code>partOfWord</code>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="se/softhouse/common/strings/StringsUtil.html#prefixesIgnoringCase-java.lang.String-java.lang.Iterable-java.util.Locale-">prefixesIgnoringCase(String, Iterable&lt;String&gt;, Locale)</a></span> - Static method in class se.softhouse.common.strings.<a href="se/softhouse/common/strings/StringsUtil.html" title="class in se.softhouse.common.strings">StringsUtil</a></dt>
+<dd>
+<div class="block">Like <a href="se/softhouse/common/strings/StringsUtil.html#prefixes-java.lang.String-java.util.Collection-"><code>StringsUtil.prefixes(String, Collection)</code></a> but ignoring the case of partOfWord.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="se/softhouse/jargo/Usage.html#printOn-java.lang.Appendable-">printOn(Appendable)</a></span> - Method in class se.softhouse.jargo.<a href="se/softhouse/jargo/Usage.html" title="class in se.softhouse.jargo">Usage</a></dt>
 <dd>
@@ -1205,10 +1230,6 @@
 <dd>
 <div class="block">
  Exposes a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function"><code>Function</code></a> as a <a href="se/softhouse/common/strings/Describer.html" title="interface in se.softhouse.common.strings"><code>Describer</code></a>.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="se/softhouse/common/strings/StringsUtil.html#UTF8">UTF8</a></span> - Static variable in class se.softhouse.common.strings.<a href="se/softhouse/common/strings/StringsUtil.html" title="class in se.softhouse.common.strings">StringsUtil</a></dt>
-<dd>
-<div class="block">A <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html?is-external=true" title="class or interface in java.nio.charset"><code>Charset</code></a> for <a href="https://en.wikipedia.org/wiki/UTF-8">UTF8</a></div>
 </dd>
 </dl>
 <a name="I:V">

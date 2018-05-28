@@ -109,7 +109,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/javax/annotation/concurrent.Immutable.html?is-external=true" title="class or interface in javax.annotation">@Immutable</a>
-public final class <a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.42">Launcher</a>
+public final class <a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.44">Launcher</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Can launch java programs for a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang"><code>Class</code></a> with a main method. Output is captured in the
  returned <a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib"><code>Launcher.LaunchedProgram</code></a>.</div>
@@ -162,10 +162,11 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/testlib/Launcher.html#launch-java.util.List-java.lang.Class-java.lang.String...-">launch</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;additionalVmArgs,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../se/softhouse/common/testlib/Launcher.html#launch-java.util.List-java.util.Map-java.lang.Class-java.lang.String...-">launch</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;additionalVmArgs,
+      <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;envVariables,
       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;classWithMainMethod,
       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;programArguments)</code>
-<div class="block">Like <a href="../../../../se/softhouse/common/testlib/Launcher.html#launch-java.lang.Class-java.lang.String...-"><code>launch(Class, String...)</code></a> but with a possiblity to specify any additional vm args to pass to the jvm</div>
+<div class="block">Like <a href="../../../../se/softhouse/common/testlib/Launcher.html#launch-java.lang.Class-java.lang.String...-"><code>launch(Class, String...)</code></a> but with more configurable options</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -203,7 +204,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>launch</h4>
-<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.151">launch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;classWithMainMethod,
+<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.165">launch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;classWithMainMethod,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;programArguments)
                                        throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a>,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a></pre>
@@ -229,20 +230,22 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </dl>
 </li>
 </ul>
-<a name="launch-java.util.List-java.lang.Class-java.lang.String...-">
+<a name="launch-java.util.List-java.util.Map-java.lang.Class-java.lang.String...-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>launch</h4>
-<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.101">launch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;additionalVmArgs,
+<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.114">launch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;additionalVmArgs,
+                                              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;envVariables,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;classWithMainMethod,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;programArguments)
                                        throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a>,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a></pre>
-<div class="block">Like <a href="../../../../se/softhouse/common/testlib/Launcher.html#launch-java.lang.Class-java.lang.String...-"><code>launch(Class, String...)</code></a> but with a possiblity to specify any additional vm args to pass to the jvm</div>
+<div class="block">Like <a href="../../../../se/softhouse/common/testlib/Launcher.html#launch-java.lang.Class-java.lang.String...-"><code>launch(Class, String...)</code></a> but with more configurable options</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>envVariables</code> - variables to add to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ProcessBuilder.html?is-external=true#environment--" title="class or interface in java.lang"><code>ProcessBuilder.environment()</code></a>.</dd>
 <dd><code>additionalVmArgs</code> - the vm args to pass in</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code></dd>
@@ -256,7 +259,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>launch</h4>
-<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.168">launch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;program,
+<pre>public static&nbsp;<a href="../../../../se/softhouse/common/testlib/Launcher.LaunchedProgram.html" title="class in se.softhouse.common.testlib">Launcher.LaunchedProgram</a>&nbsp;<a href="../../../../src-html/se/softhouse/common/testlib/Launcher.html#line.182">launch</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;program,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;programArguments)
                                        throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a>,
                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a></pre>
