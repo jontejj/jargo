@@ -355,4 +355,15 @@ final class ArgumentIterator implements Iterator<String>
 			dirty = false;
 		}
 	}
+
+	ParsedArguments findParentHolderFor(Argument<ParsedArguments> argument)
+	{
+		for(CommandInvocation invocation : commandInvocations)
+		{
+			Optional<ParsedArguments> parentHolder = invocation.args.findParentHolderFor(argument);
+			if(parentHolder.isPresent())
+				return parentHolder.get();
+		}
+		return currentHolder().findParentHolderFor(argument).get();
+	}
 }

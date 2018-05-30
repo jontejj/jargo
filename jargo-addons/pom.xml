@@ -11,7 +11,7 @@
 		<dependency>
 			<groupId>se.softhouse</groupId>
 			<artifactId>jargo</artifactId>
-			<version>0.4.13-SNAPSHOT</version>
+			<version>0.4.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -22,14 +22,14 @@
 		<dependency>
 			<groupId>se.softhouse</groupId>
 			<artifactId>common-test</artifactId>
-			<version>0.4.13-SNAPSHOT</version>
+			<version>0.4.14-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Reuses test classes in jargo without having to publish them on maven central -->
 		<dependency>
 			<groupId>se.softhouse</groupId>
 			<artifactId>jargo</artifactId>
-			<version>0.4.13-SNAPSHOT</version>
+			<version>0.4.14-SNAPSHOT</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

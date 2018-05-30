@@ -118,17 +118,17 @@ public class IndexedArgumentTest
 	@SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = Explanation.FAIL_FAST)
 	public void testThatRequiredIndexedArgumentsHaveUniqueMetaDescriptions()
 	{
-		Argument<Integer> port = integerArgument().required().build();
+		Argument<Integer> portArg = integerArgument().required().build();
 		Argument<Integer> number = integerArgument().required().build();
 
 		try
 		{
-			CommandLineParser.withArguments(port, number);
+			CommandLineParser.withArguments(portArg, number);
 			fail("Non-unique meta description not detected");
 		}
 		catch(IllegalArgumentException expected)
 		{
-			assertThat(expected).hasMessage(String.format(ProgrammaticErrors.UNIQUE_METAS, port.metaDescriptionInRightColumn()));
+			assertThat(expected).hasMessage(String.format(ProgrammaticErrors.UNIQUE_METAS, portArg.metaDescriptionInRightColumn()));
 		}
 	}
 

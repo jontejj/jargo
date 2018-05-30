@@ -36,9 +36,11 @@ import com.google.common.io.MoreFiles;
 import se.softhouse.common.strings.StringsUtil;
 import se.softhouse.common.testlib.Launcher;
 import se.softhouse.common.testlib.Launcher.LaunchedProgram;
+import se.softhouse.jargo.commands.Build.BuildTarget;
 import se.softhouse.jargo.commands.CommandWithArgument;
 import se.softhouse.jargo.commands.Commit.Repository;
 import se.softhouse.jargo.commands.Git;
+import se.softhouse.jargo.commands.Mvn;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
 
 /**
@@ -180,6 +182,17 @@ public class BashCompletionTest
 
 		suggestions = FakeCompleter.complete(p, "stop", "restart", "r");
 		assertThat(suggestions).containsOnly("reab");
+	}
+
+	@Test
+	public void testThatSeveralCommandHierarchiesInTheSameParserSupportCompletions() throws Exception
+	{
+		Repository repo = new Repository();
+		BuildTarget target = new BuildTarget();
+		CommandLineParser twoCommandsParser = CommandLineParser.withCommands(new Git(repo), new Mvn(target));
+
+		SortedSet<String> suggestions = FakeCompleter.complete(twoCommandsParser, "git", "log", "mvn", "log");
+		assertThat(suggestions).containsOnly("log ");
 	}
 
 	public static void main(String[] args)

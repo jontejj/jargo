@@ -241,7 +241,11 @@ final class Completers
 				@Override
 				public void handle(Argument<?> definition, ParsedArguments parsedArguments, ArgumentIterator arguments, Locale inLocale)
 				{
-					definition.complete(partOfWord, iterator).forEach(suggestions::add);
+					// Avoid recursive completion if the arg to complete is a "finished" command
+					if(!(definition.parser() instanceof Command))
+					{
+						definition.complete(partOfWord, iterator).forEach(suggestions::add);
+					}
 
 					// Simulate that it was parsed to exclude the arg from further being suggested
 					holder.put(definition, null);
