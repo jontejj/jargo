@@ -17,6 +17,7 @@ import static org.fest.assertions.Fail.fail;
 import static se.softhouse.jargo.Arguments.integerArgument;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -152,6 +153,19 @@ public class TransformTest
 		assertThat(size).isEqualTo(0);
 		size = integerArgument("--trans").variableArity().defaultValue(ImmutableList.of(3)).transform(l -> l.size()).parse();
 		assertThat(size).isEqualTo(1);
+	}
+
+	@Test
+	public void testThatSeparatorIsPreservedForAsPropertyMap() throws Exception
+	{
+		Argument<Map<String, String>> sysProps = Arguments.stringArgument("-D") //
+				.asPropertyMap() //
+				.transform(map -> {
+					map.forEach((key, value) -> System.setProperty(key, value));
+					return map;
+				}).build();
+		sysProps.parse("-Dhello=world");
+		assertThat(System.getProperty("hello")).isEqualTo("world");
 	}
 
 	// TODO(jontejj): test to transform with co-covariant types
