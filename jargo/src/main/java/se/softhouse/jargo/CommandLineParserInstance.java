@@ -566,10 +566,19 @@ final class CommandLineParserInstance
 		{
 			arguments.next();
 			Argument<?> argument = lookupByName(arguments);
+			ParsedArguments matchedHolder = arguments.currentHolder();
+			while(argument == null && matchedHolder.parentHolder().isPresent())
+			{
+				matchedHolder = matchedHolder.parentHolder().get();
+				argument = matchedHolder.parser().lookupByName(arguments);
+			}
+
 			if(argument == null)
 				throw withMessage(format(UserErrors.UNKNOWN_ARGUMENT, arguments.current()));
-			usage = new Usage(Arrays.<Argument<?>>asList(argument), inLocale, programInformation(), isCommandParser());
-			if(isCommandParser())
+
+			boolean commandParser = matchedHolder.parser().isCommandParser();
+			usage = new Usage(Arrays.<Argument<?>>asList(argument), inLocale, programInformation(), commandParser);
+			if(commandParser)
 			{
 				String withCommandReference = ". Usage for " + argument + " (argument to " + arguments.usedCommandName().get() + "):";
 				e.withUsageReference(withCommandReference);
