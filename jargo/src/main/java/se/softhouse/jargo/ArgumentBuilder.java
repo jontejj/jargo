@@ -792,6 +792,7 @@ public abstract class ArgumentBuilder<SELF extends ArgumentBuilder<SELF, T>, T>
 		this.metaDescription = copy.metaDescription;
 		this.hideFromUsage = copy.hideFromUsage;
 		this.completer = copy.completer;
+		this.isPropertyMap = copy.isPropertyMap;
 	}
 
 	/**
