@@ -235,4 +235,13 @@ public final class ParsedArguments
 			return parent.get().rootParser();
 		return parser();
 	}
+
+	Optional<ParsedArguments> findParentHolderFor(Argument<ParsedArguments> argument)
+	{
+		if(allArguments.contains(argument))
+			return Optional.of(this);
+		else if(parent.isPresent())
+			return parent.get().findParentHolderFor(argument);
+		return Optional.empty();
+	}
 }

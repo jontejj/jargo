@@ -264,7 +264,7 @@ public abstract class Command extends InternalStringParser<ParsedArguments> impl
 		}
 		else
 		{
-			iterator.setCurrentHolder(new ParsedArguments(parser(), iterator.currentHolder()));
+			iterator.setCurrentHolder(new ParsedArguments(parser(), iterator.findParentHolderFor(argument)));
 		}
 
 		SortedSet<String> suggestions = new TreeSet<>();
