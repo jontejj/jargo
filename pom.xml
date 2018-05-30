@@ -8,7 +8,7 @@
 	<groupId>se.softhouse</groupId>
 	<artifactId>jargo-parent</artifactId>
 	<description>Jargo maven parent</description>
-	<version>0.4.14</version>
+	<version>0.4.15-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>https://github.com/Softhouse/jargo</url>
 	<properties>
