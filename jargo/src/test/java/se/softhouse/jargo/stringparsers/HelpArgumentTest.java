@@ -38,6 +38,8 @@ import se.softhouse.jargo.ParsedArguments;
 import se.softhouse.jargo.commands.Build;
 import se.softhouse.jargo.commands.CommandWithArgument;
 import se.softhouse.jargo.commands.CommandWithOneIndexedArgument;
+import se.softhouse.jargo.commands.Commit.Repository;
+import se.softhouse.jargo.commands.Git;
 import se.softhouse.jargo.internal.Texts.UsageTexts;
 import se.softhouse.jargo.internal.Texts.UserErrors;
 import se.softhouse.jargo.stringparsers.EnumArgumentTest.Action;
@@ -226,6 +228,21 @@ public class HelpArgumentTest
 		SortedSet<String> suggestions = FakeCompleter.complete(parser, "cmd", "-h", "--g");
 
 		assertThat(suggestions).containsOnly("--google ");
+	}
+
+	@Test
+	public void testThatHelpForMainArgsWorkAfterCommandHasBeenSpecified() throws Exception
+	{
+		CommandLineParser parser = CommandLineParser.withArguments(HELP, Git.MESSAGE).andCommands(new Git(new Repository()));
+		try
+		{
+			parser.parse("git", "log", "-h", "--message");
+			fail("help argument should trigger an argument exception");
+		}
+		catch(ArgumentException expected)
+		{
+			assertThat(expected.getMessageAndUsage()).isEqualTo(expected("helpForSpecificArg"));
+		}
 	}
 
 	@Test
