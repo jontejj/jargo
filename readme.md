@@ -107,3 +107,8 @@ From version 0.4.2 and onwards this library requires jdk 8 and Guava was removed
 
 5. Reflection makes it hard to analyze references to classes/methods and it
     often requires a granted suppressAccessChecks from the SecurityManager, this may not be wanted. No reflection is used in jargo.
+
+# For contributors
+
+## Possible candidates for refactoring
+[![](https://codescene.io/projects/3636/status.svg) Check code-smells at *codescene.io*.](https://codescene.io/projects/3636/jobs/latest-successful/results)
